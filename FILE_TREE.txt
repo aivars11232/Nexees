@@ -1,0 +1,395 @@
+# start here
+Nexees/
+├── apps/
+│   ├── android/
+│   │   ├── resources/
+│   │   │   └── application_metadata.source
+│   │   └── src/
+│   │       ├── panels/
+│   │       │   ├── agent_panel.source
+│   │       │   ├── chat_panel.source
+│   │       │   ├── devices_panel.source
+│   │       │   ├── git_panel.source
+│   │       │   ├── help_panel.source
+│   │       │   ├── import_preview.source
+│   │       │   ├── logs_panel.source
+│   │       │   ├── problems_panel.source
+│   │       │   ├── task_panel.source
+│   │       │   └── terminal_panel.source
+│   │       ├── settings/
+│   │       │   ├── account_view.source
+│   │       │   ├── developer_settings_view.source
+│   │       │   ├── model_selector.source
+│   │       │   ├── security_approvals.source
+│   │       │   └── settings_view.source
+│   │       ├── shell/
+│   │       │   ├── lifecycle_binding.source
+│   │       │   ├── main_screen.source
+│   │       │   ├── panel_navigation.source
+│   │       │   └── responsive_layout.source
+│   │       ├── workspaces/
+│   │       │   ├── editor_tabs.source
+│   │       │   ├── file_tree.source
+│   │       │   ├── lcl_workspace.source
+│   │       │   ├── workspace_switcher.source
+│   │       │   └── workspace_view.source
+│   │       ├── application_host.source
+│   │       └── main.source
+│   └── desktop/
+│       ├── resources/
+│       │   └── application_metadata.source
+│       └── src/
+│           ├── panels/
+│           │   ├── agent_panel.source
+│           │   ├── chat_panel.source
+│           │   ├── devices_panel.source
+│           │   ├── extensions_panel.source
+│           │   ├── git_panel.source
+│           │   ├── help_panel.source
+│           │   ├── import_preview.source
+│           │   ├── logs_panel.source
+│           │   ├── problems_panel.source
+│           │   ├── task_panel.source
+│           │   └── terminal_panel.source
+│           ├── settings/
+│           │   ├── account_view.source
+│           │   ├── developer_settings_view.source
+│           │   ├── model_selector.source
+│           │   ├── security_approvals.source
+│           │   └── settings_view.source
+│           ├── shell/
+│           │   ├── activity_bar.source
+│           │   ├── main_window.source
+│           │   ├── panel_controls.source
+│           │   ├── panel_layout.source
+│           │   ├── status_bar.source
+│           │   └── title_bar.source
+│           ├── workspaces/
+│           │   ├── editor_tabs.source
+│           │   ├── file_tree.source
+│           │   ├── lcl_workspace.source
+│           │   ├── workspace_switcher.source
+│           │   └── workspace_view.source
+│           ├── application_host.source
+│           └── main.source
+├── assets/
+│   ├── branding/
+│   │   ├── derived/
+│   │   │   └── .gitkeep
+│   │   ├── reference/
+│   │   │   └── nexees-logo-approved-chat.png
+│   │   └── source/
+│   │       └── .gitkeep
+│   ├── design/
+│   │   └── desktop/
+│   │       ├── approved-compact-layout.png
+│   │       └── sidebar-controls-reference.png
+│   ├── strings/
+│   │   └── english.source
+│   └── theme/
+│       ├── design_tokens.source
+│       └── icon_mapping.source
+├── config/
+│   ├── application_defaults.source
+│   ├── local-paths.example.json
+│   ├── provider_profiles.source
+│   ├── security_defaults.source
+│   └── sync_defaults.source
+├── core/
+│   ├── accounts/
+│   │   ├── account_recovery.source
+│   │   ├── account_service.source
+│   │   ├── account_session.source
+│   │   ├── mfa_service.source
+│   │   └── offline_access.source
+│   ├── agent/
+│   │   ├── action_loop.source
+│   │   ├── agent_runtime.source
+│   │   ├── execution_fence.source
+│   │   └── session_control.source
+│   ├── context/
+│   │   ├── context_budget.source
+│   │   ├── context_builder.source
+│   │   ├── mandatory_reads.source
+│   │   └── repository_map.source
+│   ├── domain/
+│   │   ├── errors.source
+│   │   ├── events.source
+│   │   ├── model_capabilities.source
+│   │   ├── session.source
+│   │   ├── task.source
+│   │   └── workspace.source
+│   ├── help/
+│   │   ├── help_navigation.source
+│   │   ├── manual_catalog.source
+│   │   └── manual_search.source
+│   ├── lcl/
+│   │   ├── importing/
+│   │   │   ├── archive_intake.source
+│   │   │   ├── import_preview.source
+│   │   │   ├── import_transaction.source
+│   │   │   ├── safe_extraction.source
+│   │   │   └── structure_resolver.source
+│   │   ├── modes/
+│   │   │   ├── mode_conversion.source
+│   │   │   └── specification_modes.source
+│   │   ├── diagnostic_model.source
+│   │   ├── execution_binding.source
+│   │   ├── lcl_service.source
+│   │   └── specification_revision.source
+│   ├── protocol/
+│   │   ├── messages.source
+│   │   ├── serialization.source
+│   │   └── version_negotiation.source
+│   ├── providers/
+│   │   ├── handoff/
+│   │   │   ├── continuation_snapshot.source
+│   │   │   ├── model_switch.source
+│   │   │   ├── orientation_controller.source
+│   │   │   └── orientation_prompt.txt
+│   │   ├── model_catalog.source
+│   │   ├── provider_interface.source
+│   │   ├── provider_registry.source
+│   │   └── usage_limits.source
+│   ├── remote/
+│   │   ├── command_dispatch.source
+│   │   ├── device_registry.source
+│   │   ├── notifications.source
+│   │   ├── pairing.source
+│   │   └── remote_sessions.source
+│   ├── security/
+│   │   ├── approval_grants.source
+│   │   ├── audit_log.source
+│   │   ├── authority_policy.source
+│   │   ├── extension_policy.source
+│   │   ├── network_policy.source
+│   │   ├── permission_engine.source
+│   │   ├── secret_redaction.source
+│   │   └── workspace_scope.source
+│   ├── settings/
+│   │   ├── developer_settings.source
+│   │   ├── settings_model.source
+│   │   └── settings_store.source
+│   ├── state/
+│   │   ├── migrations/
+│   │   │   └── migration_registry.source
+│   │   ├── checkpoints.source
+│   │   ├── operation_journal.source
+│   │   ├── recovery.source
+│   │   └── state_store.source
+│   ├── sync/
+│   │   ├── change_tracking.source
+│   │   ├── conflict_resolution.source
+│   │   ├── portable_paths.source
+│   │   ├── sync_coordinator.source
+│   │   └── transfer_journal.source
+│   ├── tasking/
+│   │   ├── cleanup_gate.source
+│   │   ├── stop_conditions.source
+│   │   ├── task_graph.source
+│   │   ├── task_scheduler.source
+│   │   └── verification_gate.source
+│   ├── tools/
+│   │   ├── command_tools.source
+│   │   ├── file_tools.source
+│   │   ├── git_tools.source
+│   │   ├── tool_dispatch.source
+│   │   ├── tool_registry.source
+│   │   └── verification_tools.source
+│   ├── updates/
+│   │   ├── migration_guard.source
+│   │   ├── package_verification.source
+│   │   └── update_service.source
+│   └── workspaces/
+│       ├── file_tree_model.source
+│       ├── view_state.source
+│       ├── workspace_binding.source
+│       ├── workspace_registry.source
+│       └── workspace_revision.source
+├── docs/
+│   └── manuals/
+│       ├── LCL_IN_NEXEES_USER_MANUAL.md
+│       └── NEXEES_USER_MANUAL.md
+├── integrations/
+│   ├── agents/
+│   │   └── external_agent_adapter.source
+│   ├── auth/
+│   │   ├── account_provider_adapter.source
+│   │   ├── github_login_adapter.source
+│   │   └── mfa_adapter.source
+│   ├── code_index/
+│   │   └── syntax_index_adapter.source
+│   ├── git/
+│   │   └── git_adapter.source
+│   ├── ide/
+│   │   ├── debugger_adapter.source
+│   │   ├── editor_adapter.source
+│   │   ├── extension_host_adapter.source
+│   │   ├── extension_registry_adapter.source
+│   │   ├── language_server_adapter.source
+│   │   ├── search_adapter.source
+│   │   └── terminal_adapter.source
+│   ├── lcl/
+│   │   ├── compatibility_check.source
+│   │   ├── core_bridge.source
+│   │   ├── template_adapter.source
+│   │   └── workspace_extension.source
+│   └── providers/
+│       ├── anthropic/
+│       │   └── provider_adapter.source
+│       ├── deepseek/
+│       │   └── provider_profile.source
+│       ├── google/
+│       │   └── provider_adapter.source
+│       ├── ollama/
+│       │   └── provider_adapter.source
+│       ├── openai/
+│       │   └── provider_adapter.source
+│       └── openai-compatible/
+│           └── provider_adapter.source
+├── packaging/
+│   ├── android/
+│   │   └── package_definition.source
+│   ├── desktop/
+│   │   └── package_definition.source
+│   └── updates/
+│       ├── release_manifest.source
+│       └── signing_configuration.source
+├── platform/
+│   ├── android/
+│   │   ├── execution/
+│   │   │   ├── local_tool_host.source
+│   │   │   └── runtime_capabilities.source
+│   │   ├── lifecycle/
+│   │   │   ├── background_execution.source
+│   │   │   ├── lifecycle_recovery.source
+│   │   │   └── notification_backend.source
+│   │   ├── secrets/
+│   │   │   └── credential_store.source
+│   │   ├── storage/
+│   │   │   ├── atomic_file_writer.source
+│   │   │   ├── document_picker.source
+│   │   │   └── scoped_filesystem.source
+│   │   └── transport/
+│   │       ├── secure_channel.source
+│   │       └── transport_discovery.source
+│   └── desktop/
+│       ├── execution/
+│       │   ├── process_host.source
+│       │   ├── sandbox_backend.source
+│       │   └── tool_capabilities.source
+│       ├── lifecycle/
+│       │   ├── application_lifecycle.source
+│       │   └── notification_backend.source
+│       ├── secrets/
+│       │   └── credential_store.source
+│       ├── storage/
+│       │   ├── atomic_file_writer.source
+│       │   ├── file_picker.source
+│       │   └── scoped_filesystem.source
+│       └── transport/
+│           ├── secure_channel.source
+│           └── transport_discovery.source
+├── scripts/
+│   ├── build/
+│   │   ├── build_android.source
+│   │   ├── build_desktop.source
+│   │   └── bundle_manuals.source
+│   ├── ci/
+│   │   └── continuous_integration.source
+│   ├── release/
+│   │   ├── package_release.source
+│   │   └── verify_release.source
+│   └── test/
+│       └── run_checks.source
+├── tests/
+│   ├── conformance/
+│   │   ├── lcl/
+│   │   │   └── shared_core_parity.test.source
+│   │   └── protocol/
+│   │       └── client_protocol_compatibility.test.source
+│   ├── e2e/
+│   │   ├── android/
+│   │   │   ├── lifecycle_resume.test.source
+│   │   │   ├── offline_lcl.test.source
+│   │   │   ├── responsive_workspace.test.source
+│   │   │   └── standalone_no_pc.test.source
+│   │   ├── cross-device/
+│   │   │   ├── independent_workspaces.test.source
+│   │   │   ├── reconnect_and_conflicts.test.source
+│   │   │   └── remote_agent_control.test.source
+│   │   ├── desktop/
+│   │   │   ├── autonomous_run.test.source
+│   │   │   ├── local_application.test.source
+│   │   │   └── workspace_switching.test.source
+│   │   ├── help/
+│   │   │   ├── offline_manuals.test.source
+│   │   │   └── search_and_navigation.test.source
+│   │   └── release/
+│   │       ├── clean_install.test.source
+│   │       └── update_recovery.test.source
+│   ├── fixtures/
+│   │   ├── archives/
+│   │   │   └── archive_fixture_factory.test.source
+│   │   ├── code/
+│   │   │   └── sample_project_factory.test.source
+│   │   └── lcl/
+│   │       └── verified_fixture_loader.test.source
+│   ├── integration/
+│   │   ├── handoff/
+│   │   │   ├── orientation_disabled.test.source
+│   │   │   ├── quota_exhaustion_switch.test.source
+│   │   │   ├── readonly_orientation.test.source
+│   │   │   └── stale_state.test.source
+│   │   ├── lcl-import/
+│   │   │   ├── archive_structure.test.source
+│   │   │   ├── atomic_import.test.source
+│   │   │   ├── single_file_import.test.source
+│   │   │   └── spec_revision_adoption.test.source
+│   │   ├── sync/
+│   │   │   ├── concurrent_edits.test.source
+│   │   │   ├── interrupted_transfer.test.source
+│   │   │   └── two_way_sync.test.source
+│   │   └── workspaces/
+│   │       ├── foreground_background_isolation.test.source
+│   │       └── view_state_restore.test.source
+│   ├── security/
+│   │   ├── archives/
+│   │   │   ├── ambiguous_paths.test.source
+│   │   │   ├── archive_limits.test.source
+│   │   │   └── path_escape.test.source
+│   │   ├── credentials/
+│   │   │   ├── credential_storage.test.source
+│   │   │   └── secret_redaction.test.source
+│   │   ├── permissions/
+│   │   │   ├── extension_authority.test.source
+│   │   │   ├── project_confinement.test.source
+│   │   │   └── untrusted_instructions.test.source
+│   │   └── remote/
+│   │       ├── explicit_target_binding.test.source
+│   │       ├── pairing_revocation.test.source
+│   │       └── stale_approval_rejection.test.source
+│   └── unit/
+│       ├── agent_runtime.test.source
+│       ├── approval_grants.test.source
+│       ├── context_budget.test.source
+│       ├── import_structure.test.source
+│       ├── lcl_modes.test.source
+│       ├── manual_search.test.source
+│       ├── model_orientation.test.source
+│       ├── permission_engine.test.source
+│       ├── provider_registry.test.source
+│       ├── settings.test.source
+│       ├── state_recovery.test.source
+│       ├── sync_conflicts.test.source
+│       ├── task_graph.test.source
+│       ├── tool_dispatch.test.source
+│       ├── view_state.test.source
+│       └── workspace_binding.test.source
+├── .editorconfig
+├── .gitattributes
+├── .gitignore
+├── FILE_TREE.txt
+├── LICENSE_STATUS.md
+├── README.md
+└── SECURITY.md

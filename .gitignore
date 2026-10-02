@@ -1,0 +1,43 @@
+# start here
+# Dependencies, generated builds and caches. Never use ignores as permission to delete.
+node_modules/
+target/
+build/
+# Build helpers are source, not generated output.
+!scripts/build/
+!scripts/build/**
+dist/
+out/
+.gradle/
+.cxx/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage/
+
+# Local credentials and machine-specific configuration.
+.env
+.env.*
+!.env.example
+!**/.env.example
+config/local-paths.json
+local.properties
+*.keystore
+*.jks
+*.p12
+*.pfx
+
+# Runtime user data, recordings and temporary work do not belong in source control.
+.nexees/
+runtime/
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Keep product documentation, source and synthetic test fixtures tracked.
