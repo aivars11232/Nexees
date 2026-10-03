@@ -139,3 +139,17 @@ OK    it fails exactly the two VALIDATE gates the correction addresses and no ot
       do not run after a preflight refusal  [validate.no_blocker, validate.scope]
       evaluation.record.json SHA-256 799c97291e3e17c618e890461e3306f756d38f19ea49d0a87cc0d3a07bcde7f1
 Result: every correction observation confirmed
+
+8. Owner decision (2026-10-03T23:53:34+02:00)
+The owner answered the question about the SDK cache rewrite. These observations were made for the decision;
+sections 1 to 7 are unchanged.
+OK    the receipt on disk equals the corrected receipt of commit a590eab
+OK    the decision changes only no_unrelated_changes, blocker_codes and expected, adds owner_decision and points the correction at its record  [top-level ['correction', 'expected', 'inputs', 'owner_decision']; inputs ['blocker_codes', 'no_unrelated_changes']]
+OK    every input now equals the originally accepted receipt of commit 2eaa199  [the values are the same; the basis of no_unrelated_changes is now the owner's recorded decision]
+OK    the SDK cache the owner approved is unchanged since TASK-003  [8003738c250fa4f89bab978f377628b5c90bcc7498139cc50107b90c3a250926]
+OK    it is still the only LCL SDK file written since the TASK-003 marker  [/mnt/F/.lcl-android/sdk/.knownPackages]
+OK    the TASK-003 snapshot rebuilt from commit a590eab equals the receipt  [787b17e68fc5bf06e01e169a8ca3ba242238e9c2e69e400f544d44b7e4405153]
+OK    the acceptance program accepts the receipt  [exit 0, outcome accepted, status.succeeded, 0 diagnostics]
+OK    all six VERIFY checks are TRUE  [verify.selected_receipt, verify.snapshot_shape, verify.ordered_predecessors, verify.required_checks, verify.instruction_delivery, verify.receipt_delivery]
+OK    the engine record of the decided receipt compared with the original accepted record  [5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0; original 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0; byte-identical]
+Result: every decision observation confirmed

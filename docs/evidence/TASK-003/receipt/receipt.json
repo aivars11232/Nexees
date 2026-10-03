@@ -1,6 +1,6 @@
 {
  "fixture_only": false,
- "expected": "refuse",
+ "expected": "accept",
  "declared_by": "Coding agent (Claude Code), 2026-10-03. Every value is the agent's own declaration of what it did and observed in this task.",
  "pack": {
   "path": "/mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3",
@@ -192,9 +192,7 @@
    "TASK-001",
    "TASK-002"
   ],
-  "blocker_codes": [
-   "UNRELATED_CHANGE_LCL_SDK_CACHE"
-  ],
+  "blocker_codes": [],
   "observed_root": "/mnt/F/Nexees/",
   "observed_repository": "https://github.com/aivars11232/Nexees",
   "branch": "main",
@@ -285,7 +283,7 @@
   "post_cleanup_checks_passed": true,
   "no_unapproved_git_writes": true,
   "no_unapproved_agents": true,
-  "no_unrelated_changes": false,
+  "no_unrelated_changes": true,
   "final_review_complete": true,
   "bundle_integrity_verified": true,
   "renderer_decision": "electron_permitted",
@@ -331,6 +329,31 @@
   },
   "unchanged": "Every other key and value; the snapshot; every evidence file outside this receipt folder; and the TASK-003 work itself. In this folder, evaluation.record.json, corroboration.txt and RECEIPT_RESULT.md were updated for the correction.",
   "previous_record": "evaluation.record.json of commit 2eaa199, SHA-256 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0: accepted",
-  "record": "evaluation.record.json now holds the engine record of this corrected receipt"
+  "record": "evaluation.record.json of commit a590eab, SHA-256 799c97291e3e17c618e890461e3306f756d38f19ea49d0a87cc0d3a07bcde7f1: rejected at preflight on validate.scope and validate.no_blocker"
+ },
+ "owner_decision": {
+  "on": "2026-10-03T23:53:34+02:00",
+  "asked_by": "Coding agent (Claude Code), through the session's question tool, during TASK-004",
+  "question": "I corrected TASK-003's receipt as you asked, and the acceptance program now refuses it (validate.scope). The only unrelated change is the LCL SDK's 16-byte `.knownPackages` file: a package-list cache that SDK tools regenerate themselves, rewritten by avdmanager when it created the emulator you approved. No SDK package changed, but the old bytes are gone. TASK-004 is built and every check passes, but its receipt must state that TASK-003 is closed. How should I resolve this?",
+  "answer": "Approve cache rewrite (Recommended)",
+  "answer_text": "You accept the rewritten cache as your SDK's current state. I record your decision in TASK-003's receipt as the reason, set no_unrelated_changes back to true and clear the blocker. The deviation stays disclosed. I re-run TASK-003's acceptance, then accept, commit and push TASK-004 (two commits: correction, then TASK-004).",
+  "basis": "The owner accepts the rewritten 16-byte /mnt/F/.lcl-android/sdk/.knownPackages cache (SHA-256 8003738c250fa4f89bab978f377628b5c90bcc7498139cc50107b90c3a250926) as the current state of the LCL SDK. The change was a side effect of the emulator the owner approved for TASK-003, it is disclosed in TASK-003_EVIDENCE.md section 12 and logs/toolchains.txt, and with this approval no unapproved change to the owner's pre-existing work remains.",
+  "changed": {
+   "inputs.no_unrelated_changes": [
+    false,
+    true
+   ],
+   "inputs.blocker_codes": [
+    [
+     "UNRELATED_CHANGE_LCL_SDK_CACHE"
+    ],
+    []
+   ],
+   "expected": [
+    "refuse",
+    "accept"
+   ]
+  },
+  "record": "evaluation.record.json now holds the engine record of this receipt"
  }
 }
