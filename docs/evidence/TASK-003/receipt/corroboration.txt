@@ -120,3 +120,22 @@ OK    snapshot recomputed now equals the receipt's current, receipt and post-cle
     That record was not kept; the evaluation is reproducible from receipt.json with those two values restored.
 
 Result: ALL CORROBORATED (31 of 31 observations)
+
+7. Correction (2026-10-03T23:12:29+02:00), requested by the owner during TASK-004
+The accepted receipt said no_unrelated_changes true with no blocker although the LCL SDK cache had been
+rewritten, and the TASK-003 commit lacked one evidence file. These observations were made for the correction;
+sections 1 to 6 above are the original corroboration and are unchanged.
+OK    the receipt on disk equals the accepted receipt in commit 2eaa199
+OK    the correction changes only no_unrelated_changes, blocker_codes and expected, and adds the correction record  [top-level ['correction', 'expected', 'inputs']; inputs ['blocker_codes', 'no_unrelated_changes']]
+OK    the LCL SDK cache is in the state TASK-003 recorded in logs/toolchains.txt  [.knownPackages, 16 bytes, created 2026-09-25 07:54:02, last written 2026-10-03T20:41:57+02:00 (during TASK-003), SHA-256 8003738c250fa4f89bab978f377628b5c90bcc7498139cc50107b90c3a250926]
+OK    it is the only LCL SDK file written since the TASK-003 marker  [/mnt/F/.lcl-android/sdk/.knownPackages]
+OK    no earlier copy of its bytes exists, so preservation cannot be shown: no_unrelated_changes is false  [/mnt/F is ext2 with no snapshots; the LCL repository records nothing about the file (0 mentions)]
+OK    pc_receiver.log on disk equals its line in the accepted snapshot listing  [cd76fb48b7f42cb029ba905d87b382ea3d91151db4d248e142475f90c7248af8]
+OK    Git ignored it, so the TASK-003 commit left it out  [.gitignore:37:*.log]
+OK    it is the only snapshot file missing from commit 2eaa199  [417 snapshot files, 416 in the commit]
+OK    the TASK-003 snapshot rebuilt from commit 2eaa199 plus that log equals the receipt  [787b17e68fc5bf06e01e169a8ca3ba242238e9c2e69e400f544d44b7e4405153]
+OK    the acceptance program refuses the corrected receipt before anything runs  [exit 1, outcome rejected, reached preflight]
+OK    it fails exactly the two VALIDATE gates the correction addresses and no other VALIDATE gate; the six VERIFY checks
+      do not run after a preflight refusal  [validate.no_blocker, validate.scope]
+      evaluation.record.json SHA-256 799c97291e3e17c618e890461e3306f756d38f19ea49d0a87cc0d3a07bcde7f1
+Result: every correction observation confirmed

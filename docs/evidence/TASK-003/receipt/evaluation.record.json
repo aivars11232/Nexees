@@ -1829,8 +1829,8 @@
       }
     }
   ],
-  "reached": "completion",
-  "outcome": "accepted",
+  "reached": "preflight",
+  "outcome": "rejected",
   "inputs": [
     {
       "id": "input.task_number",
@@ -1862,8 +1862,8 @@
     },
     {
       "id": "input.blocker_codes",
-      "expression": "[]",
-      "value": "[]",
+      "expression": "[\"UNRELATED_CHANGE_LCL_SDK_CACHE\"]",
+      "value": "[\"UNRELATED_CHANGE_LCL_SDK_CACHE\"]",
       "reason": null,
       "accepted": true
     },
@@ -1988,8 +1988,8 @@
     },
     {
       "id": "input.no_unrelated_changes",
-      "expression": "TRUE",
-      "value": "TRUE",
+      "expression": "FALSE",
+      "value": "FALSE",
       "reason": null,
       "accepted": true
     },
@@ -2085,134 +2085,52 @@
       "accepted": true
     }
   ],
-  "diagnostics": [],
-  "execution": {
-    "invocations": [
-      {
-        "node": 0,
-        "iteration": "-",
-        "attempt": 0,
-        "block": "ACTION",
-        "declaration": "action.evaluate_receipt",
-        "status": "status.succeeded",
-        "result_schema": "result.value",
-        "result_status": "status.succeeded",
-        "effects": []
-      }
-    ],
-    "events": [],
-    "steps": 1
-  },
-  "completion": {
-    "checks": [
-      {
-        "id": "verify.selected_receipt",
-        "kind": "VERIFY",
-        "source": "checks/runtime_gates.lcl.txt",
-        "span": {
-          "start": 1582,
-          "end": 1605
-        },
-        "required": true,
-        "selection": "Targetless",
-        "outcome": "TRUE",
-        "skipped": null,
-        "evidence": []
+  "diagnostics": [
+    {
+      "id": "error.validation.failed",
+      "stage": "validation",
+      "source": "checks/runtime_gates.lcl.txt",
+      "span": {
+        "start": 8389,
+        "end": 8403
       },
-      {
-        "id": "verify.snapshot_shape",
-        "kind": "VERIFY",
-        "source": "checks/runtime_gates.lcl.txt",
-        "span": {
-          "start": 2747,
-          "end": 2768
-        },
-        "required": true,
-        "selection": "Targetless",
-        "outcome": "TRUE",
-        "skipped": null,
-        "evidence": []
+      "position": {
+        "line": 126,
+        "column": 9,
+        "offset": 8389
       },
-      {
-        "id": "verify.ordered_predecessors",
-        "kind": "VERIFY",
-        "source": "checks/runtime_gates.lcl.txt",
-        "span": {
-          "start": 3923,
-          "end": 3950
-        },
-        "required": true,
-        "selection": "Targetless",
-        "outcome": "TRUE",
-        "skipped": null,
-        "evidence": []
-      },
-      {
-        "id": "verify.required_checks",
-        "kind": "VERIFY",
-        "source": "checks/runtime_gates.lcl.txt",
-        "span": {
-          "start": 4799,
-          "end": 4821
-        },
-        "required": true,
-        "selection": "Targetless",
-        "outcome": "TRUE",
-        "skipped": null,
-        "evidence": []
-      },
-      {
-        "id": "verify.instruction_delivery",
-        "kind": "VERIFY",
-        "source": "checks/runtime_gates.lcl.txt",
-        "span": {
-          "start": 55477,
-          "end": 55504
-        },
-        "required": true,
-        "selection": "Targetless",
-        "outcome": "TRUE",
-        "skipped": null,
-        "evidence": []
-      },
-      {
-        "id": "verify.receipt_delivery",
-        "kind": "VERIFY",
-        "source": "checks/runtime_gates.lcl.txt",
-        "span": {
-          "start": 55720,
-          "end": 55743
-        },
-        "required": true,
-        "selection": "Targetless",
-        "outcome": "TRUE",
-        "skipped": null,
-        "evidence": []
-      }
-    ],
-    "evidence": [],
-    "verdict": {
-      "success": null,
-      "quantifier": null,
-      "value": null,
-      "members": [],
-      "failure": null,
-      "failure_status": null,
-      "failure_classification": null
+      "meaning": "A required VALIDATE assertion is FALSE.",
+      "default_status": "status.invalid",
+      "specificity_rank": 100,
+      "event": null,
+      "cause": "Cause(\"validate.scope\")",
+      "detail": "required check `validate.scope` asserts a condition that is FALSE",
+      "sequence": null,
+      "primary": true
     },
-    "outputs": [
-      {
-        "id": "output.receipt",
-        "declared_type": "OBJECT",
-        "required": true,
-        "publication": "published",
-        "value": "{actual_code_proof: \"Not produced by this program. An authorized host/owner must verify evidence files, code revision, policy applicability and actual test outcomes before project closure. language_test results must never update production task state.\", content_identity: \"bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1\", decision: \"Declared evidence is accepted only when this run ends with status.succeeded (exit code 0). Any other terminal status is a rejection, even though this object is published.\", result_kind: \"nexees_declared_evidence_evaluation\", run_purpose: \"implementation_review\", snapshot_sha256: \"787b17e68fc5bf06e01e169a8ca3ba242238e9c2e69e400f544d44b7e4405153\", task_id: \"TASK-003\"}",
-        "instances": null
-      }
-    ],
-    "terminal_status": "status.succeeded",
-    "reason": "SuccessSatisfied"
-  },
+    {
+      "id": "error.validation.failed",
+      "stage": "validation",
+      "source": "checks/runtime_gates.lcl.txt",
+      "span": {
+        "start": 8995,
+        "end": 9014
+      },
+      "position": {
+        "line": 136,
+        "column": 9,
+        "offset": 8995
+      },
+      "meaning": "A required VALIDATE assertion is FALSE.",
+      "default_status": "status.invalid",
+      "specificity_rank": 100,
+      "event": null,
+      "cause": "Cause(\"validate.no_blocker\")",
+      "detail": "required check `validate.no_blocker` asserts a condition that is FALSE",
+      "sequence": null,
+      "primary": false
+    }
+  ],
   "project": {
     "entry": "accept_task.lcl.txt",
     "entry_status": "ready",
@@ -2919,7 +2837,7 @@
         "kind": "kind.part.checks",
         "required": true,
         "state": "loaded",
-        "status": "ready"
+        "status": "invalid"
       },
       {
         "id": "part.source_045",
@@ -4028,6 +3946,6 @@
       }
     ],
     "complete": true,
-    "admission": "admitted"
+    "admission": "rejected"
   }
 }

@@ -1,6 +1,6 @@
 {
  "fixture_only": false,
- "expected": "accept",
+ "expected": "refuse",
  "declared_by": "Coding agent (Claude Code), 2026-10-03. Every value is the agent's own declaration of what it did and observed in this task.",
  "pack": {
   "path": "/mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3",
@@ -192,7 +192,9 @@
    "TASK-001",
    "TASK-002"
   ],
-  "blocker_codes": [],
+  "blocker_codes": [
+   "UNRELATED_CHANGE_LCL_SDK_CACHE"
+  ],
   "observed_root": "/mnt/F/Nexees/",
   "observed_repository": "https://github.com/aivars11232/Nexees",
   "branch": "main",
@@ -283,7 +285,7 @@
   "post_cleanup_checks_passed": true,
   "no_unapproved_git_writes": true,
   "no_unapproved_agents": true,
-  "no_unrelated_changes": true,
+  "no_unrelated_changes": false,
   "final_review_complete": true,
   "bundle_integrity_verified": true,
   "renderer_decision": "electron_permitted",
@@ -305,5 +307,30 @@
   "result": "ALL CORROBORATED, 31 of 31 observations",
   "effect": "evidence_verified_by_host was set to true and the UNVERIFIED_RECEIPT blocker cleared on that record; corroboration.txt was added to evidence_files. Every other value is unchanged.",
   "limit": "Agent self-corroboration with deterministic local tools. It is not an independent human or model review, and the owner has not reviewed this task."
+ },
+ "correction": {
+  "on": "2026-10-03T23:12:29+02:00",
+  "by": "Coding agent (Claude Code), at the owner's request made during TASK-004",
+  "request": "Correct the TASK-003 evidence/receipt so it truthfully represents what actually happened, without changing or redoing the TASK-003 engineering work. Use the narrowest valid correction and rerun the affected acceptance checks.",
+  "reason": "During TASK-003, avdmanager (run with the LCL SDK as its root to create the emulator) rewrote /mnt/F/.lcl-android/sdk/.knownPackages, a pre-existing file in the owner's LCL SDK outside the task's scope. No copy of its earlier 16 bytes exists, so preservation cannot be shown. The accepted receipt nevertheless said no_unrelated_changes true with no blocker.",
+  "changed": {
+   "inputs.no_unrelated_changes": [
+    true,
+    false
+   ],
+   "inputs.blocker_codes": [
+    [],
+    [
+     "UNRELATED_CHANGE_LCL_SDK_CACHE"
+    ]
+   ],
+   "expected": [
+    "accept",
+    "refuse"
+   ]
+  },
+  "unchanged": "Every other key and value; the snapshot; every evidence file outside this receipt folder; and the TASK-003 work itself. In this folder, evaluation.record.json, corroboration.txt and RECEIPT_RESULT.md were updated for the correction.",
+  "previous_record": "evaluation.record.json of commit 2eaa199, SHA-256 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0: accepted",
+  "record": "evaluation.record.json now holds the engine record of this corrected receipt"
  }
 }
