@@ -1,0 +1,37 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.dependencies
+    NAME: "Nexees dependency inventory"
+    VERSION: "0.5.0"
+    KIND: kind.project
+    DESCRIPTION: "WORKING DIRECTORY: /mnt/F/Nexees/ | REPOSITORY: https://github.com/aivars11232/Nexees | Created by TASK-003. The machine-readable dependency inventory required by the pack's license and dependency gate; the human-readable matrix is LICENSE_MATRIX.md beside it. Running it returns the inventory record and checks its structure, with no file, process, network or Git side effect."
+
+PART:
+    ID: part.dep_baseline
+    SOURCE: PATH("baseline.lcl.txt")
+    KIND: kind.part.definitions
+
+PART:
+    ID: part.dep_components
+    SOURCE: PATH("components.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.dep_strategy
+    SOURCE: PATH("strategy.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.dep_checks
+    SOURCE: PATH("checks.lcl.txt")
+    KIND: kind.part.checks
+
+PART:
+    ID: part.dep_record
+    SOURCE: PATH("record.lcl.txt")
+    KIND: kind.part.task
+
+EXECUTE:
+    REFERENCE: REF(task.dep_record)

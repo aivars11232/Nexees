@@ -74,9 +74,14 @@ VERIFY:
     DESCRIPTION: "Every recorded decision is an accepted TASK-002 decision; anything another task must decide is an open decision instead."
 
 VERIFY:
-    ID: verify.arch_renderer_left_open
-    ASSERT: REF(data.arch_pd_renderer).decide_by == ["TASK-003"]
-    DESCRIPTION: "DESKTOP-RENDERER-01 stays an open decision for the owner at TASK-003; this architecture does not take it (C20)."
+    ID: verify.arch_renderer_resolved
+    ASSERT: REF(data.arch_pd_renderer).decide_by == ["TASK-003"] AND REF(data.arch_pd_renderer).status == "resolved"
+    DESCRIPTION: "DESKTOP-RENDERER-01 was answered by the owner at TASK-003 (electron_permitted, docs/dependencies). The architecture records the answer and took no part in it, and the core and Android still do not depend on it (C20)."
+
+VERIFY:
+    ID: verify.arch_open_decision_status
+    ASSERT: ALL([REF(data.arch_pd_core_runtime).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_renderer).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_ide_placement).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_lcl_android).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_persistence).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_android_execution).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_android_background).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_transport).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_secrets).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_local_ipc).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_startup).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_archive).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_manual_renderer).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_git_android).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_code_index_android).status IN ["open", "partly_resolved", "resolved"], REF(data.arch_pd_provider_android).status IN ["open", "partly_resolved", "resolved"]])
+    DESCRIPTION: "Every open decision states whether it is open, partly resolved or resolved; the resolution names the task that answered it."
 
 VERIFY:
     ID: verify.arch_remote_scope

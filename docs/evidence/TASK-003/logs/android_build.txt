@@ -1,0 +1,74 @@
+TASK-003 Android feasibility app: build and package facts. Recorded 2026-10-03T22:18:28+02:00.
+Build: docs/evidence/TASK-003/prototypes/android-app/build.sh (cargo build of the shared core for x86_64-linux-android, a diff -r verified copy of the Core packages, then gradle assembleDebug), all outputs in /mnt/F/Nexees-toolchains/android-build.
+Last build log (/mnt/F/Nexees-toolchains/logs/android-build-5.log): BUILD SUCCESSFUL in 27s; compiler warnings: 0
+Gradle 9.8.0, Android Gradle Plugin 9.4.1 with built-in Kotlin, compileSdk/targetSdk 36, minSdk 29, Java 17 bytecode, JDK 27.
+Earlier build attempts, kept for the record: the first failed because Gradle refuses the canonical Core 0.1.0 package's 1901 directory timestamps (8 directories at -2147483648 s); the build now copies the packages (byte-identical by diff -r) instead of changing the canonical folder. AGP 9.4 deprecation warnings for srcDir and tasks.registering were removed.
+
+== APK
+SHA-256 ede4bcbe4aa3ffa8dd0a4195f0aaceb7b4aa8666ddaf87dbfbe25eab488e8b96  app-debug.apk (22305887 bytes)
+package: name='dev.nexees.feasibility' versionCode='1' versionName='0.0.0-task003' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+targetSdkVersion:'36'
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.FOREGROUND_SERVICE'
+uses-permission: name='android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE'
+uses-permission: name='android.permission.CHANGE_NETWORK_STATE'
+uses-permission: name='android.permission.POST_NOTIFICATIONS'
+uses-permission: name='android.permission.RECEIVE_BOOT_COMPLETED'
+launchable-activity: name='dev.nexees.feasibility.MainActivity'  label='' icon=''
+native-code: 'x86_64'
+
+== Manifest components (aapt2 dump xmltree)
+E: queries
+E: intent
+E: action
+A: android:name="android.settings.SETTINGS" (Raw: "android.settings.SETTINGS")
+E: intent
+E: action
+A: android:name="android.intent.action.SHOW_ALARMS" (Raw: "android.intent.action.SHOW_ALARMS")
+E: intent
+E: action
+A: android:name="android.intent.action.VIEW" (Raw: "android.intent.action.VIEW")
+A: android:scheme="geo" (Raw: "geo")
+E: application
+A: android:allowBackup=false
+E: activity
+A: android:name="dev.nexees.feasibility.MainActivity" (Raw: "dev.nexees.feasibility.MainActivity")
+A: android:exported=true
+A: android:launchMode=1
+E: intent-filter
+E: action
+A: android:name="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+A: android:name="android.intent.category.LAUNCHER" (Raw: "android.intent.category.LAUNCHER")
+E: service
+A: android:name="dev.nexees.feasibility.ReceiverService" (Raw: "dev.nexees.feasibility.ReceiverService")
+A: android:exported=false
+A: android:foregroundServiceType=0x00000010
+E: receiver
+A: android:name="dev.nexees.feasibility.BootReceiver" (Raw: "dev.nexees.feasibility.BootReceiver")
+A: android:exported=true
+E: intent-filter
+E: action
+A: android:name="android.intent.action.BOOT_COMPLETED" (Raw: "android.intent.action.BOOT_COMPLETED")
+
+== Native library and assets inside the APK
+lib/x86_64/libnexees_feasibility.so SHA-256 in the APK: 7b861bbf52e00c863c9dbdaea191711d70d1aa81b626aa80e5e25f074170e02a
+Rebuilt from the final sources: 7b861bbf52e00c863c9dbdaea191711d70d1aa81b626aa80e5e25f074170e02a (identical, so the tested APK carries the final core)
+Native ABIs packaged: lib/x86_64/ (arm64-v8a was compiled but not packaged; no arm64 device was used)
+Assets: 176 files of Core 0.1.0, 291 of Core 0.3.0, 24 manual chapters, 9 fixture files
+Signing: debug key in /mnt/F/Nexees-toolchains/android-user-home (never a release key)
+Signer #1 certificate DN: C=US, O=Android, CN=Android Debug
+Signer #1 certificate SHA-256 digest: 757c8ecd2cc21003421e0e05bff593442512a9734b05ec8e7cb9d60c18d50703
+
+== Prototype sources (repository)
+6af45521d25c8ed2  docs/evidence/TASK-003/prototypes/android-app/app/build.gradle.kts
+f08a9fec1430cce7  docs/evidence/TASK-003/prototypes/android-app/app/src/main/AndroidManifest.xml
+e2eb16a7b487b265  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/BootReceiver.kt
+8f22a10265c55d85  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Launcher.kt
+d327c09dd5901d1e  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/MainActivity.kt
+41994b9002595fac  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/NativeCore.kt
+a944ddb1c22890ba  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Notifications.kt
+9e1a4bcc52fff00d  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/ReceiverService.kt
+a2b411df78b44534  docs/evidence/TASK-003/prototypes/android-app/build.gradle.kts
+71ffced133a68bdd  docs/evidence/TASK-003/prototypes/android-app/build.sh
+eca90331d4536d3b  docs/evidence/TASK-003/prototypes/android-app/gradle.properties
+3d44e28dbdcfb3ed  docs/evidence/TASK-003/prototypes/android-app/settings.gradle.kts

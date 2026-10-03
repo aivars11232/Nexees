@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "ro.build.fingerprint": "Android/sdk_phone64_x86_64/emu64x:16/BE2A.250530.026.D1/13818094:userdebug/test-keys",
+    "ro.build.version.release": "16",
+    "ro.build.version.sdk": "36",
+    "ro.build.version.security_patch": "2025-07-05",
+    "ro.product.cpu.abilist": "x86_64",
+    "ro.build.type": "userdebug",
+    "ro.kernel.qemu": "1",
+    "ro.boot.qemu": "1"
+  },
+  "package": [
+    "primaryCpuAbi=x86_64",
+    "versionCode=1 minSdk=29 targetSdk=36",
+    "versionName=0.0.0-task003",
+    "flags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ]",
+    "signatures=PackageSignatures{bee613a version:2, signatures:[35f8a8a9], past signatures:[]}",
+    "pkgFlags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ]",
+    "android.permission.CHANGE_NETWORK_STATE: granted=true",
+    "android.permission.FOREGROUND_SERVICE: granted=true",
+    "android.permission.RECEIVE_BOOT_COMPLETED: granted=true",
+    "android.permission.INTERNET: granted=true",
+    "android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE: granted=true",
+    "android.permission.POST_NOTIFICATIONS: granted=true, flags=[ USER_SET|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]"
+  ]
+}

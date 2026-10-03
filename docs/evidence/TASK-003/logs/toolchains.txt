@@ -1,0 +1,64 @@
+TASK-003 toolchains and isolation. Recorded 2026-10-03T22:17:31+02:00.
+Approved location (owner decision): /mnt/F/Nexees-toolchains, outside the repository. Nothing was installed system-wide and no privilege was used.
+
+== Rust
+rustup-init SHA-256: dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71 (published value in /mnt/F/Nexees-toolchains/downloads/rustup-init.sha256: dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71)
+RUSTUP_HOME=/mnt/F/Nexees-toolchains/rustup CARGO_HOME=/mnt/F/Nexees-toolchains/cargo CARGO_TARGET_DIR=/mnt/F/Nexees-toolchains/target (installed with --no-modify-path, minimal profile)
+rustc 1.99.0 (b940084d7 2026-09-28)
+cargo 1.99.0 (5f94df478 2026-08-27)
+clippy 0.1.99 (b940084d7e 2026-09-28)
+target: aarch64-linux-android
+target: x86_64-linux-android
+target: x86_64-unknown-linux-gnu
+cargo-deny: cargo-deny 0.20.2 (the owner's existing install, executed only; its advisory database lives in the isolated CARGO_HOME)
+
+== Android
+SDK root: /mnt/F/Nexees-toolchains/android-sdk (licences copied from the LCL SDK's accepted licences)
+Pkg.Desc = Android NDK Pkg.Revision = 30.0.16248370 
+platforms/android-36: Pkg.Revision=2
+build-tools/36.0.0: Pkg.Revision=36.0.0
+platform-tools: Pkg.Revision=37.0.1
+NDK clang: Android (16134705, +pgo, +bolt, +lto, +mlgo, based on r574158c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 9f872551d3c681d06fd303b36f16ed5c274735eb)
+Gradle distribution: bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c gradle-9.8.0-bin.zip (published SHA-256 bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c)
+JDK: openjdk version "27" 2026-09-15
+Emulator and system image used read-only from the LCL SDK (/mnt/F/.lcl-android/sdk): Android emulator version 37.1.11.0 (build_id 15917651) (CL:N/A); system-images/android-36/default/x86_64 revision 2
+AVD: /mnt/F/Nexees-toolchains/avd/nexees-task003.avd; adb server port 5039; HOME for Android tools /mnt/F/Nexees-toolchains/home
+
+== Node and Theia
+node v26.10.0, npm 12.2.0 (system), npm cache /mnt/F/Nexees-toolchains/npm-cache, HOME /mnt/F/Nexees-toolchains/home, Electron cache /mnt/F/Nexees-toolchains/electron-cache
+Electron zip SHA-256 checked by the electron package against its checksums.json on download
+
+== Isolation checks
+Markers: /mnt/F/Nexees-toolchains/downloads/.lcl-sdk-marker (2026-10-03 19:47:00.455159362 +0200), /mnt/F/Nexees-toolchains/downloads/.home-marker (2026-10-03 20:36:51.096600261 +0200), /mnt/F/Nexees-toolchains/downloads/.npm-marker (2026-10-03 21:23:57.094931298 +0200)
+Files in the LCL SDK newer than the SDK marker: 1, namely .knownPackages (16 bytes, created 2026-09-25 07:54, rewritten 2026-10-03 20:41:57, now SHA-256 8003738c250fa4f89bab978f377628b5c90bcc7498139cc50107b90c3a250926). avdmanager rewrote this package-list cache when it created the AVD with the LCL SDK as its root. No package was added, removed or changed (every other file predates the marker), but no copy of the earlier 16 bytes was kept, so byte-identity cannot be shown. Deviation from "the LCL SDK stays unchanged"; a later AVD should be written without running SDK tools against the LCL SDK.
+Files in ~/.gradle ~/.android ~/.kotlin ~/.m2 ~/.cargo ~/.rustup newer than the home marker: 0
+Files in ~/.npm ~/.cache/electron ~/.cache/node-gyp ~/.electron-gyp ~/.theia newer than the npm marker: 0
+~/.emulator_console_auth_token unchanged: 2026-09-25 07:54:13.000206072 +0200
+LCL repository: HEAD fa1592b955639c4839f50861f9e89c5110064144, porcelain status lines: 0
+Linger for uid 1000: yes (pre-existing; TASK-003 never changed it)
+Real ~/.config/autostart Nexees entries: 0
+bubblewrap: bubblewrap 0.13.0
+GLib gio: 2.88.3
+systemd: systemd 262 (262-1-arch)
+
+== Disk use of /mnt/F/Nexees-toolchains
+111M	android-build
+2.6G	android-sdk
+250M	android-user-home
+714M	avd
+340M	cargo
+166M	downloads
+237M	electron-cache
+4.0K	env.sh
+166M	gradle
+509M	gradle-home
+1.4M	gradle-project-cache
+86M	home
+8.0K	kotlin-project
+532K	logs
+605M	npm-cache
+901M	rustup
+5.0M	stage
+1.7G	target
+4.0K	theia-env.sh
+1.2G	theia-probe

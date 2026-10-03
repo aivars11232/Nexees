@@ -1,0 +1,56 @@
+TASK-003 required reading, recorded 2026-10-03T22:23:42+02:00.
+Pack: /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3, content identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1, the same pack TASK-002 read.
+"same as TASK-002" means the file's SHA-256 equals the hash in docs/evidence/TASK-002/logs/required_reading.txt.
+
+== Read for TASK-003 ==
+01 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9  policies/task_002_075_continuation.lcl.txt  [same as TASK-002; re-read for TASK-003: CA-01 to CA-12, with CA-05 and CA-07 in full again before the receipt]
+02 d8a8fe4937b0948b036a3ad3f1142ab4a765a3ac67834f4114d7cfecf17c5a12  tasks/task_003.lcl.txt  [not in TASK-002's list; read in full for TASK-003 (objective, scope, checks, RC and RC-T lists)]
+03 666b655bb987f453d3c577e3922c8915b055244c002f9d9ec186ca8358f336cf  reuse/reuse_matrix.lcl.txt  [same as TASK-002; read in full for TASK-003]
+04 59c77c872904bffa668cf08e59e929d2f052e015edf48e7cc6468ba131a5ae0b  reuse/decision_template.lcl.txt  [same as TASK-002; read in full for TASK-003; its fields shape type.dep_component]
+05 9ca0cd99c0c790de2481c1b08eee1c79929ac6ef5dc406dbbf873f4b05cd9134  reuse/license_and_dependency_gate.lcl.txt  [same as TASK-002; read in full for TASK-003; its 13 items shape type.dep_component]
+06 f807af93abd67ac0715c3f93c3fb1af056549d08edb95fb9110d568286a6ae0a  reuse/import_handoff_sources.lcl.txt  [same as TASK-002; read in full for TASK-003]
+07 7dcf4e8a1765d5d6404e0594d10933aa315337b9b43e9f0d5152192dedb23d20  architecture/android_operating_model.lcl.txt  [same as TASK-002; read in full for TASK-003 (A1 to A10)]
+08 7d91532203589febd37811a0e28adb4e81e87a70951da50f80bfd542a5eba145  architecture/remote_device_control.lcl.txt  [same as TASK-002; RC-01 to RC-26 re-read for the twelve RC requirements assigned to TASK-003]
+09 638e4d6d8f433f3996dd349eca02479de4cf06c8b95ef8b5a4d728a327182875  architecture/manuals_and_help.lcl.txt  [same as TASK-002; required by TASK-003; read in full in this session]
+10 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836  accept_task.lcl.txt  [same as TASK-002; its receipt inputs and gates re-read for the TASK-003 receipt]
+11 3529983147c2af3a3d0767f7698f72f094017feed4f06df9eb0b0e1565a477ac  checks/runtime_gates.lcl.txt  [same as TASK-002; the remote-observation gates (tasks 70, 73, 74, 75 only) and the renderer gate re-read]
+12 6ec13fb02cec78d937eb6e29a73a3d95432d4ad2436fd4365916d038a4bc7612  data/invocation_inputs.lcl.txt  [same as TASK-002; the renderer and remote-observation inputs re-read]
+13 627732fba15c67659afcb6ab6e060c154ed54ee328cf13689cd772871447dede  language_tests/positive_task_003_language_test.json  [not in TASK-002's list; read: the expected TASK-003 receipt shape]
+
+== Mandatory read order and the rest of TASK-003 section_required_reading, reused ==
+Read in full earlier in this session for TASK-002; byte-identical now, so reused as the continuation profile allows
+("reuse only verified unchanged reads"). Re-opened where TASK-003 needed a specific clause.
+01 aec37d86e486f2d403797d6a61c0cd199aaf2a3173938706a1310d770a16540a  guidance/usage.lcl.txt  [same as TASK-002; reused]
+02 cd49629e16e714a0dc40bceaca81470330d9868ff1eed9451f06dbb35d7f3f97  policies/code_readability_and_cleanup.lcl.txt  [same as TASK-002; reused]
+03 8b8cc8813dc12b6b7237bb5a952b6dc5e2847631919a4ca4ed6357fd8f5fae85  policies/no_unnecessary_code.lcl.txt  [same as TASK-002; reused]
+04 2307183519d203e547a031a11dde634a5222588febfd6bd706e429d8ca8473a5  policies/master_rules.lcl.txt  [same as TASK-002; reused]
+05 ad16c8b61cd9c84d5dc60884e2900e858594d3f2ccaf5c912b40401a388c180f  policies/global_contracts.lcl.txt  [same as TASK-002; reused]
+06 51677c6af1cb4f045fa2a9672acd3536198bb75d1482f145cf0860eea4950c6e  bindings/bindings.lcl.txt  [same as TASK-002; reused]
+07 afa9b2dcb9b3df808097c8e4fa1b350403b054a08956fa14cfbe99417847bfed  checks/stop_conditions.lcl.txt  [same as TASK-002; reused]
+08 ce1115d1e1db3da02dda7484959a11d5e7e028d6fea1143224759e204fa6510f  bindings/read_order.lcl.txt  [same as TASK-002; reused]
+09 b8382ec17bcaa75317b26ce8238305d8d004f2a9aaf1ed9d6038b56ee4bd8a02  policies/reuse_policy.lcl.txt  [same as TASK-002; reused]
+10 ae0d3943cf66ce8afe131eadd66f35eab9077bb04c60a838a5404636cef053f0  policies/security_baseline.lcl.txt  [same as TASK-002; reused]
+11 2fc8668acfe23069eb4a9fe378729a55e2a65e7ac409c70bfc4cd0263ff98473  policies/acceptance_criteria.lcl.txt  [same as TASK-002; reused]
+12 5b68c8feaa79dc6c43782f6a0a0c4949367ec34af6c4e2f5321fd40e387ab547  policies/usage_and_agents.lcl.txt  [same as TASK-002; reused]
+13 8f8cec1cbe7e615e9f14a608cbfce6fed40b8d7d2b8af9792d898ee55b42ec5e  policies/project_charter.lcl.txt  [same as TASK-002; reused]
+14 544ac6195525b0d6019aae1ee326e6bfeddb4c55907346744201f0fad29fafd5  verification/remote_control_acceptance.lcl.txt  [same as TASK-002; reused]
+15 c8c1e700d0ff0ab17ff26e1a093d0461e601aaab496900035b0c051ebaae1729  verification/security_gate.lcl.txt  [same as TASK-002; reused]
+16 c2e67f60229a5a5d106a82ef4b8caf33ad24b0b0f624af5bcb297b22754c0e65  verification/test_strategy.lcl.txt  [same as TASK-002; reused]
+17 2f65ff575dbfade3fde459efd125c62e5f7d0a47874b2dbf6d5c22b289443956  architecture/system_architecture.lcl.txt  [same as TASK-002; reused]
+18 b049368991443c6ac7ea248c15ec675c9e1a6296bdb5f0fbc62d328c083ce8b1  architecture/android_ui.lcl.txt  [same as TASK-002; reused]
+19 319c19c730973b831dec5ef648b0e9548a0e80eb0a9731286da0b48f52270466  architecture/desktop_ui.lcl.txt  [same as TASK-002; reused]
+20 4a83ecfaac2c63bfbfe03f9893d0d79f8211aaf021800e47823c0e05d9459e3a  architecture/lcl_integration.lcl.txt  [same as TASK-002; reused]
+21 a6cde8759da83eacca4adbd50abd63d42412425fe82743a84ca4591723b80b72  architecture/lcl_import_pipeline.lcl.txt  [same as TASK-002; reused]
+22 669cdee9c343924d2299b88c022a9444fca9ff690b5b1e5686671db78c6f912c  architecture/provider_and_agent_model.lcl.txt  [same as TASK-002; reused]
+23 1aa74791017abf30495994755d8f30e5534fb59bf509e35f2cac1f0a4c6bf244  architecture/auth_and_settings.lcl.txt  [same as TASK-002; reused]
+24 87850325a2d613c93c716dd2dfb931316d10f53528252f84dce101b8eb17f64d  architecture/authority_hierarchy.lcl.txt  [same as TASK-002; reused]
+25 d50fc3a3e4f6487861289b7088d7b0289c7543bda253566584ee0484733917e6  architecture/persistent_state_model.lcl.txt  [same as TASK-002; reused]
+26 5166634ebfdab4e67a9876b68c7b9d085f309f479f4e41756adff7939b4d4f9d  main.lcl.txt  [same as TASK-002; reused]
+27 960dedd6f7c1bc90bed915f75455ba770b38f3b4dc37c519e765bb7e98ae10e3  README_FIRST.txt  [same as TASK-002; reused]
+
+Unverified reuse: none
+
+External sources consulted (public, read-only): crates.io, the npm registry, the GitHub REST API (repository
+metadata), the OSV API (public package@version coordinates only), the RustSec advisory database (git clone into the
+isolated CARGO_HOME), services.gradle.org, Google Maven and Maven Central (Gradle dependencies), the Electron and
+Node.js header downloads used by @electron/get and node-gyp. No project code, path or personal data was sent.

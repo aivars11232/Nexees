@@ -1,0 +1,147 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.dep_baseline
+    NAME: "Dependency inventory baseline and record types"
+    VERSION: "0.5.0"
+    KIND: kind.part.definitions
+    DESCRIPTION: "Identifies the audit that produced this inventory and declares its record type. Every field of type.dep_component answers one item of the pack's license and dependency gate (reuse/license_and_dependency_gate.lcl.txt) or decision template (reuse/decision_template.lcl.txt)."
+
+DEFINE:
+    ID: binding.dep_defined_by
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "TASK-003"
+
+DEFINE:
+    ID: binding.dep_audit_date
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "2026-10-03"
+    DESCRIPTION: "Registry, repository and advisory data were read on this date. Every later dependency change repeats the gate."
+
+DEFINE:
+    ID: binding.dep_evidence
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "docs/evidence/TASK-003/TASK-003_EVIDENCE.md"
+
+DEFINE:
+    ID: binding.dep_renderer_decision
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "electron_permitted"
+    DESCRIPTION: "The owner's answer to DESKTOP-RENDERER-01 on 2026-10-03 (data.dep_owner_decisions)."
+
+DEFINE:
+    ID: binding.dep_classifications
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["DEPENDENCY", "ADAPTER", "REFERENCE", "REJECTED"]
+    DESCRIPTION: "DEPENDENCY: code Nexees ships or links. ADAPTER: an external program, service, protocol or platform API Nexees talks to through its own adapter. REFERENCE: studied for patterns, not shipped. REJECTED: not used, with the reason recorded."
+
+DEFINE:
+    ID: binding.dep_scopes
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["shared core", "desktop", "android", "build", "service", "none"]
+    DESCRIPTION: "Where a component is used: in the shared core on both hosts, only on Desktop, only on Android, only to build, as an external service, or nowhere."
+
+DEFINE:
+    ID: type.dep_component
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One evaluated component or protocol. Facts are as observed on binding.dep_audit_date; verification states what was actually run, and an unproven claim says so."
+    FIELD:
+        NAME: component_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: area
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: classification
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: scope
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: upstream
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: version
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: license
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: obligations
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: redistribution
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: trademark
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: advisories
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: security_impact
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: maintenance
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: transitive
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: platforms
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: need
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: alternatives
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: reason
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: replacement
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: verification
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: evidence
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: owner_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE

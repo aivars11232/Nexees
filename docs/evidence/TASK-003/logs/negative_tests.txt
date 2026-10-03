@@ -1,0 +1,20 @@
+TASK-003 negative tests, 2026-10-03T22:31:28+02:00. Each defect is injected into a fresh scratch
+copy of docs/dependencies, docs/architecture and docs/evidence/TASK-003; a case passes when the defect is caught
+(non-zero exit). The unmutated copy is run first and must pass.
+
+PASS  control: docs/dependencies LCL run succeeds unmutated (exit 0: status.succeeded)
+PASS  control: docs/architecture LCL run succeeds unmutated (exit 0: status.succeeded)
+PASS  control: check_dependencies.py passes unmutated (exit 0)
+PASS  an unknown classification is caught by lcl run (exit 2: status.failed checks.lcl.txt:27:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.dep_classifications_valid` asserted FALSE)
+PASS  the renderer decision left unresolved is caught by lcl run (exit 1: checks.lcl.txt:22:9: error.validation.failed [validation]: required check `validate.dep_renderer_decision` asserts a condition that is FALSE)
+PASS  a component dropped from the list is caught by lcl run (exit 1: checks.lcl.txt:12:9: error.validation.failed [validation]: required check `validate.dep_counts` asserts a condition that is FALSE)
+PASS  Theia demoted to a reference is caught by lcl run (exit 2: status.failed checks.lcl.txt:37:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.dep_foundation` asserted FALSE)
+PASS  the architecture reopens the renderer decision is caught by lcl run (exit 2: status.failed checks.lcl.txt:77:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.arch_renderer_resolved` asserted FALSE)
+PASS  a Rust pin that differs from the record is caught by check_dependencies.py (exit 1: failed: Rust pins, lockfile, registry licenses and records agree)
+PASS  an npm override missing from the strategy is caught by check_dependencies.py (exit 1: failed: the npm overrides equal data.dep_npm_overrides)
+PASS  an advisory without a disposition is caught by check_dependencies.py (exit 1: failed: every remaining advisory has a recorded disposition with its identifiers)
+PASS  the matrix disagreeing with the inventory is caught by check_dependencies.py (exit 1: failed: the matrix repeats each classification and scope)
+PASS  a cited evidence file that does not exist is caught by check_dependencies.py (exit 1: failed: every cited evidence file exists)
+PASS  a TASK-003 decision left open in the architecture is caught by check_dependencies.py (exit 1: failed: every open decision TASK-003 had to answer carries a TASK-003 resolution)
+
+ALL NEGATIVE TESTS PASSED

@@ -39,7 +39,7 @@ DATA:
         review_count: COUNT(REF(data.arch_reviews))
         reviewer: "The coding agent's own review; no independent human or model review."
         precedence: "This architecture refines the specification pack and the TASK-001 charter within TASK-002's authority: it defines the boundaries, ownership and authoritative state that later tasks implement. Where it conflicts with the pack, the pack governs and the conflict is a defect here. A task that moves a boundary, merges or adds a slot, changes an owner or reverses a decision records that change in this architecture, with its reason, in the same change."
-        limits: "This record defines boundaries and passes structural checks only. It selects no technology, dependency or renderer, implements nothing, and is not evidence that any subsystem exists or works."
+        limits: "This record defines boundaries and passes structural checks only. The architecture itself selects no technology, dependency or renderer: those answers come from the tasks named in each open decision's resolution (TASK-003's in docs/dependencies). It implements nothing and is not evidence that any subsystem exists or works."
 
 OUTPUT:
     ID: output.arch_record
@@ -59,7 +59,7 @@ ACTION:
 
 SUCCESS:
     ID: success.arch_record
-    ALL: [REF(verify.arch_subsystem_ids), REF(verify.arch_receiver_uses_no_model), REF(verify.arch_state_owners), REF(verify.arch_authority_never_synced), REF(verify.arch_android_host_standalone), REF(verify.arch_remote_scope), REF(verify.arch_remote_design_only), REF(verify.arch_decisions_accepted_by_task_002), REF(verify.arch_renderer_left_open), REF(verify.arch_review_gates), REF(verify.arch_reviews_hold), REF(verify.arch_record_delivery)]
+    ALL: [REF(verify.arch_subsystem_ids), REF(verify.arch_receiver_uses_no_model), REF(verify.arch_state_owners), REF(verify.arch_authority_never_synced), REF(verify.arch_android_host_standalone), REF(verify.arch_remote_scope), REF(verify.arch_remote_design_only), REF(verify.arch_decisions_accepted_by_task_002), REF(verify.arch_renderer_resolved), REF(verify.arch_open_decision_status), REF(verify.arch_review_gates), REF(verify.arch_reviews_hold), REF(verify.arch_record_delivery)]
 
 TASK:
     ID: task.arch_record

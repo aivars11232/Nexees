@@ -1,0 +1,118 @@
+TASK-003 final verification, run after cleanup against the frozen worktree.
+Date: 2026-10-03T22:36:38+02:00
+HEAD: d1a673f62d1a9a31839290e8041eb3c7eb91ba97 on main; origin: https://github.com/aivars11232/Nexees.git
+Snapshot before: 787b17e68fc5bf06e01e169a8ca3ba242238e9c2e69e400f544d44b7e4405153
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+dependencies.lcl.txt passed every stage through static_checking.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+dependencies.lcl.txt passed every stage through preflight.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+status.succeeded
+  VERIFY verify.dep_classifications_valid = TRUE (required)
+  VERIFY verify.dep_scopes_valid = TRUE (required)
+  VERIFY verify.dep_foundation = TRUE (required)
+  VERIFY verify.dep_shared_core_portable = TRUE (required)
+  VERIFY verify.dep_record_delivery = TRUE (required)
+  SUCCESS success.dep_record ALL = TRUE
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+architecture.lcl.txt passed every stage through static_checking.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+architecture.lcl.txt passed every stage through preflight.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+status.succeeded
+  VERIFY verify.arch_review_gates = TRUE (required)
+  VERIFY verify.arch_reviews_hold = TRUE (required)
+  VERIFY verify.arch_decisions_accepted_by_task_002 = TRUE (required)
+  VERIFY verify.arch_renderer_resolved = TRUE (required)
+  VERIFY verify.arch_open_decision_status = TRUE (required)
+  VERIFY verify.arch_remote_scope = TRUE (required)
+  VERIFY verify.arch_remote_design_only = TRUE (required)
+  VERIFY verify.arch_android_host_standalone = TRUE (required)
+  VERIFY verify.arch_state_owners = TRUE (required)
+  VERIFY verify.arch_authority_never_synced = TRUE (required)
+  VERIFY verify.arch_subsystem_ids = TRUE (required)
+  VERIFY verify.arch_receiver_uses_no_model = TRUE (required)
+  VERIFY verify.arch_record_delivery = TRUE (required)
+  SUCCESS success.arch_record ALL = TRUE
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through static_checking.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through preflight.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+status.succeeded
+  VERIFY verify.charter_phase_total = TRUE (required)
+  VERIFY verify.charter_record_delivery = TRUE (required)
+  SUCCESS success.charter_record ALL = TRUE
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-003/check_dependencies.py
+ALL CHECKS PASSED
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+ALL CHECKS PASSED
+exit code: 0
+
+$ cargo test --offline --locked --release (isolated toolchain)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test tests::a_session_without_a_display_is_unsupported ... ok
+test tests::a_locked_or_background_session_needs_the_user ... ok
+test tests::an_app_off_the_allowlist_is_denied_before_anything_runs ... ok
+test tests::an_active_unlocked_graphical_session_is_ready ... ok
+test tests::the_allowlist_holds_only_the_owner_approved_app ... ok
+test tests::a_launched_app_that_keeps_running_does_not_hold_the_receiver ... ok
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+exit code: 0
+
+$ nexees-probe <scratch> <Core 0.1.0> <Core 0.3.0> <fixtures> <LCL manual> (Desktop)
+x86_64-linux 3.53.2 passed True 35 of 35
+exit code: 0
+
+Probe binary SHA-256: 42e4ce8e3a839522c267ab3a0999cd70f605cbde742776809a395f639ed3926b; Android library in the tested APK equals the final build: True
+The emulator scenarios are not repeated: the AVD was removed in cleanup, and the Android sources and library are unchanged since they ran.
+
+Pack on disk: manifest 8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4; files newer than its manifest: 0
+LCL repository: HEAD fa1592b955639c4839f50861f9e89c5110064144, porcelain lines 0
+LCL SDK files newer than the TASK-003 marker: /mnt/F/.lcl-android/sdk/.knownPackages (see logs/toolchains.txt)
+Home caches newer than the markers: 0 and 0
+Task processes still running (toolchain binaries, emulator, nested KWin): 0
+Linger: yes (pre-existing, unchanged); real autostart Nexees entries: 0
+
+Changes against HEAD:
+ FILE_TREE.txt                       | 125 +++++++++++++++++++++++++++++++++---
+ README.md                           |  36 +++++++----
+ docs/architecture/baseline.lcl.txt  |  10 ++-
+ docs/architecture/checks.lcl.txt    |  11 +++-
+ docs/architecture/decisions.lcl.txt |  36 ++++++++++-
+ docs/architecture/record.lcl.txt    |   4 +-
+ docs/manuals/NEXEES_USER_MANUAL.md  |   2 +-
+ 7 files changed, 196 insertions(+), 28 deletions(-)
+  staged: 0; deleted: 0; untracked files: 75
+  untracked files outside docs/dependencies and docs/evidence/TASK-003: 0 
+  tracked files modified: FILE_TREE.txt README.md docs/architecture/baseline.lcl.txt docs/architecture/checks.lcl.txt docs/architecture/decisions.lcl.txt docs/architecture/record.lcl.txt docs/manuals/NEXEES_USER_MANUAL.md
+Marker lines: 278 tracked files still carry one (278 at HEAD).
+PNG files unchanged against HEAD: True
+Temporary files in the checkout (__pycache__, *.pyc, *.tmp, *.swp, *.log other than the evidence log pc_receiver.log): 0 
+FILE_TREE.txt equals the actual tree plus the six receipt files written after this run: True
+
+Snapshot after: 787b17e68fc5bf06e01e169a8ca3ba242238e9c2e69e400f544d44b7e4405153; unchanged by this verification: True
+Result: every exit 0 and every inspection as expected

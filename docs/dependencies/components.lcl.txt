@@ -1,0 +1,1386 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.dep_components
+    NAME: "Evaluated components and protocols"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "One record per component or protocol TASK-003 evaluated, covering every candidate of reuse/reuse_matrix.lcl.txt and the components the v0.2 and v0.3 feasibility gates needed. Versions are exact. 'Proven' means the TASK-003 prototype ran it; anything else says what remains unproven and which task proves it."
+
+DATA:
+    ID: data.dep_theia
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-THEIA"
+        name: "Eclipse Theia framework (@theia/core, editor, electron, filesystem, monaco, navigator, plugin-ext-vscode, terminal, vsx-registry, workspace, cli)"
+        area: "IDE/workspace base"
+        classification: "DEPENDENCY"
+        scope: "desktop"
+        upstream: "https://github.com/eclipse-theia/theia"
+        version: "1.76.0 (published 2026-09-24), exact pins, with the five npm overrides in data.dep_npm_overrides (Electron, dompurify, uuid, @tootallnate/once, unzipper)"
+        license: "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0"
+        obligations: "Keep the EPL-2.0 notices of every shipped @theia package; a modified Theia file must be offered in source under EPL-2.0 when the app is distributed. The packaged app's notices must cover the whole npm tree: 888 packages in the evaluated configuration, MIT 680, ISC 53, Apache-2.0 50, EPL-2.0 dual 46, BSD 33, BlueOak-1.0.0 9 and other permissive terms, plus four with specific duties: jschardet 2.3.0 (LGPL-2.1-or-later: ship its license and source and keep it a separately replaceable module), @vscode/codicons 0.0.45 (CC-BY-4.0 icons: attribution), font-awesome 4.7.0 (OFL-1.1 font and MIT code) and argparse 2.0.1 (Python-2.0). union 0.5.0 (build tooling only) declares no license but carries an MIT license file."
+        redistribution: "Permitted in source and object form under EPL-2.0, which applies file by file and does not extend to Nexees's own separate modules; GPL-2.0 with the Classpath exception is the secondary option."
+        trademark: "'Eclipse' and 'Theia' are Eclipse Foundation marks. The product is branded Nexees and does not imply endorsement."
+        advisories: "OSV, 2026-10-03, all 900 npm packages: 34 advisories in 10 packages as published. With the overrides 9 remain in 5 packages: decompress 4.2.1 (2 critical, 2 moderate; runtime in @theia/plugin-ext's .vsix unpacker and in @theia/cli; no fixed version), and braces 3.0.3, http-cache-semantics 4.2.0, serialize-javascript 6.0.2 and diff 7.0.0, which only @theia/cli's build and test tooling uses. Dispositions: data.dep_advisory_dispositions."
+        security_impact: "The workbench window, Theia's Node backend (its own process group) and a VS Code extension host all run as the Desktop user without OS confinement. Extensions are untrusted code (SA-08). The backend listens on 127.0.0.1 with a random port. Workspace access must go through the Nexees host's scope (AD-10); keytar 7.9.0 reaches the OS secret store (DEP-KEYTAR)."
+        maintenance: "Monthly releases; repository pushed 2026-10-03; 21706 GitHub stars; Eclipse Foundation governance with several vendors. It lags Electron: 1.76.0 pins Electron 42.8.1 while 44.5.1 is current, and it still ships the archived keytar and a prerelease node-pty. The evaluated lockfile marks 13 packages deprecated, 8 of them outside build and test tooling: xterm 5.3.0 and its three addons, glob 7.2.3 and 10.5.0, inflight 1.0.6 (which leaks memory), nano 10.1.4 and prebuild-install 7.1.3."
+        transitive: "888 npm packages in the evaluated configuration (471 MB of node_modules before the Electron binary), including Electron, React 19.3.0, Inversify 6.2.2, Monaco core, xterm, node-pty, keytar, drivelist, native-keymap, @parcel/watcher, ws and socket.io. Nine packages carry install scripts; npm 12.2.0 runs none until each is approved (eight approved, puppeteer denied). As published, @theia/cli's ffmpeg tool pulled in buffers 0.1.1, which has no license anywhere (its repository is gone); the unzipper override removed it."
+        platforms: "Linux, Windows, macOS desktops (Electron); browser mode exists but is not used."
+        need: "A full IDE workbench (editor, explorer, search, terminal, SCM, debug, problems, outline, extensions) without writing one, extensible enough for Nexees's own views and remote panels."
+        alternatives: "Code-OSS (DEP-CODE-OSS), a native toolkit (excluded only if the owner had chosen native_only), Monaco alone with a hand-built workbench."
+        reason: "The owner permitted Electron (PD-RENDERER). Theia is a framework designed for embedding, with dependency injection, a VS Code extension host and Open VSX built in, under a license that allows a separately branded product. The prototype installed, built and ran it."
+        replacement: "Theia stays inside SS-IDE. Nexees logic lives in the shared core and the host behind IF contracts, so replacing Theia with Code-OSS or another shell rewrites SS-IDE and SS-DESKTOP-CLIENT only."
+        verification: "Proven on Desktop: npm install, approved native rebuilds for Electron's ABI, theia build (0 errors), and a start in a nested private session where the workbench rendered Explorer, Search, Source Control, Debug, Extensions, Testing, Problems, Outline and a live bash terminal, then quit cleanly; repeated with the overrides. Not yet proven: Nexees's own extensions, the extension host with real extensions, packaging."
+        evidence: ["docs/evidence/TASK-003/prototypes/theia/package.json", "docs/evidence/TASK-003/prototypes/theia/package-lock.json", "docs/evidence/TASK-003/logs/theia_build.txt", "docs/evidence/TASK-003/logs/theia_workbench.json", "docs/evidence/TASK-003/logs/osv_before_overrides.json", "docs/evidence/TASK-003/logs/osv_after_overrides.json"]
+        owner_tasks: ["TASK-005", "TASK-009", "TASK-018", "TASK-019", "TASK-020", "TASK-021", "TASK-073"]
+
+DATA:
+    ID: data.dep_electron
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-ELECTRON"
+        name: "Electron"
+        area: "Desktop renderer and runtime"
+        classification: "DEPENDENCY"
+        scope: "desktop"
+        upstream: "https://github.com/electron/electron"
+        version: "42.11.10 (Node 24.19.0, Chromium 148.0.7778.280), forced by an npm override over Theia 1.76.0's exact pin 42.8.1"
+        license: "MIT"
+        obligations: "Ship Electron's LICENSE and LICENSES.chromium.html, which carry the Chromium, Node.js and bundled third-party notices."
+        redistribution: "Permitted; the bundled components' licenses (BSD, MIT, LGPL parts of Chromium such as ffmpeg) must be honoured as listed in LICENSES.chromium.html."
+        trademark: "'Electron' is an OpenJS Foundation mark; the app does not use it as its name."
+        advisories: "42.8.1: four high-severity advisories (GHSA-9qh4-3jw8-366w, GHSA-gr2m-v5gq-v685, GHSA-j84w-jfhq-vhvj, GHSA-qmv3-fv6v-rmhq), fixed in 42.9.2 and 42.10.0. 42.11.10: none in OSV on 2026-10-03."
+        security_impact: "Runs the workbench renderer and Theia's backend with full user rights. Chromium's sandbox needs user namespaces, which this machine allows. Version lag behind upstream is the main exposure."
+        maintenance: "Very active (pushed 2026-10-03). Upstream supports the newest three majors (now 42 to 44), so 42 leaves support when 45 ships, independently of Theia."
+        transitive: "Downloaded on first use by its npm package (@electron/get, checked against the package's checksums.json); 314 MB unpacked."
+        platforms: "Linux x64/arm64, Windows, macOS."
+        need: "The Desktop renderer and runtime Theia's Electron target requires."
+        alternatives: "Theia browser target served to a system browser; a native-only Desktop, which the owner did not require."
+        reason: "Inherited with Theia once the owner permitted Electron. The patched 42.11.10 keeps Theia's supported major."
+        replacement: "Follows Theia: each Theia upgrade re-pins Electron; the override is removed once Theia's own pin is fixed."
+        verification: "Proven: the app built and rendered on 42.8.1 and again on 42.11.10. Chromium's headless Ozone platform hung before any renderer started, so the run used a nested KWin with a virtual framebuffer on a private D-Bus session."
+        evidence: ["docs/evidence/TASK-003/logs/theia_build.txt", "docs/evidence/TASK-003/logs/theia_workbench.json", "docs/evidence/TASK-003/logs/osv_after_overrides.json"]
+        owner_tasks: ["TASK-009", "TASK-073"]
+
+DATA:
+    ID: data.dep_code_oss
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-CODE-OSS"
+        name: "Code - OSS (the open-source VS Code repository)"
+        area: "Alternative IDE base"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "https://github.com/microsoft/vscode"
+        version: "Not pinned: reference only (repository pushed 2026-10-03)"
+        license: "MIT"
+        obligations: "None while only studied."
+        redistribution: "Not redistributed."
+        trademark: "'Visual Studio Code' and its logo are Microsoft marks and are not used; a fork would need its own name (as VSCodium does)."
+        advisories: "Not assessed: not used."
+        security_impact: "None while unused."
+        maintenance: "Very active; Microsoft-led."
+        transitive: "Not installed."
+        platforms: "Desktop platforms."
+        need: "A fallback foundation if Theia fails a requirement."
+        alternatives: "Theia (selected)."
+        reason: "A fork is a whole product to maintain and is designed as an application, not a framework; Theia already reuses its Monaco editor and extension API."
+        replacement: "Not applicable."
+        verification: "Not prototyped; kept as the documented fallback."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-009"]
+
+DATA:
+    ID: data.dep_vscodium
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-VSCODIUM"
+        name: "VSCodium build scripts"
+        area: "Build/reference"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "https://github.com/VSCodium/vscodium"
+        version: "Not pinned: reference only (repository pushed 2026-10-03)"
+        license: "MIT"
+        obligations: "None while only studied."
+        redistribution: "Not redistributed."
+        trademark: "Shows how to ship a Code-OSS build without Microsoft branding or Marketplace access."
+        advisories: "Not assessed: not used."
+        security_impact: "None."
+        maintenance: "Active (33495 stars, 157 open issues)."
+        transitive: "Not installed."
+        platforms: "Desktop platforms."
+        need: "Patterns for open builds and for keeping marketplace access separate."
+        alternatives: "None needed."
+        reason: "Useful precedent for the Open VSX and branding separation; nothing to ship."
+        replacement: "Not applicable."
+        verification: "Read only."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-021"]
+
+DATA:
+    ID: data.dep_monaco
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-MONACO"
+        name: "Monaco editor core, as built by Theia"
+        area: "Editor"
+        classification: "DEPENDENCY"
+        scope: "desktop"
+        upstream: "https://github.com/microsoft/monaco-editor (packaged as @theia/monaco-editor-core)"
+        version: "@theia/monaco-editor-core 1.108.201, inherited from @theia/monaco 1.76.0; the standalone monaco-editor 0.57.0 is not added"
+        license: "MIT"
+        obligations: "Keep the MIT notice and Monaco's third-party notices."
+        redistribution: "Permitted."
+        trademark: "None used."
+        advisories: "Its bundled dompurify 3.2.7 had 18 advisories (14 moderate, 4 low); the override to dompurify 3.4.16 leaves none."
+        security_impact: "Renders untrusted file content in the workbench renderer; HTML sanitising relies on dompurify."
+        maintenance: "Follows VS Code releases through Theia."
+        transitive: "dompurify (overridden to 3.4.16)."
+        platforms: "Desktop (Electron renderer)."
+        need: "The core text editor."
+        alternatives: "CodeMirror (would forgo the VS Code editor and extension API)."
+        reason: "Inherited from the selected foundation, so it is not a separate dependency decision."
+        replacement: "Leaves with Theia."
+        verification: "Proven as part of the rendered workbench; editing itself is TASK-018."
+        evidence: ["docs/evidence/TASK-003/logs/theia_workbench.json", "docs/evidence/TASK-003/logs/osv_after_overrides.json"]
+        owner_tasks: ["TASK-018"]
+
+DATA:
+    ID: data.dep_open_vsx
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-OPEN-VSX"
+        name: "Open VSX registry, through @theia/vsx-registry"
+        area: "Extensions"
+        classification: "ADAPTER"
+        scope: "service"
+        upstream: "https://github.com/eclipse-openvsx/openvsx (service: https://open-vsx.org)"
+        version: "Client @theia/vsx-registry 1.76.0; registry service unversioned (server repository pushed 2026-10-02); CLI ovsx 1.2.0 not needed"
+        license: "EPL-2.0 (server and client); each extension carries its own license"
+        obligations: "Each installed extension's license and the registry's terms of use apply per extension; Nexees records them when an extension is approved."
+        redistribution: "Nexees does not redistribute extensions; users install them from the registry."
+        trademark: "Open VSX is an Eclipse Foundation service."
+        advisories: "The .vsix unpacking path in @theia/plugin-ext uses decompress 4.2.1 with two critical path-traversal advisories and no fixed version; installation from archives stays disabled until TASK-021 removes it (data.dep_advisory_dispositions)."
+        security_impact: "Network access to the registry and execution of third-party extension code in the extension host. SA-08 keeps extensions disabled until TASK-021 decides confinement and an approved extension source."
+        maintenance: "Eclipse Foundation service with an active server repository."
+        transitive: "Uses the Theia plugin system (DEP-THEIA)."
+        platforms: "Desktop."
+        need: "A VS Code-compatible extension source that may be used outside Microsoft products."
+        alternatives: "VS Code Marketplace (DEP-VS-MARKETPLACE, rejected); a private extension mirror later."
+        reason: "The pack requires Open VSX compatibility and forbids assuming Marketplace access."
+        replacement: "Registry URL is configuration; a private mirror can replace it."
+        verification: "The Extensions view rendered; no extension was downloaded or installed in TASK-003."
+        evidence: ["docs/evidence/TASK-003/logs/theia_workbench.json"]
+        owner_tasks: ["TASK-021"]
+
+DATA:
+    ID: data.dep_vs_marketplace
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-VS-MARKETPLACE"
+        name: "Visual Studio Marketplace"
+        area: "Extensions"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://marketplace.visualstudio.com"
+        version: "Not applicable"
+        license: "Marketplace terms of use (proprietary)"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "Microsoft service."
+        advisories: "Not applicable."
+        security_impact: "None."
+        maintenance: "Not applicable."
+        transitive: "None."
+        platforms: "Not applicable."
+        need: "None beyond what Open VSX provides."
+        alternatives: "Open VSX (DEP-OPEN-VSX)."
+        reason: "Its terms limit extension use to Microsoft's own products; the license gate forbids treating Marketplace access as equivalent to Open VSX."
+        replacement: "Not applicable."
+        verification: "Not configured anywhere."
+        evidence: ["docs/evidence/TASK-003/TASK-003_EVIDENCE.md"]
+        owner_tasks: ["TASK-021"]
+
+DATA:
+    ID: data.dep_lsp
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-LSP"
+        name: "Language Server Protocol and the vscode-languageserver-node client libraries"
+        area: "Language features"
+        classification: "ADAPTER"
+        scope: "desktop"
+        upstream: "https://github.com/microsoft/language-server-protocol"
+        version: "Protocol 3.17 in use: vscode-languageserver-protocol 3.17.5 and vscode-jsonrpc 8.2.0 inherited through Theia (registry latest 3.18.4)"
+        license: "Specification CC-BY-4.0; libraries MIT"
+        obligations: "MIT notices for the libraries; each language server keeps its own license."
+        redistribution: "Libraries permitted; language servers are installed per language under their own licenses."
+        trademark: "None used."
+        advisories: "None in OSV for the inherited versions."
+        security_impact: "Language servers are separate processes reading workspace files; they gain no agent authority (AD-10) and run under TASK-024's process mediation."
+        maintenance: "Active; Microsoft-led open specification."
+        transitive: "Part of the Theia tree."
+        platforms: "Desktop; on Android language servers are capability-gated (A4)."
+        need: "Completion, definitions and diagnostics without per-language code."
+        alternatives: "Tree-sitter-only analysis (less semantic)."
+        reason: "Protocol over fork: the standard interface every language server speaks."
+        replacement: "A protocol: servers are swappable per language."
+        verification: "Inherited and bundled; no language server was started in TASK-003."
+        evidence: ["docs/evidence/TASK-003/logs/osv_after_overrides.json"]
+        owner_tasks: ["TASK-020"]
+
+DATA:
+    ID: data.dep_tree_sitter
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-TREE-SITTER"
+        name: "Tree-sitter (Rust crate tree-sitter; web-tree-sitter for the renderer if needed)"
+        area: "Parsing"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "https://github.com/tree-sitter/tree-sitter"
+        version: "tree-sitter 0.27.0 and web-tree-sitter 0.27.0 (both published 2026-08-30); not yet in a lockfile"
+        license: "MIT (each grammar has its own license, mostly MIT)"
+        obligations: "MIT notices for the runtime and each shipped grammar."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in OSV for 0.27.0 on 2026-10-03."
+        security_impact: "Parses untrusted source text in-process; a C runtime, so parser bugs are memory-safety bugs. Bounded input and time limits belong to TASK-039."
+        maintenance: "Active (pushed 2026-10-03, 114 open issues)."
+        transitive: "A C library compiled with cc; per-language grammars."
+        platforms: "Desktop and Android (C runtime, NDK-buildable); Android use not yet proven."
+        need: "Code map, symbols and context selection (SS-CONTEXT)."
+        alternatives: "LSP document symbols (Desktop only), regular expressions (too weak)."
+        reason: "The reuse matrix's selected parser; one component for both hosts where it is portable."
+        replacement: "Behind the code-map interface; grammars are swappable."
+        verification: "Evaluated from registry and repository data only. TASK-039 proves it on both hosts or records the Android gap (PD-CODE-INDEX-ANDROID)."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-039"]
+
+DATA:
+    ID: data.dep_xterm
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-XTERM"
+        name: "xterm.js terminal emulator, as inherited by @theia/terminal"
+        area: "Terminal"
+        classification: "DEPENDENCY"
+        scope: "desktop"
+        upstream: "https://github.com/xtermjs/xterm.js"
+        version: "xterm 5.3.0 with xterm-addon-fit 0.8.0, -search 0.13.0 and -webgl 0.16.0, inherited from Theia 1.76.0; upstream now publishes @xterm/xterm 6.0.0"
+        license: "MIT"
+        obligations: "MIT notice."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in OSV for the inherited versions."
+        security_impact: "Renders terminal output in the workbench; escape-sequence handling is upstream's."
+        maintenance: "Upstream active (pushed 2026-09-13), but the unscoped 'xterm' package name Theia still uses is deprecated in favour of @xterm/xterm, so security fixes land on the new name only."
+        transitive: "None of note."
+        platforms: "Desktop renderer."
+        need: "The integrated terminal UI."
+        alternatives: "@xterm/xterm 6.0.0 directly (waits for Theia)."
+        reason: "Inherited with Theia; the deprecated name is a maintenance risk tracked by TASK-073."
+        replacement: "Leaves with Theia."
+        verification: "Proven: the rendered workbench opened a working bash terminal tab."
+        evidence: ["docs/evidence/TASK-003/logs/theia_workbench.json"]
+        owner_tasks: ["TASK-019", "TASK-073"]
+
+DATA:
+    ID: data.dep_node_pty
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-NODE-PTY"
+        name: "node-pty, as inherited by @theia/terminal"
+        area: "Terminal"
+        classification: "DEPENDENCY"
+        scope: "desktop"
+        upstream: "https://github.com/microsoft/node-pty"
+        version: "1.2.0-beta.12 (a prerelease), inherited from Theia 1.76.0"
+        license: "MIT"
+        obligations: "MIT notice."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in OSV for 1.2.0-beta.12."
+        security_impact: "Spawns shells as the Desktop user. Terminals are for the human; agent shell use goes through TASK-024's mediation, never this path."
+        maintenance: "Active (pushed 2026-10-03). Theia pins a prerelease."
+        transitive: "Native module; installed with N-API prebuilds or node-gyp."
+        platforms: "Linux, macOS, Windows."
+        need: "Pseudo-terminals for the integrated terminal."
+        alternatives: "None practical in Node."
+        reason: "Inherited with Theia."
+        replacement: "Leaves with Theia."
+        verification: "Proven: its install script ran only after approval, and the terminal tab ran bash."
+        evidence: ["docs/evidence/TASK-003/logs/theia_build.txt", "docs/evidence/TASK-003/logs/theia_workbench.json"]
+        owner_tasks: ["TASK-019", "TASK-024"]
+
+DATA:
+    ID: data.dep_git_cli
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-GIT-CLI"
+        name: "Git command-line program"
+        area: "Git"
+        classification: "ADAPTER"
+        scope: "desktop"
+        upstream: "https://github.com/git/git"
+        version: "The user's installed git, invoked as a separate program; the minimum version is fixed by TASK-020"
+        license: "GPL-2.0-only"
+        obligations: "None while Nexees only runs it as a separate program and does not ship it."
+        redistribution: "Not bundled."
+        trademark: "'Git' is a Software Freedom Conservancy mark; used descriptively only."
+        advisories: "Depends on the user's installed version; TASK-020 records the minimum."
+        security_impact: "Runs repository hooks and helpers; Nexees invokes it through TASK-024's mediation with explicit arguments, never a shell string."
+        maintenance: "Very active."
+        transitive: "None for Nexees."
+        platforms: "Desktop. Not assumed on Android (PD-GIT-ANDROID)."
+        need: "Transparent Git operations the user can reproduce."
+        alternatives: "libgit2 (DEP-LIBGIT2), gitoxide (DEP-GIX)."
+        reason: "The reuse matrix prefers the CLI for transparency and full compatibility."
+        replacement: "A protocol-like boundary: the adapter runs a program."
+        verification: "Not exercised in TASK-003; TASK-020 and TASK-033."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-020", "TASK-033"]
+
+DATA:
+    ID: data.dep_libgit2
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-LIBGIT2"
+        name: "libgit2 through the git2 crate"
+        area: "Git library"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://github.com/rust-lang/git2-rs (libgit2: https://github.com/libgit2/libgit2)"
+        version: "git2 0.21.0 evaluated; not added"
+        license: "git2: MIT OR Apache-2.0; libgit2: GPL-2.0 with a linking exception"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed further: not used."
+        security_impact: "Would bring a C library with its own transport and credential handling into the core."
+        maintenance: "Active (libgit2 pushed 2026-08-15, git2 0.21.0 published 2026-05-18)."
+        transitive: "C library plus optional OpenSSL and libssh2."
+        platforms: "Would need per-target C builds for Android."
+        need: "Only if the Git CLI proves insufficient (reuse matrix)."
+        alternatives: "Git CLI on Desktop (selected); gix as the Android candidate."
+        reason: "Not needed on Desktop, and a pure-Rust candidate is simpler for Android."
+        replacement: "Not applicable."
+        verification: "None."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-033"]
+
+DATA:
+    ID: data.dep_gix
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-GIX"
+        name: "gitoxide (gix crate)"
+        area: "Git library on Android"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "https://github.com/GitoxideLabs/gitoxide"
+        version: "gix 0.88.0 (published 2026-09-25) evaluated; not added"
+        license: "MIT OR Apache-2.0"
+        obligations: "None until adopted."
+        redistribution: "Not used yet."
+        trademark: "None."
+        advisories: "None in OSV for 0.88.0 on 2026-10-03."
+        security_impact: "Pure Rust; would run inside the app sandbox."
+        maintenance: "Very active (pushed 2026-10-03, 19 open issues); pre-1.0 API churn."
+        transitive: "Large crate graph; not measured."
+        platforms: "Pure Rust, so Android is plausible; unproven."
+        need: "Git for phone-hosted agents, if any (PD-GIT-ANDROID)."
+        alternatives: "A visible capability gap on the phone (the default until proven)."
+        reason: "The most promising Android candidate, but nothing proves it yet, so it is not approved."
+        replacement: "Not applicable."
+        verification: "None; TASK-033 and TASK-066 prove it on the phone or keep Git as a reported gap."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-033", "TASK-066"]
+
+DATA:
+    ID: data.dep_acp
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-ACP"
+        name: "Agent Client Protocol"
+        area: "Agent interoperability"
+        classification: "ADAPTER"
+        scope: "desktop"
+        upstream: "https://github.com/agentclientprotocol/agent-client-protocol"
+        version: "TypeScript SDK @agentclientprotocol/sdk 1.7.0 (published 2026-10-02) evaluated; not added"
+        license: "Apache-2.0"
+        obligations: "Apache-2.0 NOTICE handling when the SDK is shipped."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in OSV for 1.7.0."
+        security_impact: "External agents are untrusted processes; their tool calls go through the Nexees permission engine, never around it."
+        maintenance: "Active (pushed 2026-10-03)."
+        transitive: "No runtime dependencies in the SDK."
+        platforms: "Desktop (agents are processes)."
+        need: "Running external coding agents under Nexees control."
+        alternatives: "Per-agent integrations."
+        reason: "Protocol over integration-per-agent."
+        replacement: "A protocol adapter."
+        verification: "Not prototyped; the owning agent-integration work proves it."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-031", "TASK-034"]
+
+DATA:
+    ID: data.dep_openhands
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-OPENHANDS"
+        name: "OpenHands"
+        area: "Agent runtime ideas"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "https://github.com/OpenHands/OpenHands"
+        version: "Not pinned: reference only (pushed 2026-10-03)"
+        license: "MIT"
+        obligations: "Attribution if any code is ever copied; none is."
+        redistribution: "Not redistributed."
+        trademark: "None used."
+        advisories: "Not applicable."
+        security_impact: "None."
+        maintenance: "Very active."
+        transitive: "Not installed."
+        platforms: "Python; not portable to the phone-local host."
+        need: "Tool, state and runtime patterns."
+        alternatives: "Cline, Aider."
+        reason: "A Python runtime cannot be the phone-hosted loop (A4); the patterns are still useful."
+        replacement: "Not applicable."
+        verification: "Read only."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-034"]
+
+DATA:
+    ID: data.dep_cline
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-CLINE"
+        name: "Cline"
+        area: "Provider architecture"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "https://github.com/cline/cline"
+        version: "Not pinned: reference only (pushed 2026-10-03)"
+        license: "Apache-2.0"
+        obligations: "Keep notices for anything copied; nothing is."
+        redistribution: "Not redistributed."
+        trademark: "None used."
+        advisories: "Not applicable."
+        security_impact: "None."
+        maintenance: "Very active."
+        transitive: "Not installed."
+        platforms: "VS Code extension (TypeScript)."
+        need: "Provider abstraction patterns."
+        alternatives: "OpenHands, LiteLLM."
+        reason: "Patterns only; the provider layer lives in the shared core."
+        replacement: "Not applicable."
+        verification: "Read only."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-041"]
+
+DATA:
+    ID: data.dep_aider
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-AIDER"
+        name: "Aider"
+        area: "Context/repo map"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "https://github.com/Aider-AI/aider"
+        version: "Not pinned: reference only"
+        license: "Apache-2.0"
+        obligations: "Keep notices for anything copied; nothing is."
+        redistribution: "Not redistributed."
+        trademark: "None used."
+        advisories: "Not applicable."
+        security_impact: "None."
+        maintenance: "Slowing: last push 2026-05-22 with 1909 open issues."
+        transitive: "Not installed."
+        platforms: "Python."
+        need: "Repository mapping and context-ranking ideas."
+        alternatives: "Own code map on Tree-sitter (DEP-TREE-SITTER)."
+        reason: "Ideas only; its activity has slowed, so nothing should depend on it."
+        replacement: "Not applicable."
+        verification: "Read only."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-039", "TASK-040"]
+
+DATA:
+    ID: data.dep_litellm
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-LITELLM"
+        name: "LiteLLM"
+        area: "Provider gateway"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://github.com/BerriAI/litellm"
+        version: "Not pinned"
+        license: "MIT for the core, with a separately licensed enterprise directory (GitHub reports NOASSERTION)"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed further: not used."
+        security_impact: "Would add a proxy that holds every provider credential."
+        maintenance: "Very active (5580 open issues)."
+        transitive: "A Python service."
+        platforms: "Python server; cannot run inside the phone-local host."
+        need: "Only if it reduced complexity materially (reuse matrix)."
+        alternatives: "Provider adapters in the shared core (TASK-041 to TASK-043)."
+        reason: "It cannot serve the standalone phone, would duplicate the provider registry, and its licensing is mixed."
+        replacement: "Not applicable."
+        verification: "None."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-041"]
+
+DATA:
+    ID: data.dep_supabase_auth
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-SUPABASE-AUTH"
+        name: "Supabase Auth (GoTrue server) with the supabase-js / auth-js clients"
+        area: "Auth"
+        classification: "ADAPTER"
+        scope: "service"
+        upstream: "https://github.com/supabase/auth"
+        version: "Clients @supabase/supabase-js and @supabase/auth-js 2.117.2 (published 2026-09-25) evaluated; server version depends on hosting"
+        license: "MIT (server and clients)"
+        obligations: "MIT notices for shipped clients."
+        redistribution: "Permitted."
+        trademark: "'Supabase' is the vendor's mark; not used in branding."
+        advisories: "None in OSV for the evaluated client versions."
+        security_impact: "Authenticates accounts only (SA-06): compromise must yield no device trust, grant or provider credential."
+        maintenance: "Active (server pushed 2026-10-03)."
+        transitive: "A hosted or self-hosted service."
+        platforms: "HTTP API from Desktop and Android."
+        need: "Email and GitHub sign-in, MFA primitives (TASK-027 to TASK-029)."
+        alternatives: "Other hosted identity providers; self-hosting GoTrue."
+        reason: "Open source with email, OAuth and MFA, usable from both clients. Selection is conditional: the owner must choose hosted or self-hosted and accept any cost before TASK-027/028 (no paid service without approval)."
+        replacement: "Behind the authentication service abstraction (TASK-027)."
+        verification: "Not prototyped: needs the owner's hosting decision."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-027", "TASK-028", "TASK-029"]
+
+DATA:
+    ID: data.dep_keyring
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-KEYRING"
+        name: "keyring crate over the Desktop OS credential store (Secret Service on Linux)"
+        area: "Secrets"
+        classification: "ADAPTER"
+        scope: "desktop"
+        upstream: "https://github.com/open-source-cooperative/keyring-rs"
+        version: "keyring 4.2.0 (published 2026-08-29) evaluated; secret-service 5.2.0 for Linux; not yet in a lockfile"
+        license: "MIT OR Apache-2.0"
+        obligations: "Notices for shipped crates."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in OSV for 4.2.0."
+        security_impact: "Keeps secrets in the OS store, never in plain files (STOP-04)."
+        maintenance: "Active (pushed 2026-09-15, 1 open issue); small maintainer group."
+        transitive: "Platform back-ends per OS."
+        platforms: "Linux, Windows, macOS. Android uses DEP-ANDROID-KEYSTORE."
+        need: "OS-backed credential storage for the Desktop host (PD-SECRETS)."
+        alternatives: "Electron safeStorage (renderer side only), keytar (DEP-KEYTAR, archived)."
+        reason: "Secrets belong to the shared core's credential port, not the renderer; this is the maintained Rust binding for every Desktop OS store."
+        replacement: "Behind the platform credential-store adapter."
+        verification: "Not prototyped; TASK-025 runs the credential tests on both platforms."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-025"]
+
+DATA:
+    ID: data.dep_android_keystore
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-ANDROID-KEYSTORE"
+        name: "Android Keystore system"
+        area: "Secrets"
+        classification: "ADAPTER"
+        scope: "android"
+        upstream: "https://developer.android.com/privacy-and-security/keystore"
+        version: "Platform API of the supported Android versions (minSdk 29 in the prototype)"
+        license: "Platform API (Android SDK terms for the build tools)"
+        obligations: "None beyond the SDK terms."
+        redistribution: "Part of the OS."
+        trademark: "'Android' is a Google mark; used descriptively."
+        advisories: "Platform-managed."
+        security_impact: "Hardware-backed keys where available; key material never leaves the device."
+        maintenance: "Platform."
+        transitive: "None."
+        platforms: "Android."
+        need: "Protecting the device identity key and provider secrets on the phone."
+        alternatives: "None acceptable: plain files are refused (STOP-04)."
+        reason: "The OS-backed store on Android."
+        replacement: "Platform API."
+        verification: "Not used by the prototype, whose TLS key sits in the app's private files folder (0600); TASK-025 and TASK-060 move it into the Keystore."
+        evidence: ["docs/evidence/TASK-003/TASK-003_EVIDENCE.md"]
+        owner_tasks: ["TASK-025", "TASK-060"]
+
+DATA:
+    ID: data.dep_keytar
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-KEYTAR"
+        name: "keytar, as inherited by @theia/core's key-store server"
+        area: "Secrets"
+        classification: "REJECTED"
+        scope: "desktop"
+        upstream: "https://github.com/atom/node-keytar"
+        version: "7.9.0, inherited from Theia 1.76.0"
+        license: "MIT"
+        obligations: "MIT notice while Theia ships it."
+        redistribution: "Shipped inside Theia's tree."
+        trademark: "None."
+        advisories: "None in OSV for 7.9.0, but the repository has been archived since 2022-12-12, so no fix will come."
+        security_impact: "Theia's backend can read and write the OS secret store through it."
+        maintenance: "Archived upstream."
+        transitive: "Native module rebuilt for Electron's ABI."
+        platforms: "Desktop."
+        need: "None for Nexees-owned secrets."
+        alternatives: "DEP-KEYRING for Nexees secrets."
+        reason: "Rejected for any Nexees-owned secret because it is unmaintained. It remains inside Theia's tree as an inherited component until Theia drops it; TASK-025 decides whether Theia's key store must be disabled or redirected."
+        replacement: "Not applicable for Nexees code."
+        verification: "Observed in the Theia tree (npm ls) and in @theia/core/lib/node/key-store-server.js."
+        evidence: ["docs/evidence/TASK-003/logs/theia_build.txt"]
+        owner_tasks: ["TASK-025", "TASK-073"]
+
+DATA:
+    ID: data.dep_bubblewrap
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-BUBBLEWRAP"
+        name: "bubblewrap (bwrap)"
+        area: "Linux sandbox"
+        classification: "ADAPTER"
+        scope: "desktop"
+        upstream: "https://github.com/containers/bubblewrap"
+        version: "0.13.0 installed on the owner's Desktop; invoked as a separate program"
+        license: "LGPL-2.0-or-later"
+        obligations: "None while only invoked as an installed program."
+        redistribution: "Not bundled."
+        trademark: "None."
+        advisories: "Depends on the installed version; TASK-024 records the minimum."
+        security_impact: "Process and file-system confinement for agent tools and possibly extensions, using unprivileged user namespaces (available on this machine)."
+        maintenance: "Active (pushed 2026-09-25)."
+        transitive: "None for Nexees."
+        platforms: "Linux only; Android relies on the app sandbox."
+        need: "Confining agent shell and tool processes (TASK-024) and extension hosts (SA-08)."
+        alternatives: "Landlock, firejail, containers."
+        reason: "Unprivileged, small and already what Flatpak uses on this desktop."
+        replacement: "Behind TASK-024's process mediation."
+        verification: "Present on the Desktop; not exercised in TASK-003."
+        evidence: ["docs/evidence/TASK-003/logs/toolchains.txt"]
+        owner_tasks: ["TASK-024", "TASK-021"]
+
+DATA:
+    ID: data.dep_lcl_engine
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-LCL-ENGINE"
+        name: "LCL engine crates (lcl-protocol, lcl-project and their path dependencies) and the canonical Core 0.1.0 and 0.3.0 packages"
+        area: "LCL"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "The owner's LCL repository at /mnt/F/LCL (impl/crates, canonical/)"
+        version: "Commit fa1592b955639c4839f50861f9e89c5110064144 (lcl 0.9.1 CLI); Core 0.1.0 and Core 0.3.0 packages verified by the engine's built-in trust anchors"
+        license: "No license file; crates are publish = false. The owner holds the rights."
+        obligations: "The owner must record the terms under which Nexees ships the engine and the Core packages before any release."
+        redistribution: "Undecided: blocks a public release until the owner records terms (TASK-073, TASK-075)."
+        trademark: "'LCL' is the owner's name."
+        advisories: "Zero external crates in the engine; no advisory database applies."
+        security_impact: "Runs with Granted::none() (no file, process or network capability); validation has no effects (steps 1 to 9)."
+        maintenance: "The owner's project; Nexees pins one commit and changes nothing in it."
+        transitive: "Only the LCL crates themselves."
+        platforms: "Proven on x86_64 Linux and Android 16 x86_64; compiled for aarch64-linux-android."
+        need: "LCL parsing, validation and runs on both hosts without a second implementation (AD-09, A4)."
+        alternatives: "A second parser (forbidden), PC-only validation (not offline, rejected by A2)."
+        reason: "The existing engine is pure Rust with no external crates and gates its Linux-only process code behind cfg, so it links into the shared core unchanged."
+        replacement: "Pinned by commit; upgrades re-run the shared fixtures on both hosts."
+        verification: "Proven: identical verdicts on Desktop and Android for the valid task, the invalid task (error.reference.unresolved at 28:17) and a four-file Core 0.3.0 project, as an executable and inside the app in airplane mode; the Core packages shipped as APK assets and passed the engine's trust-anchor check on the phone."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/probe_android_shell.json", "docs/evidence/TASK-003/logs/probe_android_app.json"]
+        owner_tasks: ["TASK-046", "TASK-049", "TASK-063", "TASK-073", "TASK-075"]
+
+DATA:
+    ID: data.dep_lcl_manual
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-LCL-MANUAL"
+        name: "LCL user manual (Markdown chapters)"
+        area: "Help content"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "The owner's LCL repository at /mnt/F/LCL/users_manual"
+        version: "The 24 top-level Markdown files at commit fa1592b"
+        license: "No license file; owned by the owner, like the engine."
+        obligations: "Keep attribution; the owner records shipping terms with the engine's."
+        redistribution: "Undecided, as for DEP-LCL-ENGINE."
+        trademark: "None beyond LCL."
+        advisories: "Content; checked for active content instead: rendering all 24 files produced no script, handler or remote tag."
+        security_impact: "Rendered passively offline."
+        maintenance: "The owner's."
+        transitive: "None."
+        platforms: "Both clients."
+        need: "The LCL-in-Nexees manual (TASK-072) reuses accurate existing content."
+        alternatives: "Rewriting the manual."
+        reason: "Reuse the existing manual where accurate (manuals_and_help, import_handoff_sources)."
+        replacement: "Content can be replaced chapter by chapter."
+        verification: "Proven: all 24 files rendered on Desktop and Android (304994 bytes of Markdown to 377638 bytes of HTML, the same on both), and a chapter displayed in the app with no network."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/probe_android_app.json", "docs/evidence/TASK-003/logs/scenarios.jsonl"]
+        owner_tasks: ["TASK-072"]
+
+DATA:
+    ID: data.dep_lcl_android_app
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-LCL-ANDROID-APP"
+        name: "LCL for Android app (RO-02)"
+        area: "Android client patterns"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "The owner's LCL repository at /mnt/F/LCL/android"
+        version: "Commit fa1592b (AGP 9.4.1, Gradle 9.8.0, Compose)"
+        license: "No license file; the owner's."
+        obligations: "None while only studied."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed: not used."
+        security_impact: "None."
+        maintenance: "The owner's."
+        transitive: "Not used."
+        platforms: "Android."
+        need: "UI, Keystore and pairing patterns."
+        alternatives: "None needed."
+        reason: "It is a PC-authority remote client in which the phone never runs LCL, so it cannot provide standalone Android LCL (A4). Its build setup confirmed the AGP and Gradle versions the prototype used."
+        replacement: "Not applicable."
+        verification: "Read only."
+        evidence: ["docs/evidence/TASK-003/logs/android_build.txt"]
+        owner_tasks: ["TASK-057", "TASK-060"]
+
+DATA:
+    ID: data.dep_lcl_remote
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-LCL-REMOTE"
+        name: "lcl-remote (RO-03)"
+        area: "Remote receiver patterns"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "The owner's LCL repository at /mnt/F/LCL/remote"
+        version: "Commit fa1592b"
+        license: "No license file; the owner's."
+        obligations: "None while only studied."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed: not used."
+        security_impact: "As built it listens on all interfaces and expects the user to open the firewall, which RC-19 does not allow."
+        maintenance: "The owner's."
+        transitive: "Not used."
+        platforms: "Linux (systemd user service)."
+        need: "Pinned TLS 1.3 pairing and receiver lifetime patterns."
+        alternatives: "The shared transport proven by TASK-003 (DEP-RUSTLS)."
+        reason: "Its pinned-certificate pairing matches the selected design, but the listening and firewall model does not, so it is a reference."
+        replacement: "Not applicable."
+        verification: "Read only."
+        evidence: ["docs/evidence/TASK-003/TASK-003_EVIDENCE.md"]
+        owner_tasks: ["TASK-060", "TASK-070"]
+
+DATA:
+    ID: data.dep_rust
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-RUST"
+        name: "Rust toolchain (rustc, cargo, clippy, std) with Android targets"
+        area: "Shared core language and runtime"
+        classification: "DEPENDENCY"
+        scope: "build"
+        upstream: "https://www.rust-lang.org (installed with rustup-init, SHA-256 verified)"
+        version: "rustc 1.99.0 (b940084d7 2026-09-28), cargo 1.99.0; targets x86_64-unknown-linux-gnu, x86_64-linux-android, aarch64-linux-android"
+        license: "MIT OR Apache-2.0"
+        obligations: "The standard library is linked into every binary: keep its notices."
+        redistribution: "Permitted."
+        trademark: "'Rust' is a Rust Foundation mark; used descriptively."
+        advisories: "None for the toolchain; dependencies are checked by cargo-deny and OSV."
+        security_impact: "Memory safety for the shared core; unsafe code limited to JNI and the libraries."
+        maintenance: "Six-week stable releases."
+        transitive: "Not applicable."
+        platforms: "Every target Nexees needs."
+        need: "One core for both hosts (PD-CORE-RUNTIME)."
+        alternatives: "Kotlin Multiplatform (no LCL engine reuse), C++ (no memory safety), Go (weak Android library story)."
+        reason: "The LCL engine is already Rust, so the shared core links it directly, and Rust builds for Desktop and every Android ABI from one source tree."
+        replacement: "Foundational: replacing it means rewriting the core."
+        verification: "Proven: the same crate built and passed its probe on x86_64 Linux and Android 16 x86_64, and compiled for arm64 Android, with an isolated rustup."
+        evidence: ["docs/evidence/TASK-003/logs/toolchains.txt", "docs/evidence/TASK-003/logs/rust_checks.txt"]
+        owner_tasks: ["TASK-005", "TASK-046"]
+
+DATA:
+    ID: data.dep_sqlite
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-SQLITE"
+        name: "SQLite through rusqlite (bundled build)"
+        area: "Local persistence"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "https://github.com/rusqlite/rusqlite (SQLite: https://sqlite.org)"
+        version: "rusqlite 0.40.2, libsqlite3-sys 0.38.2, SQLite 3.53.2 (bundled, so both hosts run the same SQLite)"
+        license: "rusqlite and libsqlite3-sys: MIT; SQLite: public domain"
+        obligations: "MIT notices; SQLite needs none."
+        redistribution: "Permitted."
+        trademark: "'SQLite' is a registered mark of Hipp, Wyrick & Company; used descriptively."
+        advisories: "None in cargo-deny (RustSec) or OSV for these versions."
+        security_impact: "Opens only the app's own database; parameters always bound, never interpolated."
+        maintenance: "rusqlite 0.40.2 published 2026-08-08, repository pushed 2026-09-25; SQLite very active."
+        transitive: "bitflags, fallible-iterator, fallible-streaming-iterator, hashlink, smallvec, libsqlite3-sys (SQLite's C sources compiled with cc)."
+        platforms: "Proven on Linux x86_64 and Android x86_64; compiled for arm64."
+        need: "Durable, transactional, migratable phone-local state with no server (PD-PERSISTENCE)."
+        alternatives: "Android Room (Android only), sled or redb (no SQL migrations), a second database server (forbidden)."
+        reason: "Crash-safe in WAL mode, portable, migratable and already the standard on Android."
+        replacement: "Behind the state store interface (TASK-008)."
+        verification: "Proven on both hosts: a v1 database migrated to v2 kept its data; WAL with FULL sync; an uncommitted transaction rolled back; a process aborted mid-transaction left integrity_check 'ok' and the last committed revision; revisions survived app kill, force-stop and reboot on the phone."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/probe_android_shell.json", "docs/evidence/TASK-003/logs/scenarios.jsonl"]
+        owner_tasks: ["TASK-008", "TASK-036"]
+
+DATA:
+    ID: data.dep_zip
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-ZIP"
+        name: "zip crate (zip-rs/zip2) with flate2 over zlib-rs"
+        area: "Archive intake"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "https://github.com/zip-rs/zip2"
+        version: "zip 8.6.0 with only the deflate-flate2-zlib-rs feature (no bzip2, lzma, zstd, AES or zopfli)"
+        license: "MIT (flate2: MIT OR Apache-2.0; zlib-rs: Zlib)"
+        obligations: "Notices for shipped crates."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in cargo-deny or OSV for these versions."
+        security_impact: "The library only decodes. Nexees decides every safety question before writing: entry count, plain relative names, no links or special files, case-insensitive duplicates, declared and actual sizes, compression ratio, staging, LCL validation, then one rename."
+        maintenance: "Very active (pushed 2026-10-02; 77.8 million recent downloads)."
+        transitive: "crc32fast, flate2 (over zlib-rs), indexmap, memchr, typed-path."
+        platforms: "Proven on Linux and Android."
+        need: "Bounded ZIP import of LCL projects on both hosts (PD-ARCHIVE, TASK-051)."
+        alternatives: "Hand-written extraction (forbidden: no custom compression), async_zip."
+        reason: "The maintained Rust ZIP implementation, usable from the shared core with only the decoder Nexees needs."
+        replacement: "Behind the import pipeline."
+        verification: "Proven on both hosts: a valid four-file project imported and validated; traversal, absolute, backslash, symbolic-link, duplicate, compression-bomb and LCL-invalid archives were each rejected with nothing published and staging left empty."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/probe_android_app.json"]
+        owner_tasks: ["TASK-051", "TASK-052", "TASK-063"]
+
+DATA:
+    ID: data.dep_boa
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-BOA"
+        name: "Boa JavaScript engine (boa_engine)"
+        area: "On-device code/test backend"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "https://github.com/boa-dev/boa"
+        version: "boa_engine 0.22.0 without default features (no Intl, Temporal or float16)"
+        license: "Unlicense OR MIT"
+        obligations: "MIT notice (choosing the MIT option)."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in cargo-deny or OSV for 0.22.0."
+        security_impact: "No ambient authority: no require, fetch, process or XMLHttpRequest exists in the context. Loop, recursion and stack limits stop runaway code, and an incomplete run is never reported as a pass."
+        maintenance: "Active (pushed 2026-10-03); pre-1.0 and slower than V8 or QuickJS, which is acceptable for test fixtures."
+        transitive: "Pure Rust: boa_ast, boa_gc, boa_interner, boa_parser, boa_string, icu_normalizer, num-bigint, regress, dashmap, rand, time and about 30 smaller crates."
+        platforms: "Proven on Linux and Android."
+        need: "At least one license-compatible on-device execution and test backend for a runnable fixture with repair (A4, PD-ANDROID-EXECUTION)."
+        alternatives: "rquickjs (DEP-RQUICKJS), wasmi (DEP-WASMI), a bundled Node or toolchain (no: not inside the app sandbox)."
+        reason: "Pure Rust, so it builds for every Android ABI with no extra C toolchain, and it is sandboxed by construction."
+        replacement: "Behind the test-backend tool interface; more backends can be added per language."
+        verification: "Proven on both hosts, including inside the app in airplane mode: the fixture's tests failed (2 of 3), the repair was saved as a new revision, the tests then passed, an endless loop was stopped, and no ambient API existed. AN-03 on a real phone remains TASK-066."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/probe_android_app.json"]
+        owner_tasks: ["TASK-033", "TASK-066"]
+
+DATA:
+    ID: data.dep_pulldown_cmark
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-PULLDOWN-CMARK"
+        name: "pulldown-cmark"
+        area: "Manual renderer"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "https://github.com/pulldown-cmark/pulldown-cmark"
+        version: "0.13.4 with only the html feature"
+        license: "MIT"
+        obligations: "MIT notice."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in cargo-deny or OSV for 0.13.4."
+        security_impact: "Active content is removed while parsing: raw HTML becomes literal text, links survive only if relative or https, images only if relative. The viewer runs no script either (an Android TextView in the prototype)."
+        maintenance: "Active (pushed 2026-09-30)."
+        transitive: "bitflags, memchr, pulldown-cmark-escape, unicase."
+        platforms: "Proven on Linux and Android."
+        need: "A passive offline renderer for both manuals on both clients (PD-MANUAL-RENDERER)."
+        alternatives: "pulldown-cmark plus ammonia (DEP-AMMONIA), a WebView with scripts disabled."
+        reason: "One small renderer in the shared core gives both clients the same passive output."
+        replacement: "Behind the help renderer."
+        verification: "Proven on both hosts: a hostile page (script, iframe, inline handlers, javascript, data, file, vbscript and protocol-relative links, remote and data images) rendered with no active or remote tag while the safe links and the bundled image survived; the whole LCL manual rendered clean."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/probe_android_app.json"]
+        owner_tasks: ["TASK-071", "TASK-072"]
+
+DATA:
+    ID: data.dep_rustls
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-RUSTLS"
+        name: "rustls with the ring crypto provider and rustls-webpki"
+        area: "Transport security"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "https://github.com/rustls/rustls"
+        version: "rustls 0.23.45 (features ring and std only), ring 0.17.14, rustls-webpki 0.103.15"
+        license: "rustls: Apache-2.0 OR ISC OR MIT; ring: Apache-2.0 AND ISC; webpki: ISC"
+        obligations: "Apache-2.0 and ISC notices for ring."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in cargo-deny or OSV for these versions."
+        security_impact: "TLS 1.3 only, both sides authenticated by certificates pinned at pairing, verified by the stock WebPKI verifiers; no custom cryptography or custom certificate check."
+        maintenance: "Very active (pushed 2026-10-03; 220 million recent downloads)."
+        transitive: "ring (C and assembly built with cc), rustls-webpki, rustls-pki-types, once_cell, subtle, zeroize."
+        platforms: "Proven on Linux and Android."
+        need: "An audited secure channel library usable in both hosts (PD-TRANSPORT, RC-19)."
+        alternatives: "aws-lc-rs provider (DEP-AWS-LC-RS), OpenSSL bindings, the platforms' own TLS stacks (two implementations)."
+        reason: "Memory-safe, audited and the same code on both hosts."
+        replacement: "Behind the remote transport port."
+        verification: "Proven on both hosts and between the PC and the emulator: paired requests succeeded; an unpaired certificate failed the handshake (UnknownCA); oversized frames were refused; a closed or unreachable receiver reported unavailable."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/scenarios.jsonl"]
+        owner_tasks: ["TASK-060", "TASK-070"]
+
+DATA:
+    ID: data.dep_rcgen
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-RCGEN"
+        name: "rcgen"
+        area: "Device identity"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "https://github.com/rustls/rcgen"
+        version: "0.14.10 (features ring and pem)"
+        license: "MIT OR Apache-2.0"
+        obligations: "Notices."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in cargo-deny or OSV for 0.14.10."
+        security_impact: "Creates each device's self-signed certificate with a random subject; the private key stays in owner-only storage (Keystore later)."
+        maintenance: "Active (published 2026-08-28)."
+        transitive: "pem, ring, rustls-pki-types, time, yasna."
+        platforms: "Proven on Linux and Android."
+        need: "Per-device certificates for pairing."
+        alternatives: "OpenSSL command line (not on the phone)."
+        reason: "Maintained by the rustls organisation; pure Rust over ring."
+        replacement: "Behind the device identity port."
+        verification: "Proven: identities created on both hosts and pinned by their peers."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/scenarios.jsonl"]
+        owner_tasks: ["TASK-060"]
+
+DATA:
+    ID: data.dep_serde
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-SERDE"
+        name: "serde and serde_json"
+        area: "Typed messages"
+        classification: "DEPENDENCY"
+        scope: "shared core"
+        upstream: "https://github.com/serde-rs/serde"
+        version: "serde 1.0.229, serde_json 1.0.151"
+        license: "MIT OR Apache-2.0"
+        obligations: "Notices."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in cargo-deny or OSV."
+        security_impact: "Typed envelopes reject unknown fields; frames are capped at 64 KiB before parsing."
+        maintenance: "Very active."
+        transitive: "serde_derive, proc-macro2, quote, syn (build time)."
+        platforms: "Proven on Linux and Android."
+        need: "Shared request types for the dispatcher (RC-25) and the JNI surface."
+        alternatives: "The LCL crate's internal JSON writer (not a general parser)."
+        reason: "The standard for typed serialisation in Rust."
+        replacement: "Foundational to the message types."
+        verification: "Proven by every remote and JNI call in the prototype."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json"]
+        owner_tasks: ["TASK-006", "TASK-007"]
+
+DATA:
+    ID: data.dep_nix
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-NIX"
+        name: "nix"
+        area: "Desktop local IPC"
+        classification: "DEPENDENCY"
+        scope: "desktop"
+        upstream: "https://github.com/nix-rust/nix"
+        version: "0.31.3 (features socket and user)"
+        license: "MIT"
+        obligations: "Notice."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in cargo-deny or OSV."
+        security_impact: "Reads the connecting process's user from the kernel (SO_PEERCRED) instead of trusting the socket file mode alone."
+        maintenance: "Very active."
+        transitive: "bitflags, cfg-if, libc, memoffset."
+        platforms: "Linux (the Desktop host)."
+        need: "OS peer identity for the window-to-host channel (PD-LOCAL-IPC, RC-23)."
+        alternatives: "Raw libc calls (more unsafe code)."
+        reason: "Safe wrappers over the needed socket options."
+        replacement: "Behind the Desktop transport adapter."
+        verification: "Proven: a peer whose uid is not the allowed uid was denied; the socket folder was 0700 and the socket 0600; messages over 4096 bytes were refused."
+        evidence: ["docs/evidence/TASK-003/logs/scenarios.jsonl"]
+        owner_tasks: ["TASK-009"]
+
+DATA:
+    ID: data.dep_jni
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-JNI"
+        name: "jni crate"
+        area: "Android bridge"
+        classification: "DEPENDENCY"
+        scope: "android"
+        upstream: "https://github.com/jni-rs/jni-rs"
+        version: "0.22.4 without default features"
+        license: "MIT OR Apache-2.0"
+        obligations: "Notices."
+        redistribution: "Permitted."
+        trademark: "None."
+        advisories: "None in cargo-deny or OSV for 0.22.4."
+        security_impact: "One exported native method takes and returns JSON; panics and errors become Java exceptions instead of unwinding across the boundary."
+        maintenance: "Active (published 2026-03-16, pushed 2026-07-30)."
+        transitive: "cfg-if, combine, jni-macros, jni-sys, log, simd_cesu8, thiserror."
+        platforms: "Android (any JVM)."
+        need: "Calling the shared core from the Android app (PD-LCL-ANDROID, PD-CORE-RUNTIME)."
+        alternatives: "uniffi (DEP-UNIFFI), raw jni-sys."
+        reason: "A small safe wrapper; one entry point keeps the Kotlin side free of logic."
+        replacement: "Behind the Android bridge; uniffi can replace it if the surface grows."
+        verification: "Proven: the app called the core for the probe, grants, receiver control, help and phone-to-PC requests."
+        evidence: ["docs/evidence/TASK-003/logs/android_build.txt", "docs/evidence/TASK-003/logs/probe_android_app.json"]
+        owner_tasks: ["TASK-046", "TASK-057"]
+
+DATA:
+    ID: data.dep_uniffi
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-UNIFFI"
+        name: "UniFFI"
+        area: "Android bridge"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://github.com/mozilla/uniffi-rs"
+        version: "0.32.2 evaluated; not added"
+        license: "MPL-2.0"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed further."
+        security_impact: "None."
+        maintenance: "Active (Mozilla)."
+        transitive: "Code generation tooling."
+        platforms: "Android, iOS, others."
+        need: "Generated bindings for a larger API surface."
+        alternatives: "jni (selected)."
+        reason: "One JSON entry point needs no binding generator, and MPL-2.0's file-level copyleft is an obligation with no benefit yet. TASK-046 may revisit it if the bridge surface grows."
+        replacement: "Not applicable."
+        verification: "None."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-046"]
+
+DATA:
+    ID: data.dep_ammonia
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-AMMONIA"
+        name: "ammonia HTML sanitiser"
+        area: "Manual renderer"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://github.com/rust-ammonia/ammonia"
+        version: "4.2.1 evaluated; not added"
+        license: "MIT OR Apache-2.0"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed further."
+        security_impact: "None."
+        maintenance: "Active (published 2026-10-03)."
+        transitive: "html5ever and its tree; not installed."
+        platforms: "Any."
+        need: "Sanitising rendered HTML."
+        alternatives: "Removing active content while parsing (selected)."
+        reason: "Parse-time filtering already yields no active content, so a second HTML parser adds size without a benefit."
+        replacement: "Not applicable."
+        verification: "None."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-071"]
+
+DATA:
+    ID: data.dep_rquickjs
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-RQUICKJS"
+        name: "rquickjs (QuickJS bindings)"
+        area: "On-device code/test backend"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://github.com/DelSkayn/rquickjs"
+        version: "0.14.0 evaluated; not added"
+        license: "MIT"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed further."
+        security_impact: "A C engine: engine bugs would be memory-safety bugs inside the app."
+        maintenance: "Active (pushed 2026-09-28)."
+        transitive: "QuickJS C sources compiled per target."
+        platforms: "Needs per-target C builds."
+        need: "A faster JavaScript backend."
+        alternatives: "Boa (selected)."
+        reason: "Boa is pure Rust and fast enough for test fixtures; QuickJS can be reconsidered if TASK-066 measures a need."
+        replacement: "Not applicable."
+        verification: "None."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-066"]
+
+DATA:
+    ID: data.dep_mlua
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-MLUA"
+        name: "mlua (Lua bindings)"
+        area: "On-device code/test backend"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://github.com/mlua-rs/mlua"
+        version: "0.12.2 evaluated; not added"
+        license: "MIT"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed further."
+        security_impact: "None."
+        maintenance: "Active (published 2026-10-03)."
+        transitive: "Lua C sources."
+        platforms: "Needs per-target C builds."
+        need: "None: Lua is not a fixture language Nexees users write."
+        alternatives: "Boa (selected)."
+        reason: "No requirement for Lua."
+        replacement: "Not applicable."
+        verification: "None."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-066"]
+
+DATA:
+    ID: data.dep_wasmi
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-WASMI"
+        name: "wasmi WebAssembly interpreter"
+        area: "On-device code/test backend"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "https://github.com/wasmi-labs/wasmi"
+        version: "2.0.0 evaluated; not added"
+        license: "MIT OR Apache-2.0"
+        obligations: "None yet."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "None in OSV for 2.0.0."
+        security_impact: "Interpreted WebAssembly is sandboxed by design."
+        maintenance: "Active (published 2026-09-01)."
+        transitive: "Pure Rust."
+        platforms: "Any Rust target."
+        need: "A future backend for compiled test code (Rust, C or Go tests built to WebAssembly)."
+        alternatives: "None needed now."
+        reason: "A candidate for widening on-device test languages; not needed for the A4 minimum."
+        replacement: "Not applicable."
+        verification: "None."
+        evidence: ["docs/evidence/TASK-003/logs/registry_research.json"]
+        owner_tasks: ["TASK-066"]
+
+DATA:
+    ID: data.dep_aws_lc_rs
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-AWS-LC-RS"
+        name: "aws-lc-rs crypto provider (rustls's default provider)"
+        area: "Transport security"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://github.com/aws/aws-lc-rs"
+        version: "Not added: rustls is built with default-features = false"
+        license: "ISC AND (Apache-2.0 OR ISC) and OpenSSL-derived terms"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed further."
+        security_impact: "None."
+        maintenance: "Active."
+        transitive: "A large C and assembly build that needs CMake for Android."
+        platforms: "Harder Android cross-builds."
+        need: "A FIPS-capable provider, which Nexees does not require."
+        alternatives: "ring (selected)."
+        reason: "ring covers TLS 1.3 with the stock verifiers and builds for Android with only the NDK compiler."
+        replacement: "Not applicable."
+        verification: "None."
+        evidence: ["docs/evidence/TASK-003/prototypes/feasibility-core/Cargo.toml"]
+        owner_tasks: ["TASK-070"]
+
+DATA:
+    ID: data.dep_cargo_ndk
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-CARGO-NDK"
+        name: "cargo-ndk"
+        area: "Android build"
+        classification: "REJECTED"
+        scope: "none"
+        upstream: "https://github.com/bbqsrc/cargo-ndk"
+        version: "4.1.2 evaluated; not installed"
+        license: "Apache-2.0 OR MIT"
+        obligations: "None: not used."
+        redistribution: "Not used."
+        trademark: "None."
+        advisories: "Not assessed further."
+        security_impact: "None."
+        maintenance: "Last release 2025-08-09."
+        transitive: "A cargo subcommand."
+        platforms: "Build machine."
+        need: "Configuring cargo for the NDK."
+        alternatives: "Plain cargo with the NDK's clang as linker and C compiler (selected)."
+        reason: "Four environment variables per target do the same; one less tool to trust."
+        replacement: "Not applicable."
+        verification: "The prototype built for two Android targets without it."
+        evidence: ["docs/evidence/TASK-003/logs/toolchains.txt"]
+        owner_tasks: ["TASK-005"]
+
+DATA:
+    ID: data.dep_android_build
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-ANDROID-BUILD"
+        name: "Android build toolchain: Gradle, Android Gradle Plugin with its built-in Kotlin, SDK platform 36, build-tools, NDK"
+        area: "Android build"
+        classification: "DEPENDENCY"
+        scope: "build"
+        upstream: "https://developer.android.com/build (Gradle: https://gradle.org)"
+        version: "Gradle 9.8.0 (SHA-256 bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c), Android Gradle Plugin 9.4.1, SDK platform android-36, build-tools 36.0.0, platform-tools 37.0.1, NDK r30 (30.0.16248370), running on OpenJDK 27"
+        license: "Gradle and AGP: Apache-2.0; SDK and NDK: Android Software Development Kit License (accepted for this machine's SDK)"
+        obligations: "Build-time only; the APK carries no Gradle code."
+        redistribution: "Not redistributed."
+        trademark: "'Android' is a Google mark."
+        advisories: "Build tools; not part of the shipped app."
+        security_impact: "Downloads from Google Maven and Maven Central at build time; pinned by version and kept in an isolated Gradle home."
+        maintenance: "Very active."
+        transitive: "Kotlin compiler and Android build libraries from Maven (509 MB Gradle home)."
+        platforms: "Build machine."
+        need: "Building the Android app with the native library and assets."
+        alternatives: "A manual aapt2, d8 and apksigner pipeline."
+        reason: "The standard route, with the same versions as the owner's LCL Android app."
+        replacement: "Build tooling."
+        verification: "Proven: the APK built warning-free with outputs kept outside the repository."
+        evidence: ["docs/evidence/TASK-003/logs/android_build.txt", "docs/evidence/TASK-003/logs/toolchains.txt"]
+        owner_tasks: ["TASK-005", "TASK-057"]
+
+DATA:
+    ID: data.dep_gio
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-GIO"
+        name: "GIO desktop-entry launching (gio launch)"
+        area: "Desktop app launch"
+        classification: "ADAPTER"
+        scope: "desktop"
+        upstream: "https://gitlab.gnome.org/GNOME/glib"
+        version: "The installed GLib's gio tool, invoked as a separate program"
+        license: "LGPL-2.1-or-later"
+        obligations: "None while invoked as an installed program."
+        redistribution: "Not bundled."
+        trademark: "None."
+        advisories: "System package."
+        security_impact: "Starts the program a desktop entry names, with argv and no shell. Nexees resolves only allowlisted desktop-entry IDs and never accepts a command string."
+        maintenance: "Very active."
+        transitive: "None for Nexees."
+        platforms: "Linux desktops following the XDG desktop-entry specification."
+        need: "Launching allowlisted Desktop applications through native identifiers (RC-11)."
+        alternatives: "flatpak run (Flatpak apps only), D-Bus activation."
+        reason: "Uses the same desktop entry and launch path as the desktop's own launcher, for Flatpak and native apps alike."
+        replacement: "Behind the Desktop launch adapter."
+        verification: "Proven by the one approved HopToDesk launch. A first-version bug (a captured pipe kept the receiver waiting for the launched app) was found by that launch, reproduced by a regression test with a harmless long-running entry, and fixed."
+        evidence: ["docs/evidence/TASK-003/logs/hoptodesk_launch.txt", "docs/evidence/TASK-003/logs/rust_checks.txt"]
+        owner_tasks: ["TASK-009"]
+
+DATA:
+    ID: data.dep_xdg_autostart
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-XDG-AUTOSTART"
+        name: "XDG autostart entries, run by systemd-xdg-autostart-generator"
+        area: "Start at login"
+        classification: "ADAPTER"
+        scope: "desktop"
+        upstream: "https://specifications.freedesktop.org/autostart-spec/latest/ (systemd: https://github.com/systemd/systemd)"
+        version: "Specification; the installed systemd's generator"
+        license: "Specification; systemd LGPL-2.1-or-later"
+        obligations: "None."
+        redistribution: "Not bundled."
+        trademark: "None."
+        advisories: "System package."
+        security_impact: "User level only: the generated unit is PartOf and After graphical-session.target, so the receiver starts after graphical login and stops with the session. No linger, system service or automatic login is created."
+        maintenance: "Very active."
+        transitive: "None."
+        platforms: "Linux desktops with systemd user sessions (KDE Plasma here)."
+        need: "Opt-in start at user login for the Desktop receiver (RC-05, PD-STARTUP)."
+        alternatives: "A systemd user unit with linger (runs outside the graphical session; rejected), a system service (forbidden)."
+        reason: "The desktop's own mechanism, with a lifetime tied to the graphical session."
+        replacement: "Behind the Desktop startup adapter."
+        verification: "Proven in an isolated profile only (the owner's choice): off by default, enabled entry valid, the generator produced the session-bound unit, disabling removed it, relative or shell commands refused, and the real autostart folder, user units and linger unchanged. Real login and logout tests remain TASK-009."
+        evidence: ["docs/evidence/TASK-003/logs/scenarios.jsonl"]
+        owner_tasks: ["TASK-009"]
+
+DATA:
+    ID: data.dep_off_lan_route
+    TYPE: OBJECT[REF(type.dep_component)]
+    VALUE:
+        component_id: "DEP-OFF-LAN-ROUTE"
+        name: "Secure off-LAN route candidates: WireGuard, Tailscale, Headscale"
+        area: "Remote control off LAN"
+        classification: "REFERENCE"
+        scope: "none"
+        upstream: "https://www.wireguard.com, https://tailscale.com, https://github.com/juanfont/headscale"
+        version: "Not selected"
+        license: "WireGuard: GPL-2.0 (kernel) and MIT or GPL tools; Tailscale clients: BSD-3-Clause with a proprietary coordination service; Headscale: BSD-3-Clause"
+        obligations: "None until selected."
+        redistribution: "None until selected."
+        trademark: "Vendors' marks."
+        advisories: "Not assessed until selected."
+        security_impact: "An authenticated private network keeps the receiver off the public internet; the Nexees TLS pinning still applies inside it."
+        maintenance: "All active."
+        transitive: "None until selected."
+        platforms: "Desktop and Android clients exist for all three."
+        need: "A documented secure off-LAN route without public ports, router changes or unapproved cost (RC-19, A5)."
+        alternatives: "A hosted relay (needs explicit approval)."
+        reason: "Each option needs an owner decision about accounts, self-hosting or cost, so TASK-003 records the candidates and leaves the choice to TASK-060 and TASK-070 with the owner."
+        replacement: "Not applicable."
+        verification: "None: only the emulator's LAN-like path was tested."
+        evidence: ["docs/evidence/TASK-003/TASK-003_EVIDENCE.md"]
+        owner_tasks: ["TASK-060", "TASK-070"]
+
+DATA:
+    ID: data.dep_components
+    TYPE: LIST[OBJECT[REF(type.dep_component)]]
+    VALUE: [REF(data.dep_theia), REF(data.dep_electron), REF(data.dep_code_oss), REF(data.dep_vscodium), REF(data.dep_monaco), REF(data.dep_open_vsx), REF(data.dep_vs_marketplace), REF(data.dep_lsp), REF(data.dep_tree_sitter), REF(data.dep_xterm), REF(data.dep_node_pty), REF(data.dep_git_cli), REF(data.dep_libgit2), REF(data.dep_gix), REF(data.dep_acp), REF(data.dep_openhands), REF(data.dep_cline), REF(data.dep_aider), REF(data.dep_litellm), REF(data.dep_supabase_auth), REF(data.dep_keyring), REF(data.dep_android_keystore), REF(data.dep_keytar), REF(data.dep_bubblewrap), REF(data.dep_lcl_engine), REF(data.dep_lcl_manual), REF(data.dep_lcl_android_app), REF(data.dep_lcl_remote), REF(data.dep_rust), REF(data.dep_sqlite), REF(data.dep_zip), REF(data.dep_boa), REF(data.dep_pulldown_cmark), REF(data.dep_rustls), REF(data.dep_rcgen), REF(data.dep_serde), REF(data.dep_nix), REF(data.dep_jni), REF(data.dep_uniffi), REF(data.dep_ammonia), REF(data.dep_rquickjs), REF(data.dep_mlua), REF(data.dep_wasmi), REF(data.dep_aws_lc_rs), REF(data.dep_cargo_ndk), REF(data.dep_android_build), REF(data.dep_gio), REF(data.dep_xdg_autostart), REF(data.dep_off_lan_route)]

@@ -6,7 +6,7 @@
 Nexees keeps projects, tools, tasks and their progress independently of the chosen LLM. You can work manually or allow an agent to execute permitted tasks. Switching models does not by itself create a new project or move execution to another device. LCL is an optional way to configure project descriptions, rules and ordered work.
 
 ## 2. Installation and first access
-Use the verified Desktop package or Android installer for the release. Exact package names, installation commands and update instructions are pending implementation. Desktop must launch its own installed local application, not depend on a hosted UI website. The renderer/toolkit choice is still an explicit design decision.
+Use the verified Desktop package or Android installer for the release. Exact package names, installation commands and update instructions are pending implementation. Desktop must launch its own installed local application, not depend on a hosted UI website. The Desktop application is an installed Electron application built on Eclipse Theia; the owner permitted Electron rendering for the Desktop client (DESKTOP-RENDERER-01), and Android does not depend on it.
 
 Sign in with email or GitHub, or create an account and complete the supported verification/2FA flow. Keep recovery material outside project files and AI chat. Account access, local device unlock, provider credentials and PC pairing are separate. After authorized setup, losing PC/internet access must not lock away permitted local editing; first-time network-based signup is not promised offline.
 

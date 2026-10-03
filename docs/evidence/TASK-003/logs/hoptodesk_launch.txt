@@ -1,0 +1,59 @@
+TASK-003 RC-T17: the one HopToDesk launch the owner approved ("Launch HopToDesk once, check its separate permission/setup
+state, then close it"). Desktop: KDE Plasma on Wayland, session 2 active and unlocked. HopToDesk 1.46.55 is a user Flatpak
+(com.hoptodesk.HopToDesk).
+
+Before TASK-003 touched anything, the owner's own HopToDesk was already running (Flatpak instance 3257855272, pid 279533)
+with a window listed by KWin. It was never stopped or signalled.
+
+== Requests that must not launch (pc section, final run 21:18:02; no instance appeared in any of them)
+- phone_to_pc grant off on the PC: denied
+- receiver outside a graphical session (no display or session variables): unsupported
+- PC user revoked the grant: denied
+- no receiver running: unavailable
+
+== The launch (pc section run 21:13:54)
+Path: the phone app's "Ask PC to open HopToDesk" button -> TLS 1.3 to the PC receiver on 127.0.0.1:47100 (reached from the
+emulator as 10.0.2.2) -> shared dispatcher (pinned peer, grant, expiry, replay) -> Desktop launcher -> allowlist key
+"hoptodesk" -> desktop entry com.hoptodesk.HopToDesk.desktop -> gio launch <entry> (argv, no shell).
+Before: {"instances": ["3257855272"], "window_listed": true}
+Reply the phone received: {"detail": "outcome unknown: Try again (os error 11)", "status": "outcome_unknown"}
+After: {"instances": ["2720263355", "3257855272"], "window_listed": true}; new instances: ['2720263355']
+
+A new HopToDesk instance and a second KWin window appeared, so the launch itself worked. The reply was outcome_unknown
+because of a defect in the first launcher: it captured gio's output, the launched app inherited that pipe, and the
+receiver waited for HopToDesk to exit. The phone's 10-second read timeout correctly reported outcome_unknown, never
+success, and its next request in that run reported unavailable while the receiver was stuck. The fix runs gio with all
+three streams closed and returns on gio's exit status. The regression test
+a_launched_app_that_keeps_running_does_not_hold_the_receiver reproduces the defect with a harmless desktop entry that
+runs `sleep 7.25` (it failed after 7.26 s before the fix and passes after it; rust_checks.txt). HopToDesk was not launched
+a second time, because the owner approved one launch, so the fixed path's full reply was not repeated with HopToDesk;
+TASK-009 repeats it end to end.
+
+The earlier pc run (21:13:10, before run IDs were recorded) launched nothing: the harness took a stale socket file for a
+ready receiver, the grant was never set, and both launch requests were denied.
+
+== Observation and cleanup (only what TASK-003 started)
+observed 2026-10-03T21:15:55+02:00 after the one approved launch, before cleanup:
+2720263355	654498	654509	com.hoptodesk.HopToDesk
+3257855272	279533	279549	com.hoptodesk.HopToDesk
+('0_{18becfce-da0d-45a8-8f94-ae22de17c3c9}', 'HopToDesk'
+('0_{2a4f4b70-5f24-4b4d-ae54-ec12171609a4}', 'HopToDesk'
+after cleanup 2026-10-03T21:15:55+02:00:
+3257855272	279533	279549	com.hoptodesk.HopToDesk
+('0_{18becfce-da0d-45a8-8f94-ae22de17c3c9}', 'HopToDesk'
+657421 /bin/bash -c source /home/aivars/.claude/shell-snapshots/snapshot-bash-1791044841322-vjwy4p.sh 2>/dev/null || true && shopt -u extglob 2>/dev/null || true && { \builtin unalias -- 'unsetenv'; \builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'S=/tmp/claude-1000/-mnt-F-Nexees/5a85a502-c412-49c7-8565-ed5019d8cf87/scratchpad/task003 && { echo "observed $(date -Iseconds) after the one approved launch, before cleanup:"; flatpak ps --columns=instance,pid,child-pid,application; timeout 5 gdbus call --session --dest org.kde.KWin --object-path /WindowsRunner --method org.kde.krunner1.Match "HopToDesk" | grep -o "('"'"'[^'"'"']*'"'"', '"'"'HopToDesk'"'"'"; } > $S/hoptodesk-launch-observed.txt; flatpak kill 2720263355; kill -TERM 654397; for i in 1 2 3 4 5 6 7 8 9 10; do if ! flatpak ps --columns=instance | grep -q 2720263355 && ! kill -0 654397 2>/dev/null; then break; fi; timeout 1 tail -f /dev/null; done; { echo "after cleanup $(date -Iseconds):"; flatpak ps --columns=instance,pid,child-pid,application; timeout 5 gdbus call --session --dest org.kde.KWin --object-path /WindowsRunner --method org.kde.krunner1.Match "HopToDesk" | grep -o "('"'"'[^'"'"']*'"'"', '"'"'HopToDesk'"'"'"; pgrep -af '"'"'nexees-host receive'"'"' || echo "no receiver running"; } | tee -a $S/hoptodesk-launch-observed.txt' < /dev/null && pwd -P >| /tmp/claude-7a78-cwd
+657446 /bin/bash -c source /home/aivars/.claude/shell-snapshots/snapshot-bash-1791044841322-vjwy4p.sh 2>/dev/null || true && shopt -u extglob 2>/dev/null || true && { \builtin unalias -- 'unsetenv'; \builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'S=/tmp/claude-1000/-mnt-F-Nexees/5a85a502-c412-49c7-8565-ed5019d8cf87/scratchpad/task003 && { echo "observed $(date -Iseconds) after the one approved launch, before cleanup:"; flatpak ps --columns=instance,pid,child-pid,application; timeout 5 gdbus call --session --dest org.kde.KWin --object-path /WindowsRunner --method org.kde.krunner1.Match "HopToDesk" | grep -o "('"'"'[^'"'"']*'"'"', '"'"'HopToDesk'"'"'"; } > $S/hoptodesk-launch-observed.txt; flatpak kill 2720263355; kill -TERM 654397; for i in 1 2 3 4 5 6 7 8 9 10; do if ! flatpak ps --columns=instance | grep -q 2720263355 && ! kill -0 654397 2>/dev/null; then break; fi; timeout 1 tail -f /dev/null; done; { echo "after cleanup $(date -Iseconds):"; flatpak ps --columns=instance,pid,child-pid,application; timeout 5 gdbus call --session --dest org.kde.KWin --object-path /WindowsRunner --method org.kde.krunner1.Match "HopToDesk" | grep -o "('"'"'[^'"'"']*'"'"', '"'"'HopToDesk'"'"'"; pgrep -af '"'"'nexees-host receive'"'"' || echo "no receiver running"; } | tee -a $S/hoptodesk-launch-observed.txt' < /dev/null && pwd -P >| /tmp/claude-7a78-cwd
+The new instance was stopped with `flatpak kill 2720263355` (by instance ID, so the owner's instance 3257855272 was not
+touched), and the stuck receiver (pid 654397, task-owned) with SIGTERM. Afterwards only the owner's instance and window
+remained.
+
+== HopToDesk's own permission and setup state (read only, not changed)
+{"flatpak_permissions": ["[Context]", "shared=ipc;network;", "sockets=pulseaudio;x11;", "devices=dri;", "filesystems=home;"], "portal_tables": ["documents"], "screen_cast_or_remote_desktop_grant": false}
+HopToDesk's Flatpak grants X11 and PulseAudio sockets, DRI, home and network, but no Wayland socket, so on this Wayland
+session it runs through Xwayland. The portal permission store holds a documents entry only, with no screencast or
+remote-desktop grant. Whether HopToDesk can share this screen or accept input is decided by HopToDesk, the portal and
+its own session setup and ID or password exchange, none of which a launch provides. No HopToDesk configuration file was
+read, because those files can hold secrets.
+
+The launch therefore shows: the allowlisted launch path works, the system never claimed screen control from process
+creation, and HopToDesk's permissions remain separate from Nexees.

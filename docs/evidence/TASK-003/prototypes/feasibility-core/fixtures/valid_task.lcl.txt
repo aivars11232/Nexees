@@ -1,0 +1,48 @@
+LCL:
+    VERSION: "0.1.0"
+
+SPECIFICATION:
+    ID: nexees.feasibility_task
+    NAME: "Phone-local feasibility fixture"
+    VERSION: "1.0.0"
+    KIND: kind.task
+
+INPUT:
+    ID: input.greeting
+    TYPE: STRING
+    REQUIRED: FALSE
+    DEFAULT: "phone-local"
+
+OUTPUT:
+    ID: output.greeting
+    TYPE: STRING
+    FORMAT: format.plain_text
+
+GOAL:
+    ID: goal.greeting
+    ASSERT: REF(output.greeting) == REF(input.greeting)
+
+ACTION:
+    ID: action.greet
+    OPERATION: core.return
+    TARGET: REF(input.greeting)
+    OUTPUT: REF(output.greeting)
+
+VERIFY:
+    ID: verify.greeting
+    ASSERT: REF(output.greeting) == "phone-local"
+
+SUCCESS:
+    ID: success.greeting
+    ALL: [REF(verify.greeting)]
+
+TASK:
+    ID: task.greeting
+    GOAL: REF(goal.greeting)
+    INPUT: REF(input.greeting)
+    ACTION: REF(action.greet)
+    OUTPUT: REF(output.greeting)
+    SUCCESS: REF(success.greeting)
+
+EXECUTE:
+    REFERENCE: REF(task.greeting)

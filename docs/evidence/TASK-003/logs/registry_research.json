@@ -1,0 +1,657 @@
+{
+ "retrieved": "2026-10-03T19:41:57+02:00",
+ "github": {
+  "eclipse-theia/theia": {
+   "full_name": "eclipse-theia/theia",
+   "archived": false,
+   "pushed_at": "2026-10-03T11:57:57Z",
+   "stargazers_count": 21706,
+   "open_issues_count": 1520,
+   "default_branch": "master",
+   "html_url": "https://github.com/eclipse-theia/theia",
+   "license": "EPL-2.0"
+  },
+  "microsoft/vscode": {
+   "full_name": "microsoft/vscode",
+   "archived": false,
+   "pushed_at": "2026-10-03T17:38:36Z",
+   "stargazers_count": 193396,
+   "open_issues_count": 21313,
+   "default_branch": "main",
+   "html_url": "https://github.com/microsoft/vscode",
+   "license": "MIT"
+  },
+  "VSCodium/vscodium": {
+   "full_name": "VSCodium/vscodium",
+   "archived": false,
+   "pushed_at": "2026-10-03T04:05:52Z",
+   "stargazers_count": 33495,
+   "open_issues_count": 157,
+   "default_branch": "master",
+   "html_url": "https://github.com/VSCodium/vscodium",
+   "license": "MIT"
+  },
+  "microsoft/monaco-editor": {
+   "full_name": "microsoft/monaco-editor",
+   "archived": false,
+   "pushed_at": "2026-10-03T03:19:02Z",
+   "stargazers_count": 46829,
+   "open_issues_count": 862,
+   "default_branch": "main",
+   "html_url": "https://github.com/microsoft/monaco-editor",
+   "license": "MIT"
+  },
+  "eclipse/openvsx": {
+   "full_name": "eclipse-openvsx/openvsx",
+   "archived": false,
+   "pushed_at": "2026-10-02T19:31:00Z",
+   "stargazers_count": 2048,
+   "open_issues_count": 88,
+   "default_branch": "main",
+   "html_url": "https://github.com/eclipse-openvsx/openvsx",
+   "license": "EPL-2.0"
+  },
+  "microsoft/language-server-protocol": {
+   "full_name": "microsoft/language-server-protocol",
+   "archived": false,
+   "pushed_at": "2026-10-01T13:43:30Z",
+   "stargazers_count": 13035,
+   "open_issues_count": 298,
+   "default_branch": "gh-pages",
+   "html_url": "https://github.com/microsoft/language-server-protocol",
+   "license": "CC-BY-4.0"
+  },
+  "tree-sitter/tree-sitter": {
+   "full_name": "tree-sitter/tree-sitter",
+   "archived": false,
+   "pushed_at": "2026-10-03T14:21:35Z",
+   "stargazers_count": 27115,
+   "open_issues_count": 114,
+   "default_branch": "master",
+   "html_url": "https://github.com/tree-sitter/tree-sitter",
+   "license": "MIT"
+  },
+  "xtermjs/xterm.js": {
+   "full_name": "xtermjs/xterm.js",
+   "archived": false,
+   "pushed_at": "2026-09-13T07:12:00Z",
+   "stargazers_count": 21250,
+   "open_issues_count": 288,
+   "default_branch": "master",
+   "html_url": "https://github.com/xtermjs/xterm.js",
+   "license": "MIT"
+  },
+  "git/git": {
+   "full_name": "git/git",
+   "archived": false,
+   "pushed_at": "2026-10-02T22:49:13Z",
+   "stargazers_count": 63539,
+   "open_issues_count": 401,
+   "default_branch": "master",
+   "html_url": "https://github.com/git/git",
+   "license": "NOASSERTION"
+  },
+  "libgit2/libgit2": {
+   "full_name": "libgit2/libgit2",
+   "archived": false,
+   "pushed_at": "2026-08-15T12:37:11Z",
+   "stargazers_count": 10617,
+   "open_issues_count": 562,
+   "default_branch": "main",
+   "html_url": "https://github.com/libgit2/libgit2",
+   "license": "NOASSERTION"
+  },
+  "GitoxideLabs/gitoxide": {
+   "full_name": "GitoxideLabs/gitoxide",
+   "archived": false,
+   "pushed_at": "2026-10-03T17:15:47Z",
+   "stargazers_count": 11995,
+   "open_issues_count": 19,
+   "default_branch": "main",
+   "html_url": "https://github.com/GitoxideLabs/gitoxide",
+   "license": "Apache-2.0"
+  },
+  "agentclientprotocol/agent-client-protocol": {
+   "full_name": "agentclientprotocol/agent-client-protocol",
+   "archived": false,
+   "pushed_at": "2026-10-03T12:37:17Z",
+   "stargazers_count": 4365,
+   "open_issues_count": 45,
+   "default_branch": "main",
+   "html_url": "https://github.com/agentclientprotocol/agent-client-protocol",
+   "license": "Apache-2.0"
+  },
+  "All-Hands-AI/OpenHands": {
+   "full_name": "OpenHands/OpenHands",
+   "archived": false,
+   "pushed_at": "2026-10-03T14:30:52Z",
+   "stargazers_count": 89887,
+   "open_issues_count": 866,
+   "default_branch": "main",
+   "html_url": "https://github.com/OpenHands/OpenHands",
+   "license": "MIT"
+  },
+  "cline/cline": {
+   "full_name": "cline/cline",
+   "archived": false,
+   "pushed_at": "2026-10-03T03:04:24Z",
+   "stargazers_count": 69772,
+   "open_issues_count": 1583,
+   "default_branch": "main",
+   "html_url": "https://github.com/cline/cline",
+   "license": "Apache-2.0"
+  },
+  "Aider-AI/aider": {
+   "full_name": "Aider-AI/aider",
+   "archived": false,
+   "pushed_at": "2026-05-22T14:02:20Z",
+   "stargazers_count": 49352,
+   "open_issues_count": 1909,
+   "default_branch": "main",
+   "html_url": "https://github.com/Aider-AI/aider",
+   "license": "Apache-2.0"
+  },
+  "BerriAI/litellm": {
+   "full_name": "BerriAI/litellm",
+   "archived": false,
+   "pushed_at": "2026-10-03T17:41:13Z",
+   "stargazers_count": 60085,
+   "open_issues_count": 5580,
+   "default_branch": "main",
+   "html_url": "https://github.com/BerriAI/litellm",
+   "license": "NOASSERTION"
+  },
+  "supabase/auth": {
+   "full_name": "supabase/auth",
+   "archived": false,
+   "pushed_at": "2026-10-03T00:57:38Z",
+   "stargazers_count": 2573,
+   "open_issues_count": 369,
+   "default_branch": "master",
+   "html_url": "https://github.com/supabase/auth",
+   "license": "MIT"
+  },
+  "containers/bubblewrap": {
+   "full_name": "containers/bubblewrap",
+   "archived": false,
+   "pushed_at": "2026-09-25T18:27:32Z",
+   "stargazers_count": 8914,
+   "open_issues_count": 201,
+   "default_branch": "main",
+   "html_url": "https://github.com/containers/bubblewrap",
+   "license": "NOASSERTION"
+  },
+  "hwchen/keyring-rs": {
+   "full_name": "open-source-cooperative/keyring-rs",
+   "archived": false,
+   "pushed_at": "2026-09-15T15:46:42Z",
+   "stargazers_count": 769,
+   "open_issues_count": 1,
+   "default_branch": "main",
+   "html_url": "https://github.com/open-source-cooperative/keyring-rs",
+   "license": "Apache-2.0"
+  },
+  "boa-dev/boa": {
+   "full_name": "boa-dev/boa",
+   "archived": false,
+   "pushed_at": "2026-10-03T16:34:40Z",
+   "stargazers_count": 7577,
+   "open_issues_count": 225,
+   "default_branch": "main",
+   "html_url": "https://github.com/boa-dev/boa",
+   "license": "MIT"
+  },
+  "DelSkayn/rquickjs": {
+   "full_name": "DelSkayn/rquickjs",
+   "archived": false,
+   "pushed_at": "2026-09-28T19:39:52Z",
+   "stargazers_count": 1026,
+   "open_issues_count": 65,
+   "default_branch": "master",
+   "html_url": "https://github.com/DelSkayn/rquickjs",
+   "license": "MIT"
+  },
+  "rusqlite/rusqlite": {
+   "full_name": "rusqlite/rusqlite",
+   "archived": false,
+   "pushed_at": "2026-09-25T11:09:39Z",
+   "stargazers_count": 4426,
+   "open_issues_count": 171,
+   "default_branch": "master",
+   "html_url": "https://github.com/rusqlite/rusqlite",
+   "license": "MIT"
+  },
+  "zip-rs/zip2": {
+   "full_name": "zip-rs/zip2",
+   "archived": false,
+   "pushed_at": "2026-10-02T15:02:44Z",
+   "stargazers_count": 356,
+   "open_issues_count": 61,
+   "default_branch": "master",
+   "html_url": "https://github.com/zip-rs/zip2",
+   "license": "MIT"
+  },
+  "pulldown-cmark/pulldown-cmark": {
+   "full_name": "pulldown-cmark/pulldown-cmark",
+   "archived": false,
+   "pushed_at": "2026-09-30T06:29:44Z",
+   "stargazers_count": 2734,
+   "open_issues_count": 92,
+   "default_branch": "main",
+   "html_url": "https://github.com/pulldown-cmark/pulldown-cmark",
+   "license": "MIT"
+  },
+  "rustls/rustls": {
+   "full_name": "rustls/rustls",
+   "archived": false,
+   "pushed_at": "2026-10-03T14:40:43Z",
+   "stargazers_count": 7654,
+   "open_issues_count": 98,
+   "default_branch": "main",
+   "html_url": "https://github.com/rustls/rustls",
+   "license": "NOASSERTION"
+  },
+  "jni-rs/jni-rs": {
+   "full_name": "jni-rs/jni-rs",
+   "archived": false,
+   "pushed_at": "2026-07-30T15:27:02Z",
+   "stargazers_count": 1607,
+   "open_issues_count": 67,
+   "default_branch": "master",
+   "html_url": "https://github.com/jni-rs/jni-rs",
+   "license": "Apache-2.0"
+  },
+  "mozilla/uniffi-rs": {
+   "full_name": "mozilla/uniffi-rs",
+   "archived": false,
+   "pushed_at": "2026-10-02T02:32:52Z",
+   "stargazers_count": 5006,
+   "open_issues_count": 296,
+   "default_branch": "main",
+   "html_url": "https://github.com/mozilla/uniffi-rs",
+   "license": "MPL-2.0"
+  },
+  "bbqsrc/cargo-ndk": {
+   "full_name": "bbqsrc/cargo-ndk",
+   "archived": false,
+   "pushed_at": "2026-09-14T20:58:02Z",
+   "stargazers_count": 975,
+   "open_issues_count": 3,
+   "default_branch": "main",
+   "html_url": "https://github.com/bbqsrc/cargo-ndk",
+   "license": "Apache-2.0"
+  },
+  "electron/electron": {
+   "full_name": "electron/electron",
+   "archived": false,
+   "pushed_at": "2026-10-03T13:46:00Z",
+   "stargazers_count": 123369,
+   "open_issues_count": 724,
+   "default_branch": "main",
+   "html_url": "https://github.com/electron/electron",
+   "license": "MIT"
+  },
+  "sqlite/sqlite": {
+   "full_name": "sqlite/sqlite",
+   "archived": false,
+   "pushed_at": "2026-10-03T16:06:13Z",
+   "stargazers_count": 10586,
+   "open_issues_count": 24,
+   "default_branch": "master",
+   "html_url": "https://github.com/sqlite/sqlite",
+   "license": "NOASSERTION"
+  }
+ },
+ "npm": {
+  "@theia/core": {
+   "latest": "1.76.0",
+   "license": "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0",
+   "published": "2026-09-24T12:59:07.972Z",
+   "modified": "2026-10-02T00:40:00.205Z",
+   "repository": "git+https://github.com/eclipse-theia/theia.git",
+   "deps": 65
+  },
+  "@theia/monaco": {
+   "latest": "1.76.0",
+   "license": "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0",
+   "published": "2026-09-24T12:58:22.850Z",
+   "modified": "2026-10-02T08:22:52.169Z",
+   "repository": "git+https://github.com/eclipse-theia/theia.git",
+   "deps": 13
+  },
+  "@theia/terminal": {
+   "latest": "1.76.0",
+   "license": "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0",
+   "published": "2026-09-24T12:58:43.558Z",
+   "modified": "2026-10-02T08:20:17.633Z",
+   "repository": "git+https://github.com/eclipse-theia/theia.git",
+   "deps": 12
+  },
+  "@theia/plugin-ext-vscode": {
+   "latest": "1.76.0",
+   "license": "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0",
+   "published": "2026-09-24T13:00:29.058Z",
+   "modified": "2026-10-02T08:28:12.732Z",
+   "repository": "git+https://github.com/eclipse-theia/theia.git",
+   "deps": 19
+  },
+  "@theia/electron": {
+   "latest": "1.76.0",
+   "license": "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0",
+   "published": "2026-09-24T12:58:23.330Z",
+   "modified": "2026-10-02T00:34:32.822Z",
+   "repository": "git+https://github.com/eclipse-theia/theia.git",
+   "deps": 3
+  },
+  "@theia/cli": {
+   "latest": "1.76.0",
+   "license": "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0",
+   "published": "2026-09-24T12:59:48.293Z",
+   "modified": "2026-10-02T08:19:49.604Z",
+   "repository": "git+https://github.com/eclipse-theia/theia.git",
+   "deps": 25
+  },
+  "monaco-editor": {
+   "latest": "0.57.0",
+   "license": "MIT",
+   "published": "2026-09-24T21:33:55.189Z",
+   "modified": "2026-09-24T21:33:55.441Z",
+   "repository": "git+https://github.com/microsoft/monaco-editor.git",
+   "deps": 2
+  },
+  "@xterm/xterm": {
+   "latest": "6.0.0",
+   "license": "MIT",
+   "published": "2025-12-22T13:50:12.430Z",
+   "modified": "2026-08-30T20:13:36.809Z",
+   "repository": "git+https://github.com/xtermjs/xterm.js.git",
+   "deps": 0
+  },
+  "electron": {
+   "latest": "44.5.1",
+   "license": "MIT",
+   "published": "2026-09-30T06:59:15.983Z",
+   "modified": "2026-10-01T22:09:54.399Z",
+   "repository": "git+https://github.com/electron/electron.git",
+   "deps": 3
+  },
+  "ovsx": {
+   "latest": "1.2.0",
+   "license": "EPL-2.0",
+   "published": "2026-09-10T11:54:30.322Z",
+   "modified": "2026-09-10T11:54:30.697Z",
+   "repository": "git+https://github.com/eclipse-openvsx/openvsx.git",
+   "deps": 10
+  },
+  "vscode-languageclient": {
+   "latest": "10.1.2",
+   "license": "MIT",
+   "published": "2026-09-25T10:05:36.095Z",
+   "modified": "2026-09-25T10:05:36.327Z",
+   "repository": "git+https://github.com/Microsoft/vscode-languageserver-node.git",
+   "deps": 4
+  },
+  "vscode-languageserver-protocol": {
+   "latest": "3.18.4",
+   "license": "MIT",
+   "published": "2026-09-25T08:06:26.035Z",
+   "modified": "2026-09-25T08:06:26.275Z",
+   "repository": "git+https://github.com/Microsoft/vscode-languageserver-node.git",
+   "deps": 2
+  },
+  "@agentclientprotocol/sdk": {
+   "latest": "1.7.0",
+   "license": "Apache-2.0",
+   "published": "2026-10-02T11:22:21.748Z",
+   "modified": "2026-10-02T11:22:22.089Z",
+   "repository": "git+https://github.com/agentclientprotocol/typescript-sdk.git",
+   "deps": 0
+  },
+  "web-tree-sitter": {
+   "latest": "0.27.0",
+   "license": "MIT",
+   "published": "2026-08-30T17:33:53.484Z",
+   "modified": "2026-08-30T17:33:53.850Z",
+   "repository": "git+https://github.com/tree-sitter/tree-sitter.git",
+   "deps": 0
+  },
+  "@supabase/supabase-js": {
+   "latest": "2.117.2",
+   "license": "MIT",
+   "published": "2026-09-25T10:08:51.684Z",
+   "modified": "2026-10-02T13:13:07.691Z",
+   "repository": "https://github.com/supabase/supabase-js.git",
+   "deps": 5
+  },
+  "@supabase/auth-js": {
+   "latest": "2.117.2",
+   "license": "MIT",
+   "published": "2026-09-25T10:08:15.039Z",
+   "modified": "2026-10-02T13:11:01.889Z",
+   "repository": "https://github.com/supabase/supabase-js.git",
+   "deps": 1
+  }
+ },
+ "crates": {
+  "rusqlite": {
+   "latest": "0.40.2",
+   "license": "MIT",
+   "published": "2026-08-08T14:21:52.570893Z",
+   "updated": "2026-08-08T14:21:52.570893Z",
+   "repository": "https://github.com/rusqlite/rusqlite",
+   "recent_downloads": 38940056,
+   "yanked": false,
+   "rust_version": null
+  },
+  "zip": {
+   "latest": "8.6.0",
+   "license": "MIT",
+   "published": "2026-04-25T19:11:11.854239Z",
+   "updated": "2026-08-11T01:53:59.789008Z",
+   "repository": "https://github.com/zip-rs/zip2",
+   "recent_downloads": 77754724,
+   "yanked": false,
+   "rust_version": "1.88"
+  },
+  "pulldown-cmark": {
+   "latest": "0.13.4",
+   "license": "MIT",
+   "published": "2026-05-20T08:48:23.621050Z",
+   "updated": "2026-05-20T08:48:23.621050Z",
+   "repository": "https://github.com/raphlinus/pulldown-cmark",
+   "recent_downloads": 51428333,
+   "yanked": false,
+   "rust_version": "1.71.1"
+  },
+  "rustls": {
+   "latest": "0.23.45",
+   "license": "Apache-2.0 OR ISC OR MIT",
+   "published": "2026-09-14T15:11:17.808465Z",
+   "updated": "2026-09-14T15:11:17.808465Z",
+   "repository": "https://github.com/rustls/rustls",
+   "recent_downloads": 220074577,
+   "yanked": false,
+   "rust_version": "1.71"
+  },
+  "rcgen": {
+   "latest": "0.14.10",
+   "license": "MIT OR Apache-2.0",
+   "published": "2026-08-28T21:30:01.600392Z",
+   "updated": "2026-08-28T21:30:01.600392Z",
+   "repository": "https://github.com/rustls/rcgen",
+   "recent_downloads": 33975678,
+   "yanked": false,
+   "rust_version": "1.88"
+  },
+  "jni": {
+   "latest": "0.22.4",
+   "license": "MIT OR Apache-2.0",
+   "published": "2026-03-16T15:38:08.740007Z",
+   "updated": "2026-03-16T15:38:08.740007Z",
+   "repository": "https://github.com/jni-rs/jni-rs",
+   "recent_downloads": 63535974,
+   "yanked": false,
+   "rust_version": "1.85.0"
+  },
+  "uniffi": {
+   "latest": "0.32.2",
+   "license": "MPL-2.0",
+   "published": "2026-09-23T16:30:01.626970Z",
+   "updated": "2026-09-23T16:30:01.626970Z",
+   "repository": "https://github.com/mozilla/uniffi-rs",
+   "recent_downloads": 4569544,
+   "yanked": false,
+   "rust_version": null
+  },
+  "tree-sitter": {
+   "latest": "0.27.0",
+   "license": "MIT",
+   "published": "2026-08-30T17:23:51.011780Z",
+   "updated": "2026-08-30T17:23:51.011780Z",
+   "repository": "https://github.com/tree-sitter/tree-sitter",
+   "recent_downloads": 16019449,
+   "yanked": false,
+   "rust_version": "1.90"
+  },
+  "gix": {
+   "latest": "0.88.0",
+   "license": "MIT OR Apache-2.0",
+   "published": "2026-09-25T08:29:09.446275Z",
+   "updated": "2026-09-25T08:29:09.446275Z",
+   "repository": "https://github.com/GitoxideLabs/gitoxide",
+   "recent_downloads": 11923147,
+   "yanked": false,
+   "rust_version": "1.88"
+  },
+  "git2": {
+   "latest": "0.21.0",
+   "license": "MIT OR Apache-2.0",
+   "published": "2026-05-18T16:06:09.315886Z",
+   "updated": "2026-05-18T16:06:09.315886Z",
+   "repository": "https://github.com/rust-lang/git2-rs",
+   "recent_downloads": 16531631,
+   "yanked": false,
+   "rust_version": null
+  },
+  "keyring": {
+   "latest": "4.2.0",
+   "license": "MIT OR Apache-2.0",
+   "published": "2026-08-29T23:48:56.175457Z",
+   "updated": "2026-08-29T23:48:56.175457Z",
+   "repository": "https://github.com/open-source-cooperative/keyring-rs",
+   "recent_downloads": 12868911,
+   "yanked": false,
+   "rust_version": "1.88.0"
+  },
+  "boa_engine": {
+   "latest": "0.22.0",
+   "license": "Unlicense OR MIT",
+   "published": "2026-08-28T17:17:57.013572Z",
+   "updated": "2026-08-28T17:17:57.013572Z",
+   "repository": "https://github.com/boa-dev/boa",
+   "recent_downloads": 1623855,
+   "yanked": false,
+   "rust_version": "1.91.0"
+  },
+  "rquickjs": {
+   "latest": "0.14.0",
+   "license": "MIT",
+   "published": "2026-09-18T19:36:45.041970Z",
+   "updated": "2026-09-18T19:36:45.041970Z",
+   "repository": "https://github.com/DelSkayn/rquickjs.git",
+   "recent_downloads": 2206906,
+   "yanked": false,
+   "rust_version": "1.87"
+  },
+  "mlua": {
+   "latest": "0.12.2",
+   "license": "MIT",
+   "published": "2026-10-03T10:44:26.264428Z",
+   "updated": "2026-10-03T10:44:26.264428Z",
+   "repository": "https://github.com/mlua-rs/mlua",
+   "recent_downloads": 2015141,
+   "yanked": false,
+   "rust_version": "1.88"
+  },
+  "wasmi": {
+   "latest": "2.0.0",
+   "license": "MIT/Apache-2.0",
+   "published": "2026-09-01T11:51:43.217856Z",
+   "updated": "2026-09-01T11:51:43.217856Z",
+   "repository": "https://github.com/wasmi-labs/wasmi",
+   "recent_downloads": 4563581,
+   "yanked": false,
+   "rust_version": "1.86"
+  },
+  "cargo-ndk": {
+   "latest": "4.1.2",
+   "license": "Apache-2.0 OR MIT",
+   "published": "2025-08-09T20:26:59.689142Z",
+   "updated": "2025-08-09T20:26:59.689142Z",
+   "repository": "https://github.com/bbqsrc/cargo-ndk",
+   "recent_downloads": 729408,
+   "yanked": false,
+   "rust_version": "1.86"
+  },
+  "tokio": {
+   "latest": "1.53.2",
+   "license": "MIT",
+   "published": "2026-10-03T11:18:32.487780Z",
+   "updated": "2026-10-03T11:18:32.487780Z",
+   "repository": "https://github.com/tokio-rs/tokio",
+   "recent_downloads": 245502715,
+   "yanked": false,
+   "rust_version": "1.71"
+  },
+  "serde_json": {
+   "latest": "1.0.151",
+   "license": "MIT OR Apache-2.0",
+   "published": "2026-07-20T05:54:44.078083Z",
+   "updated": "2026-07-20T05:54:44.078083Z",
+   "repository": "https://github.com/serde-rs/json",
+   "recent_downloads": 342078582,
+   "yanked": false,
+   "rust_version": "1.71"
+  },
+  "ammonia": {
+   "latest": "4.2.1",
+   "license": "MIT OR Apache-2.0",
+   "published": "2026-10-03T06:01:25.157674Z",
+   "updated": "2026-10-03T06:01:25.157674Z",
+   "repository": "https://github.com/rust-ammonia/ammonia",
+   "recent_downloads": 4989677,
+   "yanked": false,
+   "rust_version": "1.85"
+  },
+  "nix": {
+   "latest": "0.31.3",
+   "license": "MIT",
+   "published": "2026-05-11T07:01:18.650221Z",
+   "updated": "2026-05-11T07:01:18.650221Z",
+   "repository": "https://github.com/nix-rust/nix",
+   "recent_downloads": 193102789,
+   "yanked": false,
+   "rust_version": "1.69"
+  },
+  "secret-service": {
+   "latest": "5.2.0",
+   "license": "MIT OR Apache-2.0",
+   "published": "2026-08-29T22:02:04.379952Z",
+   "updated": "2026-08-29T22:02:04.379952Z",
+   "repository": "https://github.com/hwchen/secret-service-rs.git",
+   "recent_downloads": 7825870,
+   "yanked": false,
+   "rust_version": "1.87.0"
+  },
+  "android_logger": {
+   "latest": "0.15.1",
+   "license": "MIT OR Apache-2.0",
+   "published": "2025-06-29T18:20:22.643726Z",
+   "updated": "2025-06-29T18:20:22.643726Z",
+   "repository": "https://github.com/rust-mobile/android_logger-rs",
+   "recent_downloads": 4923896,
+   "yanked": false,
+   "rust_version": null
+  }
+ }
+}

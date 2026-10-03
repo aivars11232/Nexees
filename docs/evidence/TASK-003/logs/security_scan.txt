@@ -1,0 +1,103 @@
+Secret and privacy scan of the files TASK-003 added or changed, run 2026-10-03T22:36:37+02:00.
+Scope: git status --porcelain --untracked-files=all, without this report itself (85 files):
+  FILE_TREE.txt
+  README.md
+  docs/architecture/baseline.lcl.txt
+  docs/architecture/checks.lcl.txt
+  docs/architecture/decisions.lcl.txt
+  docs/architecture/record.lcl.txt
+  docs/dependencies/LICENSE_MATRIX.md
+  docs/dependencies/baseline.lcl.txt
+  docs/dependencies/checks.lcl.txt
+  docs/dependencies/components.lcl.txt
+  docs/dependencies/dependencies.lcl.txt
+  docs/dependencies/record.lcl.txt
+  docs/dependencies/strategy.lcl.txt
+  docs/evidence/TASK-003/TASK-003_EVIDENCE.md
+  docs/evidence/TASK-003/check_dependencies.py
+  docs/evidence/TASK-003/logs/android_build.txt
+  docs/evidence/TASK-003/logs/app_logcat.txt
+  docs/evidence/TASK-003/logs/cargo_deny.txt
+  docs/evidence/TASK-003/logs/dependencies_lcl.txt
+  docs/evidence/TASK-003/logs/dispatch_task_003.record.json
+  docs/evidence/TASK-003/logs/emulator.json
+  docs/evidence/TASK-003/logs/hoptodesk_launch.txt
+  docs/evidence/TASK-003/logs/native_language_suite.json
+  docs/evidence/TASK-003/logs/negative_tests.txt
+  docs/evidence/TASK-003/logs/osv_after_overrides.json
+  docs/evidence/TASK-003/logs/osv_before_overrides.json
+  docs/evidence/TASK-003/logs/preflight.txt
+  docs/evidence/TASK-003/logs/probe_android_app.json
+  docs/evidence/TASK-003/logs/probe_android_shell.json
+  docs/evidence/TASK-003/logs/probe_desktop.json
+  docs/evidence/TASK-003/logs/registry_research.json
+  docs/evidence/TASK-003/logs/regression.txt
+  docs/evidence/TASK-003/logs/required_reading.txt
+  docs/evidence/TASK-003/logs/rust_checks.txt
+  docs/evidence/TASK-003/logs/scenarios.jsonl
+  docs/evidence/TASK-003/logs/theia_build.txt
+  docs/evidence/TASK-003/logs/theia_workbench.json
+  docs/evidence/TASK-003/logs/toolchains.txt
+  docs/evidence/TASK-003/prototypes/android-app/app/build.gradle.kts
+  docs/evidence/TASK-003/prototypes/android-app/app/src/main/AndroidManifest.xml
+  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/BootReceiver.kt
+  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Launcher.kt
+  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/MainActivity.kt
+  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/NativeCore.kt
+  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Notifications.kt
+  docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/ReceiverService.kt
+  docs/evidence/TASK-003/prototypes/android-app/build.gradle.kts
+  docs/evidence/TASK-003/prototypes/android-app/build.sh
+  docs/evidence/TASK-003/prototypes/android-app/gradle.properties
+  docs/evidence/TASK-003/prototypes/android-app/settings.gradle.kts
+  docs/evidence/TASK-003/prototypes/feasibility-core/Cargo.lock
+  docs/evidence/TASK-003/prototypes/feasibility-core/Cargo.toml
+  docs/evidence/TASK-003/prototypes/feasibility-core/deny.toml
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/help/hostile.md
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/invalid_task.lcl.txt
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/js/src/sum.js
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/js/test/sum.test.js
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/project/checks/checks.lcl.txt
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/project/data/values.lcl.txt
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/project/main.lcl.txt
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/project/tasks/record.lcl.txt
+  docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/valid_task.lcl.txt
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/android.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/bin/host.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/bin/probe.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/help.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/import.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/js_backend.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/lcl_bridge.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/lib.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/probe.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/remote.rs
+  docs/evidence/TASK-003/prototypes/feasibility-core/src/store.rs
+  docs/evidence/TASK-003/prototypes/harness/advisories.py
+  docs/evidence/TASK-003/prototypes/harness/device.py
+  docs/evidence/TASK-003/prototypes/harness/scenarios.py
+  docs/evidence/TASK-003/prototypes/theia/check_workbench.mjs
+  docs/evidence/TASK-003/prototypes/theia/package-lock.json
+  docs/evidence/TASK-003/prototypes/theia/package.json
+  docs/evidence/TASK-003/prototypes/theia/run_nested.sh
+  docs/evidence/TASK-003/receipt/corroboration.txt
+  docs/evidence/TASK-003/receipt/final_verification.txt
+  docs/evidence/TASK-003/receipt/receipt.json
+  docs/evidence/TASK-003/receipt/snapshot_files.sha256
+  docs/manuals/NEXEES_USER_MANUAL.md
+
+1. Credential formats (private keys; GitHub, OpenAI, Anthropic, AWS, Google and Slack tokens; URL credentials;
+   assigned passwords or tokens):
+   matches: 0
+   key or certificate files (.der, .p12, .jks, .keystore, .pem): 0
+2. E-mail-shaped strings: 7 occurrences of 2 distinct (file, string) pairs; none is the owner's:
+   docs/evidence/TASK-003/logs/scenarios.jsonl: app-dev.nexees.Receiver@autostart.service x1 (a systemd unit name generated in the isolated profile, not an address)
+   docs/evidence/TASK-003/prototypes/theia/package-lock.json: i@izs.me x6 (inside npm's public deprecation notice for old glob versions, copied by npm into the lockfile)
+3. Executable files: 2, both intended build and test scripts: ['docs/evidence/TASK-003/prototypes/android-app/build.sh', 'docs/evidence/TASK-003/prototypes/theia/run_nested.sh']
+4. Active content in the Markdown files (scripts, frames, handlers, remote images, raw HTML tags; inline code excluded): matches outside the hostile test fixture: 0
+   docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/help/hostile.md holds 9 such constructs on purpose: it is the input that proves the help renderer removes them;
+   its links and images point only to example.org.
+5. Private material: the device and PC test identities lived in the app sandbox and the session scratch folder and were
+   deleted with the AVD and the scratch data; no key file is in scope (item 1).
+
+Result: no credential, no key material, no personal address, no unexpected active content

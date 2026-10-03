@@ -1,0 +1,13 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: nexees.feasibility_values
+    NAME: "Values"
+    VERSION: "1.0.0"
+    KIND: kind.part.data
+
+DATA:
+    ID: data.items
+    TYPE: LIST[STRING]
+    VALUE: ["imported", "offline", "validated"]

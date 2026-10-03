@@ -1,0 +1,137 @@
+Regression of the accepted predecessors' executable checks, run 2026-10-03T22:31:27+02:00 on the TASK-003 worktree.
+TASK-003 does not modify docs/charter/, docs/evidence/TASK-001/ or docs/evidence/TASK-002/. It does extend
+docs/architecture/ (the open-decision resolutions it owns), so the architecture checks run on the changed files.
+The TASK-001 cross-check needs pack revision 0.5.2; as in TASK-002, the byte-identical archive preserved in the 0.5.3
+pack (history/task_001_baseline_v0.5.2.zip) is extracted to a scratch folder for this replay and removed afterwards.
+
+$ git diff --stat 284f97a -- docs/charter docs/evidence/TASK-001
+(empty output)
+exit code: 0
+
+$ git diff --stat d1a673f -- docs/evidence/TASK-002
+(empty output)
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+status.succeeded
+  VERIFY verify.charter_phase_total = TRUE (required)
+  VERIFY verify.charter_record_delivery = TRUE (required)
+  SUCCESS success.charter_record ALL = TRUE
+  OUTPUT output.charter_record published = {baseline_commit: "0d6d3e5ee422182a38b793756e001ddd75df507f", clause_count: 18, frozen_by: "TASK-001", language_core: "0.3.0", limits: "This record identifies the frozen requirement baseline and passes structural checks only. It is not evidence that any Nexees feature exists or works, and it closes no task.", open_item_ids: ["DESKTOP-RENDERER-01", "AMEND-075-01", "BIND-B1-LOGO", "CONV-MARKER-01"], pack_archive_revision: "0.5.2", pack_content_identity: "e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672", pack_manifest_sha256: "e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a", pack_specification_version: "0.5.0", precedence: "This charter consolidates; it does not replace. Each clause summarises agreed behaviour and names its authority in the specification pack identified in baseline.lcl.txt. Where a clause and its authority differ, the authority governs and the difference is a defect in this charter. Changing a requirement means an approved change to the pack and a new charter revision bound to the new pack identity.", record_kind: "nexees_frozen_charter", repository: URI("https://github.com/aivars11232/Nexees"), requirement_family_count: 7, specification_pack: "Nexees LCL Implementation Pack", task_count: 75}
+  because: SuccessSatisfied
+  2 invocation(s), 0 event(s), 3 step(s)
+exit code: 0
+
+$ sha256sum <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2/MANIFEST.json
+e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a  <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2/MANIFEST.json
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-001/check_charter_against_pack.py <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2
+PASS  pack files match the pack manifest  [188 files]
+PASS  content identity recomputed from the pack files  [e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672]
+PASS  manifest hash
+PASS  archive revision  [0.5.2]
+PASS  specification version
+PASS  language core
+PASS  task count  [75]
+PASS  execution phases  [19 phases]
+PASS  phase task counts
+PASS  task-ID map carried over
+PASS  task-ID map added tasks  [TASK-045 TASK-051 TASK-052 TASK-071 TASK-072]
+PASS  task-ID map covers 001-075
+PASS  family import: identifiers in architecture/lcl_import_pipeline.lcl.txt  [10/10]
+PASS  family import: owner task identifiers
+PASS  family handoff: identifiers in architecture/model_handoff.lcl.txt  [10/10]
+PASS  family handoff: owner task identifiers
+PASS  family manuals: identifiers in architecture/manuals_and_help.lcl.txt  [5/5]
+PASS  family manuals: owner task identifiers
+PASS  family readability: identifiers in policies/code_readability_and_cleanup.lcl.txt  [5/5]
+PASS  family readability: owner task identifiers
+PASS  family android: identifiers in architecture/android_operating_model.lcl.txt  [12/12]
+PASS  family android: owner task identifiers
+PASS  family remote_requirements: identifiers in architecture/remote_device_control.lcl.txt  [26/26]
+PASS  family remote_requirements: owner task identifiers
+PASS  family remote_scenarios: identifiers in verification/remote_control_acceptance.lcl.txt  [18/18]
+PASS  family remote_scenarios: owner task identifiers
+PASS  remote requirement owners  [26 requirements]
+PASS  remote scenario owners  [18 scenarios]
+PASS  TASK-001 owns all 26 remote requirements and no scenario
+PASS  clause authorities exist in the pack  [18 clauses]
+PASS  clause phases exist in the build order
+PASS  every phase is covered by a clause
+
+ALL CHECKS PASSED
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+PASS  pack files match the pack manifest  [201 files]
+PASS  content identity recomputed from the pack files  [bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1]
+PASS  manifest hash
+PASS  archive revision  [0.5.3]
+PASS  specification version and language core
+PASS  refined documents are byte-identical to the charter baseline 0.5.2  [26 documents]
+PASS  every product file belongs to exactly one subsystem  [217 files]
+PASS  every slot names existing files and states a responsibility
+PASS  slot layers match their roots (AD-01)
+PASS  every test file is attributed to exactly one subsystem  [59 test files]
+PASS  a subsystem without test files is a recorded gap  [SS-ACCOUNTS, SS-ASSETS, SS-IDE, SS-PLATFORM-ANDROID, SS-PLATFORM-DESKTOP]
+PASS  dependencies name other catalogued subsystems
+PASS  the dependency graph is acyclic (AD-12)
+PASS  every state category has exactly one owning subsystem
+PASS  state classifications use the documented vocabulary
+PASS  secret state never synchronizes
+PASS  interface consumers are subsystems that depend on a provider
+PASS  both hosts compose the same shared core and differ only in platform adapters
+PASS  every flow step names the subsystems that perform it
+PASS  contract elements and review references resolve
+PASS  every task reference is one of TASK-001 to TASK-075
+PASS  open decisions affect catalogued subsystems
+PASS  every implementation task from TASK-005 to TASK-075 owns part of a subsystem
+PASS  each single path is a catalogued slot
+PASS  the contracts cover exactly the requirements the pack assigns to TASK-002  [RC-01 RC-03 RC-04 RC-05 RC-08 RC-09 RC-13 RC-19 RC-20 RC-23 RC-25]
+PASS  runtime owners equal the pack requirement map after TASK-002
+PASS  test plans name RC-T01 to RC-T18, planned test files or recorded gaps
+
+ALL CHECKS PASSED
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+architecture.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+architecture.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+status.succeeded
+  VERIFY verify.arch_review_gates = TRUE (required)
+  VERIFY verify.arch_reviews_hold = TRUE (required)
+  VERIFY verify.arch_decisions_accepted_by_task_002 = TRUE (required)
+  VERIFY verify.arch_renderer_resolved = TRUE (required)
+  VERIFY verify.arch_open_decision_status = TRUE (required)
+  VERIFY verify.arch_remote_scope = TRUE (required)
+  VERIFY verify.arch_remote_design_only = TRUE (required)
+  VERIFY verify.arch_android_host_standalone = TRUE (required)
+  VERIFY verify.arch_state_owners = TRUE (required)
+  VERIFY verify.arch_authority_never_synced = TRUE (required)
+  VERIFY verify.arch_subsystem_ids = TRUE (required)
+  VERIFY verify.arch_receiver_uses_no_model = TRUE (required)
+  VERIFY verify.arch_record_delivery = TRUE (required)
+  SUCCESS success.arch_record ALL = TRUE
+  OUTPUT output.arch_record published = {base_commit: "284f97a02d3ad9288f3701860e608b366b10979f", decision_count: 12, defined_by: "TASK-002", failure_domain_count: 14, flow_count: 10, host_count: 2, interface_count: 14, language_core: "0.3.0", layout_revision: "0.4", limits: "This record defines boundaries and passes structural checks only. The architecture itself selects no technology, dependency or renderer: those answers come from the tasks named in each open decision's resolution (TASK-003's in docs/dependencies). It implements nothing and is not evidence that any subsystem exists or works.", open_decision_count: 16, open_gap_count: 7, pack_archive_revision: "0.5.3", pack_content_identity: "bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1", pack_manifest_sha256: "8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4", pack_specification_version: "0.5.0", precedence: "This architecture refines the specification pack and the TASK-001 charter within TASK-002's authority: it defines the boundaries, ownership and authoritative state that later tasks implement. Where it conflicts with the pack, the pack governs and the conflict is a defect here. A task that moves a boundary, merges or adds a slot, changes an owner or reverses a decision records that change in this architecture, with its reason, in the same change.", record_kind: "nexees_modular_architecture", remote_requirements_designed: ["RC-01", "RC-03", "RC-04", "RC-05", "RC-08", "RC-09", "RC-13", "RC-19", "RC-20", "RC-23", "RC-25"], remote_status: "Design closed by TASK-002; not implemented and not runtime-tested.", repository: URI("https://github.com/aivars11232/Nexees"), review_count: 11, reviewer: "The coding agent's own review; no independent human or model review.", single_path_count: 13, specification_pack: "Nexees LCL Implementation Pack", state_category_count: 22, subsystem_count: 24, subsystem_ids: ["SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT", "SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-CONTEXT", "SS-TASKING", "SS-PROVIDERS", "SS-LCL", "SS-ACCOUNTS", "SS-SETTINGS", "SS-REMOTE", "SS-SYNC", "SS-HELP", "SS-UPDATES", "SS-IDE", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-ASSETS", "SS-BUILD-RELEASE"]}
+  because: SuccessSatisfied
+  2 invocation(s), 0 event(s), 3 step(s)
+exit code: 0

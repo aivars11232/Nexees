@@ -1,0 +1,92 @@
+--------- beginning of system
+10-03 21:10:08.370   652   674 W ActivityTaskManager: Skip updateConfiguration because mWindowManager isn't set
+10-03 21:10:08.637   652   652 I ActivityTaskManager: Config changes=20005df8 {1.0 ?mcc0mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long port ?uimode ?night finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.2 ?fontWeightAdjustment}
+10-03 21:10:09.167   652   652 I ActivityTaskManager: Config changes=200 {1.0 ?mcc0mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.4 ?fontWeightAdjustment}
+10-03 21:10:09.352   652   652 I ActivityTaskManager: Config changes=10008000 {1.0 ?mcc0mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.6 fontWeightAdjustment=0}
+10-03 21:10:09.776   652   652 W ActivityTaskManager: callingPackage for (uid=-1, pid=0) has no WPC
+10-03 21:10:09.808   652   652 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.settings/.FallbackHome (has extras)} with LAUNCH_MULTIPLE from uid 0 (BAL_ALLOW_ALLOWLISTED_UID) result code=0
+--------- beginning of main
+10-03 21:10:10.312   652   674 I ActivityTaskManager: Displayed com.android.settings/.FallbackHome for user 0: +494ms
+10-03 21:10:11.738   652   952 I ActivityTaskManager: Config changes=3 {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} s.8 fontWeightAdjustment=0}
+10-03 21:10:41.683   652   674 I ActivityTaskManager: Restoring recents for user 0
+10-03 21:10:42.034   652  1124 W ActivityTaskManager: callingPackage for (uid=-1, pid=0) has no WPC
+10-03 21:10:42.105   652  1124 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.uioverrides.QuickstepLauncher (has extras)} with LAUNCH_SINGLE_TASK from uid 0 (BAL_ALLOW_ALLOWLISTED_UID) result code=0
+10-03 21:10:47.792   652   674 I ActivityTaskManager: Config changes=80000000 {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.18 fontWeightAdjustment=0}
+10-03 21:10:47.793   652   674 V ActivityTaskManager: Sending to IME proc com.android.inputmethod.latin new config {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h886dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.33 fontWeightAdjustment=0}
+10-03 21:10:48.223   652   674 W ActivityTaskManager: Current config: {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h886dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.18 fontWeightAdjustment=0} unchanged for IME proc com.android.inputmethod.latin
+10-03 21:10:48.279   652   674 I ActivityTaskManager: Config changes=80000000 {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h914dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2400) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.3 s.46 fontWeightAdjustment=0}
+10-03 21:10:48.283   652   674 V ActivityTaskManager: Sending to IME proc com.android.inputmethod.latin new config {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h838dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2274) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.3 s.61 fontWeightAdjustment=0}
+10-03 21:10:48.333   652   674 W ActivityTaskManager: Current config: {1.0 310mcc260mnc [en_US] ldltr sw411dp w411dp h838dp 420dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2400) mAppBounds=Rect(0, 0 - 1080, 2274) mMaxBounds=Rect(0, 0 - 1080, 2400) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.3 s.46 fontWeightAdjustment=0} unchanged for IME proc com.android.inputmethod.latin
+10-03 21:10:50.541   652   674 I ActivityTaskManager: Displayed com.android.launcher3/.uioverrides.QuickstepLauncher for user 0: +8s569ms
+10-03 21:10:50.960  2092  2092 I NexeesFeasibility: boot completed; receiver at boot: true
+10-03 21:10:50.969  2092  2092 I NexeesFeasibility: receiver start after boot requested
+10-03 21:10:50.984  2092  2092 I NexeesFeasibility: receiver service started; restarted by Android: false
+10-03 21:10:51.073  2092  2122 I NexeesFeasibility: receiver_start {"port":47200,"status":"running"}
+10-03 21:10:51.073  2092  2123 I NexeesFeasibility: receiver: receiver listening on port 47200
+10-03 21:11:13.370   652   952 W ActivityTaskManager: callingPackage for (uid=2000, pid=2242) has no WPC
+10-03 21:11:13.381   652   952 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+10-03 21:11:13.695  2092  2250 I NexeesFeasibility: assets {"pc_to_phone":true}
+10-03 21:11:14.360  2092  2258 I NexeesFeasibility: receiver: 10.0.2.2:59330: completed
+10-03 21:11:14.362   652   674 I ActivityTaskManager: Displayed dev.nexees.feasibility/.MainActivity for user 0: +986ms
+10-03 21:11:17.669  2092  2092 I NexeesFeasibility: receiver at boot: false
+10-03 21:13:05.636   652   952 W ActivityTaskManager: callingPackage for (uid=2000, pid=2415) has no WPC
+10-03 21:13:05.640   652   952 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:13:10.074   652  1069 W ActivityTaskManager: callingPackage for (uid=2000, pid=2440) has no WPC
+10-03 21:13:10.077   652  1069 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:13:11.101  2445  2445 I NexeesFeasibility: MARK-ask-pc-1791054791686275123
+10-03 21:13:14.119  2092  2469 I NexeesFeasibility: send {"id":"phone-1-18db1ad853e14f86","reply":{"detail":"the phone_to_pc grant is absent or revoked","id":"phone-1-18db1ad853e14f86","status":"denied"}}
+10-03 21:13:14.535  2092  2480 I NexeesFeasibility: receiver: 10.0.2.2:43980: completed
+10-03 21:13:15.960   652  1390 W ActivityTaskManager: callingPackage for (uid=2000, pid=2484) has no WPC
+10-03 21:13:15.963   652  1390 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:13:16.990  2489  2489 I NexeesFeasibility: MARK-ask-pc-1791054797573856942
+10-03 21:13:20.120  2092  2513 I NexeesFeasibility: send {"id":"phone-1-18db1ad9b5937278","reply":{"detail":"the phone_to_pc grant is absent or revoked","id":"phone-1-18db1ad9b5937278","status":"denied"}}
+10-03 21:13:21.600   652   669 W ActivityTaskManager: callingPackage for (uid=2000, pid=2527) has no WPC
+10-03 21:13:21.602   652   669 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:13:22.626  2532  2532 I NexeesFeasibility: MARK-ask-pc-1791054803210424018
+10-03 21:13:25.627  2092  2556 I NexeesFeasibility: send {"id":"phone-1-18db1adb04594718","reply":{"detail":"the phone_to_pc grant is absent or revoked","id":"phone-1-18db1adb04594718","status":"denied"}}
+10-03 21:13:29.279   652   730 W ActivityTaskManager: callingPackage for (uid=2000, pid=2571) has no WPC
+10-03 21:13:29.283   652   730 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:13:30.310  2576  2576 I NexeesFeasibility: MARK-ask-pc-1791054810892699873
+10-03 21:13:33.154  2092  2602 I NexeesFeasibility: send {"id":"phone-1-18db1adccf5a1cbb","reply":{"detail":"the phone_to_pc grant is absent or revoked","id":"phone-1-18db1adccf5a1cbb","status":"denied"}}
+10-03 21:13:33.864   652  1390 W ActivityTaskManager: callingPackage for (uid=2000, pid=2613) has no WPC
+10-03 21:13:33.866   652  1390 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:13:34.891  2618  2618 I NexeesFeasibility: MARK-ask-pc-1791054815474564684
+10-03 21:13:37.188  2092  2642 I NexeesFeasibility: send {"id":"phone-1-18db1adddb8d3043","reply":{"detail":"unavailable: Connection refused (os error 111)","status":"unavailable"}}
+10-03 21:13:54.340   652   952 W ActivityTaskManager: callingPackage for (uid=2000, pid=2667) has no WPC
+10-03 21:13:54.343   652   952 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:13:58.921   652   730 W ActivityTaskManager: callingPackage for (uid=2000, pid=2693) has no WPC
+10-03 21:13:58.924   652   730 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:13:59.948  2698  2698 I NexeesFeasibility: MARK-ask-pc-1791054840533374969
+10-03 21:14:03.118  2092  2723 I NexeesFeasibility: send {"id":"phone-1-18db1ae3b59a15c2","reply":{"detail":"the phone_to_pc grant is absent or revoked","id":"phone-1-18db1ae3b59a15c2","status":"denied"}}
+10-03 21:14:03.679  2092  2734 I NexeesFeasibility: receiver: 10.0.2.2:33250: completed
+10-03 21:14:06.150   652   952 W ActivityTaskManager: callingPackage for (uid=2000, pid=2739) has no WPC
+10-03 21:14:06.153   652   952 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:14:07.178  2744  2744 I NexeesFeasibility: MARK-ask-pc-1791054847762613892
+10-03 21:14:10.130  2092  2769 I NexeesFeasibility: send {"id":"phone-1-18db1ae564bd4ce9","reply":{"detail":"this receiver is not running inside a graphical login session","id":"phone-1-18db1ae564bd4ce9","status":"unsupported"}}
+10-03 21:14:11.879   652  1124 W ActivityTaskManager: callingPackage for (uid=2000, pid=2783) has no WPC
+10-03 21:14:11.883   652  1124 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:14:12.907  2788  2788 I NexeesFeasibility: MARK-ask-pc-1791054853491213765
+10-03 21:14:25.698  2092  2812 I NexeesFeasibility: send {"id":"phone-1-18db1ae6b97fc782","reply":{"detail":"outcome unknown: Try again (os error 11)","status":"outcome_unknown"}}
+10-03 21:14:29.311   652   882 W ActivityTaskManager: callingPackage for (uid=2000, pid=2864) has no WPC
+10-03 21:14:29.315   652   882 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:14:30.339  2869  2869 I NexeesFeasibility: MARK-ask-pc-1791054870923372508
+10-03 21:14:42.846  2092  2894 I NexeesFeasibility: send {"id":"phone-1-18db1aeac898e61f","reply":{"detail":"unavailable: Try again (os error 11)","status":"unavailable"}}
+10-03 21:18:01.683   652  1124 W ActivityTaskManager: callingPackage for (uid=2000, pid=3145) has no WPC
+10-03 21:18:01.686   652  1124 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:18:06.273   652   952 W ActivityTaskManager: callingPackage for (uid=2000, pid=3171) has no WPC
+10-03 21:18:06.277   652   952 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:18:07.302  3176  3176 I NexeesFeasibility: MARK-ask-pc-1791055087885975145
+10-03 21:18:10.274  2092  3201 I NexeesFeasibility: send {"id":"phone-1-18db1b1d4cd3e8bc","reply":{"detail":"the phone_to_pc grant is absent or revoked","id":"phone-1-18db1b1d4cd3e8bc","status":"denied"}}
+10-03 21:18:11.056  2092  3211 I NexeesFeasibility: receiver: 10.0.2.2:38848: completed
+10-03 21:18:13.490   652   668 W ActivityTaskManager: callingPackage for (uid=2000, pid=3216) has no WPC
+10-03 21:18:13.493   652   668 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:18:14.519  3221  3221 I NexeesFeasibility: MARK-ask-pc-1791055095102207653
+10-03 21:18:17.279  2092  3245 I NexeesFeasibility: send {"id":"phone-1-18db1b1efaf206d6","reply":{"detail":"this receiver is not running inside a graphical login session","id":"phone-1-18db1b1efaf206d6","status":"unsupported"}}
+10-03 21:18:19.416   652   882 W ActivityTaskManager: callingPackage for (uid=2000, pid=3259) has no WPC
+10-03 21:18:19.419   652   882 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:18:20.443  3264  3264 I NexeesFeasibility: MARK-ask-pc-1791055101027860685
+10-03 21:18:23.331  2092  3290 I NexeesFeasibility: send {"id":"phone-1-18db1b205c9f6d11","reply":{"detail":"the phone_to_pc grant is absent or revoked","id":"phone-1-18db1b205c9f6d11","status":"denied"}}
+10-03 21:18:24.199   652   874 W ActivityTaskManager: callingPackage for (uid=2000, pid=3301) has no WPC
+10-03 21:18:24.201   652   874 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=dev.nexees.feasibility/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=3
+10-03 21:18:25.227  3306  3306 I NexeesFeasibility: MARK-ask-pc-1791055105809887865
+10-03 21:18:27.826  2092  3330 I NexeesFeasibility: send {"id":"phone-1-18db1b2177b78d2b","reply":{"detail":"unavailable: Connection refused (os error 111)","status":"unavailable"}}

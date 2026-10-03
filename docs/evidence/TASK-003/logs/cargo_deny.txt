@@ -1,0 +1,180 @@
+warning[duplicate]: found 2 duplicate entries for crate 'getrandom'
+   ┌─ /mnt/F/Nexees/docs/evidence/TASK-003/prototypes/feasibility-core/Cargo.lock:51:1
+   │  
+51 │ ╭ getrandom 0.2.17 registry+https://github.com/rust-lang/crates.io-index
+52 │ │ getrandom 0.4.3 registry+https://github.com/rust-lang/crates.io-index
+   │ ╰─────────────────────────────────────────────────────────────────────┘ lock entries
+   │  
+   ├ getrandom v0.2.17
+     └── ring v0.17.14
+         ├── nexees-feasibility v0.0.0
+         ├── rcgen v0.14.10
+         │   └── nexees-feasibility v0.0.0 (*)
+         ├── rustls v0.23.45
+         │   └── nexees-feasibility v0.0.0 (*)
+         └── rustls-webpki v0.103.15
+             └── rustls v0.23.45 (*)
+   ├ getrandom v0.4.3
+     └── rand v0.10.3
+         └── boa_engine v0.22.0
+             └── nexees-feasibility v0.0.0
+
+warning[duplicate]: found 2 duplicate entries for crate 'hashbrown'
+   ┌─ /mnt/F/Nexees/docs/evidence/TASK-003/prototypes/feasibility-core/Cargo.lock:53:1
+   │  
+53 │ ╭ hashbrown 0.14.5 registry+https://github.com/rust-lang/crates.io-index
+54 │ │ hashbrown 0.17.1 registry+https://github.com/rust-lang/crates.io-index
+   │ ╰──────────────────────────────────────────────────────────────────────┘ lock entries
+   │  
+   ├ hashbrown v0.14.5
+     └── dashmap v6.2.1
+         └── boa_engine v0.22.0
+             └── nexees-feasibility v0.0.0
+   ├ hashbrown v0.17.1
+     ├── boa_engine v0.22.0
+     │   └── nexees-feasibility v0.0.0
+     ├── boa_gc v0.22.0
+     │   ├── boa_engine v0.22.0 (*)
+     │   └── boa_interner v0.22.0
+     │       ├── boa_ast v0.22.0
+     │       │   ├── boa_engine v0.22.0 (*)
+     │       │   └── boa_parser v0.22.0
+     │       │       └── boa_engine v0.22.0 (*)
+     │       ├── boa_engine v0.22.0 (*)
+     │       └── boa_parser v0.22.0 (*)
+     ├── boa_interner v0.22.0 (*)
+     ├── hashlink v0.12.2
+     │   └── rusqlite v0.40.2
+     │       └── nexees-feasibility v0.0.0 (*)
+     └── indexmap v2.14.2
+         ├── boa_ast v0.22.0 (*)
+         ├── boa_engine v0.22.0 (*)
+         ├── boa_interner v0.22.0 (*)
+         ├── toml_edit v0.25.15+spec-1.1.0
+         │   └── proc-macro-crate v3.5.0
+         │       └── num_enum_derive v0.7.6
+         │           └── num_enum v0.7.6
+         │               └── boa_engine v0.22.0 (*)
+         └── zip v8.6.0
+             └── nexees-feasibility v0.0.0 (*)
+
+warning[duplicate]: found 2 duplicate entries for crate 'syn'
+    ┌─ /mnt/F/Nexees/docs/evidence/TASK-003/prototypes/feasibility-core/Cargo.lock:155:1
+    │  
+155 │ ╭ syn 2.0.119 registry+https://github.com/rust-lang/crates.io-index
+156 │ │ syn 3.0.6 registry+https://github.com/rust-lang/crates.io-index
+    │ ╰───────────────────────────────────────────────────────────────┘ lock entries
+    │  
+    ├ syn v2.0.119
+      ├── dynify-macros v0.1.2
+      │   └── dynify v0.1.2
+      │       └── boa_engine v0.22.0
+      │           └── nexees-feasibility v0.0.0
+      ├── equator-macro v0.4.2
+      │   └── equator v0.4.2
+      │       └── aligned-vec v0.6.4
+      │           └── boa_engine v0.22.0 (*)
+      ├── jni-macros v0.22.4
+      │   └── jni v0.22.4
+      │       └── nexees-feasibility v0.0.0 (*)
+      ├── jni-sys-macros v0.4.1
+      │   └── jni-sys v0.4.1
+      │       └── jni v0.22.4 (*)
+      ├── num_enum_derive v0.7.6
+      │   └── num_enum v0.7.6
+      │       └── boa_engine v0.22.0 (*)
+      ├── phf_macros v0.14.0
+      │   └── phf v0.14.0
+      │       └── boa_interner v0.22.0
+      │           ├── boa_ast v0.22.0
+      │           │   ├── boa_engine v0.22.0 (*)
+      │           │   └── boa_parser v0.22.0
+      │           │       └── boa_engine v0.22.0 (*)
+      │           ├── boa_engine v0.22.0 (*)
+      │           └── boa_parser v0.22.0 (*)
+      ├── pin-project-internal v1.1.13
+      │   └── pin-project v1.1.13
+      │       └── futures-concurrency v7.7.1
+      │           └── boa_engine v0.22.0 (*)
+      └── strum_macros v0.28.0
+          └── strum v0.28.0
+              └── boa_ast v0.22.0 (*)
+    ├ syn v3.0.6
+      ├── boa_macros v0.22.0
+      │   ├── boa_ast v0.22.0
+      │   │   ├── boa_engine v0.22.0
+      │   │   │   └── nexees-feasibility v0.0.0
+      │   │   └── boa_parser v0.22.0
+      │   │       └── boa_engine v0.22.0 (*)
+      │   ├── boa_engine v0.22.0 (*)
+      │   ├── boa_gc v0.22.0
+      │   │   ├── boa_engine v0.22.0 (*)
+      │   │   └── boa_interner v0.22.0
+      │   │       ├── boa_ast v0.22.0 (*)
+      │   │       ├── boa_engine v0.22.0 (*)
+      │   │       └── boa_parser v0.22.0 (*)
+      │   ├── boa_interner v0.22.0 (*)
+      │   └── boa_parser v0.22.0 (*)
+      ├── bytemuck_derive v1.12.1
+      │   └── bytemuck v1.25.2
+      │       └── boa_engine v0.22.0 (*)
+      ├── displaydoc v0.2.7
+      │   ├── icu_collections v2.3.0
+      │   │   ├── icu_normalizer v2.3.0
+      │   │   │   └── boa_engine v0.22.0 (*)
+      │   │   └── icu_properties v2.3.0
+      │   │       └── boa_parser v0.22.0 (*)
+      │   ├── icu_locale_core v2.3.0
+      │   │   ├── icu_properties v2.3.0 (*)
+      │   │   └── icu_provider v2.3.1
+      │   │       ├── icu_normalizer v2.3.0 (*)
+      │   │       └── icu_properties v2.3.0 (*)
+      │   ├── icu_properties v2.3.0 (*)
+      │   ├── icu_provider v2.3.1 (*)
+      │   ├── tinystr v0.8.4
+      │   │   └── icu_locale_core v2.3.0 (*)
+      │   └── zerotrie v0.2.5
+      │       ├── icu_properties v2.3.0 (*)
+      │       └── icu_provider v2.3.1 (*)
+      ├── serde_derive v1.0.229
+      │   └── serde v1.0.229
+      │       ├── boa_engine v0.22.0 (*)
+      │       ├── nexees-feasibility v0.0.0 (*)
+      │       └── num-bigint v0.5.1
+      │           ├── boa_ast v0.22.0 (*)
+      │           ├── boa_engine v0.22.0 (*)
+      │           └── boa_parser v0.22.0 (*)
+      ├── synstructure v0.14.0
+      │   ├── boa_macros v0.22.0 (*)
+      │   ├── yoke-derive v0.8.4
+      │   │   └── yoke v0.8.3
+      │   │       ├── icu_collections v2.3.0 (*)
+      │   │       ├── icu_provider v2.3.1 (*)
+      │   │       ├── zerotrie v0.2.5 (*)
+      │   │       └── zerovec v0.11.8
+      │   │           ├── icu_collections v2.3.0 (*)
+      │   │           ├── icu_locale_core v2.3.0 (*)
+      │   │           ├── icu_normalizer v2.3.0 (*)
+      │   │           ├── icu_properties v2.3.0 (*)
+      │   │           ├── icu_provider v2.3.1 (*)
+      │   │           ├── potential_utf v0.1.6
+      │   │           │   └── icu_collections v2.3.0 (*)
+      │   │           └── tinystr v0.8.4 (*)
+      │   └── zerofrom-derive v0.1.8
+      │       └── zerofrom v0.1.8
+      │           ├── icu_collections v2.3.0 (*)
+      │           ├── icu_provider v2.3.1 (*)
+      │           ├── yoke v0.8.3 (*)
+      │           ├── zerotrie v0.2.5 (*)
+      │           └── zerovec v0.11.8 (*)
+      ├── thiserror-impl v2.0.21
+      │   └── thiserror v2.0.21
+      │       ├── boa_engine v0.22.0 (*)
+      │       └── jni v0.22.4
+      │           └── nexees-feasibility v0.0.0 (*)
+      ├── yoke-derive v0.8.4 (*)
+      ├── zerofrom-derive v0.1.8 (*)
+      └── zerovec-derive v0.11.6
+          └── zerovec v0.11.8 (*)
+
+advisories ok, bans ok, licenses ok, sources ok

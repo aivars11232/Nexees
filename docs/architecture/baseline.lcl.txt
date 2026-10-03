@@ -401,7 +401,7 @@ DEFINE:
     ID: type.arch_open_decision
     KIND: kind.type
     BASE: OBJECT
-    DESCRIPTION: "A portability or platform decision this architecture identifies but does not take. constraint is what any answer must satisfy; decide_by are the tasks that must answer it, with evidence, before the affected foundation or interface is fixed."
+    DESCRIPTION: "A portability or platform decision this architecture identifies but does not take. constraint is what any answer must satisfy; decide_by are the tasks that must answer it, with evidence, before the affected foundation or interface is fixed. status (open, partly_resolved or resolved) and resolution record each answer, with the task that gave it and its evidence."
     FIELD:
         NAME: decision_id
         TYPE: STRING
@@ -424,6 +424,14 @@ DEFINE:
         REQUIRED: TRUE
     FIELD:
         NAME: evidence_needed
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: status
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: resolution
         TYPE: STRING
         REQUIRED: TRUE
 

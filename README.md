@@ -21,17 +21,29 @@ Check, validate and run it with the installed `lcl` and the canonical Core packa
 successful run shows that the record is structurally consistent, not that any feature
 exists.
 
-The charter also records what is still open: the Desktop renderer decision, the
-Review/Supervisor amendment deferred to TASK-075, and the logo source path, which does
-not currently resolve.
+The charter also records what was open when it was frozen: the Desktop renderer
+decision, the Review/Supervisor amendment deferred to TASK-075, and the logo source
+path, which does not currently resolve. TASK-003 obtained the owner's renderer answer,
+**Electron permitted**, recorded in [docs/dependencies/](docs/dependencies/); the
+charter itself stays frozen.
 
 [docs/architecture/](docs/architecture/) defines the modular architecture (TASK-002): the
 subsystems and the module files each one owns, shared versus client-specific code, the
 Desktop and Android local hosts, interfaces, which state is authoritative and who writes
-it, data and authority flows, failure domains, and the portability decisions left to
-TASK-003. It is an LCL Core 0.3.0 project whose entry is
-`docs/architecture/architecture.lcl.txt`; it refines the pack, and where they differ the
-pack governs. It selects no technology, dependency or renderer.
+it, data and authority flows, failure domains, and the portability decisions, each with its
+status and the resolution the deciding task recorded. It is an LCL Core 0.3.0 project
+whose entry is `docs/architecture/architecture.lcl.txt`; it refines the pack, and where
+they differ the pack governs. The architecture itself selects no technology, dependency
+or renderer.
+
+[docs/dependencies/](docs/dependencies/) is the dependency inventory (TASK-003): every
+evaluated component and protocol, classified DEPENDENCY, ADAPTER, REFERENCE or REJECTED,
+with its exact version, license and duties, advisory review, maintenance status and
+removal path, together with the initial dependency strategy, the owner decisions it rests
+on and the open items. Its entry is `docs/dependencies/dependencies.lcl.txt`, and
+[LICENSE_MATRIX.md](docs/dependencies/LICENSE_MATRIX.md) is the human-readable matrix.
+The feasibility prototypes behind it are evidence under
+[docs/evidence/TASK-003/](docs/evidence/TASK-003/), not product code.
 
 ## Source-file status
 
@@ -39,10 +51,11 @@ Every `*.source` file is an **empty named placeholder**, not executable source o
 completed feature. `*.test.source` files reserve test names; no tests are implemented
 or claimed to pass. The filename stems describe the planned modules.
 
-The Desktop renderer, implementation languages and build system are still unconfirmed.
-The `.source` suffix is deliberately temporary: choose the approved stack first, then
-use its actual language extensions and build files. No Electron, WebView, native GUI,
-Kotlin, TypeScript, Rust or other stack has been silently selected by this archive.
+TASK-003 selected the stack, with prototype evidence and the owner's renderer decision: a
+shared Rust core used by both hosts (on Android through JNI, with Kotlin for the
+platform layer) and Eclipse Theia on Electron for the Desktop client. The `.source`
+suffix stays until TASK-005 creates the real scaffold with the actual language extensions
+and build files.
 This is a complete inventory of this planned layout, not a prediction of every file
 that upstream frameworks or implementation will eventually generate.
 
@@ -59,6 +72,7 @@ that upstream frameworks or implementation will eventually generate.
 | `config/` | Configuration slots and the existing non-secret local-path example. |
 | `docs/charter/` | Frozen project charter as an LCL project: scope, traceability, open decisions and structural checks. |
 | `docs/architecture/` | Modular architecture as an LCL project: subsystems and module ownership, hosts, interfaces, authoritative state, flows, failure domains and decisions. |
+| `docs/dependencies/` | Dependency inventory as an LCL project, the license matrix and the initial dependency strategy. |
 | `docs/evidence/` | Evidence of completed implementation tasks, one folder per task. |
 | `docs/manuals/` | Nexees and integrated-LCL manual drafts, retained from the previous pack. |
 | `tests/` | Named unit, integration, conformance, security and end-to-end test slots. |

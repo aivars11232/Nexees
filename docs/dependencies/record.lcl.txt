@@ -1,0 +1,57 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.dep_record
+    NAME: "Dependency inventory record delivery"
+    VERSION: "0.5.0"
+    KIND: kind.part.task
+    DESCRIPTION: "Returns one record that identifies the dependency inventory and summarises it. A pure core.return task: it reads nothing outside this project and changes nothing."
+
+DATA:
+    ID: data.dep_record
+    TYPE: OBJECT
+    VALUE:
+        record_kind: "nexees_dependency_inventory"
+        defined_by: REF(binding.dep_defined_by)
+        audit_date: REF(binding.dep_audit_date)
+        evidence: REF(binding.dep_evidence)
+        renderer_decision: REF(binding.dep_renderer_decision)
+        component_count: COUNT(REF(data.dep_components))
+        dependency_count: 19
+        adapter_count: 10
+        reference_count: 10
+        rejected_count: 10
+        npm_override_count: COUNT(REF(data.dep_npm_overrides))
+        advisory_disposition_count: COUNT(REF(data.dep_advisory_dispositions))
+        open_item_count: COUNT(REF(data.dep_open_items))
+        reviewer: "The coding agent's own review; no independent human or model review."
+        limits: "This inventory records what TASK-003 evaluated and proved by prototype. A selected component that the prototype did not run is marked unproven, with its owning task. It is not evidence that any Nexees feature exists, and real-device and release evidence remain with the owning tasks."
+
+OUTPUT:
+    ID: output.dep_record
+    TYPE: OBJECT
+    FORMAT: format.json
+
+GOAL:
+    ID: goal.dep_record
+    ASSERT: REF(output.dep_record) == REF(data.dep_record)
+    DESCRIPTION: "Deliver the inventory record unchanged."
+
+ACTION:
+    ID: action.return_dep_record
+    OPERATION: core.return
+    TARGET: REF(data.dep_record)
+    OUTPUT: REF(output.dep_record)
+
+SUCCESS:
+    ID: success.dep_record
+    ALL: [REF(verify.dep_classifications_valid), REF(verify.dep_scopes_valid), REF(verify.dep_foundation), REF(verify.dep_shared_core_portable), REF(verify.dep_record_delivery)]
+
+TASK:
+    ID: task.dep_record
+    GOAL: REF(goal.dep_record)
+    ACTION: REF(action.return_dep_record)
+    OUTPUT: REF(output.dep_record)
+    SUCCESS: REF(success.dep_record)
+    DESCRIPTION: "Return the dependency inventory record and run its structural checks."

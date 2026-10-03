@@ -239,6 +239,8 @@ DATA:
         affects: ["SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-CONTEXT", "SS-TASKING", "SS-PROVIDERS", "SS-LCL", "SS-ACCOUNTS", "SS-SETTINGS", "SS-REMOTE", "SS-SYNC", "SS-HELP", "SS-UPDATES"]
         decide_by: ["TASK-003", "TASK-005"]
         evidence_needed: "A core prototype built and run on Android and on Desktop, with version, license and maintenance evidence (TASK-003 v0.2 gate)."
+        status: "resolved"
+        resolution: "TASK-003: Rust (rustc 1.99.0 stable) for one shared-core library, linked as a crate on Desktop and as a cdylib through JNI on Android, with SQLite, zip, Boa, pulldown-cmark, rustls with ring, rcgen and serde (docs/dependencies, DS-01, DS-04). Proven: the same crate built and passed its probe on x86_64 Linux and on Android 16 x86_64, and compiled for arm64 Android. TASK-005 fixes the repository layout and the toolchain pin."
 
 DATA:
     ID: data.arch_pd_renderer
@@ -250,6 +252,8 @@ DATA:
         affects: ["SS-DESKTOP-CLIENT", "SS-IDE", "SS-LOCAL-HOST"]
         decide_by: ["TASK-003"]
         evidence_needed: "The owner's recorded answer, native_only or electron_permitted."
+        status: "resolved"
+        resolution: "TASK-003: the owner answered electron_permitted on 2026-10-03. The Desktop client may render with Electron and Chromium; the core and Android do not depend on it (C20)."
 
 DATA:
     ID: data.arch_pd_ide_placement
@@ -261,6 +265,8 @@ DATA:
         affects: ["SS-IDE", "SS-LOCAL-HOST", "SS-DESKTOP-CLIENT"]
         decide_by: ["TASK-003", "TASK-009"]
         evidence_needed: "The selected foundation's process model, mapped onto HOST-DESKTOP."
+        status: "partly_resolved"
+        resolution: "TASK-003: Theia 1.76.0 on Electron 42.11.10 was selected. Observed process model: the Electron main process owns the window, Theia's Node backend runs in its own process group with a 127.0.0.1 port, and VS Code extensions run in a separate extension host, all as the Desktop user. TASK-009 maps these onto HOST-DESKTOP beside the Nexees host process, with workspace access only through the host (AD-10)."
 
 DATA:
     ID: data.arch_pd_lcl_android
@@ -272,6 +278,8 @@ DATA:
         affects: ["SS-LCL", "SS-PLATFORM-ANDROID"]
         decide_by: ["TASK-003", "TASK-046", "TASK-063"]
         evidence_needed: "On-device validation of shared fixtures with the same results as on Desktop (IM-09, tests/conformance/lcl/shared_core_parity)."
+        status: "resolved"
+        resolution: "TASK-003: the LCL engine crates (lcl-protocol and lcl-project at commit fa1592b) link into the shared core and run on Android through the JNI bridge, with the Core 0.1.0 and 0.3.0 packages shipped as APK assets and verified by the engine's trust anchors on the device. The shared fixtures gave the same verdicts on Desktop and on Android 16 (emulator), also offline. TASK-046 and TASK-063 build the production bridge and its conformance test."
 
 DATA:
     ID: data.arch_pd_persistence
@@ -283,6 +291,8 @@ DATA:
         affects: ["SS-STATE", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
         decide_by: ["TASK-003", "TASK-008"]
         evidence_needed: "Crash-recovery and migration tests on both platforms."
+        status: "resolved"
+        resolution: "TASK-003: SQLite 3.53.2, bundled through rusqlite 0.40.2, in WAL mode with FULL sync. Migration, rollback, crash recovery and survival of app kill, force-stop and reboot were tested on Desktop and Android. TASK-008 defines the schema and migrations."
 
 DATA:
     ID: data.arch_pd_android_execution
@@ -294,6 +304,8 @@ DATA:
         affects: ["SS-TOOLS", "SS-PLATFORM-ANDROID"]
         decide_by: ["TASK-003", "TASK-066"]
         evidence_needed: "A runnable fixture on a real phone (AN-03)."
+        status: "partly_resolved"
+        resolution: "TASK-003: the Boa JavaScript engine 0.22.0 in the shared core is the first on-device test backend: a fixture failed, was repaired and passed inside the app on Android 16 (emulator) in airplane mode, with no ambient authority. AN-03 on a real phone and any further backends remain TASK-066."
 
 DATA:
     ID: data.arch_pd_android_background
@@ -305,6 +317,8 @@ DATA:
         affects: ["SS-PLATFORM-ANDROID", "SS-LOCAL-HOST", "SS-REMOTE"]
         decide_by: ["TASK-003", "TASK-057", "TASK-066"]
         evidence_needed: "RC-T06 on real devices."
+        status: "partly_resolved"
+        resolution: "TASK-003 on Android 16 (emulator): a connectedDevice foreground service started from a user action, with a visible notification and a Stop action. Requests were served in the foreground, in the background, with the screen locked and in forced deep Doze; network loss reported unavailable; Android restarted the sticky service after process death; force-stop and a default reboot left it unavailable until the user started it; an opt-in BOOT_COMPLETED start was allowed. Android blocked background activity starts, so launches become needs-user-action notifications. Real devices and OEM policies remain TASK-057 and TASK-066."
 
 DATA:
     ID: data.arch_pd_transport
@@ -316,6 +330,8 @@ DATA:
         affects: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-REMOTE", "SS-SYNC"]
         decide_by: ["TASK-003", "TASK-060", "TASK-070"]
         evidence_needed: "RC-T15 in an isolated environment."
+        status: "partly_resolved"
+        resolution: "TASK-003: rustls 0.23.45 with ring, TLS 1.3 only, mutual authentication with per-device self-signed certificates (rcgen) pinned at pairing and checked by the stock WebPKI verifiers, and bounded typed frames; tested in-process on both hosts and between the PC and the emulator over its network redirect. The off-LAN route is not chosen: WireGuard, Tailscale and Headscale each need the owner's account and cost decision at TASK-060 and TASK-070."
 
 DATA:
     ID: data.arch_pd_secrets
@@ -327,6 +343,8 @@ DATA:
         affects: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-SECURITY"]
         decide_by: ["TASK-003", "TASK-025"]
         evidence_needed: "tests/security/credentials/credential_storage on both platforms."
+        status: "partly_resolved"
+        resolution: "TASK-003 selected, unproven: the keyring crate over the OS store on Desktop (Secret Service on Linux) and the Android Keystore. keytar, which Theia still ships, is rejected for Nexees secrets because it is archived upstream. TASK-025 proves both stores and decides how Theia's own key store is handled."
 
 DATA:
     ID: data.arch_pd_local_ipc
@@ -338,6 +356,8 @@ DATA:
         affects: ["SS-PLATFORM-DESKTOP", "SS-LOCAL-HOST", "SS-DESKTOP-CLIENT"]
         decide_by: ["TASK-003", "TASK-009"]
         evidence_needed: "The local IPC caller checks of RC-T15."
+        status: "resolved"
+        resolution: "TASK-003: a Unix domain socket in a 0700 state folder, socket mode 0600, with the peer user checked through SO_PEERCRED (nix) and one bounded JSON line per message (4096 bytes). Tested: the own user is served, a mismatching uid is denied, oversized messages are refused. TASK-009 implements it."
 
 DATA:
     ID: data.arch_pd_startup
@@ -349,6 +369,8 @@ DATA:
         affects: ["SS-PLATFORM-DESKTOP", "SS-LOCAL-HOST"]
         decide_by: ["TASK-003", "TASK-009"]
         evidence_needed: "RC-T04."
+        status: "partly_resolved"
+        resolution: "TASK-003: an XDG autostart entry, off by default, which systemd-xdg-autostart-generator turns into a unit bound to graphical-session.target, so the receiver lives exactly as long as the graphical session; no linger, system service or automatic login. Tested in an isolated profile only (the owner's choice). Observed: this account already has linger enabled, set before TASK-003 and left unchanged, so no Nexees unit may rely on running outside the session. Real login, logout and lock tests belong to TASK-009."
 
 DATA:
     ID: data.arch_pd_archive
@@ -360,6 +382,8 @@ DATA:
         affects: ["SS-LCL"]
         decide_by: ["TASK-003", "TASK-051"]
         evidence_needed: "IM-05 and IM-06 on both platforms."
+        status: "resolved"
+        resolution: "TASK-003: the zip crate 8.6.0 (zip-rs/zip2) with only its deflate decoder, behind Nexees's own bounded staging and validation; hostile archives were rejected with nothing published, on Desktop and Android. TASK-051 implements the import."
 
 DATA:
     ID: data.arch_pd_manual_renderer
@@ -371,6 +395,8 @@ DATA:
         affects: ["SS-HELP", "SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT"]
         decide_by: ["TASK-003", "TASK-071"]
         evidence_needed: "MAN-01 and MAN-04 on both clients."
+        status: "partly_resolved"
+        resolution: "TASK-003: pulldown-cmark 0.13.4 in the shared core, removing active content while parsing (raw HTML shown as text, only relative or https links, only relative images), shown by a viewer that runs no script. Proven on both hosts with a hostile page and the whole LCL user manual, and in the Android app offline. The Desktop viewer and MAN-01 and MAN-04 remain TASK-071 and TASK-072."
 
 DATA:
     ID: data.arch_pd_git_android
@@ -382,6 +408,8 @@ DATA:
         affects: ["SS-TOOLS", "SS-PLATFORM-ANDROID"]
         decide_by: ["TASK-003", "TASK-033", "TASK-066"]
         evidence_needed: "Capability reporting and a Git fixture on the phone, or a documented gap."
+        status: "partly_resolved"
+        resolution: "TASK-003: the Git CLI is used on Desktop and not assumed on Android. Until TASK-033 and TASK-066 prove a library on the phone (gix is the candidate), Git on Android is a reported capability gap."
 
 DATA:
     ID: data.arch_pd_code_index_android
@@ -393,6 +421,8 @@ DATA:
         affects: ["SS-CONTEXT", "SS-PLATFORM-ANDROID"]
         decide_by: ["TASK-003", "TASK-039"]
         evidence_needed: "A repository-map fixture on the phone, or a documented gap."
+        status: "partly_resolved"
+        resolution: "TASK-003: Tree-sitter 0.27.0 is the selected parser for both hosts; its Android build is unproven. TASK-039 proves it or keeps the code index capability-gated on the phone."
 
 DATA:
     ID: data.arch_pd_provider_android
@@ -404,6 +434,8 @@ DATA:
         affects: ["SS-PROVIDERS", "SS-ACCOUNTS"]
         decide_by: ["TASK-041", "TASK-042", "TASK-068"]
         evidence_needed: "AN-03 with a supported provider and no PC endpoint."
+        status: "open"
+        resolution: "Not a TASK-003 decision: TASK-041, TASK-042 and TASK-068 decide it. TASK-003 only rejected LiteLLM, a Python service that cannot run on the phone."
 
 DATA:
     ID: data.arch_open_decisions
@@ -413,13 +445,13 @@ DATA:
 DATA:
     ID: data.arch_security_assumptions
     TYPE: LIST[STRING]
-    VALUE: ["SA-01 Each device's OS user account, file permissions and OS credential store protect that device's host. Code already running as the same OS user is beyond what local IPC peer checks can stop; TASK-004 threat-models it.", "SA-02 The window, the local host and tool processes run as the same non-elevated user (RC-23).", "SA-03 Peers are authenticated by keys established at explicit pairing, and transport cryptography comes from audited libraries (RC-19).", "SA-04 Providers, the network, repositories, tool output, and imported and synced content are untrusted for authority (authority_hierarchy).", "SA-05 The LCL core is trusted to evaluate LCL deterministically; validated LCL constrains work but cannot weaken Nexees security.", "SA-06 The external auth backend authenticates accounts only; compromising it must yield no device trust, grant or provider credential.", "SA-07 Android may stop the app at any time; durability rests on atomic writes and the journal, not on background execution.", "SA-08 Extension code is untrusted with respect to Nexees authority, and its OS-level confinement is unknown until the IDE foundation is chosen (EXT-07). Until then extensions stay disabled."]
+    VALUE: ["SA-01 Each device's OS user account, file permissions and OS credential store protect that device's host. Code already running as the same OS user is beyond what local IPC peer checks can stop; TASK-004 threat-models it.", "SA-02 The window, the local host and tool processes run as the same non-elevated user (RC-23).", "SA-03 Peers are authenticated by keys established at explicit pairing, and transport cryptography comes from audited libraries (RC-19).", "SA-04 Providers, the network, repositories, tool output, and imported and synced content are untrusted for authority (authority_hierarchy).", "SA-05 The LCL core is trusted to evaluate LCL deterministically; validated LCL constrains work but cannot weaken Nexees security.", "SA-06 The external auth backend authenticates accounts only; compromising it must yield no device trust, grant or provider credential.", "SA-07 Android may stop the app at any time; durability rests on atomic writes and the journal, not on background execution.", "SA-08 Extension code is untrusted with respect to Nexees authority, and its OS-level confinement is unknown until the IDE foundation is chosen (EXT-07). Until then extensions stay disabled. TASK-003 chose Theia: its VS Code extension host is a separate Node process running as the Desktop user with no confinement of its own, and its .vsix unpacker uses decompress 4.2.1, which has unfixed critical path-traversal advisories, so extensions stay disabled until TASK-021 decides confinement and replaces that extraction."]
     DESCRIPTION: "Security assumptions the architecture relies on. An assumption that turns out false is a blocker for the affected work (TASK-002 security requirements)."
 
 DATA:
     ID: data.arch_reuse_observations
     TYPE: LIST[STRING]
-    VALUE: ["RO-01 | LCL engine crates (LCL repository, impl/crates) | The crate lcl-protocol describes itself as the stable, headless, UI-independent engine facade. It is the natural target of integrations/lcl/core_bridge in both hosts. Inspected read-only; whether it builds and runs on Android is unproven (PD-LCL-ANDROID). Candidate classification for TASK-003 to confirm: shared internal component.", "RO-02 | LCL for Android app (LCL repository, android) | A native remote client in which the PC is the authority and the phone never parses, checks or runs LCL. It cannot provide standalone Android LCL (A4); at most a reference for UI, Keystore and pairing patterns. For TASK-003 to classify.", "RO-03 | lcl-remote (LCL repository, remote) | A systemd user service with TLS 1.3 pairing that pins both ends, and revocation. It listens on all interfaces and expects the user to open the firewall, which RC-19 does not allow as is. A reference candidate for SS-REMOTE pairing and the Desktop receiver's lifetime. For TASK-003 to classify.", "RO-04 | reuse/reuse_matrix.lcl.txt candidates | Theia, Code-OSS, Monaco, Open VSX, LSP, Tree-sitter, xterm.js, Git, ACP, the auth, secret-store and sandbox candidates remain candidates only. This architecture gives each a boundary (SS-IDE, SS-CONTEXT, SS-TOOLS, SS-PROVIDERS, SS-ACCOUNTS, SS-PLATFORM-DESKTOP, SS-PLATFORM-ANDROID) without selecting any."]
+    VALUE: ["RO-01 | LCL engine crates (LCL repository, impl/crates) | The crate lcl-protocol describes itself as the stable, headless, UI-independent engine facade. It is the natural target of integrations/lcl/core_bridge in both hosts. Inspected read-only; whether it builds and runs on Android is unproven (PD-LCL-ANDROID). Candidate classification for TASK-003 to confirm: shared internal component. TASK-003: confirmed as DEPENDENCY DEP-LCL-ENGINE, a shared internal component, built and run on Android 16 through JNI.", "RO-02 | LCL for Android app (LCL repository, android) | A native remote client in which the PC is the authority and the phone never parses, checks or runs LCL. It cannot provide standalone Android LCL (A4); at most a reference for UI, Keystore and pairing patterns. For TASK-003 to classify. TASK-003: REFERENCE (DEP-LCL-ANDROID-APP).", "RO-03 | lcl-remote (LCL repository, remote) | A systemd user service with TLS 1.3 pairing that pins both ends, and revocation. It listens on all interfaces and expects the user to open the firewall, which RC-19 does not allow as is. A reference candidate for SS-REMOTE pairing and the Desktop receiver's lifetime. For TASK-003 to classify. TASK-003: REFERENCE (DEP-LCL-REMOTE); its pinned pairing matches the selected transport, its listening model does not.", "RO-04 | reuse/reuse_matrix.lcl.txt candidates | Theia, Code-OSS, Monaco, Open VSX, LSP, Tree-sitter, xterm.js, Git, ACP, the auth, secret-store and sandbox candidates remain candidates only. This architecture gives each a boundary (SS-IDE, SS-CONTEXT, SS-TOOLS, SS-PROVIDERS, SS-ACCOUNTS, SS-PLATFORM-DESKTOP, SS-PLATFORM-ANDROID) without selecting any. TASK-003 classified every candidate in docs/dependencies (49 components)."]
     DESCRIPTION: "What the reuse-first inspection of TASK-002 observed. Observations, not decisions: classification belongs to TASK-003 (reuse_policy)."
 
 DATA:

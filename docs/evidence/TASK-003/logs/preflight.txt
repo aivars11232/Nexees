@@ -1,0 +1,120 @@
+TASK-003 checkout preflight (binding B26), pack verification and predecessor lineage.
+Recorded 2026-10-03T22:20:49+02:00 with read-only commands. At task start (after the TASK-002 commit and push,
+before any TASK-003 file existed) the worktree was clean with HEAD d1a673f equal to origin/main; the status below shows
+only TASK-003's own new and changed files.
+
+== B26 checkout identity ==
+cwd (physical): /mnt/F/Nexees
+git toplevel: /mnt/F/Nexees
+git dir: /mnt/F/Nexees/.git
+superproject: []
+parent .git at /mnt/F or /mnt: none
+remotes (credentials redacted):
+origin	https://github.com/aivars11232/Nexees.git (fetch)
+origin	https://github.com/aivars11232/Nexees.git (push)
+url rewrite rules: none
+explicit origin pushurl: none
+branch: main
+HEAD: d1a673f62d1a9a31839290e8041eb3c7eb91ba97
+origin/main (local tracking ref, not fetched): d1a673f62d1a9a31839290e8041eb3c7eb91ba97
+upstream: origin/main
+worktrees:
+/mnt/F/Nexees d1a673f [main]
+hooks path: []; non-sample hooks: 0
+staged files: 0; stash entries: 0; tracked files: 341
+status (porcelain, untracked shown per file):
+M docs/architecture/baseline.lcl.txt
+ M docs/architecture/checks.lcl.txt
+ M docs/architecture/decisions.lcl.txt
+ M docs/architecture/record.lcl.txt
+?? docs/dependencies/LICENSE_MATRIX.md
+?? docs/dependencies/baseline.lcl.txt
+?? docs/dependencies/checks.lcl.txt
+?? docs/dependencies/components.lcl.txt
+?? docs/dependencies/dependencies.lcl.txt
+?? docs/dependencies/record.lcl.txt
+?? docs/dependencies/strategy.lcl.txt
+?? docs/evidence/TASK-003/check_dependencies.py
+?? docs/evidence/TASK-003/logs/android_build.txt
+?? docs/evidence/TASK-003/logs/app_logcat.txt
+?? docs/evidence/TASK-003/logs/cargo_deny.txt
+?? docs/evidence/TASK-003/logs/dispatch_task_003.record.json
+?? docs/evidence/TASK-003/logs/emulator.json
+?? docs/evidence/TASK-003/logs/hoptodesk_launch.txt
+?? docs/evidence/TASK-003/logs/osv_after_overrides.json
+?? docs/evidence/TASK-003/logs/osv_before_overrides.json
+?? docs/evidence/TASK-003/logs/preflight.txt
+?? docs/evidence/TASK-003/logs/probe_android_app.json
+?? docs/evidence/TASK-003/logs/probe_android_shell.json
+?? docs/evidence/TASK-003/logs/probe_desktop.json
+?? docs/evidence/TASK-003/logs/registry_research.json
+?? docs/evidence/TASK-003/logs/rust_checks.txt
+?? docs/evidence/TASK-003/logs/scenarios.jsonl
+?? docs/evidence/TASK-003/logs/theia_build.txt
+?? docs/evidence/TASK-003/logs/theia_workbench.json
+?? docs/evidence/TASK-003/logs/toolchains.txt
+?? docs/evidence/TASK-003/prototypes/android-app/app/build.gradle.kts
+?? docs/evidence/TASK-003/prototypes/android-app/app/src/main/AndroidManifest.xml
+?? docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/BootReceiver.kt
+?? docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Launcher.kt
+?? docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/MainActivity.kt
+?? docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/NativeCore.kt
+?? docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Notifications.kt
+?? docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/ReceiverService.kt
+?? docs/evidence/TASK-003/prototypes/android-app/build.gradle.kts
+?? docs/evidence/TASK-003/prototypes/android-app/build.sh
+?? docs/evidence/TASK-003/prototypes/android-app/gradle.properties
+?? docs/evidence/TASK-003/prototypes/android-app/settings.gradle.kts
+?? docs/evidence/TASK-003/prototypes/feasibility-core/Cargo.lock
+?? docs/evidence/TASK-003/prototypes/feasibility-core/Cargo.toml
+?? docs/evidence/TASK-003/prototypes/feasibility-core/deny.toml
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/help/hostile.md
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/invalid_task.lcl.txt
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/js/src/sum.js
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/js/test/sum.test.js
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/project/checks/checks.lcl.txt
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/project/data/values.lcl.txt
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/project/main.lcl.txt
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/project/tasks/record.lcl.txt
+?? docs/evidence/TASK-003/prototypes/feasibility-core/fixtures/valid_task.lcl.txt
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/android.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/bin/host.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/bin/probe.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/help.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/import.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/js_backend.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/lcl_bridge.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/lib.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/probe.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/remote.rs
+?? docs/evidence/TASK-003/prototypes/feasibility-core/src/store.rs
+?? docs/evidence/TASK-003/prototypes/harness/advisories.py
+?? docs/evidence/TASK-003/prototypes/harness/device.py
+?? docs/evidence/TASK-003/prototypes/harness/scenarios.py
+?? docs/evidence/TASK-003/prototypes/theia/check_workbench.mjs
+?? docs/evidence/TASK-003/prototypes/theia/package.json
+?? docs/evidence/TASK-003/prototypes/theia/run_nested.sh
+Result: the root is the worktree root, origin fetch and push are https://github.com/aivars11232/Nexees.git (an approved equivalent), no rewrite, branch main.
+
+== Pack verification (v0.5.3) ==
+manifest files: 201 | hash mismatches: [] | unlisted on disk: [] | listed but missing: []
+MANIFEST.json sha256: 8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4
+content identity recomputed: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | declared: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | manifest: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | PROCEDURAL_CHANGES new_content_identity: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+tasks/task_003.lcl.txt sha256: d8a8fe4937b0948b036a3ad3f1142ab4a765a3ac67834f4114d7cfecf17c5a12 | PROCEDURAL_CHANGES after_sha256 d8a8fe4937b0948b036a3ad3f1142ab4a765a3ac67834f4114d7cfecf17c5a12 | task declaration unchanged: True | other record fields unchanged: True
+accept_task.lcl.txt sha256: 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836
+policies/task_002_075_continuation.lcl.txt sha256: 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9
+
+== Predecessor lineage ==
+TASK-001 receipt: task TASK-001 | purpose implementation_review | blockers [] | host verified True | pack identity e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672
+TASK-001 evaluation.record.json sha256: bbda5d839f7713bbd43a0fb3c0c299043abe8f7b055e6e3ce8c110fde3ba07e7 | outcome accepted | terminal status.succeeded
+TASK-001 commit: 284f97a02d3ad9288f3701860e608b366b10979f Freeze the Nexees project charter (TASK-001) | on origin/main: True
+TASK-002 receipt: task TASK-002 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-002 evaluation.record.json sha256: c5fadc8310565f2a73c1f16209987b9a1a086c99919cd6cb101c010eb243bd13 | outcome accepted | terminal status.succeeded
+TASK-002 commit: d1a673f62d1a9a31839290e8041eb3c7eb91ba97 Define the Nexees modular architecture (TASK-002) | on origin/main: True
+TASK-001 deliverables (docs/charter, docs/evidence/TASK-001) changed since its commit: (none)
+TASK-002 deliverables changed since its commit (TASK-003 records the open-decision resolutions it owns, by design):
+docs/architecture/baseline.lcl.txt
+docs/architecture/checks.lcl.txt
+docs/architecture/decisions.lcl.txt
+docs/architecture/record.lcl.txt
+TASK-002 evidence folder changed: (none)

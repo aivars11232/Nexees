@@ -1,0 +1,26 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: nexees.feasibility_project
+    NAME: "Imported project fixture"
+    VERSION: "1.0.0"
+    KIND: kind.project
+
+PART:
+    ID: part.rules_data
+    SOURCE: PATH("data/values.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.checks
+    SOURCE: PATH("checks/checks.lcl.txt")
+    KIND: kind.part.checks
+
+PART:
+    ID: part.record
+    SOURCE: PATH("tasks/record.lcl.txt")
+    KIND: kind.part.task
+
+EXECUTE:
+    REFERENCE: REF(task.record)

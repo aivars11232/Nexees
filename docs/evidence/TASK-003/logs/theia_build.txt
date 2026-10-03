@@ -1,0 +1,53 @@
+TASK-003 Desktop foundation feasibility: Eclipse Theia 1.76.0 Electron application. Recorded 2026-10-03T22:19:02+02:00.
+Location: /mnt/F/Nexees-toolchains/theia-probe (outside the repository); manifest copied to docs/evidence/TASK-003/prototypes/theia/package.json.
+Isolation: /mnt/F/Nexees-toolchains/theia-env.sh (HOME, npm cache and Electron cache in /mnt/F/Nexees-toolchains); node v26.10.0, npm 12.2.0.
+
+== 1. npm install of Theia 1.76.0 with electron 42.8.1 (Theia's exact pin)
+added 899 packages in 2m
+npm warn install-scripts 9 packages had install scripts blocked because they are not covered by allowScripts:
+npm warn install-scripts   @theia/ffmpeg@1.76.0 (install: node-gyp rebuild)
+npm warn install-scripts   puppeteer@25.1.0 (postinstall: node install.mjs)
+npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+npm warn install-scripts   @parcel/watcher@2.6.0 (install: node scripts/build-from-source.js)
+npm warn install-scripts   drivelist@12.0.2 (install: prebuild-install --runtime napi || node-gyp rebuild)
+npm warn install-scripts   keytar@7.9.0 (install: prebuild-install || npm run build)
+npm warn install-scripts   native-keymap@2.5.0 (install: node-gyp rebuild)
+npm warn install-scripts   node-pty@1.2.0-beta.12 (install: node scripts/prebuild.js || node-gyp rebuild; postinstall: node scripts/post-install.js)
+npm warn install-scripts   msgpackr-extract@3.0.4 (install: node-gyp-build-optional-packages)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+Approved with 'npm install-scripts approve' (native modules the app needs): @parcel/watcher, @theia/ffmpeg, drivelist, esbuild, keytar, msgpackr-extract, native-keymap, node-pty. Denied: puppeteer (it would download Chrome for Theia's own tests).
+npm rebuild: exit 0. Electron binary fetched by node_modules/electron/install.js into the isolated cache and checked against the package's checksums.json.
+theia rebuild:electron: Building modules: drivelist, keytar, native-keymap ✔ Rebuild Complete 
+theia build --mode development: [build/browser] Finished with 0 errors in 2011ms. [build/node] Finished with 0 errors in 925ms. [build/electron] Finished with 0 errors in 6ms. 
+
+== 2. Starting it without touching the owner's session
+Chromium's headless Ozone platform (--ozone-platform=headless, also with --disable-gpu): the backend started on 127.0.0.1, but no renderer process ever started and the DevTools endpoint never answered; a one-window Electron app behaved the same, so this is an Electron 42 limitation here, not Theia. The hung processes were task-owned and were stopped.
+Working method (prototypes/theia/run_nested.sh): a nested kwin_wayland --virtual on a private D-Bus session with HOME and XDG folders in /mnt/F/Nexees-toolchains/home; the app is started there with --ozone-platform=wayland and probed over DevTools on 127.0.0.1:9333 (prototypes/theia/check_workbench.mjs), then closed through DevTools Browser.close so Theia stops its backend. Portal and secret-service helpers activated on the private bus are stopped by the runner.
+Result with 42.8.1: workbench rendered (title, app shell, status bar, views Explorer, Search, Source Control, Debug, Extensions, Testing, Problems, Outline and a bash terminal); graceful exit 0.
+
+== 3. Security overrides (see docs/dependencies/strategy.lcl.txt)
+OSV as published: 34 advisories in 10 packages (osv_before_overrides.json).
+Overrides for electron, dompurify, uuid and @tootallnate/once: removed 4 packages, and changed 2 packages in 3s
+Then the unzipper override: added 4 packages, removed 15 packages, and changed 2 packages in 2s
+Electron after the override: 42.11.10 (Node 24.19.0, Chromium 148.0.7778.280)
+Overrides: {'electron': '42.11.10', 'dompurify': '3.4.16', 'uuid': '11.1.1', '@tootallnate/once': '2.0.1', 'unzipper': '0.12.5'}
+theia build after the overrides: [build/browser] Finished with 0 errors in 2425ms. [build/node] Finished with 0 errors in 1196ms. [build/electron] Finished with 0 errors in 7ms. 
+@theia/ffmpeg's unzipper path after the unzipper override: unzipper 0.12.5, Open.file function, replace-ffmpeg loads
+Workbench with the final configuration: Nexees Theia feasibility | shell True | status bar True | views ['Debug', 'Explorer', 'Extensions', 'Outline', 'Problems', 'Search', 'Source Control', 'Testing', 'bash'] | graceful True | exit 0
+OSV with the final configuration: 9 advisories in 5 packages (osv_after_overrides.json); dispositions in docs/dependencies/strategy.lcl.txt.
+
+== 4. Final tree
+package-lock.json SHA-256 32f4c5d0296b60e2d86d9e28b272d31d60cb5995a7f98a1aac0c414ca40b3866; 958 lock entries, 888 distinct name@version packages
+electron: electron@42.11.10 (and @theia/electron@1.76.0)
+@theia/core: @theia/core@1.76.0 
+@theia/monaco-editor-core: @theia/monaco-editor-core@1.108.201 
+xterm: xterm@5.3.0 
+node-pty: node-pty@1.2.0-beta.12 
+keytar: keytar@7.9.0 
+decompress: decompress@4.2.1 
+dompurify: dompurify@3.4.16 
+unzipper: unzipper@0.12.5 
+buffers: 
+jschardet: jschardet@2.3.0 
+node_modules size: 784M (including the Electron binary 314M)

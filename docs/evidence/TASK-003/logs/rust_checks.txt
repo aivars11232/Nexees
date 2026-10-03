@@ -1,0 +1,53 @@
+TASK-003 shared-core feasibility crate: builds, lints, tests and dependency audit.
+Run 2026-10-03T22:14:29+02:00 with the isolated toolchain (/mnt/F/Nexees-toolchains/env.sh): rustc 1.99.0 (b940084d7 2026-09-28); cargo 1.99.0 (5f94df478 2026-08-27)
+
+== cargo build --offline --release (x86_64-unknown-linux-gnu: library, nexees-probe, nexees-host)
+    Finished `release` profile [optimized] target(s) in 1m 10s
+exit=0
+
+== cargo build --offline --release --target x86_64-linux-android --lib --bin nexees-probe
+    Finished `release` profile [optimized] target(s) in 41.98s
+exit=0
+
+== cargo build --offline --release --target aarch64-linux-android --lib --bin nexees-probe
+    Finished `release` profile [optimized] target(s) in 0.15s
+exit=0
+
+== cargo clippy --offline --release --all-targets (host) and --target x86_64-linux-android --lib --bin nexees-probe, after touching every source file
+    Finished `release` profile [optimized] target(s) in 1.17s
+exit=0
+    Finished `release` profile [optimized] target(s) in 1.04s
+exit=0
+
+== cargo test --offline --release
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test tests::an_active_unlocked_graphical_session_is_ready ... ok
+test tests::a_locked_or_background_session_needs_the_user ... ok
+test tests::an_app_off_the_allowlist_is_denied_before_anything_runs ... ok
+test tests::a_session_without_a_display_is_unsupported ... ok
+test tests::the_allowlist_holds_only_the_owner_approved_app ... ok
+test tests::a_launched_app_that_keeps_running_does_not_hold_the_receiver ... ok
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+exit=0
+
+== Artifacts (SHA-256)
+42e4ce8e3a839522c267ab3a0999cd70f605cbde742776809a395f639ed3926b  release/nexees-probe
+8cd4fd52b6c0baaf5bf176076f469a95692f783b64a2b6fd3b878d749d2c320f  release/nexees-host
+7b861bbf52e00c863c9dbdaea191711d70d1aa81b626aa80e5e25f074170e02a  x86_64-linux-android/release/libnexees_feasibility.so
+0c5b9075ff0fe8ccf4bbc3f12c596031322553b75642f351e096ee579478d10e  x86_64-linux-android/release/nexees-probe
+d00cac8365c533e38e79968de9d78314ff49f42db3f156f541e8d94fe43e2cbc  aarch64-linux-android/release/libnexees_feasibility.so
+df0e2e7cd6e016990a09861c4304052f6f582a3013c496aefe6595d7aa781872  aarch64-linux-android/release/nexees-probe
+x86_64-linux-android/release/libnexees_feasibility.so: ELF 64-bit LSB shared object, x86-64, dynamically linked, for Android 29, built by NDK r30 (16248370), stripped | LOAD align 0x4000 | JNI exports: 1
+aarch64-linux-android/release/libnexees_feasibility.so: ELF 64-bit LSB shared object, ARM aarch64, dynamically linked, for Android 29, built by NDK r30 (16248370), stripped | LOAD align 0x4000 | JNI exports: 1
+
+== Regression test for the RC-T17 launcher finding
+Before the fix (start_entry captured gio's output), the same test failed:
+  test tests::a_launched_app_that_keeps_running_does_not_hold_the_receiver ... FAILED
+  panicked at src/bin/host.rs: gio launch held the caller for 7.258526956s
+After the fix (all three streams null), see the cargo test output above: ok.
+
+== cargo-deny check (advisories, bans, licenses, sources), RustSec advisory-db ef6173cbc5c50ec8166f9a5b28f07834144373ee
+advisories ok, bans ok, licenses ok, sources ok
+exit=0 (full output: cargo_deny.txt)

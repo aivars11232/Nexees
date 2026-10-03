@@ -1,0 +1,57 @@
+# TASK-003 feasibility prototype. Evidence only: this crate is not Nexees
+# product code and nothing under src/ is a product module. It exists so the
+# build and run evidence in ../../logs can be reproduced.
+#
+# It proves that one Rust core, built for Desktop and for Android, can carry the
+# existing LCL engine (path dependencies on the owner's LCL checkout, not a
+# second parser), durable SQLite storage, bounded ZIP import, an on-device
+# JavaScript test backend, passive offline help and an authenticated
+# PC-to-phone request path.
+[package]
+name = "nexees-feasibility"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.91"
+publish = false
+license = "UNLICENSED"
+
+# Its own workspace root, so Cargo never looks for one in the repository.
+[workspace]
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "nexees-probe"
+path = "src/bin/probe.rs"
+
+[[bin]]
+name = "nexees-host"
+path = "src/bin/host.rs"
+
+[dependencies]
+# The existing LCL engine, read-only at commit fa1592b. Zero external crates.
+lcl-protocol = { path = "/mnt/F/LCL/impl/crates/lcl-protocol" }
+lcl-project = { path = "/mnt/F/LCL/impl/crates/lcl-project" }
+
+rusqlite = { version = "=0.40.2", features = ["bundled"] }
+zip = { version = "=8.6.0", default-features = false, features = ["deflate-flate2-zlib-rs"] }
+boa_engine = { version = "=0.22.0", default-features = false }
+pulldown-cmark = { version = "=0.13.4", default-features = false, features = ["html"] }
+rustls = { version = "=0.23.45", default-features = false, features = ["ring", "std"] }
+rcgen = { version = "=0.14.10", default-features = false, features = ["ring", "pem"] }
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = { version = "=1.0.151" }
+ring = { version = "=0.17.14" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+nix = { version = "=0.31.3", default-features = false, features = ["socket", "user"] }
+
+[target.'cfg(target_os = "android")'.dependencies]
+jni = { version = "=0.22.4", default-features = false }
+
+[profile.release]
+debug = false
+strip = "symbols"
+lto = "thin"
+codegen-units = 4

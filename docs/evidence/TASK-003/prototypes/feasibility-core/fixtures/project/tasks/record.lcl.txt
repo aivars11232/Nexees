@@ -1,0 +1,34 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: nexees.feasibility_record
+    NAME: "Record"
+    VERSION: "1.0.0"
+    KIND: kind.part.task
+
+OUTPUT:
+    ID: output.record
+    TYPE: LIST[STRING]
+    FORMAT: format.json
+
+GOAL:
+    ID: goal.record
+    ASSERT: REF(output.record) == REF(data.items)
+
+ACTION:
+    ID: action.record
+    OPERATION: core.return
+    TARGET: REF(data.items)
+    OUTPUT: REF(output.record)
+
+SUCCESS:
+    ID: success.record
+    ALL: [REF(verify.delivery)]
+
+TASK:
+    ID: task.record
+    GOAL: REF(goal.record)
+    ACTION: REF(action.record)
+    OUTPUT: REF(output.record)
+    SUCCESS: REF(success.record)

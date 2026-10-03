@@ -1,0 +1,53 @@
+The TASK-003 dependency inventory checked with the real engine (lcl 0.9.1, canonical Core 0.1.0 and 0.3.0), run 2026-10-03T22:31:27+02:00.
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+dependencies.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+dependencies.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+status.succeeded
+  VERIFY verify.dep_classifications_valid = TRUE (required)
+  VERIFY verify.dep_scopes_valid = TRUE (required)
+  VERIFY verify.dep_foundation = TRUE (required)
+  VERIFY verify.dep_shared_core_portable = TRUE (required)
+  VERIFY verify.dep_record_delivery = TRUE (required)
+  SUCCESS success.dep_record ALL = TRUE
+  OUTPUT output.dep_record published = {adapter_count: 10, advisory_disposition_count: 5, audit_date: "2026-10-03", component_count: 49, defined_by: "TASK-003", dependency_count: 19, evidence: "docs/evidence/TASK-003/TASK-003_EVIDENCE.md", limits: "This inventory records what TASK-003 evaluated and proved by prototype. A selected component that the prototype did not run is marked unproven, with its owning task. It is not evidence that any Nexees feature exists, and real-device and release evidence remain with the owning tasks.", npm_override_count: 5, open_item_count: 10, record_kind: "nexees_dependency_inventory", reference_count: 10, rejected_count: 10, renderer_decision: "electron_permitted", reviewer: "The coding agent's own review; no independent human or model review."}
+  because: SuccessSatisfied
+  2 invocation(s), 0 event(s), 3 step(s)
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-003/check_dependencies.py
+PASS  49 records with unique DEP- identifiers  [49]
+PASS  every record fills every gate and template field
+PASS  classifications and scopes come from the declared vocabularies
+PASS  owner tasks are TASK-001 to TASK-075
+PASS  the record states the real classification counts  [{"DEPENDENCY": 19, "ADAPTER": 10, "REFERENCE": 10, "REJECTED": 10}]
+PASS  every cited evidence file exists
+PASS  no rejected component is used by the shared core, Android or a build
+PASS  Rust pins, lockfile, registry licenses and records agree
+PASS  every registry dependency of the prototype is pinned exactly
+PASS  all @theia packages are the recorded 1.76.0
+PASS  the npm overrides equal data.dep_npm_overrides  [{"electron": "42.11.10", "dompurify": "3.4.16", "uuid": "11.1.1", "@tootallnate/once": "2.0.1", "unzipper": "0.12.5"}]
+PASS  inherited npm packages match their records in version and license
+PASS  the evaluated tree is the recorded 888 npm and 216 crate packages  [{"npm": 888, "crates.io": 216}]
+PASS  the kept lockfile resolves exactly the npm packages the advisory lookup covered  [888]
+PASS  every remaining advisory has a recorded disposition with its identifiers  [{"braces 3.0.3": ["GHSA-vfj7-8cjw-p6xm"], "decompress 4.2.1": ["GHSA-h39j-r5qq-r9mm", "GHSA-hrh2-vp3x-79xf", "GHSA-jwp9-9v96-94mx", "GHSA-mp2f-45pm-3cg9"], "http-cache-semantics 4.2.0": ["GHSA-ch52-4w7c-c8xp"], "diff 7.0.0": ["GHSA-73rr-hh4g-fpgx"], "serialize-javascript 6.0.2": ["GHSA-5c6j-r48x-rmvq", "GHSA-qj8w-gfj5-8c6v"]}]
+PASS  the Rust tree has no advisory
+PASS  the published configuration had the recorded 34 advisories in 10 packages
+PASS  registry licenses are repeated in the records
+PASS  the matrix lists every component once
+PASS  the matrix repeats each classification and scope
+PASS  the matrix totals equal the inventory  [Totals: 49 components; 19 DEPENDENCY, 10 ADAPTER, 10 REFERENCE, 10 REJECTED.]
+PASS  every open decision TASK-003 had to answer carries a TASK-003 resolution
+PASS  the renderer resolution equals the owner decision in the inventory
+PASS  the decision TASK-003 does not own stays open
+
+ALL CHECKS PASSED
+exit code: 0

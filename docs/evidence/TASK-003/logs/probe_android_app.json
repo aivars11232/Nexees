@@ -1,0 +1,185 @@
+{
+ "airplane_mode_on": true,
+ "report": {
+  "checks": [
+   {
+    "detail": "Core 0.1.0 and Core 0.3.0 opened against their trust anchors",
+    "id": "lcl.open",
+    "passed": true
+   },
+   {
+    "detail": "validate accepted; run Some(\"status.succeeded\")",
+    "id": "lcl.valid_task",
+    "passed": true
+   },
+   {
+    "detail": "validate rejected with Some(\"error.reference.unresolved at 28:17\")",
+    "id": "lcl.invalid_task",
+    "passed": true
+   },
+   {
+    "detail": "four-file Core 0.3.0 project: validate accepted; run Some(\"status.succeeded\")",
+    "id": "lcl.project",
+    "passed": true
+   },
+   {
+    "detail": "v1 data kept after migrating to v2; journal wal; integrity ok",
+    "id": "store.migration_and_reopen",
+    "passed": true
+   },
+   {
+    "detail": "an uncommitted revision is not visible: Ok(Some(1))",
+    "id": "store.rollback",
+    "passed": true
+   },
+   {
+    "detail": "not run in this process; the app's kill and reboot tests cover process death",
+    "id": "store.crash_recovery",
+    "passed": true
+   },
+   {
+    "detail": "4 files, 1655 bytes published after LCL validation accepted",
+    "id": "import.good",
+    "passed": true
+   },
+   {
+    "detail": "rejected: UnsafeName(\"../escape.lcl.txt\")",
+    "id": "import.traversal",
+    "passed": true
+   },
+   {
+    "detail": "rejected: UnsafeName(\"/tmp/escape.lcl.txt\")",
+    "id": "import.absolute",
+    "passed": true
+   },
+   {
+    "detail": "rejected: UnsafeName(\"..\\\\escape.lcl.txt\")",
+    "id": "import.backslash",
+    "passed": true
+   },
+   {
+    "detail": "rejected: NotRegular(\"data\")",
+    "id": "import.symlink",
+    "passed": true
+   },
+   {
+    "detail": "rejected: Duplicate(\"MAIN.lcl.txt\")",
+    "id": "import.duplicate",
+    "passed": true
+   },
+   {
+    "detail": "rejected: Ratio(\"zeros.bin\")",
+    "id": "import.bomb",
+    "passed": true
+   },
+   {
+    "detail": "rejected: Invalid(Verdict { outcome: \"rejected\", reached: \"resolution\", terminal_status: None, primary: Some(\"error.reference.unresolved at 28:17\") })",
+    "id": "import.invalid",
+    "passed": true
+   },
+   {
+    "detail": "staging []; published [\"imported-good\"]; escaped file present: false",
+    "id": "import.nothing_left_behind",
+    "passed": true
+   },
+   {
+    "detail": "before: Ok(Run { cases: [Case { name: \"empty list\", ok: true, error: \"\" }, Case { name: \"three values\", ok: false, error: \"Error: expected 6, got 3\" }, Case { name: \"negative values\", ok: false, error: \"Error: expected 3, got 5\" }] }); repair: Ok(Saved { revision: 1, sha256: \"d69f5e5bfd55fecfec4740243d2a44e7d1a0b4a6fde9815900ee06f99fbfe82f\" }); after: Ok(Run { cases: [Case { name: \"empty list\", ok: true, error: \"\" }, Case { name: \"three values\", ok: true, error: \"\" }, Case { name: \"negative values\", ok: true, error: \"\" }] })",
+    "id": "js.fail_repair_pass",
+    "passed": true
+   },
+   {
+    "detail": "an endless loop is stopped and not reported as a pass: Err(\"RuntimeLimitError: reached the maximum number of iteration loops on this execution\\n    at <main> (unknown at :1:23)\\n    at test (unknown at :4:13)\\n    at <main> (unknown at :1:5)\")",
+    "id": "js.runaway_bounded",
+    "passed": true
+   },
+   {
+    "detail": "no require, fetch, process or XMLHttpRequest in the engine: Ok(Run { cases: [Case { name: \"no ambient authority\", ok: true, error: \"\" }] })",
+    "id": "js.no_ambient_authority",
+    "passed": true
+   },
+   {
+    "detail": "active or remote tags: []; safe links and bundled image kept: true",
+    "id": "help.hostile_markdown",
+    "passed": true
+   },
+   {
+    "detail": "24 chapters, 304994 bytes of Markdown to 377638 bytes of passive HTML; active tags: []",
+    "id": "help.offline_manual",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-1\", status: Denied, detail: \"the pc_to_phone grant is absent or revoked\", revision: None, sha256: None, validation: None, capabilities: [] })",
+    "id": "remote.grant_absent_denied",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-2\", status: Completed, detail: \"saved, then validated\", revision: Some(1), sha256: Some(\"681df8a1a80bbc94a09007c08cee9e99e1323fae15a1f217d409ec9f1fe5910f\"), validation: Some(Verdict { outcome: \"accepted\", reached: \"preflight\", terminal_status: None, primary: None }), capabilities: [] })",
+    "id": "remote.granted_write_validated",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-2\", status: Duplicate, detail: \"this command ID was already received; it does not run again\", revision: None, sha256: None, validation: None, capabilities: [] })",
+    "id": "remote.replay_refused",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-3\", status: Conflict, detail: \"the file is at revision 1, not 0\", revision: None, sha256: None, validation: None, capabilities: [] })",
+    "id": "remote.stale_revision_conflict",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-4\", status: Expired, detail: \"the request expired before it ran\", revision: None, sha256: None, validation: None, capabilities: [] })",
+    "id": "remote.expired_refused",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-5\", status: Denied, detail: \"the request is not bound to this device and its paired peer\", revision: None, sha256: None, validation: None, capabilities: [] })",
+    "id": "remote.wrong_device_denied",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-6\", status: Denied, detail: \"the path is outside the allowed LCL workspace files\", revision: None, sha256: None, validation: None, capabilities: [] })",
+    "id": "remote.path_escape_denied",
+    "passed": true
+   },
+   {
+    "detail": "Err(Rejected(\"received fatal alert: UnknownCA\"))",
+    "id": "remote.unpaired_certificate_rejected",
+    "passed": true
+   },
+   {
+    "detail": "launch: Ok(Reply { id: \"probe-8\", status: Unsupported, detail: \"the probe has no application launcher for settings\", revision: None, sha256: None, validation: None, capabilities: [] }); later status: Ok(Reply { id: \"probe-9\", status: Unsupported, detail: \"the probe has no application launcher for settings\", revision: None, sha256: None, validation: None, capabilities: [] })",
+    "id": "remote.launch_state_recorded",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-10\", status: Completed, detail: \"capabilities observed now\", revision: None, sha256: None, validation: None, capabilities: [Capability { action: \"write_lcl_file\", availability: \"available\", note: \"\" }, Capability { action: \"launch_app\", availability: \"unsupported\", note: \"probe only\" }] })",
+    "id": "remote.capabilities_advertised",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Reply { id: \"probe-11\", status: Denied, detail: \"the pc_to_phone grant is absent or revoked\", revision: None, sha256: None, validation: None, capabilities: [] })",
+    "id": "remote.revoked_denied",
+    "passed": true
+   },
+   {
+    "detail": "a 1 MiB length prefix is refused without reading the body",
+    "id": "remote.oversized_frame_refused",
+    "passed": true
+   },
+   {
+    "detail": "Ok(Ok(()))",
+    "id": "remote.receiver_stopped",
+    "passed": true
+   },
+   {
+    "detail": "Err(Unavailable(\"Connection refused (os error 111)\"))",
+    "id": "remote.no_receiver_unavailable",
+    "passed": true
+   }
+  ],
+  "passed": true,
+  "sqlite": "3.53.2",
+  "target": "x86_64-android"
+ }
+}

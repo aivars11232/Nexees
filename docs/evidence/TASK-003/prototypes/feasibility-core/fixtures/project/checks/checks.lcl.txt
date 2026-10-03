@@ -1,0 +1,16 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: nexees.feasibility_checks
+    NAME: "Checks"
+    VERSION: "1.0.0"
+    KIND: kind.part.checks
+
+VALIDATE:
+    ID: validate.item_count
+    ASSERT: COUNT(REF(data.items)) == 3
+
+VERIFY:
+    ID: verify.delivery
+    ASSERT: REF(output.record) == REF(data.items)
