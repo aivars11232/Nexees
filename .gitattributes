@@ -1,10 +1,18 @@
-# start here
-# Normalize new text source; preserve binary assets/archive bytes.
+# Text is stored with LF line endings; binary files are never converted.
 * text=auto
 *.md text eol=lf
 *.txt text eol=lf
 *.json text eol=lf
+*.toml text eol=lf
+*.lock text eol=lf
 *.py text eol=lf
+*.sh text eol=lf
+*.rs text eol=lf
+*.kt text eol=lf
+*.kts text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.source text eol=lf
 *.png binary
 *.zip binary
-*.source text eol=lf
+*.jar binary

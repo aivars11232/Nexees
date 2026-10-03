@@ -15,8 +15,8 @@ VALIDATE:
 
 VALIDATE:
     ID: validate.dep_strategy_counts
-    ASSERT: COUNT(REF(data.dep_owner_decisions)) == 4 AND COUNT(REF(data.dep_strategy)) == 11 AND COUNT(REF(data.dep_npm_overrides)) == 5 AND COUNT(REF(data.dep_advisory_dispositions)) == 5 AND COUNT(REF(data.dep_open_items)) == 10
-    DESCRIPTION: "The owner decisions, strategy statements, overrides, advisory dispositions and open items are all recorded."
+    ASSERT: COUNT(REF(data.dep_owner_decisions)) == 4 AND COUNT(REF(data.dep_strategy)) == 11 AND COUNT(REF(data.dep_npm_overrides)) == 5 AND COUNT(REF(data.dep_advisory_dispositions)) == 5 AND COUNT(REF(data.dep_open_items)) == 10 AND COUNT(REF(data.dep_repository_tools)) == 3
+    DESCRIPTION: "The owner decisions, strategy statements, overrides, advisory dispositions, open items and repository tools are all recorded."
 
 VALIDATE:
     ID: validate.dep_renderer_decision

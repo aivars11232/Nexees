@@ -1,0 +1,82 @@
+TASK-005 final verification after cleanup, 2026-10-04T01:00:58+02:00.
+Read-only, except this file.
+
+Snapshot before: 12b09b5122ee565ef576431384adf882d240ff5ecb9498d8c265855b7eabb3e0
+
+== The repository checks: every stage of the new check runner ==
+$ python3 -B scripts/test/run_checks.py --target-dir /mnt/F/Nexees-toolchains/target/nexees
+  473 files; 221 product files in 163 slots; 61 test files
+  -- layout: PASS
+  -- format: PASS
+  -- lint: PASS
+  -- build: PASS
+  Ran 22 tests in 3.104s
+  -- test: PASS
+  127 relative Markdown links checked
+  -- docs: PASS
+  473 files scanned for credentials and keys; ignored evidence files: 0
+  -- security: PASS
+  -- deps: PASS
+  -- evidence: PASS
+  ALL STAGES PASSED
+  exit code: 0
+
+== The predecessors' cross-checks ==
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-003/check_dependencies.py
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-004/check_threat_model.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  PASS  every threat test names threats, a slot or gap, pack scenarios, later owners and platforms
+  55 threats, 30 invariants, 39 threat tests, 11 remote contracts
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-001/check_charter_against_pack.py <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2
+  ALL CHECKS PASSED
+  exit code: 0
+
+== Pack, LCL repository, LCL SDK, home caches, processes ==
+Pack files newer than MANIFEST.json: 0
+MANIFEST.json SHA-256 is 8d9d0080…07e4
+LCL repository: HEAD fa1592b955639c4839f50861f9e89c5110064144, porcelain status lines: 0
+LCL SDK files written since TASK-005 began (2026-10-04 00:14:56): 0
+Files in the home caches (~/.cargo, ~/.rustup, ~/.gradle, ~/.npm and the others) written since TASK-005 began: 0
+Task processes running (toolchain binaries, lcl, cargo, rustc): 0
+
+== Git and worktree ==
+$ git diff --stat
+   .editorconfig                            | 20 ++++++++++--
+   .gitattributes                           | 14 +++++++--
+   .gitignore                               | 35 ++++++++++++++++-----
+   FILE_TREE.txt                            | 54 ++++++++++++++++++++++++++------
+   README.md                                | 40 +++++++++++++++++------
+   SECURITY.md                              |  5 +--
+   docs/architecture/decisions.lcl.txt      |  4 +--
+   docs/architecture/subsystems.lcl.txt     | 10 +++---
+   docs/dependencies/LICENSE_MATRIX.md      | 14 +++++++++
+   docs/dependencies/checks.lcl.txt         |  4 +--
+   docs/dependencies/components.lcl.txt     |  8 ++---
+   docs/dependencies/record.lcl.txt         |  1 +
+   docs/dependencies/strategy.lcl.txt       |  6 ++++
+   docs/security/tests.lcl.txt              |  2 +-
+   scripts/ci/continuous_integration.source |  1 -
+   scripts/test/run_checks.source           |  1 -
+   16 files changed, 168 insertions(+), 51 deletions(-)
+Modified tracked files: 14, exactly the expected ones
+Deleted tracked files: ['scripts/ci/continuous_integration.source', 'scripts/test/run_checks.source'], the two implemented placeholders
+Staged: 0; untracked files: 25
+Untracked files outside the places TASK-005 creates: 0 []
+Ignored files in the checkout: 0
+Files a commit of this worktree would hold equal the snapshot listing: 473 files
+HEAD: 0337be0, unchanged during the task
+
+== Layout ==
+Files still carrying their marker line: 273 (278 before, less 3 edited dotfiles, SECURITY.md and 2 implemented placeholders, plus the new placeholder local_ipc.source)
+PNG files unchanged against HEAD: True
+Temporary files or build folders in the checkout: 0
+
+Snapshot after: 12b09b5122ee565ef576431384adf882d240ff5ecb9498d8c265855b7eabb3e0; unchanged by this verification: True
+
+Result: every exit 0 and every inspection as expected

@@ -161,6 +161,20 @@ and `prebuild-install` 7.1.3. They come with Theia 1.76.0 and are tracked under 
 - **aws-lc-rs**: a heavy C and assembly build for Android; ring covers TLS 1.3.
 - **cargo-ndk**: plain cargo with the NDK compiler does the same.
 
+## Repository tools
+
+The repository checks run these tools. No product build links or ships them, so they
+carry no redistribution duty. The machine-readable list is `data.dep_repository_tools` in
+`strategy.lcl.txt` (TASK-005).
+
+| ID | Tool | License | Use |
+|---|---|---|---|
+| TOOL-01 | cargo-deny 0.20.2 | MIT OR Apache-2.0 | The license, ban, source and advisory gate (DS-07, DS-08), run by the checks' deps stage |
+| TOOL-02 | Python 3.11 or later, standard library only | PSF-2.0 | The check runner, the scoped cleanup tool and their tests |
+| TOOL-03 | The LCL engine `lcl` 0.9.1 with the canonical Core packages | The owner's terms (OI-01) | Checks the LCL documentation projects |
+
+The Rust toolchain, rustfmt included, is DEP-RUST above.
+
 ## Open items
 
 | ID | Item | Owner task |

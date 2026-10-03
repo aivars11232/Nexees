@@ -55,17 +55,35 @@ It also holds TASK-004's security contracts for its remote-control requirements.
 is `docs/security/security.lcl.txt`. It is a design: nothing in it is implemented or tested
 yet.
 
+[docs/engineering/CONVENTIONS.md](docs/engineering/CONVENTIONS.md) holds the engineering
+conventions (TASK-005). It covers:
+- where things live, and how a placeholder becomes source;
+- Rust, Kotlin and TypeScript rules;
+- readable code and comments;
+- dependencies, generated artifacts and secrets;
+- tests, task evidence with its closure record, and scoped cleanup;
+- the checks, CI and the manual sources.
+
+`scripts/test/run_checks.py` runs every repository check, and `scripts/ci/continuous_integration.sh`
+is the entry point for a CI service. No hosted CI is configured.
+
 ## Source-file status
 
 Every `*.source` file is an **empty named placeholder**, not executable source or a
-completed feature. `*.test.source` files reserve test names; no tests are implemented
-or claimed to pass. The filename stems describe the planned modules.
+completed feature. `*.test.source` files reserve test names; no product test is
+implemented or claimed to pass. The filename stems describe the planned modules.
 
 TASK-003 selected the stack, with prototype evidence and the owner's renderer decision: a
 shared Rust core used by both hosts (on Android through JNI, with Kotlin for the
-platform layer) and Eclipse Theia on Electron for the Desktop client. The `.source`
-suffix stays until TASK-005 creates the real scaffold with the actual language extensions
-and build files.
+platform layer) and Eclipse Theia on Electron for the Desktop client.
+
+TASK-005 created the scaffold:
+- the Rust workspace and its pinned toolchain;
+- the first crate shell, `core/domain`, with no types yet;
+- the repository checks and their tests.
+
+A placeholder becomes source when its owning task implements it, under the same stem with
+its language's extension.
 This is a complete inventory of this planned layout, not a prediction of every file
 that upstream frameworks or implementation will eventually generate.
 
@@ -84,10 +102,11 @@ that upstream frameworks or implementation will eventually generate.
 | `docs/architecture/` | Modular architecture as an LCL project: subsystems and module ownership, hosts, interfaces, authoritative state, flows, failure domains and decisions. |
 | `docs/dependencies/` | Dependency inventory as an LCL project, the license matrix and the initial dependency strategy. |
 | `docs/security/` | Threat model as an LCL project: trust hierarchy, boundaries, attack surfaces, security invariants, threats, threat tests and remote security contracts. |
+| `docs/engineering/` | Engineering conventions: layout, languages, readability, formatting, dependencies, tests, evidence, cleanup, checks and CI. |
 | `docs/evidence/` | Evidence of completed implementation tasks, one folder per task. |
 | `docs/manuals/` | Nexees and integrated-LCL manual drafts, retained from the previous pack. |
-| `tests/` | Named unit, integration, conformance, security and end-to-end test slots. |
-| `scripts/` | Build, check, manual-bundling, CI and release helper slots. |
+| `tests/` | Named unit, integration, conformance, security and end-to-end test slots, and the repository tooling tests in `tests/tooling/`. |
+| `scripts/` | The check runner, the scoped cleanup tool and the CI entry point, and the build, manual-bundling and release helper slots. |
 | `packaging/` | Desktop, Android and update packaging slots; no signing secrets. |
 
 Every product file, meaning everything under `apps/`, `core/`, `platform/`,
@@ -119,6 +138,7 @@ real source is verified and the required assets are produced.
 ## Inventory
 
 [FILE_TREE.txt](FILE_TREE.txt) lists every actual file and directory in this archive.
-No application build, dependency lockfile, compiled artifact, fake signing key or
-user workspace data is included. Source files and necessary upstream build metadata
-will be implemented after the unresolved platform choices are settled.
+No application build, compiled artifact, fake signing key or user workspace data is
+included. The Rust workspace's `Cargo.lock` is committed, because DS-05 locks every
+dependency. Source files and their build metadata arrive with the tasks that implement
+them. Regenerate the inventory with `python3 -B scripts/test/run_checks.py --write-file-tree`.

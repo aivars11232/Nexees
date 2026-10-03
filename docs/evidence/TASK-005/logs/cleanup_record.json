@@ -1,0 +1,109 @@
+{
+  "schema": "nexees-cleanup-record",
+  "version": 1,
+  "task": "TASK-005",
+  "applied": true,
+  "removed": [],
+  "refused": [],
+  "absent": [],
+  "kept_directories": [],
+  "preserved_untracked": [
+    {
+      "path": "Cargo.lock",
+      "sha256": "509d2ebb2492e910a475c6564f1139ee762fd02bc70a7a2302b91e6db0d09e51"
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "fa6c92684c59b99a5017b11bbae262c0373a81c43e926f30579875916b258223"
+    },
+    {
+      "path": "clippy.toml",
+      "sha256": "0cc52b11c301b48da5f4acb6659b01f87cdaadaab9c424794d965325aae6b550"
+    },
+    {
+      "path": "core/domain/Cargo.toml",
+      "sha256": "cc5e8a2a867dcaf0c7a9c9becac3e3cf794a3dbdebd103922418d7e8be8afb91"
+    },
+    {
+      "path": "core/domain/lib.rs",
+      "sha256": "d711b905d4eda091aaffbb369ddc4f38910706136f34d3b31d08498d0280c914"
+    },
+    {
+      "path": "deny.toml",
+      "sha256": "a13614bef561b220f7e3d1c07fee7d649a634cf88856ca20b1f6d8f79e7999bc"
+    },
+    {
+      "path": "docs/engineering/CONVENTIONS.md",
+      "sha256": "1d6274ed9b68ffd6d287b3abe685378c996dce1b1467c1d4a770822fd991a000"
+    },
+    {
+      "path": "docs/evidence/TASK-005/TASK-005_EVIDENCE.md",
+      "sha256": "563dcaeab8a689fcd0c60d7323ca7c487ae83d63cf6431275ad9e360694e8aab"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/dispatch_task_005.record.json",
+      "sha256": "113239cc75d717be8165a7b1b3073f552a0b92bdf93fe895b072a71e5bbb3d2f"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/native_language_suite.json",
+      "sha256": "e7f5339880cf7a3d25d134219fc9f9ff0c3cdff0aa4be121eb62d0a588a7e80d"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/negative_tests.txt",
+      "sha256": "ec2c0a50129cb709c1a827bf7d10f5330135a49b1e45e1381fa3b6f180450719"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/preflight.txt",
+      "sha256": "34d917800406ede1cf694b2ab3808e69910174164f07ff916a9b95bd13e82b14"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/regression.txt",
+      "sha256": "349865f58f52f1ebc02484c7724fa54a7c48e27bc4f19d01894a4ff0b0cc7410"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/required_reading.txt",
+      "sha256": "8db1c673b3cdfa6c07d1e0bd4df64d116b89d99d88ec7f599f1b5e18b1209a3d"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/run_checks.txt",
+      "sha256": "22ffa023a8519a4b78d47c0fbd65a38df5665061e5e468e9da43ee6c60226c32"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/security_scan.txt",
+      "sha256": "f204ed804542272e773371d97a39f434a729e592ab6894e47bc442096a99a159"
+    },
+    {
+      "path": "docs/evidence/TASK-005/logs/toolchain.txt",
+      "sha256": "eaa0e806dd907cc0babc20553dcc88d00a861ac2df2d21943f8790e35588f715"
+    },
+    {
+      "path": "platform/desktop/transport/local_ipc.source",
+      "sha256": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "a995ac7fe10e32628e8df22ccdc6b060e2c197b63ff22237ed8a17be88bd8f1d"
+    },
+    {
+      "path": "scripts/ci/continuous_integration.sh",
+      "sha256": "7351ede3de498fea40488c4c3d1c27807076b2642a34048aac58bb1b82c64769"
+    },
+    {
+      "path": "scripts/test/run_checks.py",
+      "sha256": "bd4f2a0d53005dbbfdd3b1fe7a22f2ba2279a080c22412ba68bce1d63b8f809f"
+    },
+    {
+      "path": "scripts/test/task_cleanup.py",
+      "sha256": "ad720e62f7493258e09ffd1e2787455f2bab49a1f66fb99cc47350e8b123fdaf"
+    },
+    {
+      "path": "tests/tooling/test_run_checks.py",
+      "sha256": "8539af99651f4613681d17e31eb93ea120ad85e7650537a42d3421fe210a66d5"
+    },
+    {
+      "path": "tests/tooling/test_task_cleanup.py",
+      "sha256": "c2558ae9fa579dce977963515d42555d5283f1b8b016b15eb41d7be79cd8825f"
+    }
+  ],
+  "ignored_left_in_place": 0
+}

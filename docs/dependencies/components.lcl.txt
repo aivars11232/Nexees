@@ -797,12 +797,12 @@ DATA:
     TYPE: OBJECT[REF(type.dep_component)]
     VALUE:
         component_id: "DEP-RUST"
-        name: "Rust toolchain (rustc, cargo, clippy, std) with Android targets"
+        name: "Rust toolchain (rustc, cargo, clippy, rustfmt, std) with Android targets"
         area: "Shared core language and runtime"
         classification: "DEPENDENCY"
         scope: "build"
         upstream: "https://www.rust-lang.org (installed with rustup-init, SHA-256 verified)"
-        version: "rustc 1.99.0 (b940084d7 2026-09-28), cargo 1.99.0; targets x86_64-unknown-linux-gnu, x86_64-linux-android, aarch64-linux-android"
+        version: "rustc 1.99.0 (b940084d7 2026-09-28), cargo 1.99.0; targets x86_64-unknown-linux-gnu, x86_64-linux-android, aarch64-linux-android; rustfmt 1.10.0 of the same release (added by TASK-005); pinned for the repository by rust-toolchain.toml"
         license: "MIT OR Apache-2.0"
         obligations: "The standard library is linked into every binary: keep its notices."
         redistribution: "Permitted."
@@ -816,8 +816,8 @@ DATA:
         alternatives: "Kotlin Multiplatform (no LCL engine reuse), C++ (no memory safety), Go (weak Android library story)."
         reason: "The LCL engine is already Rust, so the shared core links it directly, and Rust builds for Desktop and every Android ABI from one source tree."
         replacement: "Foundational: replacing it means rewriting the core."
-        verification: "Proven: the same crate built and passed its probe on x86_64 Linux and Android 16 x86_64, and compiled for arm64 Android, with an isolated rustup."
-        evidence: ["docs/evidence/TASK-003/logs/toolchains.txt", "docs/evidence/TASK-003/logs/rust_checks.txt"]
+        verification: "Proven: the same crate built and passed its probe on x86_64 Linux and Android 16 x86_64, and compiled for arm64 Android, with an isolated rustup. TASK-005 pinned it in rust-toolchain.toml with rustfmt and clippy; the workspace formats, lints, builds, tests and documents with it."
+        evidence: ["docs/evidence/TASK-003/logs/toolchains.txt", "docs/evidence/TASK-003/logs/rust_checks.txt", "docs/evidence/TASK-005/logs/toolchain.txt"]
         owner_tasks: ["TASK-005", "TASK-046"]
 
 DATA:

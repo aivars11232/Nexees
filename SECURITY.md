@@ -1,4 +1,3 @@
-<!-- start here -->
 # Security status
 
 This is an unimplemented source-layout scaffold, not a security-tested application.
@@ -20,7 +19,9 @@ bound to the intended device, workspace, session, action and current state.
 Account access, device pairing and model-provider credentials are separate concerns.
 Keep secrets, recovery codes, private keys, real conversations and private workspace
 data out of the repository, logs, prompts and test fixtures. The packaging signing
-configuration slot must never contain private signing material.
+configuration slot must never contain private signing material. The security stage of
+`scripts/test/run_checks.py` scans every file a commit would hold for credentials and
+private keys, and fails when it finds one.
 
 A private vulnerability-reporting contact has not been supplied. Establish one before
 public release; this archive does not invent a reporting address or service promise.

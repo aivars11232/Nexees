@@ -1,0 +1,30 @@
+TASK-005 negative tests, 2026-10-04T00:52:44+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  layout: a placeholder edited without removing its marker is caught (exit 1: FINDING: core/domain/workspace.source was edited but kept its "start here" marker (CONV-MARKER-01))
+PASS  layout: a marker stripped from a file nobody edited is caught (exit 1: FINDING: LICENSE_STATUS.md lost its marker without any other edit (CONV-MARKER-01))
+PASS  layout: a product file without an architecture slot is caught (exit 1: FINDING: core/domain/extra.rs belongs to 0 subsystems instead of one: [])
+PASS  layout: a test file attributed to no subsystem is caught (exit 1: FINDING: tests/unit/new_behaviour is not attributed to a subsystem)
+PASS  format: trailing whitespace outside Markdown is caught (exit 1: FINDING: Cargo.toml: line 8 has trailing whitespace)
+PASS  format: Rust that rustfmt would change is caught (exit 1: FINDING: cargo fmt --all --check exited with 1)
+PASS  lint: an unwrap in shipped code is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+PASS  lint: a public item without documentation is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+PASS  lint: a repository script that does not state its purpose is caught (exit 1: FINDING: scripts/test/extra_tool.py has no module docstring stating its purpose)
+PASS  docs: a broken relative link is caught (exit 1: FINDING: docs/engineering/CONVENTIONS.md links to no-such-file.md, which does not exist)
+PASS  docs: a file FILE_TREE.txt does not list is caught (exit 1: FINDING: FILE_TREE.txt does not match the files; regenerate it with --write-file-tree)
+PASS  docs: a manual source without its status line is caught (exit 1: FINDING: docs/manuals/NEXEES_USER_MANUAL.md does not state its status)
+PASS  docs: a second copy of a manual is caught (exit 1: FINDING: docs/engineering/SECOND_USER_MANUAL.md looks like a second manual source; docs/manuals/ is the only one)
+PASS  security: a credential in a committed file is caught (exit 1: FINDING: docs/engineering/notes.txt:1: GitHub token)
+PASS  security: an evidence log Git would ignore is caught (exit 1: FINDING: docs/evidence/TASK-005/logs/extra.log is evidence but Git ignores it, so a commit would miss it)
+PASS  deps: a dependency that is not an exact pin is caught (exit 1: FINDING: core/domain/Cargo.toml: dependencies.serde = "1.0" is not an exact pin ("=x.y.z"))
+PASS  deps: a lockfile no gate covers is caught (exit 1: FINDING: apps/desktop/package-lock.json has no advisory and license gate yet; add it to the deps stage (DS-08))
+PASS  evidence: a closed task missing a receipt file is caught (exit 1: FINDING: TASK-004: receipt/corroboration.txt is missing)
+PASS  evidence: a closure record without the manual impact is caught (exit 1: FINDING: TASK-099: closure must have exactly: cleanup, final_verification, manual_impact, readability, schema, task, version)
+PASS  test: the cleanup tool no longer refusing tracked files is caught (exit 1: FINDING: python3 -B -m unittest exited with 1)
+PASS  test: the cleanup tool following symbolic links is caught (exit 1: FINDING: python3 -B -m unittest exited with 1)
+PASS  test: the cleanup tool accepting unknown manifest fields is caught (exit 1: FINDING: python3 -B -m unittest exited with 1)
+
+ALL NEGATIVE TESTS PASSED

@@ -25,6 +25,7 @@ DATA:
         npm_override_count: COUNT(REF(data.dep_npm_overrides))
         advisory_disposition_count: COUNT(REF(data.dep_advisory_dispositions))
         open_item_count: COUNT(REF(data.dep_open_items))
+        repository_tool_count: COUNT(REF(data.dep_repository_tools))
         reviewer: "The coding agent's own review; no independent human or model review."
         limits: "This inventory records what TASK-003 evaluated and proved by prototype. A selected component that the prototype did not run is marked unproven, with its owning task. It is not evidence that any Nexees feature exists, and real-device and release evidence remain with the owning tasks."
 

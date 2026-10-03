@@ -1,0 +1,52 @@
+TASK-005 checkout preflight (binding B26), pack verification and predecessor lineage.
+Recorded 2026-10-04T00:14:56+02:00 with read-only commands, at task start: after the TASK-004 commit and push and before any
+TASK-005 file existed.
+
+== B26 checkout identity ==
+cwd (physical): /mnt/F/Nexees
+git toplevel: /mnt/F/Nexees
+git dir: /mnt/F/Nexees/.git
+superproject: []
+parent .git at /mnt/F or /mnt: none
+remotes (credentials redacted):
+origin	https://github.com/aivars11232/Nexees.git (fetch)
+origin	https://github.com/aivars11232/Nexees.git (push)
+url rewrite rules: none
+explicit origin pushurl: none
+branch: main
+HEAD: 0337be0488dc71bbae6dcaa1fa815991597d7807
+origin/main (fetched for freshness, current branch only, no tags): 0337be0488dc71bbae6dcaa1fa815991597d7807
+upstream: origin/main
+worktrees:
+/mnt/F/Nexees 0337be0 [main]
+hooks path: []; non-sample hooks: 0
+staged files: 0; stash entries: 0; tracked files: 450
+ignored files present: 0
+status (porcelain, untracked shown per file): (clean)
+
+== Pack verification (v0.5.3) ==
+manifest files: 201 | hash mismatches: [] | unlisted on disk: [] | listed but missing: []
+MANIFEST.json sha256: 8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4
+content identity recomputed: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | declared: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | manifest: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | PROCEDURAL_CHANGES new_content_identity: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+tasks/task_005.lcl.txt sha256: 45db82dffda5c7f48562fa1a5b0a3ac996d993b4e2b66baceb5155956941e1b7 | PROCEDURAL_CHANGES after_sha256 45db82dffda5c7f48562fa1a5b0a3ac996d993b4e2b66baceb5155956941e1b7 | task declaration unchanged: True | other record fields unchanged: True
+accept_task.lcl.txt sha256: 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836
+policies/task_002_075_continuation.lcl.txt sha256: 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9
+
+== Predecessor lineage ==
+TASK-001 receipt: task TASK-001 | purpose implementation_review | blockers [] | host verified True | pack identity e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672
+TASK-001 evaluation.record.json sha256: bbda5d839f7713bbd43a0fb3c0c299043abe8f7b055e6e3ce8c110fde3ba07e7 | outcome accepted | terminal status.succeeded
+TASK-001 accepted state: 284f97a02d3ad9288f3701860e608b366b10979f Freeze the Nexees project charter (TASK-001) | on origin/main: True
+TASK-001 deliverables (docs/charter, docs/evidence/TASK-001) changed since then: (none)
+TASK-002 receipt: task TASK-002 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-002 evaluation.record.json sha256: c5fadc8310565f2a73c1f16209987b9a1a086c99919cd6cb101c010eb243bd13 | outcome accepted | terminal status.succeeded
+TASK-002 accepted state: d1a673f62d1a9a31839290e8041eb3c7eb91ba97 Define the Nexees modular architecture (TASK-002) | on origin/main: True
+TASK-002 deliverables (docs/architecture, docs/evidence/TASK-002) changed since then: 4 files (docs/architecture/baseline.lcl.txt, docs/architecture/checks.lcl.txt, docs/architecture/decisions.lcl.txt, docs/architecture/record.lcl.txt), only by later accepted commits: 2eaa199 Audit Nexees reuse, licenses and dependency feasibility (TASK-003)
+TASK-003 receipt: task TASK-003 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-003 evaluation.record.json sha256: 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0 | outcome accepted | terminal status.succeeded
+TASK-003 accepted state: bccc9b1a6136effc8b3dfc9bc40c03d28e5471eb Record the owner's approval of the TASK-003 SDK cache rewrite | on origin/main: True
+TASK-003 deliverables (docs/dependencies, docs/evidence/TASK-003) changed since then: (none)
+TASK-004 receipt: task TASK-004 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-004 evaluation.record.json sha256: 2b7406b82bf63a524943a87c60cf322ec17291bfaf800efd23676e0097bbc83f | outcome accepted | terminal status.succeeded
+TASK-004 accepted state: 0337be0488dc71bbae6dcaa1fa815991597d7807 Create the Nexees threat model and security invariants (TASK-004) | on origin/main: True
+TASK-004 deliverables (docs/security, docs/evidence/TASK-004) changed since then: (none)
+Uncommitted changes to predecessor deliverables: (none)

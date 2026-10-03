@@ -1,0 +1,43 @@
+# cargo-deny policy for the Nexees workspace: the license gate (DS-07), the advisory gate (DS-08)
+# and the allowed sources, as recorded in docs/dependencies. scripts/test/run_checks.py runs it
+# in its deps stage. A change here is a change to that strategy and is recorded there first.
+[graph]
+targets = ["x86_64-unknown-linux-gnu", "x86_64-linux-android", "aarch64-linux-android"]
+
+[advisories]
+yanked = "deny"
+
+[licenses]
+# DS-07's licenses that need no further review. A license with duties (EPL-2.0, LGPL, MPL-2.0,
+# CC-BY-4.0, OFL-1.1) is allowed only per crate, with its duties recorded in docs/dependencies.
+allow = [
+    "0BSD",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "BlueOak-1.0.0",
+    "CC0-1.0",
+    "ISC",
+    "MIT",
+    "Python-2.0",
+    "Unicode-3.0",
+    "Unlicense",
+    "Zlib",
+]
+confidence-threshold = 0.93
+# The list is a policy, not an inventory: a license nothing uses yet is not a finding.
+unused-allowed-license = "allow"
+
+# Nexees's own crates are unpublished and carry no license field (LICENSE_STATUS.md).
+[licenses.private]
+ignore = true
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+# Path dependencies between workspace crates have no version requirement.
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

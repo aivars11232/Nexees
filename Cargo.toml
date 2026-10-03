@@ -1,0 +1,42 @@
+# The Nexees Rust workspace: the shared core used unchanged by the Desktop and Android hosts
+# (DS-01 in docs/dependencies, AD-01 in docs/architecture).
+#
+# Each directory under core/ becomes one library crate when its owning task first implements it:
+# core/<area>/Cargo.toml with the crate root core/<area>/lib.rs, and one module per architecture
+# slot. docs/engineering/CONVENTIONS.md describes the layout and the rules below.
+[workspace]
+resolver = "3"
+members = ["core/domain"]
+# Task evidence keeps frozen prototypes with workspaces of their own; they are never members.
+exclude = ["docs/evidence"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99"
+# No distribution license has been selected (LICENSE_STATUS.md), so nothing is published.
+publish = false
+
+# Shared third-party versions. Every entry is an exact pin ("=x.y.z", DS-05) recorded in
+# docs/dependencies before it is added; scripts/test/run_checks.py rejects any other form.
+[workspace.dependencies]
+
+[workspace.lints.rust]
+# Unsafe code is denied everywhere. Shared-core crates also forbid it in their crate root; a
+# platform adapter that needs it allows it locally, next to a `// SAFETY:` comment.
+unsafe_code = "deny"
+# Every public item states what it is for (code_readability_and_cleanup Q1).
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+undocumented_unsafe_blocks = "warn"
+# Shipped code reports failures as values instead of panicking (fail closed, TH-12).
+unwrap_used = "warn"
+expect_used = "warn"
+todo = "warn"
+unimplemented = "warn"
+# Output goes through logging and its secret redaction, never straight to a console (SI-08).
+print_stdout = "warn"
+print_stderr = "warn"
+dbg_macro = "warn"

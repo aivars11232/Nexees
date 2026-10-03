@@ -1,0 +1,53 @@
+Secret and privacy scan for TASK-005, run 2026-10-04T00:48:05+02:00.
+
+1. The security stage of scripts/test/run_checks.py, over every file a commit of this checkout would hold
+   (credential formats, private-key file names, and evidence that Git would ignore):
+$ python3 -B scripts/test/run_checks.py --stage security
+   == security ==
+   469 files scanned for credentials and keys; ignored evidence files: 0
+   -- security: PASS
+   
+   security PASS
+   ALL STAGES PASSED
+   exit code: 0
+
+2. The files TASK-005 added or changed (git status, without this report; 35 files):
+   .editorconfig
+   .gitattributes
+   .gitignore
+   Cargo.lock
+   Cargo.toml
+   FILE_TREE.txt
+   README.md
+   SECURITY.md
+   clippy.toml
+   core/domain/Cargo.toml
+   core/domain/lib.rs
+   deny.toml
+   docs/architecture/decisions.lcl.txt
+   docs/architecture/subsystems.lcl.txt
+   docs/dependencies/LICENSE_MATRIX.md
+   docs/dependencies/checks.lcl.txt
+   docs/dependencies/components.lcl.txt
+   docs/dependencies/record.lcl.txt
+   docs/dependencies/strategy.lcl.txt
+   docs/engineering/CONVENTIONS.md
+   docs/evidence/TASK-005/logs/dispatch_task_005.record.json
+   docs/evidence/TASK-005/logs/native_language_suite.json
+   docs/evidence/TASK-005/logs/negative_tests.txt
+   docs/evidence/TASK-005/logs/preflight.txt
+   docs/evidence/TASK-005/logs/regression.txt
+   docs/evidence/TASK-005/logs/required_reading.txt
+   docs/evidence/TASK-005/logs/toolchain.txt
+   docs/security/tests.lcl.txt
+   platform/desktop/transport/local_ipc.source
+   rust-toolchain.toml
+   scripts/ci/continuous_integration.sh
+   scripts/test/run_checks.py
+   scripts/test/task_cleanup.py
+   tests/tooling/test_run_checks.py
+   tests/tooling/test_task_cleanup.py
+   E-mail-shaped strings: 0 occurrences in 0 (file, string) pairs; none is the owner's
+   Executable files: 3, the three intended entry points: ['scripts/ci/continuous_integration.sh', 'scripts/test/run_checks.py', 'scripts/test/task_cleanup.py']
+
+Result: no credential, no key material, no ignored evidence, no personal address; only the intended executables

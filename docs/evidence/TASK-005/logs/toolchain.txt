@@ -1,0 +1,44 @@
+TASK-005 toolchain: the pinned Rust toolchain in the approved isolated folder (/mnt/F/Nexees-toolchains), recorded 2026-10-04T00:23:56+02:00.
+RUSTUP_HOME=/mnt/F/Nexees-toolchains/rustup CARGO_HOME=/mnt/F/Nexees-toolchains/cargo (env.sh; nothing is written to ~/.cargo, ~/.rustup or system packages)
+
+== Before ==
+$ rustup component list --installed --toolchain 1.99.0-x86_64-unknown-linux-gnu
+cargo-x86_64-unknown-linux-gnu
+clippy-x86_64-unknown-linux-gnu
+rust-std-aarch64-linux-android
+rust-std-x86_64-linux-android
+rust-std-x86_64-unknown-linux-gnu
+rustc-x86_64-unknown-linux-gnu
+
+== Install the formatter of the same release (rustup verifies each download's SHA-256) ==
+$ rustup component add rustfmt --toolchain 1.99.0-x86_64-unknown-linux-gnu
+info: downloading component rustfmt
+exit code: 0
+
+== After ==
+cargo-x86_64-unknown-linux-gnu
+clippy-x86_64-unknown-linux-gnu
+rust-std-aarch64-linux-android
+rust-std-x86_64-linux-android
+rust-std-x86_64-unknown-linux-gnu
+rustc-x86_64-unknown-linux-gnu
+rustfmt-x86_64-unknown-linux-gnu
+
+$ rustc --version
+rustc 1.99.0 (b940084d7 2026-09-28)
+$ cargo --version
+cargo 1.99.0 (5f94df478 2026-08-27)
+$ cargo fmt --version
+rustfmt 1.10.0-stable (b940084d7e 2026-09-28)
+$ cargo clippy --version
+clippy 0.1.99 (b940084d7e 2026-09-28)
+$ rustup target list --installed
+aarch64-linux-android
+x86_64-linux-android
+x86_64-unknown-linux-gnu
+
+== Other tools the checks use (executed only) ==
+cargo-deny: cargo-deny 0.20.2 at ~/.cargo/bin/cargo-deny, the owner's existing install as in TASK-003; its advisory database stays in $CARGO_HOME/advisory-dbs
+python3: Python 3.14.7 (/usr/bin/python3)
+lcl: lcl 0.9.1 (/home/aivars/.local/bin/lcl)
+git: git version 2.56.0

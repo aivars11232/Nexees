@@ -1,15 +1,31 @@
-# start here
-# Dependencies, generated builds and caches. Never use ignores as permission to delete.
-node_modules/
+# Generated build outputs, dependency caches and machine-local state. An ignore rule is never
+# permission to delete anything: cleanup removes only what a task recorded as its own
+# (docs/engineering/CONVENTIONS.md, "Scoped cleanup").
+
+# Rust. Builds should write to a CARGO_TARGET_DIR outside the checkout (DS-09).
 target/
+
+# Android and Gradle.
+.gradle/
+.kotlin/
+.cxx/
 build/
 # Build helpers are source, not generated output.
 !scripts/build/
 !scripts/build/**
+local.properties
+*.apk
+*.aab
+
+# Node and Theia.
+node_modules/
 dist/
 out/
-.gradle/
-.cxx/
+src-gen/
+gen-webpack*.config.js
+*.tsbuildinfo
+
+# Python tooling.
 __pycache__/
 *.py[cod]
 .venv/
@@ -25,19 +41,22 @@ coverage/
 !.env.example
 !**/.env.example
 config/local-paths.json
-local.properties
 *.keystore
 *.jks
 *.p12
 *.pfx
 
-# Runtime user data, recordings and temporary work do not belong in source control.
+# Runtime user data, recordings, editor state and temporary work.
 .nexees/
 runtime/
 *.log
 *.tmp
 *.swp
+.idea/
+*.iml
 .DS_Store
 Thumbs.db
 
-# Keep product documentation, source and synthetic test fixtures tracked.
+# Task evidence is never ignored, whatever the rules above match: a log or a prototype file under
+# docs/evidence/ is part of a task's record and must reach its commit.
+!docs/evidence/**

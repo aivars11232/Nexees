@@ -1,0 +1,275 @@
+Regression of the accepted predecessors' executable checks, run 2026-10-04T00:47:14+02:00 on the TASK-005 worktree (HEAD 0337be0).
+TASK-005 changes three predecessor records on purpose, each recorded with its reason: docs/architecture (the slots of the
+new files, TASK-005 as a co-owner of SS-DOMAIN-PROTOCOL, GAP-01 resolved, the scaffold noted under PD-CORE-RUNTIME),
+docs/dependencies (rustfmt in DEP-RUST, the repository tools list) and docs/security (SG-08 resolved). The charter and every
+predecessor evidence folder are unchanged. Each predecessor's LCL project and cross-check runs again on the changed
+records. The TASK-001 cross-check needs pack revision 0.5.2: the archive preserved in the 0.5.3 pack is extracted to a
+scratch folder for this replay and removed afterwards.
+
+$ git diff --stat 284f97a -- docs/charter docs/evidence/TASK-001
+(empty output)
+exit code: 0
+
+$ git diff --stat HEAD -- docs/evidence/TASK-001 docs/evidence/TASK-002 docs/evidence/TASK-003 docs/evidence/TASK-004
+(empty output)
+exit code: 0
+
+$ git diff --stat HEAD -- docs/architecture docs/dependencies docs/security
+ docs/architecture/decisions.lcl.txt  |  4 ++--
+ docs/architecture/subsystems.lcl.txt | 10 +++++-----
+ docs/dependencies/LICENSE_MATRIX.md  | 14 ++++++++++++++
+ docs/dependencies/checks.lcl.txt     |  4 ++--
+ docs/dependencies/components.lcl.txt |  8 ++++----
+ docs/dependencies/record.lcl.txt     |  1 +
+ docs/dependencies/strategy.lcl.txt   |  6 ++++++
+ docs/security/tests.lcl.txt          |  2 +-
+ 8 files changed, 35 insertions(+), 14 deletions(-)
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+status.succeeded
+  VERIFY verify.charter_phase_total = TRUE (required)
+  VERIFY verify.charter_record_delivery = TRUE (required)
+  SUCCESS success.charter_record ALL = TRUE
+  OUTPUT output.charter_record published = {baseline_commit: "0d6d3e5ee422182a38b793756e001ddd75df507f", clause_count: 18, frozen_by: "TASK-001", language_core: "0.3.0", limits: "This record identifies the frozen requirement baseline and passes structural checks only. It is not evidence that any Nexees feature exists or works, and it closes no task.", open_item_ids: ["DESKTOP-RENDERER-01", "AMEND-075-01", "BIND-B1-LOGO", "CONV-MARKER-01"], pack_archive_revision: "0.5.2", pack_content_identity: "e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672", pack_manifest_sha256: "e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a", pack_specification_version: "0.5.0", precedence: "This charter consolidates; it does not replace. Each clause summarises agreed behaviour and names its authority in the specification pack identified in baseline.lcl.txt. Where a clause and its authority differ, the authority governs and the difference is a defect in this charter. Changing a requirement means an approved change to the pack and a new charter revision bound to the new pack identity.", record_kind: "nexees_frozen_charter", repository: URI("https://github.com/aivars11232/Nexees"), requirement_family_count: 7, specification_pack: "Nexees LCL Implementation Pack", task_count: 75}
+  because: SuccessSatisfied
+  2 invocation(s), 0 event(s), 3 step(s)
+exit code: 0
+
+$ sha256sum <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2/MANIFEST.json
+e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a  <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2/MANIFEST.json
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-001/check_charter_against_pack.py <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2
+PASS  pack files match the pack manifest  [188 files]
+PASS  content identity recomputed from the pack files  [e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672]
+PASS  manifest hash
+PASS  archive revision  [0.5.2]
+PASS  specification version
+PASS  language core
+PASS  task count  [75]
+PASS  execution phases  [19 phases]
+PASS  phase task counts
+PASS  task-ID map carried over
+PASS  task-ID map added tasks  [TASK-045 TASK-051 TASK-052 TASK-071 TASK-072]
+PASS  task-ID map covers 001-075
+PASS  family import: identifiers in architecture/lcl_import_pipeline.lcl.txt  [10/10]
+PASS  family import: owner task identifiers
+PASS  family handoff: identifiers in architecture/model_handoff.lcl.txt  [10/10]
+PASS  family handoff: owner task identifiers
+PASS  family manuals: identifiers in architecture/manuals_and_help.lcl.txt  [5/5]
+PASS  family manuals: owner task identifiers
+PASS  family readability: identifiers in policies/code_readability_and_cleanup.lcl.txt  [5/5]
+PASS  family readability: owner task identifiers
+PASS  family android: identifiers in architecture/android_operating_model.lcl.txt  [12/12]
+PASS  family android: owner task identifiers
+PASS  family remote_requirements: identifiers in architecture/remote_device_control.lcl.txt  [26/26]
+PASS  family remote_requirements: owner task identifiers
+PASS  family remote_scenarios: identifiers in verification/remote_control_acceptance.lcl.txt  [18/18]
+PASS  family remote_scenarios: owner task identifiers
+PASS  remote requirement owners  [26 requirements]
+PASS  remote scenario owners  [18 scenarios]
+PASS  TASK-001 owns all 26 remote requirements and no scenario
+PASS  clause authorities exist in the pack  [18 clauses]
+PASS  clause phases exist in the build order
+PASS  every phase is covered by a clause
+
+ALL CHECKS PASSED
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+architecture.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+architecture.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+status.succeeded
+  VERIFY verify.arch_review_gates = TRUE (required)
+  VERIFY verify.arch_reviews_hold = TRUE (required)
+  VERIFY verify.arch_decisions_accepted_by_task_002 = TRUE (required)
+  VERIFY verify.arch_renderer_resolved = TRUE (required)
+  VERIFY verify.arch_open_decision_status = TRUE (required)
+  VERIFY verify.arch_remote_scope = TRUE (required)
+  VERIFY verify.arch_remote_design_only = TRUE (required)
+  VERIFY verify.arch_android_host_standalone = TRUE (required)
+  VERIFY verify.arch_state_owners = TRUE (required)
+  VERIFY verify.arch_authority_never_synced = TRUE (required)
+  VERIFY verify.arch_subsystem_ids = TRUE (required)
+  VERIFY verify.arch_receiver_uses_no_model = TRUE (required)
+  VERIFY verify.arch_record_delivery = TRUE (required)
+  SUCCESS success.arch_record ALL = TRUE
+  OUTPUT output.arch_record published = {base_commit: "284f97a02d3ad9288f3701860e608b366b10979f", decision_count: 12, defined_by: "TASK-002", failure_domain_count: 14, flow_count: 10, host_count: 2, interface_count: 14, language_core: "0.3.0", layout_revision: "0.4", limits: "This record defines boundaries and passes structural checks only. The architecture itself selects no technology, dependency or renderer: those answers come from the tasks named in each open decision's resolution (TASK-003's in docs/dependencies). It implements nothing and is not evidence that any subsystem exists or works.", open_decision_count: 16, open_gap_count: 7, pack_archive_revision: "0.5.3", pack_content_identity: "bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1", pack_manifest_sha256: "8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4", pack_specification_version: "0.5.0", precedence: "This architecture refines the specification pack and the TASK-001 charter within TASK-002's authority: it defines the boundaries, ownership and authoritative state that later tasks implement. Where it conflicts with the pack, the pack governs and the conflict is a defect here. A task that moves a boundary, merges or adds a slot, changes an owner or reverses a decision records that change in this architecture, with its reason, in the same change.", record_kind: "nexees_modular_architecture", remote_requirements_designed: ["RC-01", "RC-03", "RC-04", "RC-05", "RC-08", "RC-09", "RC-13", "RC-19", "RC-20", "RC-23", "RC-25"], remote_status: "Design closed by TASK-002; not implemented and not runtime-tested.", repository: URI("https://github.com/aivars11232/Nexees"), review_count: 11, reviewer: "The coding agent's own review; no independent human or model review.", single_path_count: 13, specification_pack: "Nexees LCL Implementation Pack", state_category_count: 22, subsystem_count: 24, subsystem_ids: ["SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT", "SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-CONTEXT", "SS-TASKING", "SS-PROVIDERS", "SS-LCL", "SS-ACCOUNTS", "SS-SETTINGS", "SS-REMOTE", "SS-SYNC", "SS-HELP", "SS-UPDATES", "SS-IDE", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-ASSETS", "SS-BUILD-RELEASE"]}
+  because: SuccessSatisfied
+  2 invocation(s), 0 event(s), 3 step(s)
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+PASS  pack files match the pack manifest  [201 files]
+PASS  content identity recomputed from the pack files  [bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1]
+PASS  manifest hash
+PASS  archive revision  [0.5.3]
+PASS  specification version and language core
+PASS  refined documents are byte-identical to the charter baseline 0.5.2  [26 documents]
+PASS  every product file belongs to exactly one subsystem  [221 files]
+PASS  every slot names existing files and states a responsibility
+PASS  slot layers match their roots (AD-01)
+PASS  every test file is attributed to exactly one subsystem  [61 test files]
+PASS  a subsystem without test files is a recorded gap  [SS-ACCOUNTS, SS-ASSETS, SS-IDE, SS-PLATFORM-ANDROID, SS-PLATFORM-DESKTOP]
+PASS  dependencies name other catalogued subsystems
+PASS  the dependency graph is acyclic (AD-12)
+PASS  every state category has exactly one owning subsystem
+PASS  state classifications use the documented vocabulary
+PASS  secret state never synchronizes
+PASS  interface consumers are subsystems that depend on a provider
+PASS  both hosts compose the same shared core and differ only in platform adapters
+PASS  every flow step names the subsystems that perform it
+PASS  contract elements and review references resolve
+PASS  every task reference is one of TASK-001 to TASK-075
+PASS  open decisions affect catalogued subsystems
+PASS  every implementation task from TASK-005 to TASK-075 owns part of a subsystem
+PASS  each single path is a catalogued slot
+PASS  the contracts cover exactly the requirements the pack assigns to TASK-002  [RC-01 RC-03 RC-04 RC-05 RC-08 RC-09 RC-13 RC-19 RC-20 RC-23 RC-25]
+PASS  runtime owners equal the pack requirement map after TASK-002
+PASS  test plans name RC-T01 to RC-T18, planned test files or recorded gaps
+
+ALL CHECKS PASSED
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+dependencies.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+dependencies.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+status.succeeded
+  VERIFY verify.dep_classifications_valid = TRUE (required)
+  VERIFY verify.dep_scopes_valid = TRUE (required)
+  VERIFY verify.dep_foundation = TRUE (required)
+  VERIFY verify.dep_shared_core_portable = TRUE (required)
+  VERIFY verify.dep_record_delivery = TRUE (required)
+  SUCCESS success.dep_record ALL = TRUE
+  OUTPUT output.dep_record published = {adapter_count: 10, advisory_disposition_count: 5, audit_date: "2026-10-03", component_count: 49, defined_by: "TASK-003", dependency_count: 19, evidence: "docs/evidence/TASK-003/TASK-003_EVIDENCE.md", limits: "This inventory records what TASK-003 evaluated and proved by prototype. A selected component that the prototype did not run is marked unproven, with its owning task. It is not evidence that any Nexees feature exists, and real-device and release evidence remain with the owning tasks.", npm_override_count: 5, open_item_count: 10, record_kind: "nexees_dependency_inventory", reference_count: 10, rejected_count: 10, renderer_decision: "electron_permitted", repository_tool_count: 3, reviewer: "The coding agent's own review; no independent human or model review."}
+  because: SuccessSatisfied
+  2 invocation(s), 0 event(s), 3 step(s)
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-003/check_dependencies.py
+PASS  49 records with unique DEP- identifiers  [49]
+PASS  every record fills every gate and template field
+PASS  classifications and scopes come from the declared vocabularies
+PASS  owner tasks are TASK-001 to TASK-075
+PASS  the record states the real classification counts  [{"DEPENDENCY": 19, "ADAPTER": 10, "REFERENCE": 10, "REJECTED": 10}]
+PASS  every cited evidence file exists
+PASS  no rejected component is used by the shared core, Android or a build
+PASS  Rust pins, lockfile, registry licenses and records agree
+PASS  every registry dependency of the prototype is pinned exactly
+PASS  all @theia packages are the recorded 1.76.0
+PASS  the npm overrides equal data.dep_npm_overrides  [{"electron": "42.11.10", "dompurify": "3.4.16", "uuid": "11.1.1", "@tootallnate/once": "2.0.1", "unzipper": "0.12.5"}]
+PASS  inherited npm packages match their records in version and license
+PASS  the evaluated tree is the recorded 888 npm and 216 crate packages  [{"npm": 888, "crates.io": 216}]
+PASS  the kept lockfile resolves exactly the npm packages the advisory lookup covered  [888]
+PASS  every remaining advisory has a recorded disposition with its identifiers  [{"braces 3.0.3": ["GHSA-vfj7-8cjw-p6xm"], "decompress 4.2.1": ["GHSA-h39j-r5qq-r9mm", "GHSA-hrh2-vp3x-79xf", "GHSA-jwp9-9v96-94mx", "GHSA-mp2f-45pm-3cg9"], "http-cache-semantics 4.2.0": ["GHSA-ch52-4w7c-c8xp"], "diff 7.0.0": ["GHSA-73rr-hh4g-fpgx"], "serialize-javascript 6.0.2": ["GHSA-5c6j-r48x-rmvq", "GHSA-qj8w-gfj5-8c6v"]}]
+PASS  the Rust tree has no advisory
+PASS  the published configuration had the recorded 34 advisories in 10 packages
+PASS  registry licenses are repeated in the records
+PASS  the matrix lists every component once
+PASS  the matrix repeats each classification and scope
+PASS  the matrix totals equal the inventory  [Totals: 49 components; 19 DEPENDENCY, 10 ADAPTER, 10 REFERENCE, 10 REJECTED.]
+PASS  every open decision TASK-003 had to answer carries a TASK-003 resolution
+PASS  the renderer resolution equals the owner decision in the inventory
+PASS  the decision TASK-003 does not own stays open
+
+ALL CHECKS PASSED
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/security/security.lcl.txt
+security.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/security/security.lcl.txt
+security.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/security/security.lcl.txt
+status.succeeded
+  VERIFY verify.sec_trust_order = TRUE (required)
+  VERIFY verify.sec_threat_categories = TRUE (required)
+  VERIFY verify.sec_threats_traced = TRUE (required)
+  VERIFY verify.sec_invariants_enforced = TRUE (required)
+  VERIFY verify.sec_test_categories = TRUE (required)
+  VERIFY verify.sec_remote_scope = TRUE (required)
+  VERIFY verify.sec_remote_design_only = TRUE (required)
+  VERIFY verify.sec_safe_defaults = TRUE (required)
+  VERIFY verify.sec_examples_consistent = TRUE (required)
+  VERIFY verify.sec_record_delivery = TRUE (required)
+  SUCCESS success.sec_record ALL = TRUE
+  OUTPUT output.sec_record published = {asset_count: 15, assigned_remote_requirements: ["RC-02", "RC-03", "RC-07", "RC-09", "RC-10", "RC-17", "RC-18", "RC-19", "RC-22", "RC-23", "RC-24"], authority_count: 8, boundary_count: 12, date: "2026-10-03", defined_by: "TASK-004", evidence: "docs/evidence/TASK-004/TASK-004_EVIDENCE.md", invariant_count: 30, limits: "Design only. This threat model traces each threat to the later task and the boundary that will enforce it; it implements and runtime-tests nothing. Implementation, abuse tests and real-device evidence remain with the owning tasks, and the release review is TASK-073 to TASK-075.", record_kind: "nexees_threat_model", remote_contract_count: 11, remote_status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested.", reviewer: "The coding agent's own review; no independent human or model review.", surface_count: 34, test_gap_count: 9, threat_count: 55, threat_test_count: 39, trust_level_count: 8}
+  because: SuccessSatisfied
+  2 invocation(s), 0 event(s), 3 step(s)
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-004/check_threat_model.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+PASS  pack files match the pack manifest  [201 files]
+PASS  every scenario family the model cites exists in the pack
+PASS  the contracts cover exactly the requirements the pack assigns to TASK-004  [RC-02 RC-03 RC-07 RC-09 RC-10 RC-17 RC-18 RC-19 RC-22 RC-23 RC-24]
+PASS  the assigned scenarios equal the pack map  [RC-T01 RC-T08 RC-T12 RC-T15]
+PASS  runtime owners equal the pack requirement map after TASK-004
+PASS  each assigned scenario has a threat test and the runtime owners of the pack map
+PASS  a requirement TASK-002 also designed builds on its contract, and only then
+PASS  contract types exist and every message type serves a contract
+PASS  contract test plans name scenarios, test slots or recorded gaps
+PASS  the destination checks are EC-01 to EC-14 in order  [14 checks]
+PASS  every threat has owning tasks, all from TASK-005 to TASK-075
+PASS  every threat boundary names architecture subsystems and interfaces
+PASS  every enforcement point is a module slot of the threat's boundary
+PASS  every owning task owns a subsystem of the threat's boundary
+PASS  every threat test reference is a test slot, a pack scenario or a recorded gap
+PASS  threat invariants, assets, surfaces, areas and categories resolve
+PASS  every area of the task scope has at least three threats  [desktop 12, android 10, agent tools 8, providers 7, lcl 5, extensions 3, auth 5, updates 4, cross-device sessions 13]
+PASS  every v0.3 category has threats and at least two threat tests, covering each of its threats  [malicious archives 3/5; imported-rule injection 2/3; model-switch races 2/5; new-provider data disclosure 1/3; unsafe cleanup 1/3; active help content 1/2]
+PASS  every invariant answers at least one threat
+PASS  every asset and surface is threatened, and every boundary has a surface
+PASS  the assets cover every state category of the architecture
+PASS  every required control of the security baseline maps to invariants  [18 controls]
+PASS  every security stop condition maps to invariants  [8 conditions]
+PASS  the trust levels are the pack's eight levels, in order  [Immutable Nexees security policy > Explicit current user commands/approvals > Validated LCL project rules/contracts (when enabled) > Approved current task definition > Trusted persistent project state > Repository/file contents > Tool output > External/network content]
+PASS  every invariant names architecture elements and their module slots
+PASS  every invariant owner is a later task that owns its boundary or its remote requirement
+PASS  every invariant test reference resolves
+PASS  every invariant source is a pack policy, rule, contract, scenario or architecture decision
+PASS  every boundary names invariants, architecture elements and their module slots
+PASS  every surface has valid areas, a boundary and architecture elements
+PASS  assets and authorities name existing state categories, invariants and later tasks
+PASS  every enforcement point exists in the source layout
+PASS  every threat test names threats, a slot or gap, pack scenarios, later owners and platforms
+PASS  every recorded gap is needed, names later tasks and real threats
+PASS  identifiers mentioned in the texts resolve
+PASS  identifiers are unique and numbered without gaps  [TH- 55, SI- 30, TT- 39, SF- 34, AS- 15, TB- 12, AU- 8, SG- 9, R- 8, SEC-A 8, OSD- 8]
+PASS  no later work is assigned to TASK-004 or an earlier task  [522 assignments]
+PASS  the foundation facts the threats cite are in the evidence log  [foundation_security_facts.txt]
+
+55 threats, 30 invariants, 39 threat tests, 11 remote contracts
+ALL CHECKS PASSED
+exit code: 0
