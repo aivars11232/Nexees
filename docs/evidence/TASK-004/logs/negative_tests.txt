@@ -1,0 +1,29 @@
+TASK-004 negative tests, 2026-10-03T23:48:37+02:00. Each defect is injected into a fresh scratch copy of the worktree (without
+.git); a case passes when the defect is caught (non-zero exit). The unmutated copy is run first and must pass.
+
+PASS  control: docs/security lcl validate succeeds unmutated (exit 0)
+PASS  control: docs/security lcl run succeeds unmutated (exit 0)
+PASS  control: check_threat_model.py passes unmutated (exit 0)
+PASS  a threat category outside the vocabulary is caught by lcl run (exit 2: status.failed checks.lcl.txt:27:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.sec_threat_categories` asserted FALSE)
+PASS  a threat without an owning task is caught by lcl run (exit 2: status.failed checks.lcl.txt:32:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.sec_threats_traced` asserted FALSE)
+PASS  a threat without a runtime-enforced boundary is caught by lcl run (exit 2: status.failed checks.lcl.txt:32:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.sec_threats_traced` asserted FALSE)
+PASS  receiving on by default is caught by lcl run (exit 2: status.failed checks.lcl.txt:57:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.sec_safe_defaults` asserted FALSE)
+PASS  commands allowed while locked by default is caught by lcl run (exit 2: status.failed checks.lcl.txt:57:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.sec_safe_defaults` asserted FALSE)
+PASS  a contract claiming runtime testing is caught by lcl run (exit 2: status.failed checks.lcl.txt:52:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.sec_remote_design_only` asserted FALSE)
+PASS  two remote contracts swapped is caught by lcl run (exit 2: status.failed checks.lcl.txt:47:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.sec_remote_scope` asserted FALSE)
+PASS  trust levels out of order is caught by lcl run (exit 2: status.failed checks.lcl.txt:22:9: error.verification.failed [verification_or_completion]: required VERIFY `verify.sec_trust_order` asserted FALSE)
+PASS  a permission epoch that is not an integer is caught by lcl validate (exit 1: remote.lcl.txt:246:27: error.type.mismatch [static_or_expression]: this value is STRING, not the declared type INTEGER)
+PASS  an owning task at TASK-003 is caught by check_threat_model.py (exit 1: failed: every threat has owning tasks, all from TASK-005 to TASK-075; every owning task owns a subsystem of the threat's boundary; no later work is assigned to TASK-004 or an earlier task)
+PASS  an owner that does not own the boundary is caught by check_threat_model.py (exit 1: failed: every owning task owns a subsystem of the threat's boundary)
+PASS  an enforcement point outside the boundary is caught by check_threat_model.py (exit 1: failed: every enforcement point is a module slot of the threat's boundary)
+PASS  a subsystem the architecture does not have is caught by check_threat_model.py (exit 1: failed: every threat boundary names architecture subsystems and interfaces)
+PASS  a test slot that does not exist is caught by check_threat_model.py (exit 1: failed: every threat test reference is a test slot, a pack scenario or a recorded gap)
+PASS  active help content left without threat tests is caught by check_threat_model.py (exit 1: failed: every v0.3 category has threats and at least two threat tests, covering each of its threats)
+PASS  a runtime owner dropped from a contract is caught by check_threat_model.py (exit 1: failed: runtime owners equal the pack requirement map after TASK-004)
+PASS  an invariant that answers no threat is caught by check_threat_model.py (exit 1: failed: every invariant answers at least one threat)
+PASS  a required control left unmapped is caught by check_threat_model.py (exit 1: failed: every required control of the security baseline maps to invariants)
+PASS  a residual risk that is not recorded is caught by check_threat_model.py (exit 1: failed: identifiers mentioned in the texts resolve)
+PASS  a state category no asset covers is caught by check_threat_model.py (exit 1: failed: the assets cover every state category of the architecture)
+PASS  the foundation facts log missing is caught by check_threat_model.py (exit 1: failed: the foundation facts the threats cite are in the evidence log)
+
+ALL NEGATIVE TESTS PASSED

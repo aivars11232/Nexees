@@ -1,0 +1,57 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.security
+    NAME: "Nexees threat model and security invariants"
+    VERSION: "0.5.0"
+    KIND: kind.project
+    DESCRIPTION: "WORKING DIRECTORY: /mnt/F/Nexees/ | REPOSITORY: https://github.com/aivars11232/Nexees | Created by TASK-004. The trust hierarchy, authorities, trust boundaries, assets, attack surfaces, immutable security invariants, threats and threat tests of Nexees, and TASK-004's security contracts for its eleven remote-control requirements. Every threat is traced to an owning task and a runtime-enforced boundary of docs/architecture. This is design: nothing here is implemented or runtime-tested. Running it returns the threat-model record and checks its structure, with no file, process, network or Git side effect."
+
+PART:
+    ID: part.sec_baseline
+    SOURCE: PATH("baseline.lcl.txt")
+    KIND: kind.part.definitions
+
+PART:
+    ID: part.sec_trust
+    SOURCE: PATH("trust.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.sec_assets
+    SOURCE: PATH("assets.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.sec_invariants
+    SOURCE: PATH("invariants.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.sec_threats
+    SOURCE: PATH("threats.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.sec_tests
+    SOURCE: PATH("tests.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.sec_remote
+    SOURCE: PATH("remote.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.sec_checks
+    SOURCE: PATH("checks.lcl.txt")
+    KIND: kind.part.checks
+
+PART:
+    ID: part.sec_record
+    SOURCE: PATH("record.lcl.txt")
+    KIND: kind.part.task
+
+EXECUTE:
+    REFERENCE: REF(task.sec_record)

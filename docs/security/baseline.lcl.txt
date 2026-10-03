@@ -1,0 +1,826 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.sec_baseline
+    NAME: "Threat model baseline, record types and message types"
+    VERSION: "0.5.0"
+    KIND: kind.part.definitions
+    DESCRIPTION: "Identifies the task that produced this threat model and declares its record types and the security message types of the remote contracts. A field that names other records (invariants, boundaries, tests) holds their identifiers; docs/evidence/TASK-004/check_threat_model.py resolves every one of them."
+
+DEFINE:
+    ID: binding.sec_defined_by
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "TASK-004"
+    DESCRIPTION: "The task that created this project."
+
+DEFINE:
+    ID: binding.sec_date
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "2026-10-03"
+    DESCRIPTION: "The date of this threat model. A task that changes a boundary or adds a surface updates it in the same change."
+
+DEFINE:
+    ID: binding.sec_evidence
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "docs/evidence/TASK-004/TASK-004_EVIDENCE.md"
+    DESCRIPTION: "The evidence record of TASK-004."
+
+DEFINE:
+    ID: binding.sec_areas
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["desktop", "android", "agent tools", "providers", "lcl", "extensions", "auth", "updates", "cross-device sessions"]
+    DESCRIPTION: "The nine areas TASK-004's scope names: Desktop, Android, agent tools, providers, LCL, extensions, auth, updates and cross-device sessions."
+
+DEFINE:
+    ID: binding.sec_v03_categories
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["malicious archives", "imported-rule injection", "model-switch races", "new-provider data disclosure", "unsafe cleanup", "active help content"]
+    DESCRIPTION: "The threat categories the v0.3 requirement adds to threat tests (security_gate v0.3, TASK-004 scope)."
+
+DEFINE:
+    ID: binding.sec_categories
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["malicious archives", "imported-rule injection", "model-switch races", "new-provider data disclosure", "unsafe cleanup", "active help content", "general"]
+    DESCRIPTION: "A threat or threat test belongs to one v0.3 category or to general."
+
+DEFINE:
+    ID: binding.sec_immutability
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "No setting, Developer Setting, LCL rule, imported or synced content, model output, extension, remote request, environment variable or command-line flag can disable or weaken an SI invariant. Changing one requires a reviewed change to this project, made by a task with its own evidence; until then any conflict with an invariant is a stop condition (authority_hierarchy, STOP-04)."
+    DESCRIPTION: "What makes the SI invariants immutable."
+
+DEFINE:
+    ID: binding.sec_outcomes
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["accepted", "running", "completed", "denied", "unsupported", "needs-user-action", "expired", "outcome-unknown"]
+    DESCRIPTION: "Explicit outcomes of a remote request (IF-REMOTE, RC-12)."
+
+DEFINE:
+    ID: binding.sec_audit_events
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["request_admitted", "request_denied", "request_executed", "outcome_unknown", "outcome_reconciled", "approval_given", "approval_used", "approval_expired", "grant_created", "grant_changed", "grant_revoked", "device_paired", "device_revoked", "remote_access_stopped", "receiver_setting_changed", "step_up"]
+    DESCRIPTION: "Events that always produce an audit record (RC-22, SI-25)."
+
+DEFINE:
+    ID: binding.sec_never_remote
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["disable_device_lock", "grant_control_rights", "reveal_or_export_secrets", "change_startup_policy", "change_receiving_policy", "weaken_authentication", "change_trusted_devices"]
+    DESCRIPTION: "Operations refused from any remote request, locked or not, and never performed on a model's request alone (RC-18, SI-14)."
+
+DEFINE:
+    ID: binding.sec_lock_categories
+    KIND: kind.constant
+    TYPE: LIST[STRING]
+    VALUE: ["file_write", "command", "app_launch", "agent_control", "approval", "settings_change", "status_read"]
+    DESCRIPTION: "Categories a lock policy can allow while the destination is locked; none is allowed by default."
+
+DEFINE:
+    ID: binding.sec_max_request_lifetime
+    KIND: kind.constant
+    TYPE: DURATION
+    VALUE: DURATION(10, unit.minute)
+    DESCRIPTION: "Ceiling on a remote request's lifetime, measured from receipt on the destination's clock. TASK-007 may lower it, never raise it."
+
+DEFINE:
+    ID: binding.sec_clock_skew_allowance
+    KIND: kind.constant
+    TYPE: DURATION
+    VALUE: DURATION(2, unit.minute)
+    DESCRIPTION: "How far in the destination's future issued_at may be (SEC-A03)."
+
+DEFINE:
+    ID: binding.sec_max_frame
+    KIND: kind.constant
+    TYPE: BYTES
+    VALUE: BYTES(65536)
+    DESCRIPTION: "Largest transport frame, as in the TASK-003 prototype; larger frames end the connection."
+
+DEFINE:
+    ID: binding.sec_max_ipc_message
+    KIND: kind.constant
+    TYPE: BYTES
+    VALUE: BYTES(4096)
+    DESCRIPTION: "Largest local IPC message, as in the TASK-003 prototype (PD-LOCAL-IPC)."
+
+DEFINE:
+    ID: type.sec_trust_level
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One level of the trust hierarchy and what holds it in Nexees."
+    FIELD:
+        NAME: level
+        TYPE: INTEGER
+        REQUIRED: TRUE
+        DESCRIPTION: "1 is the highest."
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: holds
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "What in Nexees sits at this level."
+    FIELD:
+        NAME: enforced_by
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Subsystems that place content at this level and keep it there."
+    FIELD:
+        NAME: may
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: may_not
+        TYPE: STRING
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.sec_authority
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One of the separate authorities (security_baseline v0.2)."
+    FIELD:
+        NAME: authority_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: established_by
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: grants
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: never_implies
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: states
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "ST categories that hold it."
+    FIELD:
+        NAME: owner_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.sec_boundary
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "A trust boundary: what crosses it and what is enforced there."
+    FIELD:
+        NAME: boundary_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: between
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: crossing
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: rule
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: invariants
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: enforced_by
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Subsystem and interface IDs of docs/architecture."
+    FIELD:
+        NAME: enforcement_points
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Module slots of those subsystems."
+
+DEFINE:
+    ID: type.sec_asset
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "Something worth protecting, mapped to the architecture's state categories."
+    FIELD:
+        NAME: asset_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: states
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "ST categories; empty for assets outside the state store."
+    FIELD:
+        NAME: sensitivity
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: locations
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "desktop, android or service."
+    FIELD:
+        NAME: invariants
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: note
+        TYPE: STRING
+        REQUIRED: FALSE
+
+DEFINE:
+    ID: type.sec_surface
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "An attack surface: an entry point an actor can reach."
+    FIELD:
+        NAME: surface_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: areas
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: exposure
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Who can reach it."
+    FIELD:
+        NAME: boundary
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The trust boundary it crosses."
+    FIELD:
+        NAME: elements
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Architecture subsystems and interfaces behind it."
+
+DEFINE:
+    ID: type.sec_invariant
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "An immutable security invariant (binding.sec_immutability)."
+    FIELD:
+        NAME: invariant_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: title
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: statement
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: sources
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Pack rules and contracts it comes from."
+    FIELD:
+        NAME: enforced_by
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Subsystem and interface IDs."
+    FIELD:
+        NAME: enforcement_points
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Module slots."
+    FIELD:
+        NAME: owner_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Tasks that build and prove the enforcement."
+    FIELD:
+        NAME: tests
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Test slots, scenario IDs or recorded gaps."
+
+DEFINE:
+    ID: type.sec_threat
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One threat, traced to an owning task and a runtime-enforced boundary (the v0.3 gate of TASK-004)."
+    FIELD:
+        NAME: threat_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: title
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: areas
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Values of binding.sec_areas."
+    FIELD:
+        NAME: category
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "A value of binding.sec_categories."
+    FIELD:
+        NAME: actor
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: assets
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: surfaces
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: scenario
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: invariants
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: mitigations
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: enforced_by
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "The runtime-enforced boundary: subsystem and interface IDs."
+    FIELD:
+        NAME: enforcement_points
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Module slots where the enforcement lives."
+    FIELD:
+        NAME: owner_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Owning tasks, all later than TASK-004."
+    FIELD:
+        NAME: tests
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Test slots, scenario IDs or recorded gaps."
+    FIELD:
+        NAME: residual
+        TYPE: STRING
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.sec_threat_test
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "A planned abuse case. It runs in its owning task, never in TASK-004."
+    FIELD:
+        NAME: test_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: category
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: threats
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: attack
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: expected
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: scenarios
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Pack scenario IDs it serves."
+    FIELD:
+        NAME: slot
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The test slot, or the gap that stands in for a missing one."
+    FIELD:
+        NAME: owner_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: platforms
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.sec_remote_contract
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "TASK-004's security contract for one remote-control requirement assigned to it."
+    FIELD:
+        NAME: requirement_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: title
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: contract
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: types
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Message types of this part that realise it."
+    FIELD:
+        NAME: invariants
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: threats
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: architecture
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "TASK-002's contract for the same requirement, or none."
+    FIELD:
+        NAME: test_plan
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Each entry is a scenario, a test slot or a recorded gap, then what it proves."
+    FIELD:
+        NAME: runtime_owners
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Later tasks that own the requirement (TASK_REQUIREMENT_MAP.json)."
+    FIELD:
+        NAME: status
+        TYPE: STRING
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.sec_request_envelope
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "The security fields of one remote request (RC-09). TASK-006 implements it as a domain type and TASK-007 as the wire schema; neither may drop a field or make a required one optional."
+    FIELD:
+        NAME: protocol_version
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Remote protocol version; anything below the destination's minimum secure version is refused (TH-42)."
+    FIELD:
+        NAME: request_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Unique per request, never reused; the destination's ledger deduplicates by it (RC-17)."
+    FIELD:
+        NAME: requesting_device_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Key fingerprint of the sender. The destination takes it from the authenticated channel and rejects a payload value that differs."
+    FIELD:
+        NAME: requesting_user_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The sending device's signed-in user."
+    FIELD:
+        NAME: destination_device_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Key fingerprint of the intended destination; any other value is rejected."
+    FIELD:
+        NAME: destination_user_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The destination's user; a mismatch is rejected."
+    FIELD:
+        NAME: destination_session_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The destination host session: the OS login session on Desktop, the app instance on Android."
+    FIELD:
+        NAME: operation
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "One identifier from the closed operation registry; never free text."
+    FIELD:
+        NAME: arguments
+        TYPE: OBJECT
+        REQUIRED: TRUE
+        DESCRIPTION: "Typed arguments of that operation. An application launch carries only an allowlist key."
+    FIELD:
+        NAME: workspace_id
+        TYPE: STRING
+        REQUIRED: FALSE
+        DESCRIPTION: "Required for workspace operations and absent otherwise; never filled from UI focus."
+    FIELD:
+        NAME: agent_id
+        TYPE: STRING
+        REQUIRED: FALSE
+        DESCRIPTION: "Required for agent operations and absent otherwise."
+    FIELD:
+        NAME: expected_revisions
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Revisions the operation expects; a stale one is rejected. Empty only for operations that change nothing."
+    FIELD:
+        NAME: permission_epoch
+        TYPE: INTEGER
+        REQUIRED: TRUE
+        DESCRIPTION: "Epoch of the grant the sender relies on; it must equal the destination's current epoch."
+    FIELD:
+        NAME: issued_at
+        TYPE: DATETIME
+        REQUIRED: TRUE
+        DESCRIPTION: "Sender time; more than binding.sec_clock_skew_allowance in the destination's future is rejected."
+    FIELD:
+        NAME: expires_at
+        TYPE: DATETIME
+        REQUIRED: TRUE
+        DESCRIPTION: "Sender expiry; the destination uses the earlier of this and receipt time plus binding.sec_max_request_lifetime."
+    FIELD:
+        NAME: approval_id
+        TYPE: STRING
+        REQUIRED: FALSE
+        DESCRIPTION: "Present when the request executes a prior approval; the approval must match this request exactly."
+
+DEFINE:
+    ID: type.sec_grant
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One directional grant, stored only on its destination (RC-03). It never syncs and is never derived from pairing or an account."
+    FIELD:
+        NAME: grant_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Stable identifier."
+    FIELD:
+        NAME: destination_device_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "This device; grants are not stored anywhere else."
+    FIELD:
+        NAME: peer_device_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The paired device allowed to send."
+    FIELD:
+        NAME: peer_user_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The user on that device."
+    FIELD:
+        NAME: direction
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "android_to_desktop or desktop_to_android, matching the two devices; the reverse direction is a separate grant on the other device."
+    FIELD:
+        NAME: capability
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "One capability from the closed registry, such as app_launch or agent_control."
+    FIELD:
+        NAME: scope
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "The narrowest targets: workspace IDs, allowlist keys or path sets."
+    FIELD:
+        NAME: permission_epoch
+        TYPE: INTEGER
+        REQUIRED: TRUE
+        DESCRIPTION: "Incremented on every revoke, stop, scope or lock-policy change; older requests and approvals fail."
+    FIELD:
+        NAME: granted_by
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The local user who created it."
+    FIELD:
+        NAME: granted_at
+        TYPE: DATETIME
+        REQUIRED: TRUE
+        DESCRIPTION: "Creation time on the destination's clock."
+    FIELD:
+        NAME: expires_at
+        TYPE: DATETIME
+        REQUIRED: FALSE
+        DESCRIPTION: "Optional expiry."
+    FIELD:
+        NAME: revoked
+        TYPE: BOOLEAN
+        REQUIRED: TRUE
+        DESCRIPTION: "TRUE once revoked; a revoked grant is kept for audit and never reused."
+
+DEFINE:
+    ID: type.sec_approval
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One local approval of one pending request (RC-17, RC-18). Single use, bound to that exact request."
+    FIELD:
+        NAME: approval_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Stable identifier."
+    FIELD:
+        NAME: request_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The request it approves."
+    FIELD:
+        NAME: request_hash
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "SHA-256 of the canonical envelope without approval fields; any other request does not match."
+    FIELD:
+        NAME: destination_device_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The device where it was given; it is never transferred."
+    FIELD:
+        NAME: decided_by
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The local user."
+    FIELD:
+        NAME: decided_at
+        TYPE: DATETIME
+        REQUIRED: TRUE
+        DESCRIPTION: "Decision time."
+    FIELD:
+        NAME: expires_at
+        TYPE: DATETIME
+        REQUIRED: TRUE
+        DESCRIPTION: "After this the approval is void."
+    FIELD:
+        NAME: permission_epoch
+        TYPE: INTEGER
+        REQUIRED: TRUE
+        DESCRIPTION: "Epoch at decision time; a later epoch voids it."
+    FIELD:
+        NAME: used
+        TYPE: BOOLEAN
+        REQUIRED: TRUE
+        DESCRIPTION: "Set when the approved request executes; a used approval is never accepted again."
+
+DEFINE:
+    ID: type.sec_audit_record
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One audit record (RC-22). It never holds secrets, file content or argument values; arguments appear only as a hash and size when they matter."
+    FIELD:
+        NAME: audit_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Stable identifier."
+    FIELD:
+        NAME: recorded_at
+        TYPE: DATETIME
+        REQUIRED: TRUE
+        DESCRIPTION: "Time on the recording device."
+    FIELD:
+        NAME: host_device_id
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "The device that recorded it."
+    FIELD:
+        NAME: event
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "One of binding.sec_audit_events."
+    FIELD:
+        NAME: request_id
+        TYPE: STRING
+        REQUIRED: FALSE
+        DESCRIPTION: "For request events."
+    FIELD:
+        NAME: peer_device_id
+        TYPE: STRING
+        REQUIRED: FALSE
+        DESCRIPTION: "The other device, when there is one."
+    FIELD:
+        NAME: peer_user_id
+        TYPE: STRING
+        REQUIRED: FALSE
+        DESCRIPTION: "The other device's user."
+    FIELD:
+        NAME: normalized_target
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Device, session, workspace, agent or allowlist key: identifiers only."
+    FIELD:
+        NAME: operation
+        TYPE: STRING
+        REQUIRED: FALSE
+        DESCRIPTION: "The registry identifier of the operation."
+    FIELD:
+        NAME: decision
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "allow, deny, needs-user-action or not-applicable."
+    FIELD:
+        NAME: reason_code
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Machine-readable reason, such as stale_epoch or wrong_destination."
+    FIELD:
+        NAME: policy_revision
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "Revision of the policy and grants that decided."
+    FIELD:
+        NAME: permission_epoch
+        TYPE: INTEGER
+        REQUIRED: FALSE
+        DESCRIPTION: "The epoch in force."
+    FIELD:
+        NAME: outcome
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "One of binding.sec_outcomes."
+
+DEFINE:
+    ID: type.sec_receiver_settings
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "The remote-access settings of one device (RC-02, RC-07). Each is separate and visible in Settings > Devices & Remote Access; only a local user action through the permission engine changes them."
+    FIELD:
+        NAME: receive_enabled
+        TYPE: BOOLEAN
+        REQUIRED: TRUE
+        DESCRIPTION: "Accept remote requests at all. Default FALSE."
+    FIELD:
+        NAME: start_at_login
+        TYPE: BOOLEAN
+        REQUIRED: TRUE
+        DESCRIPTION: "Start the receiver with the login session. Default FALSE."
+    FIELD:
+        NAME: keep_after_window_close
+        TYPE: BOOLEAN
+        REQUIRED: TRUE
+        DESCRIPTION: "Keep receiving after the window closes. Default FALSE."
+    FIELD:
+        NAME: app_allowlist
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Allowlist keys of launchable applications. Default empty."
+    FIELD:
+        NAME: confirmation_policy
+        TYPE: STRING
+        REQUIRED: TRUE
+        DESCRIPTION: "ask_every_time by default; anything wider applies only within the grants."
+
+DEFINE:
+    ID: type.sec_lock_policy
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "What a locked destination accepts (RC-18). By default nothing sensitive; the never-remote list cannot be changed by any setting."
+    FIELD:
+        NAME: allowed_while_locked
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "Categories of binding.sec_lock_categories the user allowed while locked. Default empty."
+    FIELD:
+        NAME: never_remote
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+        DESCRIPTION: "binding.sec_never_remote: refused from any remote request, locked or not."

@@ -1,0 +1,82 @@
+TASK-004 checkout preflight (binding B26), pack verification and predecessor lineage.
+Recorded 2026-10-03T23:03:04+02:00 with read-only commands, at task start: after the TASK-003 commit and push and before any
+TASK-004 file existed.
+
+== B26 checkout identity ==
+cwd (physical): /mnt/F/Nexees
+git toplevel: /mnt/F/Nexees
+git dir: /mnt/F/Nexees/.git
+superproject: []
+parent .git at /mnt/F or /mnt: none
+remotes (credentials redacted):
+origin	https://github.com/aivars11232/Nexees.git (fetch)
+origin	https://github.com/aivars11232/Nexees.git (push)
+url rewrite rules: none
+explicit origin pushurl: none
+branch: main
+HEAD: 2eaa199f28ec889a1e59a770b27f7bbf56ec9336
+origin/main (local tracking ref, not fetched): 2eaa199f28ec889a1e59a770b27f7bbf56ec9336
+upstream: origin/main
+worktrees:
+/mnt/F/Nexees 2eaa199 [main]
+hooks path: []; non-sample hooks: 0
+staged files: 0; stash entries: 0; tracked files: 422
+status (porcelain, untracked shown per file): (clean)
+
+== Pack verification (v0.5.3) ==
+manifest files: 201 | hash mismatches: [] | unlisted on disk: [] | listed but missing: []
+MANIFEST.json sha256: 8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4
+content identity recomputed: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | declared: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | manifest: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | PROCEDURAL_CHANGES new_content_identity: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+tasks/task_004.lcl.txt sha256: 3ec982757fc2ca0f98aa48b92c1ad589fb0646f9080258fb30abbde09bebd1bd | PROCEDURAL_CHANGES after_sha256 3ec982757fc2ca0f98aa48b92c1ad589fb0646f9080258fb30abbde09bebd1bd | task declaration unchanged: True | other record fields unchanged: True
+accept_task.lcl.txt sha256: 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836
+policies/task_002_075_continuation.lcl.txt sha256: 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9
+
+== Predecessor lineage ==
+TASK-001 receipt: task TASK-001 | purpose implementation_review | blockers [] | host verified True | pack identity e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672
+TASK-001 evaluation.record.json sha256: bbda5d839f7713bbd43a0fb3c0c299043abe8f7b055e6e3ce8c110fde3ba07e7 | outcome accepted | terminal status.succeeded
+TASK-001 commit: 284f97a02d3ad9288f3701860e608b366b10979f Freeze the Nexees project charter (TASK-001) | on origin/main: True
+TASK-001 deliverables (docs/charter, docs/evidence/TASK-001) changed since its commit: (none)
+TASK-002 receipt: task TASK-002 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-002 evaluation.record.json sha256: c5fadc8310565f2a73c1f16209987b9a1a086c99919cd6cb101c010eb243bd13 | outcome accepted | terminal status.succeeded
+TASK-002 commit: d1a673f62d1a9a31839290e8041eb3c7eb91ba97 Define the Nexees modular architecture (TASK-002) | on origin/main: True
+TASK-002 deliverables (docs/architecture, docs/evidence/TASK-002) changed since its commit: 4 files (docs/architecture/baseline.lcl.txt, docs/architecture/checks.lcl.txt, docs/architecture/decisions.lcl.txt, docs/architecture/record.lcl.txt), only by later accepted commits: 2eaa199 Audit Nexees reuse, licenses and dependency feasibility (TASK-003)
+TASK-003 receipt: task TASK-003 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-003 evaluation.record.json sha256: 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0 | outcome accepted | terminal status.succeeded
+TASK-003 commit: 2eaa199f28ec889a1e59a770b27f7bbf56ec9336 Audit Nexees reuse, licenses and dependency feasibility (TASK-003) | on origin/main: True
+TASK-003 deliverables (docs/dependencies, docs/evidence/TASK-003) changed since its commit: (none)
+Uncommitted changes to predecessor deliverables: (none)
+
+== Recheck 2026-10-03T23:55:08+02:00, after the owner-requested TASK-003 receipt commits ==
+During TASK-004 the owner asked for two TASK-003 corrections and then decided on its deviation. Two commits on top of
+2eaa199 carry them; both change only docs/evidence/TASK-003/ (the receipt folder and the previously ignored pc_receiver.log):
+  a590eab10591333f8fd42ab99d96f6fd5a1cf75e Correct the TASK-003 receipt and add its missing receiver log  [docs/evidence/TASK-003/logs/pc_receiver.log, docs/evidence/TASK-003/receipt/RECEIPT_RESULT.md, docs/evidence/TASK-003/receipt/corroboration.txt, docs/evidence/TASK-003/receipt/evaluation.record.json, docs/evidence/TASK-003/receipt/receipt.json]
+  bccc9b1a6136effc8b3dfc9bc40c03d28e5471eb Record the owner's approval of the TASK-003 SDK cache rewrite  [docs/evidence/TASK-003/receipt/RECEIPT_RESULT.md, docs/evidence/TASK-003/receipt/corroboration.txt, docs/evidence/TASK-003/receipt/evaluation.record.json, docs/evidence/TASK-003/receipt/receipt.json]
+branch: main; HEAD: bccc9b1a6136effc8b3dfc9bc40c03d28e5471eb; origin/main (not fetched): 2eaa199f28ec889a1e59a770b27f7bbf56ec9336 (the two commits are not pushed yet)
+remotes (credentials redacted): https://github.com/aivars11232/Nexees.git
+staged files: 0; stash entries: 0
+TASK-003 receipt now: blockers [] | no_unrelated_changes True (owner decision recorded) | host verified True
+TASK-003 evaluation.record.json sha256: 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0 | outcome accepted | terminal status.succeeded
+TASK-003 deliverables outside the receipt folder changed since 2eaa199: docs/evidence/TASK-003/logs/pc_receiver.log
+status (porcelain, untracked shown per file):
+   M README.md
+   M SECURITY.md
+  ?? docs/evidence/TASK-004/check_threat_model.py
+  ?? docs/evidence/TASK-004/logs/dispatch_task_004.record.json
+  ?? docs/evidence/TASK-004/logs/foundation_security_facts.txt
+  ?? docs/evidence/TASK-004/logs/native_language_suite.json
+  ?? docs/evidence/TASK-004/logs/negative_tests.txt
+  ?? docs/evidence/TASK-004/logs/preflight.txt
+  ?? docs/evidence/TASK-004/logs/regression.txt
+  ?? docs/evidence/TASK-004/logs/required_reading.txt
+  ?? docs/evidence/TASK-004/logs/security_lcl.txt
+  ?? docs/evidence/TASK-004/logs/security_scan.txt
+  ?? docs/security/assets.lcl.txt
+  ?? docs/security/baseline.lcl.txt
+  ?? docs/security/checks.lcl.txt
+  ?? docs/security/invariants.lcl.txt
+  ?? docs/security/record.lcl.txt
+  ?? docs/security/remote.lcl.txt
+  ?? docs/security/security.lcl.txt
+  ?? docs/security/tests.lcl.txt
+  ?? docs/security/threats.lcl.txt
+  ?? docs/security/trust.lcl.txt

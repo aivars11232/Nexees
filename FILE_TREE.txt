@@ -280,98 +280,118 @@ Nexees/
 │   │   │   │   └── snapshot_files.sha256
 │   │   │   ├── TASK-002_EVIDENCE.md
 │   │   │   └── check_architecture.py
-│   │   └── TASK-003/
+│   │   ├── TASK-003/
+│   │   │   ├── logs/
+│   │   │   │   ├── android_build.txt
+│   │   │   │   ├── app_logcat.txt
+│   │   │   │   ├── cargo_deny.txt
+│   │   │   │   ├── dependencies_lcl.txt
+│   │   │   │   ├── dispatch_task_003.record.json
+│   │   │   │   ├── emulator.json
+│   │   │   │   ├── hoptodesk_launch.txt
+│   │   │   │   ├── native_language_suite.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── osv_after_overrides.json
+│   │   │   │   ├── osv_before_overrides.json
+│   │   │   │   ├── pc_receiver.log
+│   │   │   │   ├── preflight.txt
+│   │   │   │   ├── probe_android_app.json
+│   │   │   │   ├── probe_android_shell.json
+│   │   │   │   ├── probe_desktop.json
+│   │   │   │   ├── registry_research.json
+│   │   │   │   ├── regression.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── rust_checks.txt
+│   │   │   │   ├── scenarios.jsonl
+│   │   │   │   ├── security_scan.txt
+│   │   │   │   ├── theia_build.txt
+│   │   │   │   ├── theia_workbench.json
+│   │   │   │   └── toolchains.txt
+│   │   │   ├── prototypes/
+│   │   │   │   ├── android-app/
+│   │   │   │   │   ├── app/
+│   │   │   │   │   │   ├── src/
+│   │   │   │   │   │   │   └── main/
+│   │   │   │   │   │   │       ├── java/
+│   │   │   │   │   │   │       │   └── dev/
+│   │   │   │   │   │   │       │       └── nexees/
+│   │   │   │   │   │   │       │           └── feasibility/
+│   │   │   │   │   │   │       │               ├── BootReceiver.kt
+│   │   │   │   │   │   │       │               ├── Launcher.kt
+│   │   │   │   │   │   │       │               ├── MainActivity.kt
+│   │   │   │   │   │   │       │               ├── NativeCore.kt
+│   │   │   │   │   │   │       │               ├── Notifications.kt
+│   │   │   │   │   │   │       │               └── ReceiverService.kt
+│   │   │   │   │   │   │       └── AndroidManifest.xml
+│   │   │   │   │   │   └── build.gradle.kts
+│   │   │   │   │   ├── build.gradle.kts
+│   │   │   │   │   ├── build.sh
+│   │   │   │   │   ├── gradle.properties
+│   │   │   │   │   └── settings.gradle.kts
+│   │   │   │   ├── feasibility-core/
+│   │   │   │   │   ├── fixtures/
+│   │   │   │   │   │   ├── help/
+│   │   │   │   │   │   │   └── hostile.md
+│   │   │   │   │   │   ├── js/
+│   │   │   │   │   │   │   ├── src/
+│   │   │   │   │   │   │   │   └── sum.js
+│   │   │   │   │   │   │   └── test/
+│   │   │   │   │   │   │       └── sum.test.js
+│   │   │   │   │   │   ├── project/
+│   │   │   │   │   │   │   ├── checks/
+│   │   │   │   │   │   │   │   └── checks.lcl.txt
+│   │   │   │   │   │   │   ├── data/
+│   │   │   │   │   │   │   │   └── values.lcl.txt
+│   │   │   │   │   │   │   ├── tasks/
+│   │   │   │   │   │   │   │   └── record.lcl.txt
+│   │   │   │   │   │   │   └── main.lcl.txt
+│   │   │   │   │   │   ├── invalid_task.lcl.txt
+│   │   │   │   │   │   └── valid_task.lcl.txt
+│   │   │   │   │   ├── src/
+│   │   │   │   │   │   ├── bin/
+│   │   │   │   │   │   │   ├── host.rs
+│   │   │   │   │   │   │   └── probe.rs
+│   │   │   │   │   │   ├── android.rs
+│   │   │   │   │   │   ├── help.rs
+│   │   │   │   │   │   ├── import.rs
+│   │   │   │   │   │   ├── js_backend.rs
+│   │   │   │   │   │   ├── lcl_bridge.rs
+│   │   │   │   │   │   ├── lib.rs
+│   │   │   │   │   │   ├── probe.rs
+│   │   │   │   │   │   ├── remote.rs
+│   │   │   │   │   │   └── store.rs
+│   │   │   │   │   ├── Cargo.lock
+│   │   │   │   │   ├── Cargo.toml
+│   │   │   │   │   └── deny.toml
+│   │   │   │   ├── harness/
+│   │   │   │   │   ├── advisories.py
+│   │   │   │   │   ├── device.py
+│   │   │   │   │   └── scenarios.py
+│   │   │   │   └── theia/
+│   │   │   │       ├── check_workbench.mjs
+│   │   │   │       ├── package-lock.json
+│   │   │   │       ├── package.json
+│   │   │   │       └── run_nested.sh
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── corroboration.txt
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   └── snapshot_files.sha256
+│   │   │   ├── TASK-003_EVIDENCE.md
+│   │   │   └── check_dependencies.py
+│   │   └── TASK-004/
 │   │       ├── logs/
-│   │       │   ├── android_build.txt
-│   │       │   ├── app_logcat.txt
-│   │       │   ├── cargo_deny.txt
-│   │       │   ├── dependencies_lcl.txt
-│   │       │   ├── dispatch_task_003.record.json
-│   │       │   ├── emulator.json
-│   │       │   ├── hoptodesk_launch.txt
+│   │       │   ├── dispatch_task_004.record.json
+│   │       │   ├── foundation_security_facts.txt
 │   │       │   ├── native_language_suite.json
 │   │       │   ├── negative_tests.txt
-│   │       │   ├── osv_after_overrides.json
-│   │       │   ├── osv_before_overrides.json
-│   │       │   ├── pc_receiver.log
 │   │       │   ├── preflight.txt
-│   │       │   ├── probe_android_app.json
-│   │       │   ├── probe_android_shell.json
-│   │       │   ├── probe_desktop.json
-│   │       │   ├── registry_research.json
 │   │       │   ├── regression.txt
 │   │       │   ├── required_reading.txt
-│   │       │   ├── rust_checks.txt
-│   │       │   ├── scenarios.jsonl
-│   │       │   ├── security_scan.txt
-│   │       │   ├── theia_build.txt
-│   │       │   ├── theia_workbench.json
-│   │       │   └── toolchains.txt
-│   │       ├── prototypes/
-│   │       │   ├── android-app/
-│   │       │   │   ├── app/
-│   │       │   │   │   ├── src/
-│   │       │   │   │   │   └── main/
-│   │       │   │   │   │       ├── java/
-│   │       │   │   │   │       │   └── dev/
-│   │       │   │   │   │       │       └── nexees/
-│   │       │   │   │   │       │           └── feasibility/
-│   │       │   │   │   │       │               ├── BootReceiver.kt
-│   │       │   │   │   │       │               ├── Launcher.kt
-│   │       │   │   │   │       │               ├── MainActivity.kt
-│   │       │   │   │   │       │               ├── NativeCore.kt
-│   │       │   │   │   │       │               ├── Notifications.kt
-│   │       │   │   │   │       │               └── ReceiverService.kt
-│   │       │   │   │   │       └── AndroidManifest.xml
-│   │       │   │   │   └── build.gradle.kts
-│   │       │   │   ├── build.gradle.kts
-│   │       │   │   ├── build.sh
-│   │       │   │   ├── gradle.properties
-│   │       │   │   └── settings.gradle.kts
-│   │       │   ├── feasibility-core/
-│   │       │   │   ├── fixtures/
-│   │       │   │   │   ├── help/
-│   │       │   │   │   │   └── hostile.md
-│   │       │   │   │   ├── js/
-│   │       │   │   │   │   ├── src/
-│   │       │   │   │   │   │   └── sum.js
-│   │       │   │   │   │   └── test/
-│   │       │   │   │   │       └── sum.test.js
-│   │       │   │   │   ├── project/
-│   │       │   │   │   │   ├── checks/
-│   │       │   │   │   │   │   └── checks.lcl.txt
-│   │       │   │   │   │   ├── data/
-│   │       │   │   │   │   │   └── values.lcl.txt
-│   │       │   │   │   │   ├── tasks/
-│   │       │   │   │   │   │   └── record.lcl.txt
-│   │       │   │   │   │   └── main.lcl.txt
-│   │       │   │   │   ├── invalid_task.lcl.txt
-│   │       │   │   │   └── valid_task.lcl.txt
-│   │       │   │   ├── src/
-│   │       │   │   │   ├── bin/
-│   │       │   │   │   │   ├── host.rs
-│   │       │   │   │   │   └── probe.rs
-│   │       │   │   │   ├── android.rs
-│   │       │   │   │   ├── help.rs
-│   │       │   │   │   ├── import.rs
-│   │       │   │   │   ├── js_backend.rs
-│   │       │   │   │   ├── lcl_bridge.rs
-│   │       │   │   │   ├── lib.rs
-│   │       │   │   │   ├── probe.rs
-│   │       │   │   │   ├── remote.rs
-│   │       │   │   │   └── store.rs
-│   │       │   │   ├── Cargo.lock
-│   │       │   │   ├── Cargo.toml
-│   │       │   │   └── deny.toml
-│   │       │   ├── harness/
-│   │       │   │   ├── advisories.py
-│   │       │   │   ├── device.py
-│   │       │   │   └── scenarios.py
-│   │       │   └── theia/
-│   │       │       ├── check_workbench.mjs
-│   │       │       ├── package-lock.json
-│   │       │       ├── package.json
-│   │       │       └── run_nested.sh
+│   │       │   ├── security_lcl.txt
+│   │       │   └── security_scan.txt
 │   │       ├── receipt/
 │   │       │   ├── RECEIPT_RESULT.md
 │   │       │   ├── corroboration.txt
@@ -379,11 +399,22 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       ├── TASK-003_EVIDENCE.md
-│   │       └── check_dependencies.py
-│   └── manuals/
-│       ├── LCL_IN_NEXEES_USER_MANUAL.md
-│       └── NEXEES_USER_MANUAL.md
+│   │       ├── TASK-004_EVIDENCE.md
+│   │       └── check_threat_model.py
+│   ├── manuals/
+│   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
+│   │   └── NEXEES_USER_MANUAL.md
+│   └── security/
+│       ├── assets.lcl.txt
+│       ├── baseline.lcl.txt
+│       ├── checks.lcl.txt
+│       ├── invariants.lcl.txt
+│       ├── record.lcl.txt
+│       ├── remote.lcl.txt
+│       ├── security.lcl.txt
+│       ├── tests.lcl.txt
+│       ├── threats.lcl.txt
+│       └── trust.lcl.txt
 ├── integrations/
 │   ├── agents/
 │   │   └── external_agent_adapter.source

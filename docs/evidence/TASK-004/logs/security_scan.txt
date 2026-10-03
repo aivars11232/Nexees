@@ -1,0 +1,44 @@
+Secret and privacy scan of the files TASK-004 added or changed, and of the five files of the two owner-requested TASK-003
+commits a590eab (correction) and bccc9b1 (approval), as they are now, run 2026-10-03T23:59:12+02:00.
+Scope: git status --porcelain --untracked-files=all, without this report itself, plus every path the commits 2eaa199..bccc9b1 touched
+(28 files):
+  FILE_TREE.txt
+  README.md
+  SECURITY.md
+  docs/evidence/TASK-003/logs/pc_receiver.log
+  docs/evidence/TASK-003/receipt/RECEIPT_RESULT.md
+  docs/evidence/TASK-003/receipt/corroboration.txt
+  docs/evidence/TASK-003/receipt/evaluation.record.json
+  docs/evidence/TASK-003/receipt/receipt.json
+  docs/evidence/TASK-004/TASK-004_EVIDENCE.md
+  docs/evidence/TASK-004/check_threat_model.py
+  docs/evidence/TASK-004/logs/dispatch_task_004.record.json
+  docs/evidence/TASK-004/logs/foundation_security_facts.txt
+  docs/evidence/TASK-004/logs/native_language_suite.json
+  docs/evidence/TASK-004/logs/negative_tests.txt
+  docs/evidence/TASK-004/logs/preflight.txt
+  docs/evidence/TASK-004/logs/regression.txt
+  docs/evidence/TASK-004/logs/required_reading.txt
+  docs/evidence/TASK-004/logs/security_lcl.txt
+  docs/security/assets.lcl.txt
+  docs/security/baseline.lcl.txt
+  docs/security/checks.lcl.txt
+  docs/security/invariants.lcl.txt
+  docs/security/record.lcl.txt
+  docs/security/remote.lcl.txt
+  docs/security/security.lcl.txt
+  docs/security/tests.lcl.txt
+  docs/security/threats.lcl.txt
+  docs/security/trust.lcl.txt
+
+Also scanned: the 9 file versions recorded by the commits a590eab, bccc9b1 (items 1 and 2).
+
+1. Credential formats (private keys; GitHub, OpenAI, Anthropic, AWS, Google and Slack tokens; URL credentials;
+   assigned passwords or tokens):
+   matches: 0
+   key or certificate files (.der, .p12, .jks, .keystore, .pem, .key): 0
+2. E-mail-shaped strings: 0 occurrences of 0 distinct (file, string) pairs; none is the owner's
+3. Executable files: 0
+4. Active content in the Markdown files (scripts, frames, handlers, remote images, raw HTML tags; inline code excluded): 0
+
+Result: no credential, no key material, no personal address, no active content

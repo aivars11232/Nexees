@@ -1,0 +1,391 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.sec_trust
+    NAME: "Trust hierarchy, authorities, boundaries, assumptions and residual risks"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "The eight trust levels of the pack applied to Nexees, the separate authorities, the twelve trust boundaries, the explicit security assumptions that add to the architecture's SA-01 to SA-08, the residual risks that are recorded but not accepted, and the security decisions still open with the tasks that close them."
+
+DATA:
+    ID: data.sec_tl_1
+    TYPE: OBJECT[REF(type.sec_trust_level)]
+    VALUE:
+        level: 1
+        name: "Immutable Nexees security policy"
+        holds: "The SI invariants of this project and the fixed rules of core/security/authority_policy."
+        enforced_by: ["SS-SECURITY"]
+        may: "Bounds every lower level, including the user's own settings."
+        may_not: "Be changed at runtime by anything; a conflict with it stops the affected operation."
+
+DATA:
+    ID: data.sec_tl_2
+    TYPE: OBJECT[REF(type.sec_trust_level)]
+    VALUE:
+        level: 2
+        name: "Explicit current user commands/approvals"
+        holds: "Commands and approvals the authenticated local user gives through a Nexees surface on the executing device, and grants that user created for a paired peer."
+        enforced_by: ["SS-SECURITY", "SS-SETTINGS", "SS-ACCOUNTS"]
+        may: "Grant scoped, revocable, expiring permissions within the invariants; sensitive changes need step-up."
+        may_not: "Override level 1, or be inferred from a remote request, a model reply, an account login or a pairing."
+
+DATA:
+    ID: data.sec_tl_3
+    TYPE: OBJECT[REF(type.sec_trust_level)]
+    VALUE:
+        level: 3
+        name: "Validated LCL project rules/contracts (when enabled)"
+        holds: "The user-adopted, validated revision of a workspace's LCL specification bound to a session at a safe boundary."
+        enforced_by: ["SS-LCL", "SS-TASKING"]
+        may: "Constrain work: read order, stop conditions, verification and task structure."
+        may_not: "Grant a permission, widen a scope or weaken a boundary; a draft, imported or synced revision has no authority."
+
+DATA:
+    ID: data.sec_tl_4
+    TYPE: OBJECT[REF(type.sec_trust_level)]
+    VALUE:
+        level: 4
+        name: "Approved current task definition"
+        holds: "The task the user or the adopted specification put in progress, with its dependencies closed."
+        enforced_by: ["SS-TASKING", "SS-AGENT"]
+        may: "Direct the agent's next step within the granted scope."
+        may_not: "Expand its own scope or approve its own completion; completion is decided by the verification gate."
+
+DATA:
+    ID: data.sec_tl_5
+    TYPE: OBJECT[REF(type.sec_trust_level)]
+    VALUE:
+        level: 5
+        name: "Trusted persistent project state"
+        holds: "Nexees's own integrity-checked state store: bindings, journal, checkpoints, evidence and history."
+        enforced_by: ["SS-STATE"]
+        may: "Restore and continue work exactly as recorded."
+        may_not: "Be written by tools, peers or imports other than through its owning subsystem."
+
+DATA:
+    ID: data.sec_tl_6
+    TYPE: OBJECT[REF(type.sec_trust_level)]
+    VALUE:
+        level: 6
+        name: "Repository/file contents"
+        holds: "Workspace files, including README files, comments, configuration, imported files, synced content and drafts."
+        enforced_by: ["SS-WORKSPACES", "SS-CONTEXT"]
+        may: "Be read and edited as data within the workspace scope."
+        may_not: "Act as an instruction with authority, however imperative its wording."
+
+DATA:
+    ID: data.sec_tl_7
+    TYPE: OBJECT[REF(type.sec_trust_level)]
+    VALUE:
+        level: 7
+        name: "Tool output"
+        holds: "Build, test, terminal, language-server, extension and remote status output."
+        enforced_by: ["SS-TOOLS", "SS-CONTEXT"]
+        may: "Inform the agent and the user as data."
+        may_not: "Authorize anything or change a binding."
+
+DATA:
+    ID: data.sec_tl_8
+    TYPE: OBJECT[REF(type.sec_trust_level)]
+    VALUE:
+        level: 8
+        name: "External/network content"
+        holds: "Model responses and tool-call proposals, web pages, dependency metadata, issue text, and anything a service returns."
+        enforced_by: ["SS-PROVIDERS", "SS-CONTEXT", "SS-TOOLS"]
+        may: "Be proposed, validated and then decided by the permission engine."
+        may_not: "Execute directly or raise its own trust level."
+
+DATA:
+    ID: data.sec_trust_levels
+    TYPE: LIST[OBJECT[REF(type.sec_trust_level)]]
+    VALUE: [REF(data.sec_tl_1), REF(data.sec_tl_2), REF(data.sec_tl_3), REF(data.sec_tl_4), REF(data.sec_tl_5), REF(data.sec_tl_6), REF(data.sec_tl_7), REF(data.sec_tl_8)]
+    DESCRIPTION: "Highest to lowest (security_baseline, authority_hierarchy)."
+
+DATA:
+    ID: data.sec_trust_rules
+    TYPE: LIST[STRING]
+    VALUE: ["TR-01 | A lower level never overrides a higher one, and text is not authority because it is imperative (authority_hierarchy).", "TR-02 | Content keeps the level of its origin. Imported LCL is level 6 until the user validates and adopts it; synced files are level 6 on arrival; a remote peer's status is level 7.", "TR-03 | A remote request carries no level of its own. It acts only through a grant the destination's user created (level 2), checked by the destination at execution time (SI-11).", "TR-04 | A model cannot grant itself permissions, and its tool calls are level-8 proposals until the permission engine decides them (SI-03).", "TR-05 | Developer Settings and validated LCL can narrow behaviour but cannot weaken level 1 (SI-27, SI-19).", "TR-06 | A conflict that this order cannot resolve is a stop condition for the affected operation, not a judgment call for the agent (STOP-03)."]
+    DESCRIPTION: "How the levels apply."
+
+DATA:
+    ID: data.sec_au_01
+    TYPE: OBJECT[REF(type.sec_authority)]
+    VALUE:
+        authority_id: "AU-01"
+        name: "Nexees account"
+        established_by: "Sign-in with email or GitHub, strong second factor, recovery (SS-ACCOUNTS)"
+        grants: "Access to the user's account services and account-level settings."
+        never_implies: "Device trust, a remote grant, provider access or the unlocking of local secrets."
+        states: ["ST-ACCOUNT"]
+        owner_tasks: ["TASK-027", "TASK-028", "TASK-029"]
+
+DATA:
+    ID: data.sec_au_02
+    TYPE: OBJECT[REF(type.sec_authority)]
+    VALUE:
+        authority_id: "AU-02"
+        name: "Local device unlock"
+        established_by: "The device's OS session and lock screen, and the local unlock TASK-027 defines"
+        grants: "Use of local workspaces and of secrets the OS store releases to this user."
+        never_implies: "Account authority, device trust or remote authority."
+        states: ["ST-ACCOUNT", "ST-SECRETS"]
+        owner_tasks: ["TASK-027", "TASK-025"]
+
+DATA:
+    ID: data.sec_au_03
+    TYPE: OBJECT[REF(type.sec_authority)]
+    VALUE:
+        authority_id: "AU-03"
+        name: "Provider credential"
+        established_by: "The user configuring a provider; stored in the OS credential store (SS-PROVIDERS)"
+        grants: "Requests to that provider's endpoint for the workspaces whose disclosure policy allows it."
+        never_implies: "Any other provider, endpoint or device; it is never synced."
+        states: ["ST-SECRETS", "ST-PROVIDER-CATALOG"]
+        owner_tasks: ["TASK-025", "TASK-041"]
+
+DATA:
+    ID: data.sec_au_04
+    TYPE: OBJECT[REF(type.sec_authority)]
+    VALUE:
+        authority_id: "AU-04"
+        name: "Device pairing"
+        established_by: "Explicit pairing with proof of the selected device and approval on both sides (SS-REMOTE)"
+        grants: "An authenticated identity for the peer on the transport."
+        never_implies: "Any remote permission, credential export or the reverse direction."
+        states: ["ST-DEVICE-TRUST"]
+        owner_tasks: ["TASK-060", "TASK-070"]
+
+DATA:
+    ID: data.sec_au_05
+    TYPE: OBJECT[REF(type.sec_authority)]
+    VALUE:
+        authority_id: "AU-05"
+        name: "Directional grant"
+        established_by: "The destination's local user, per peer device, user, direction and capability (SS-SECURITY)"
+        grants: "Requests of that capability and scope from that peer, at the current permission epoch."
+        never_implies: "Any other peer, capability, scope or direction; it is never synced."
+        states: ["ST-AUTHORITY"]
+        owner_tasks: ["TASK-022", "TASK-060"]
+
+DATA:
+    ID: data.sec_au_06
+    TYPE: OBJECT[REF(type.sec_authority)]
+    VALUE:
+        authority_id: "AU-06"
+        name: "Approval"
+        established_by: "The local user approving one pending action (SS-SECURITY)"
+        grants: "Exactly that action on that target and revision, once, before its expiry."
+        never_implies: "Any other action, a repeat, or the same action after a revision or epoch change."
+        states: ["ST-AUTHORITY"]
+        owner_tasks: ["TASK-022", "TASK-055"]
+
+DATA:
+    ID: data.sec_au_07
+    TYPE: OBJECT[REF(type.sec_authority)]
+    VALUE:
+        authority_id: "AU-07"
+        name: "Agent session"
+        established_by: "Starting a session bound to one workspace, host, revision, specification and model (SS-AGENT)"
+        grants: "Tool calls the permission engine allows for that binding."
+        never_implies: "Another workspace or host, a new grant, or its own task completion."
+        states: ["ST-SESSION"]
+        owner_tasks: ["TASK-034", "TASK-015"]
+
+DATA:
+    ID: data.sec_au_08
+    TYPE: OBJECT[REF(type.sec_authority)]
+    VALUE:
+        authority_id: "AU-08"
+        name: "Extension principal"
+        established_by: "Installing an extension, once extensions are enabled (SS-IDE)"
+        grants: "What the IDE foundation gives extensions, with Nexees data read-only (EXT-01 to EXT-07)."
+        never_implies: "Agent tools, approvals, grants, state, audit, secrets, remote control or sync."
+        states: []
+        owner_tasks: ["TASK-021"]
+
+DATA:
+    ID: data.sec_authorities
+    TYPE: LIST[OBJECT[REF(type.sec_authority)]]
+    VALUE: [REF(data.sec_au_01), REF(data.sec_au_02), REF(data.sec_au_03), REF(data.sec_au_04), REF(data.sec_au_05), REF(data.sec_au_06), REF(data.sec_au_07), REF(data.sec_au_08)]
+    DESCRIPTION: "Separate authorities: none implies another (SI-09)."
+
+DATA:
+    ID: data.sec_tb_01
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-01"
+        name: "Window and local host"
+        between: "A UI client and its own device's local host"
+        crossing: "Typed user intents in; state snapshots and events out (IF-ATTACH). On Desktop this is local IPC between processes."
+        rule: "The host admits only its own OS user, bounds and validates every message, and authorizes every intent with the same permission engine."
+        invariants: ["SI-17", "SI-02"]
+        enforced_by: ["SS-LOCAL-HOST", "SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT", "SS-DOMAIN-PROTOCOL", "IF-ATTACH"]
+        enforcement_points: ["apps/desktop/src/application_host", "apps/android/src/application_host", "core/protocol/serialization"]
+
+DATA:
+    ID: data.sec_tb_02
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-02"
+        name: "Local host and tool processes"
+        between: "The agent runtime and the processes and files its tools touch"
+        crossing: "Typed tool calls out; structured results back (IF-TOOL, IF-PLATFORM)."
+        rule: "One dispatcher and one permission decision per call; processes are mediated and confined where the platform allows; results are data."
+        invariants: ["SI-02", "SI-04", "SI-06"]
+        enforced_by: ["SS-TOOLS", "SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "IF-TOOL", "IF-PLATFORM"]
+        enforcement_points: ["core/tools/tool_dispatch", "core/security/permission_engine", "platform/desktop/execution/process_host", "platform/android/execution/local_tool_host"]
+
+DATA:
+    ID: data.sec_tb_03
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-03"
+        name: "Local host and model provider"
+        between: "An agent session and a remote or local model service"
+        crossing: "Context and requests out; streamed replies and tool-call proposals back (IF-PROVIDER)."
+        rule: "Only disclosed content leaves; replies are untrusted proposals; obsolete generations are fenced."
+        invariants: ["SI-21", "SI-01", "SI-20"]
+        enforced_by: ["SS-PROVIDERS", "SS-CONTEXT", "SS-AGENT", "IF-PROVIDER"]
+        enforcement_points: ["core/providers/provider_interface", "core/context/context_builder", "core/agent/execution_fence"]
+
+DATA:
+    ID: data.sec_tb_04
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-04"
+        name: "Device and device"
+        between: "Two paired Nexees hosts"
+        crossing: "Remote requests and acknowledgments (IF-REMOTE) and selected content (IF-SYNC) over one secure channel (IF-TRANSPORT)."
+        rule: "Mutual authentication with pinned keys; the destination decides with its own grants; sync never carries authority."
+        invariants: ["SI-16", "SI-10", "SI-11", "SI-12", "SI-13"]
+        enforced_by: ["SS-REMOTE", "SS-SYNC", "SS-SECURITY", "IF-TRANSPORT", "IF-REMOTE", "IF-SYNC"]
+        enforcement_points: ["core/remote/command_dispatch", "core/sync/sync_coordinator", "platform/desktop/transport/secure_channel", "platform/android/transport/secure_channel"]
+
+DATA:
+    ID: data.sec_tb_05
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-05"
+        name: "Workspace and the rest of the device"
+        between: "One workspace root and other workspaces, the home folder and the system"
+        crossing: "File paths in tool calls, imports, sync and cleanup."
+        rule: "Race-safe containment beneath the bound root; links and special files never followed for writes."
+        invariants: ["SI-04", "SI-05"]
+        enforced_by: ["SS-SECURITY", "SS-WORKSPACES", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        enforcement_points: ["core/security/workspace_scope", "core/workspaces/workspace_binding", "platform/desktop/storage/scoped_filesystem", "platform/android/storage/scoped_filesystem"]
+
+DATA:
+    ID: data.sec_tb_06
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-06"
+        name: "Nexees and the IDE foundation"
+        between: "Nexees's host and Theia's backend, renderer and extension host on Desktop"
+        crossing: "Editor saves, diagnostics, terminal sessions, extension output."
+        rule: "Extensions are a separate principal with no Nexees authority; the backend serves only its own window; extension output is data."
+        invariants: ["SI-22", "SI-28", "SI-01"]
+        enforced_by: ["SS-IDE", "SS-SECURITY", "SS-DESKTOP-CLIENT"]
+        enforcement_points: ["core/security/extension_policy", "integrations/ide/extension_host_adapter", "apps/desktop/src/main"]
+
+DATA:
+    ID: data.sec_tb_07
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-07"
+        name: "Untrusted files and staging"
+        between: "Imported files, archives and synced changes, and the live workspace"
+        crossing: "Bytes from outside, into app-owned staging, then a reviewed publication."
+        rule: "Bounded parsing in staging, path and type validation, no execution, atomic publication, separate adoption."
+        invariants: ["SI-18", "SI-19"]
+        enforced_by: ["SS-LCL", "SS-SYNC", "SS-WORKSPACES"]
+        enforcement_points: ["core/lcl/importing/archive_intake", "core/lcl/importing/safe_extraction", "core/sync/sync_coordinator"]
+
+DATA:
+    ID: data.sec_tb_08
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-08"
+        name: "Help content and its viewer"
+        between: "Bundled manual pages and the help panels"
+        crossing: "Markdown rendered for reading."
+        rule: "Passive rendering with no script, network or project data; opening help changes nothing."
+        invariants: ["SI-23"]
+        enforced_by: ["SS-HELP", "IF-HELP"]
+        enforcement_points: ["core/help/manual_catalog", "core/help/help_navigation"]
+
+DATA:
+    ID: data.sec_tb_09
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-09"
+        name: "Device and account backend"
+        between: "The local host and the external auth service"
+        crossing: "Sign-in, tokens, second factors, recovery and step-up results (IF-ACCOUNT)."
+        rule: "The backend authenticates accounts only; nothing it returns creates device trust, a grant or provider access."
+        invariants: ["SI-09", "SI-08", "SI-14"]
+        enforced_by: ["SS-ACCOUNTS", "IF-ACCOUNT"]
+        enforcement_points: ["core/accounts/account_service", "integrations/auth/account_provider_adapter"]
+
+DATA:
+    ID: data.sec_tb_10
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-10"
+        name: "Update source and installed application"
+        between: "Release hosting or a package mechanism, and the installed app and its state"
+        crossing: "Packages, manifests and state migrations."
+        rule: "Signature and integrity verification before install, no silent downgrade, security state preserved."
+        invariants: ["SI-26"]
+        enforced_by: ["SS-UPDATES", "SS-BUILD-RELEASE"]
+        enforcement_points: ["core/updates/package_verification", "core/updates/migration_guard"]
+
+DATA:
+    ID: data.sec_tb_11
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-11"
+        name: "Nexees and the OS session"
+        between: "Nexees and other applications, the login session and other processes of the same user"
+        crossing: "Start-at-login entries, application launches, Android intents and notifications, the process environment."
+        rule: "Only owned registrations, allowlisted launches by identifier, minimal exported components, hardened runtime options."
+        invariants: ["SI-15", "SI-28", "SI-29", "SI-06"]
+        enforced_by: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-BUILD-RELEASE"]
+        enforcement_points: ["platform/desktop/lifecycle/application_lifecycle", "platform/desktop/execution/process_host", "platform/android/lifecycle/notification_backend", "packaging/desktop/"]
+
+DATA:
+    ID: data.sec_tb_12
+    TYPE: OBJECT[REF(type.sec_boundary)]
+    VALUE:
+        boundary_id: "TB-12"
+        name: "Secret store and everything else"
+        between: "The OS-backed credential store and the rest of Nexees"
+        crossing: "Provider credentials, session tokens, device keys, recovery material."
+        rule: "Secrets leave the store only into the one request that needs them and never into state, prompts, logs, sync, environments or fixtures."
+        invariants: ["SI-08"]
+        enforced_by: ["SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        enforcement_points: ["core/security/secret_redaction", "platform/desktop/secrets/credential_store", "platform/android/secrets/credential_store"]
+
+DATA:
+    ID: data.sec_boundaries
+    TYPE: LIST[OBJECT[REF(type.sec_boundary)]]
+    VALUE: [REF(data.sec_tb_01), REF(data.sec_tb_02), REF(data.sec_tb_03), REF(data.sec_tb_04), REF(data.sec_tb_05), REF(data.sec_tb_06), REF(data.sec_tb_07), REF(data.sec_tb_08), REF(data.sec_tb_09), REF(data.sec_tb_10), REF(data.sec_tb_11), REF(data.sec_tb_12)]
+    DESCRIPTION: "The trust boundaries."
+
+DATA:
+    ID: data.sec_assumptions
+    TYPE: LIST[STRING]
+    VALUE: ["SEC-A01 | The device operating system is not compromised: no root or jailbreak and no kernel exploit. Every boundary here relies on OS process isolation, file permissions, the Android app sandbox and the OS credential store.", "SEC-A02 | The device owner controls the device lock. A device without a screen lock, or a shared OS account, gives a physical attacker the user's authority; step-up protects only the sensitive actions.", "SEC-A03 | Device clocks may differ. Expiry is enforced by the destination with its own clock, a bounded skew allowance and a destination-side maximum lifetime, so no security property depends on synchronized clocks.", "SEC-A04 | The cryptographic libraries in use (rustls with ring, the OS keystores, platform signature verification) are correct. Nexees adds no cryptography of its own.", "SEC-A05 | The LCL engine at the pinned commit evaluates deterministically and, called for parsing, validation and compilation, has no host effect (SA-05; tested by SG-07).", "SEC-A06 | Third-party services (providers, the auth backend, Open VSX, release hosting, the off-LAN route) are untrusted for authority and may be compromised; compromising one yields nothing beyond what was disclosed to it (SA-04, SA-06).", "SEC-A07 | The authenticated user is not the adversary of their own device. Nexees protects the user from untrusted content, peers and services, not from deliberate choices the user makes within the invariants.", "SEC-A08 | Code already running as the same OS user is outside the boundary Nexees can enforce (SA-01). Nexees keeps its own components from becoming that code's tools (SI-17, SI-28) and records the rest as R-01."]
+    DESCRIPTION: "Security assumptions in addition to the architecture's SA-01 to SA-08, which still apply. An implication none of them covers is a blocker."
+
+DATA:
+    ID: data.sec_residual_risks
+    TYPE: LIST[STRING]
+    VALUE: ["R-01 | Same-user code | Code running as the same OS user can act as that user: drive the window, read workspace and state files, and use the OS store while it is unlocked. Nexees limits its own vehicles (SI-17, SI-28) but cannot stop such code (SA-01). | Stated to users in SECURITY.md and the manual; reviewed by TASK-073.", "R-02 | Unconfined extensions | Until TASK-021 decides OS-level confinement, an enabled extension has the user's full privileges, so extensions stay disabled (SA-08, EXT-07). | TASK-021 records a confinement or the owner's explicit acceptance before any extension is enabled.", "R-03 | Renderer sandbox off | Theia 1.76.0 runs the window without the Chromium sandbox; a renderer compromise is contained only by context isolation. | TASK-009 and TASK-021 enable it or record why not; TASK-073 reviews.", "R-04 | Secret Service isolation | On Linux, whether one same-user application can read another's secrets depends on the keyring implementation. | TASK-025 records the behaviour of the supported keyrings.", "R-05 | Hosts without confinement | Where no OS confinement exists, running repository code equals running it as the user; Nexees reports the gap and asks first (SI-06). | TASK-024 for Desktop and TASK-066 for Android.", "R-06 | Provider retention | Content sent to a provider is subject to that provider's retention and policies. | TASK-041 and TASK-068 show the disclosure clearly.", "R-07 | Route metadata | The off-LAN route provider can see that two devices talk, though not what they say. | TASK-060 and TASK-070, with the owner's route choice (OI-03).", "R-08 | Android lifecycle | OEM power management may stop the receiver; only emulator evidence exists. | TASK-066 and TASK-074 on real phones (OI-08)."]
+    DESCRIPTION: "Risks that remain after the mitigations. Recorded, not accepted: each names who reduces it or obtains the owner's acceptance."
+
+DATA:
+    ID: data.sec_open_decisions
+    TYPE: LIST[STRING]
+    VALUE: ["OSD-01 | OS-level confinement of extensions (EXT-07) | TASK-021 | Blocks enabling extensions.", "OSD-02 | The secure off-LAN route and any cost (OI-03) | TASK-060, TASK-070 | Blocks remote access beyond the LAN.", "OSD-03 | The auth backend and its hosting (OI-02) | TASK-027, TASK-028 | Blocks online accounts.", "OSD-04 | How a release is updated: a Nexees updater or the platform's package mechanism (GAP-07) | TASK-073, TASK-075 | Blocks shipping updates.", "OSD-05 | The Desktop confinement backend and its policy where unavailable (bubblewrap or another) | TASK-024 | Blocks running repository code without approval.", "OSD-06 | Whether Theia's renderer sandbox can be enabled | TASK-009, TASK-021 | Recorded as R-03 until decided.", "OSD-07 | Moving the Android device identity key into the Keystore (OI-09) | TASK-025, TASK-060 | Blocks real pairing on Android.", "OSD-08 | Whether Theia's keytar-based store is disabled or redirected to the Nexees credential port (OI-05) | TASK-025 | Blocks storing any secret through Theia."]
+    DESCRIPTION: "Security decisions still open, with the tasks that close them and what each blocks until then."

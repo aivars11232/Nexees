@@ -1,0 +1,562 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.sec_assets
+    NAME: "Assets and attack surfaces"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "What Nexees protects, mapped to every state category of docs/architecture/state.lcl.txt, and the attack surfaces through which the threats reach it, per area."
+
+DATA:
+    ID: data.sec_as_01
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-01"
+        name: "Workspace content and views"
+        states: ["ST-CONTENT", "ST-WORKSPACE", "ST-VIEW"]
+        sensitivity: "private"
+        locations: ["desktop", "android"]
+        invariants: ["SI-04", "SI-05", "SI-18"]
+
+DATA:
+    ID: data.sec_as_02
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-02"
+        name: "Secrets"
+        states: ["ST-SECRETS"]
+        sensitivity: "secret"
+        locations: ["desktop", "android"]
+        invariants: ["SI-08"]
+
+DATA:
+    ID: data.sec_as_03
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-03"
+        name: "Grants, approvals and permission epochs"
+        states: ["ST-AUTHORITY"]
+        sensitivity: "security_critical"
+        locations: ["desktop", "android"]
+        invariants: ["SI-03", "SI-10", "SI-13"]
+
+DATA:
+    ID: data.sec_as_04
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-04"
+        name: "Device trust"
+        states: ["ST-DEVICE-TRUST"]
+        sensitivity: "security_critical"
+        locations: ["desktop", "android"]
+        invariants: ["SI-09", "SI-16"]
+
+DATA:
+    ID: data.sec_as_05
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-05"
+        name: "Execution state"
+        states: ["ST-SESSION", "ST-JOURNAL", "ST-TASK", "ST-HISTORY"]
+        sensitivity: "security_critical"
+        locations: ["desktop", "android"]
+        invariants: ["SI-05", "SI-13", "SI-20"]
+
+DATA:
+    ID: data.sec_as_06
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-06"
+        name: "Specification authority"
+        states: ["ST-LCL-REVISION", "ST-IMPORT"]
+        sensitivity: "security_critical"
+        locations: ["desktop", "android"]
+        invariants: ["SI-18", "SI-19"]
+
+DATA:
+    ID: data.sec_as_07
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-07"
+        name: "Audit trail"
+        states: ["ST-AUDIT"]
+        sensitivity: "private"
+        locations: ["desktop", "android"]
+        invariants: ["SI-25"]
+
+DATA:
+    ID: data.sec_as_08
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-08"
+        name: "Account"
+        states: ["ST-ACCOUNT"]
+        sensitivity: "security_critical"
+        locations: ["desktop", "android", "service"]
+        invariants: ["SI-09", "SI-14"]
+
+DATA:
+    ID: data.sec_as_09
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-09"
+        name: "Settings and security policy"
+        states: ["ST-SETTINGS"]
+        sensitivity: "security_critical"
+        locations: ["desktop", "android"]
+        invariants: ["SI-27", "SI-15"]
+
+DATA:
+    ID: data.sec_as_10
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-10"
+        name: "Remote requests and status"
+        states: ["ST-REMOTE-REQUEST", "ST-REMOTE-SNAPSHOT"]
+        sensitivity: "security_critical"
+        locations: ["desktop", "android"]
+        invariants: ["SI-12", "SI-13", "SI-25"]
+
+DATA:
+    ID: data.sec_as_11
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-11"
+        name: "Model context and provider conversations"
+        states: ["ST-CONTEXT", "ST-HANDOFF", "ST-PROVIDER-CATALOG"]
+        sensitivity: "private"
+        locations: ["desktop", "android", "service"]
+        invariants: ["SI-21", "SI-20"]
+
+DATA:
+    ID: data.sec_as_12
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-12"
+        name: "Synchronization state"
+        states: ["ST-SYNC"]
+        sensitivity: "private"
+        locations: ["desktop", "android"]
+        invariants: ["SI-18", "SI-10"]
+
+DATA:
+    ID: data.sec_as_13
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-13"
+        name: "Host integrity"
+        states: []
+        sensitivity: "security_critical"
+        locations: ["desktop", "android"]
+        invariants: ["SI-04", "SI-06", "SI-07", "SI-28", "SI-29"]
+        note: "The device itself: the OS account, files outside workspaces, other applications, login and startup configuration, and network exposure."
+
+DATA:
+    ID: data.sec_as_14
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-14"
+        name: "Release integrity"
+        states: []
+        sensitivity: "security_critical"
+        locations: ["desktop", "android", "service"]
+        invariants: ["SI-26", "SI-28"]
+        note: "The installed binaries, update packages and the release signing key, which never enters the repository (SECURITY.md)."
+
+DATA:
+    ID: data.sec_as_15
+    TYPE: OBJECT[REF(type.sec_asset)]
+    VALUE:
+        asset_id: "AS-15"
+        name: "Manual content"
+        states: ["ST-MANUALS"]
+        sensitivity: "ordinary"
+        locations: ["desktop", "android"]
+        invariants: ["SI-23"]
+
+DATA:
+    ID: data.sec_assets
+    TYPE: LIST[OBJECT[REF(type.sec_asset)]]
+    VALUE: [REF(data.sec_as_01), REF(data.sec_as_02), REF(data.sec_as_03), REF(data.sec_as_04), REF(data.sec_as_05), REF(data.sec_as_06), REF(data.sec_as_07), REF(data.sec_as_08), REF(data.sec_as_09), REF(data.sec_as_10), REF(data.sec_as_11), REF(data.sec_as_12), REF(data.sec_as_13), REF(data.sec_as_14), REF(data.sec_as_15)]
+    DESCRIPTION: "The assets; together they cover all 22 state categories."
+
+DATA:
+    ID: data.sec_sf_01
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-01"
+        areas: ["desktop"]
+        name: "Window-to-host local IPC socket"
+        exposure: "Processes of the same OS user; other users are refused by the socket's 0700 folder and peer-credential check"
+        boundary: "TB-01"
+        elements: ["SS-LOCAL-HOST", "IF-ATTACH"]
+
+DATA:
+    ID: data.sec_sf_02
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-02"
+        areas: ["desktop"]
+        name: "IDE backend loopback port and its token"
+        exposure: "Any local process can reach 127.0.0.1; requests need the per-launch token cookie"
+        boundary: "TB-06"
+        elements: ["SS-IDE", "SS-DESKTOP-CLIENT"]
+
+DATA:
+    ID: data.sec_sf_03
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-03"
+        areas: ["desktop"]
+        name: "Workbench renderer content"
+        exposure: "Workspace files, extension output and model output rendered in the Electron window"
+        boundary: "TB-06"
+        elements: ["SS-IDE", "SS-DESKTOP-CLIENT"]
+
+DATA:
+    ID: data.sec_sf_04
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-04"
+        areas: ["desktop"]
+        name: "Shipped Electron binary, its environment and command line"
+        exposure: "Same-user processes and inherited environment variables"
+        boundary: "TB-11"
+        elements: ["SS-BUILD-RELEASE", "SS-DESKTOP-CLIENT"]
+
+DATA:
+    ID: data.sec_sf_05
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-05"
+        areas: ["desktop"]
+        name: "Start-at-login entry and receiver lifetime"
+        exposure: "The user's autostart folder and session"
+        boundary: "TB-11"
+        elements: ["SS-PLATFORM-DESKTOP", "SS-SETTINGS"]
+
+DATA:
+    ID: data.sec_sf_06
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-06"
+        areas: ["desktop"]
+        name: "Allowlisted application launch"
+        exposure: "Remote requests and the desktop entries of installed applications"
+        boundary: "TB-11"
+        elements: ["SS-PLATFORM-DESKTOP", "SS-REMOTE"]
+
+DATA:
+    ID: data.sec_sf_07
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-07"
+        areas: ["desktop"]
+        name: "Workspace configuration run by IDE tools"
+        exposure: "Repository files such as task, launch and hook configurations"
+        boundary: "TB-06"
+        elements: ["SS-IDE", "SS-TOOLS"]
+
+DATA:
+    ID: data.sec_sf_08
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-08"
+        areas: ["android"]
+        name: "Exported components, intents and deep links"
+        exposure: "Other applications on the phone"
+        boundary: "TB-11"
+        elements: ["SS-ANDROID-CLIENT", "SS-PLATFORM-ANDROID"]
+
+DATA:
+    ID: data.sec_sf_09
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-09"
+        areas: ["android"]
+        name: "Receiver foreground service and notification actions"
+        exposure: "The lock screen, the notification shade and other applications"
+        boundary: "TB-11"
+        elements: ["SS-PLATFORM-ANDROID", "SS-REMOTE"]
+
+DATA:
+    ID: data.sec_sf_10
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-10"
+        areas: ["android"]
+        name: "App-private storage, picker grants and backups"
+        exposure: "Backup services, adb and other applications"
+        boundary: "TB-05"
+        elements: ["SS-PLATFORM-ANDROID"]
+
+DATA:
+    ID: data.sec_sf_11
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-11"
+        areas: ["android"]
+        name: "JNI bridge between the Kotlin shell and the shared core"
+        exposure: "Any input the shell forwards to the core"
+        boundary: "TB-02"
+        elements: ["SS-PLATFORM-ANDROID", "SS-DOMAIN-PROTOCOL"]
+
+DATA:
+    ID: data.sec_sf_12
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-12"
+        areas: ["agent tools"]
+        name: "Typed tool calls proposed by a model"
+        exposure: "Provider replies, shaped by any text in the context"
+        boundary: "TB-02"
+        elements: ["SS-TOOLS", "IF-TOOL"]
+
+DATA:
+    ID: data.sec_sf_13
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-13"
+        areas: ["agent tools"]
+        name: "Mediated commands, builds, tests and package managers"
+        exposure: "Repository code: build scripts, install scripts, tests"
+        boundary: "TB-02"
+        elements: ["SS-TOOLS", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+
+DATA:
+    ID: data.sec_sf_14
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-14"
+        areas: ["agent tools"]
+        name: "Tool output returned into model context"
+        exposure: "Build, test, terminal and language-server output"
+        boundary: "TB-02"
+        elements: ["SS-CONTEXT", "SS-TOOLS"]
+
+DATA:
+    ID: data.sec_sf_15
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-15"
+        areas: ["agent tools"]
+        name: "Cleanup at task close"
+        exposure: "The agent and the task gates"
+        boundary: "TB-05"
+        elements: ["SS-TASKING", "SS-TOOLS"]
+
+DATA:
+    ID: data.sec_sf_16
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-16"
+        areas: ["providers"]
+        name: "Provider requests and replies"
+        exposure: "The provider service and the network path to it"
+        boundary: "TB-03"
+        elements: ["SS-PROVIDERS", "IF-PROVIDER"]
+
+DATA:
+    ID: data.sec_sf_17
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-17"
+        areas: ["providers"]
+        name: "Provider credentials and endpoints"
+        exposure: "Provider accounts, configuration and Developer Settings"
+        boundary: "TB-12"
+        elements: ["SS-PROVIDERS", "SS-SECURITY"]
+
+DATA:
+    ID: data.sec_sf_18
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-18"
+        areas: ["providers"]
+        name: "Model switch and handoff"
+        exposure: "User choices, quota failures and delayed replies"
+        boundary: "TB-03"
+        elements: ["SS-PROVIDERS", "SS-AGENT"]
+
+DATA:
+    ID: data.sec_sf_19
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-19"
+        areas: ["providers"]
+        name: "External agent adapters and local model endpoints"
+        exposure: "External processes and loopback or LAN endpoints"
+        boundary: "TB-03"
+        elements: ["SS-PROVIDERS", "SS-PLATFORM-DESKTOP"]
+
+DATA:
+    ID: data.sec_sf_20
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-20"
+        areas: ["lcl"]
+        name: "File and ZIP import"
+        exposure: "Any file the user selects"
+        boundary: "TB-07"
+        elements: ["SS-LCL"]
+
+DATA:
+    ID: data.sec_sf_21
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-21"
+        areas: ["lcl"]
+        name: "Specification text, adoption and evaluation"
+        exposure: "Imported, synced or edited specifications"
+        boundary: "TB-07"
+        elements: ["SS-LCL", "IF-LCL"]
+
+DATA:
+    ID: data.sec_sf_22
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-22"
+        areas: ["extensions"]
+        name: "Extension installation and package extraction"
+        exposure: "Open VSX and local .vsix files"
+        boundary: "TB-06"
+        elements: ["SS-IDE"]
+
+DATA:
+    ID: data.sec_sf_23
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-23"
+        areas: ["extensions"]
+        name: "Extension host runtime"
+        exposure: "Extension code"
+        boundary: "TB-06"
+        elements: ["SS-IDE", "SS-SECURITY"]
+
+DATA:
+    ID: data.sec_sf_24
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-24"
+        areas: ["auth"]
+        name: "Sign-in, sign-up and redirects"
+        exposure: "The auth backend, GitHub, the browser and the network"
+        boundary: "TB-09"
+        elements: ["SS-ACCOUNTS", "IF-ACCOUNT"]
+
+DATA:
+    ID: data.sec_sf_25
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-25"
+        areas: ["auth"]
+        name: "Session tokens, second factors, recovery and step-up"
+        exposure: "The device and anyone holding it"
+        boundary: "TB-12"
+        elements: ["SS-ACCOUNTS", "SS-SECURITY"]
+
+DATA:
+    ID: data.sec_sf_26
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-26"
+        areas: ["updates"]
+        name: "Update channel and package verification"
+        exposure: "Release hosting and the network"
+        boundary: "TB-10"
+        elements: ["SS-UPDATES"]
+
+DATA:
+    ID: data.sec_sf_27
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-27"
+        areas: ["updates"]
+        name: "State migration and peer compatibility"
+        exposure: "Older state and older peers"
+        boundary: "TB-10"
+        elements: ["SS-UPDATES", "SS-STATE", "SS-DOMAIN-PROTOCOL"]
+
+DATA:
+    ID: data.sec_sf_28
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-28"
+        areas: ["updates"]
+        name: "Build-time dependency supply chain"
+        exposure: "Package registries and install scripts"
+        boundary: "TB-10"
+        elements: ["SS-BUILD-RELEASE"]
+
+DATA:
+    ID: data.sec_sf_29
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-29"
+        areas: ["cross-device sessions"]
+        name: "Transport listener, discovery and the off-LAN route"
+        exposure: "Hosts on the LAN and on the route"
+        boundary: "TB-04"
+        elements: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "IF-TRANSPORT"]
+
+DATA:
+    ID: data.sec_sf_30
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-30"
+        areas: ["cross-device sessions"]
+        name: "Pairing ceremony"
+        exposure: "Anyone near either device during pairing"
+        boundary: "TB-04"
+        elements: ["SS-REMOTE"]
+
+DATA:
+    ID: data.sec_sf_31
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-31"
+        areas: ["cross-device sessions"]
+        name: "Remote request admission"
+        exposure: "A paired peer"
+        boundary: "TB-04"
+        elements: ["SS-REMOTE", "IF-REMOTE"]
+
+DATA:
+    ID: data.sec_sf_32
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-32"
+        areas: ["cross-device sessions"]
+        name: "Synchronization channel"
+        exposure: "A paired peer"
+        boundary: "TB-04"
+        elements: ["SS-SYNC", "IF-SYNC"]
+
+DATA:
+    ID: data.sec_sf_33
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-33"
+        areas: ["cross-device sessions"]
+        name: "Remote status, notifications and audit views"
+        exposure: "Both devices' users and their screens"
+        boundary: "TB-04"
+        elements: ["SS-REMOTE", "SS-SECURITY"]
+
+DATA:
+    ID: data.sec_sf_34
+    TYPE: OBJECT[REF(type.sec_surface)]
+    VALUE:
+        surface_id: "SF-34"
+        areas: ["desktop", "android"]
+        name: "Manual viewer"
+        exposure: "Bundled manual pages and their links"
+        boundary: "TB-08"
+        elements: ["SS-HELP", "IF-HELP"]
+
+DATA:
+    ID: data.sec_surfaces
+    TYPE: LIST[OBJECT[REF(type.sec_surface)]]
+    VALUE: [REF(data.sec_sf_01), REF(data.sec_sf_02), REF(data.sec_sf_03), REF(data.sec_sf_04), REF(data.sec_sf_05), REF(data.sec_sf_06), REF(data.sec_sf_07), REF(data.sec_sf_08), REF(data.sec_sf_09), REF(data.sec_sf_10), REF(data.sec_sf_11), REF(data.sec_sf_12), REF(data.sec_sf_13), REF(data.sec_sf_14), REF(data.sec_sf_15), REF(data.sec_sf_16), REF(data.sec_sf_17), REF(data.sec_sf_18), REF(data.sec_sf_19), REF(data.sec_sf_20), REF(data.sec_sf_21), REF(data.sec_sf_22), REF(data.sec_sf_23), REF(data.sec_sf_24), REF(data.sec_sf_25), REF(data.sec_sf_26), REF(data.sec_sf_27), REF(data.sec_sf_28), REF(data.sec_sf_29), REF(data.sec_sf_30), REF(data.sec_sf_31), REF(data.sec_sf_32), REF(data.sec_sf_33), REF(data.sec_sf_34)]
+    DESCRIPTION: "The attack surfaces."

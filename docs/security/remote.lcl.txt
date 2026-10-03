@@ -1,0 +1,301 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.sec_remote
+    NAME: "Remote-control security contracts owned by TASK-004"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "TASK-004's part of the eleven remote-control requirements assigned to it in TASK_REQUIREMENT_MAP.json: the security contract, the message types of baseline.lcl.txt, the destination's ordered execution checks and the test plan, with the later tasks that own implementation and runtime proof. Where TASK-002 already closed the design, the contract adds its security part. This closes design only; none of these requirements is implemented or runtime-tested, and a design document never counts as runtime testing (remote_control_acceptance)."
+
+DATA:
+    ID: data.sec_rc_02
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-02"
+        title: "Explicit opt-in"
+        contract: "Receiving, start-at-login and keeping access after the window closes are three fields of type.sec_receiver_settings, all FALSE on a fresh device (data.sec_receiver_defaults). Each changes only through a local user action that the permission engine authorizes, with step-up for turning on receiving or startup. Pairing, sign-in, sync, update, import and remote requests have no path to them (binding.sec_never_remote)."
+        types: ["type.sec_receiver_settings"]
+        invariants: ["SI-15", "SI-14", "SI-09"]
+        threats: ["TH-06", "TH-11", "TH-37"]
+        architecture: "none"
+        test_plan: ["RC-T01 | Fresh install: receiving and startup are off on both devices, and an unpaired or reverse request is denied.", "RC-T04 | Enabling startup works; disabling it, logging out and a locked session behave as configured.", "tests/unit/settings | Defaults are FALSE and no non-local path changes them.", "GAP-02 | No test slot yet for the startup and lifetime states."]
+        runtime_owners: ["TASK-022", "TASK-030", "TASK-060", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_03
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-03"
+        title: "Directional trust"
+        contract: "TASK-002's design holds (data.arch_rc_03). TASK-004 fixes the grant record: type.sec_grant, stored only on its destination, keyed by peer device, user, direction and capability, with a scope and a permission epoch. No operation creates a reverse grant, and the receiving check (EC-07) matches all key fields."
+        types: ["type.sec_grant"]
+        invariants: ["SI-10", "SI-09", "SI-03"]
+        threats: ["TH-37", "TH-45", "TH-48"]
+        architecture: "data.arch_rc_03"
+        test_plan: ["RC-T01 | A reverse-direction request is denied.", "RC-T05 | With the reverse permission absent or revoked, the request is denied.", "tests/unit/approval_grants | Grants are per peer, direction and capability, and never synced.", "tests/security/remote/pairing_revocation | Pairing alone admits nothing; revocation ends admission."]
+        runtime_owners: ["TASK-007", "TASK-022", "TASK-025", "TASK-030", "TASK-055", "TASK-060", "TASK-068", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_07
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-07"
+        title: "Settings and immediate stop"
+        contract: "Settings > Devices & Remote Access shows the fields of type.sec_receiver_settings, paired devices, grants, the allowlist, the lock and confirmation policy, live versus last-known connection state and the audit history. Stop remote access is one local action that turns receiving off, increments the permission epoch of every grant so pending approvals and queued requests fail EC-07 and EC-12, closes live sessions and records remote_access_stopped. Revoking one device removes its pinned key and bumps its grants' epochs. Local editing continues throughout."
+        types: ["type.sec_receiver_settings", "type.sec_grant", "type.sec_audit_record"]
+        invariants: ["SI-15", "SI-13", "SI-25"]
+        threats: ["TH-45", "TH-06", "TH-11"]
+        architecture: "none"
+        test_plan: ["RC-T11 | Stopping or revoking during a pending and an executing request denies new effects and keeps local editing.", "tests/security/remote/pairing_revocation | A revoked peer cannot reconnect.", "tests/security/remote/stale_approval_rejection | Approvals pending at the stop are void."]
+        runtime_owners: ["TASK-008", "TASK-022", "TASK-030", "TASK-055", "TASK-056", "TASK-060", "TASK-067", "TASK-068", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_09
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-09"
+        title: "Typed request envelope"
+        contract: "TASK-002's design holds (data.arch_rc_09). type.sec_request_envelope fixes the fields and their security meaning: the sender identity comes from the channel, the destination triple must be this host, workspace and agent IDs are explicit where they apply, revisions and epoch are checked, and expiry is clamped by the destination. Example: data.sec_envelope_example."
+        types: ["type.sec_request_envelope"]
+        invariants: ["SI-12", "SI-13", "SI-11"]
+        threats: ["TH-47", "TH-46", "TH-42"]
+        architecture: "data.arch_rc_09"
+        test_plan: ["RC-T08 | Malformed, wrong-destination, wrong-user, wrong-workspace, stale and replayed requests are rejected.", "tests/security/remote/explicit_target_binding | No ambient target.", "tests/conformance/protocol/client_protocol_compatibility | Both clients produce and parse the same envelope."]
+        runtime_owners: ["TASK-007", "TASK-015", "TASK-031", "TASK-033", "TASK-044", "TASK-045", "TASK-066", "TASK-068", "TASK-069", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_10
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-10"
+        title: "Execution-host checks"
+        contract: "The destination runs the checks of data.sec_execution_checks, in order, immediately before the effect, and stops at the first failure with an audited outcome. An identity that is unknown or changes during the check fails closed for that operation. The TASK-003 prototype dispatcher already checked protocol, IDs, peer binding, direction, grant, expiry, capabilities and replay, in that order; the full list adds lock state, revisions, bindings and approvals."
+        types: ["type.sec_request_envelope", "type.sec_grant", "type.sec_approval"]
+        invariants: ["SI-11", "SI-02", "SI-12"]
+        threats: ["TH-45", "TH-47", "TH-09"]
+        architecture: "none"
+        test_plan: ["RC-T08 | Missing scopes, stale revisions and revoked epochs are rejected at the execution check.", "tests/security/remote/explicit_target_binding | The destination decides, not the sender.", "tests/unit/permission_engine | Each check fails closed on missing or ambiguous input."]
+        runtime_owners: ["TASK-007", "TASK-015", "TASK-022", "TASK-023", "TASK-031", "TASK-033", "TASK-055", "TASK-060", "TASK-066", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_17
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-17"
+        title: "Replay and unknown outcomes"
+        contract: "The destination ledger records each request ID with its state (admitted, running, completed, denied, expired, outcome-unknown) and result; a duplicate gets that result. The effect is journaled before it starts. After a crash or a lost acknowledgment the state is outcome-unknown, and a non-idempotent operation is not retried until reconciled. Approvals (type.sec_approval) are single-use, bound to the request hash, expire, and are revalidated against epoch, lock, expiry and revisions when the user acts. Commands and approvals never enter sync queues; expired ones are dropped with an audit record."
+        types: ["type.sec_request_envelope", "type.sec_approval", "type.sec_audit_record"]
+        invariants: ["SI-13", "SI-11"]
+        threats: ["TH-46", "TH-22"]
+        architecture: "none"
+        test_plan: ["RC-T09 | A dropped acknowledgment is reconciled by request ID without a second execution.", "RC-T10 | An expired request queued while disconnected is not replayed after reconnecting.", "RC-T08 | A replayed approval is rejected.", "tests/security/remote/stale_approval_rejection | Stale epochs and approvals are rejected."]
+        runtime_owners: ["TASK-007", "TASK-008", "TASK-026", "TASK-031", "TASK-033", "TASK-035", "TASK-038", "TASK-055", "TASK-066", "TASK-067", "TASK-069", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_18
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-18"
+        title: "Lock and sensitive actions"
+        contract: "type.sec_lock_policy: while the destination is locked, only the categories the user allowed are accepted, and by default none (data.sec_lock_policy_default). The operations in binding.sec_never_remote are refused from any remote request, locked or not, and a model's request alone never suffices for them: they need a local user action with step-up (SI-14)."
+        types: ["type.sec_lock_policy"]
+        invariants: ["SI-14", "SI-11", "SI-29"]
+        threats: ["TH-09", "TH-36", "TH-53"]
+        architecture: "none"
+        test_plan: ["RC-T07 | A deferred approval rechecks expiry, lock and policy.", "RC-T08 | Requests outside the lock policy are rejected.", "tests/unit/permission_engine | Locked-state decisions follow the policy; never-remote operations are always refused.", "GAP-05 | Step-up has no test slot until TASK-027 to TASK-029 add one."]
+        runtime_owners: ["TASK-022", "TASK-024", "TASK-025", "TASK-030", "TASK-033", "TASK-055", "TASK-060", "TASK-067", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_19
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-19"
+        title: "Transport and private networking"
+        contract: "TASK-002's design holds (data.arch_rc_19), with TASK-003's choice: rustls with TLS 1.3 only and mutual authentication against keys pinned at pairing. TASK-004 adds: no fallback to an unauthenticated or trust-on-first-use connection after pairing; a key change needs new pairing; frames are capped at binding.sec_max_frame, with bounded queues, rate limits and a connection cap per peer; the listener exists only while receiving is on; the off-LAN route carries only this channel; no UPnP, NAT-PMP or relay without approval."
+        types: []
+        invariants: ["SI-16", "SI-07", "SI-15"]
+        threats: ["TH-43", "TH-44", "TH-50"]
+        architecture: "data.arch_rc_19"
+        test_plan: ["RC-T15 | Encryption and authentication, rate, message and queue limits, the off-LAN route.", "tests/security/remote/pairing_revocation | A revoked peer cannot reconnect.", "GAP-04 | No test slot yet for transport security."]
+        runtime_owners: ["TASK-025", "TASK-060", "TASK-069", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_22
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-22"
+        title: "Audit and privacy"
+        contract: "Every event of binding.sec_audit_events produces a type.sec_audit_record with the normalized target, decision, reason, policy revision, epoch and outcome, and never a secret, file content or argument value. Status shows live reachability apart from the last known state, with its time. Both sides are notified without switching anyone's workspace."
+        types: ["type.sec_audit_record"]
+        invariants: ["SI-25", "SI-08"]
+        threats: ["TH-49", "TH-55"]
+        architecture: "none"
+        test_plan: ["RC-T18 | Idle receiver audit evidence is sanitized.", "tests/security/credentials/secret_redaction | No secret in audit records or notifications.", "SG-06 | No test slot yet for audit content and integrity."]
+        runtime_owners: ["TASK-025", "TASK-026", "TASK-030", "TASK-056", "TASK-068", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_23
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-23"
+        title: "Secure service integration"
+        contract: "TASK-002's design holds (data.arch_rc_23), with TASK-003's choice: a Unix socket in a 0700 per-user folder, mode 0600, the peer uid checked by SO_PEERCRED, and messages capped at binding.sec_max_ipc_message. TASK-004 adds: the host refuses to run elevated; no privileged helper exists; the IDE backend runs only from the application with its token (SI-28); a protocol mismatch after an update is refused rather than bridged."
+        types: []
+        invariants: ["SI-17", "SI-28", "SI-02"]
+        threats: ["TH-01", "TH-02", "TH-03", "TH-07"]
+        architecture: "data.arch_rc_23"
+        test_plan: ["RC-T15 | Local IPC caller checks and message and queue limits.", "RC-T16 | Compatibility across update and restart.", "RC-T12 | Malicious application labels, arguments, paths and deep links are denied.", "GAP-01 | The local IPC channel has no slot yet.", "SG-05 | No test slot yet for the Desktop runtime hardening."]
+        runtime_owners: ["TASK-007", "TASK-009", "TASK-022", "TASK-024", "TASK-025", "TASK-056", "TASK-057", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_rc_24
+    TYPE: OBJECT[REF(type.sec_remote_contract)]
+    VALUE:
+        requirement_id: "RC-24"
+        title: "Update, logout and removal"
+        contract: "Updates and migrations carry type.sec_receiver_settings, every type.sec_grant, revocations and epochs over unchanged and never default to allow (SI-26). Signing out or an account-policy change stops admission by bumping epochs, without deleting local work. Revoking a device removes its pinned key and grants. Uninstalling removes only the startup entry and keys Nexees owns. In-flight work is reconciled, and an effect that already happened is never reported as rolled back."
+        types: ["type.sec_receiver_settings", "type.sec_grant"]
+        invariants: ["SI-26", "SI-15", "SI-10"]
+        threats: ["TH-40", "TH-06", "TH-39"]
+        architecture: "none"
+        test_plan: ["RC-T16 | Update, restart and uninstall in disposable profiles keep opt-in and remove only owned state.", "tests/e2e/release/update_recovery | Security state is identical before and after an update.", "GAP-02 | No test slot yet for the startup and lifetime states.", "SG-03 | No test slot yet for update verification."]
+        runtime_owners: ["TASK-008", "TASK-009", "TASK-026", "TASK-030", "TASK-035", "TASK-038", "TASK-056", "TASK-067", "TASK-069", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.sec_remote_contracts
+    TYPE: LIST[OBJECT[REF(type.sec_remote_contract)]]
+    VALUE: [REF(data.sec_rc_02), REF(data.sec_rc_03), REF(data.sec_rc_07), REF(data.sec_rc_09), REF(data.sec_rc_10), REF(data.sec_rc_17), REF(data.sec_rc_18), REF(data.sec_rc_19), REF(data.sec_rc_22), REF(data.sec_rc_23), REF(data.sec_rc_24)]
+    DESCRIPTION: "The eleven contracts, in canonical order."
+
+DATA:
+    ID: data.sec_remote_status
+    TYPE: STRING
+    VALUE: "Security contract, types and test plan closed by TASK-004; not implemented and not runtime-tested."
+    DESCRIPTION: "The only status a TASK-004 contract may carry (verify.sec_remote_design_only)."
+
+DATA:
+    ID: data.sec_assigned_remote_requirements
+    TYPE: LIST[STRING]
+    VALUE: ["RC-02", "RC-03", "RC-07", "RC-09", "RC-10", "RC-17", "RC-18", "RC-19", "RC-22", "RC-23", "RC-24"]
+    DESCRIPTION: "The remote requirements the pack assigns to TASK-004, in canonical order. check_threat_model.py compares this list with TASK_REQUIREMENT_MAP.json."
+
+DATA:
+    ID: data.sec_assigned_remote_scenarios
+    TYPE: LIST[STRING]
+    VALUE: ["RC-T01", "RC-T08", "RC-T12", "RC-T15"]
+    DESCRIPTION: "The RC-T scenarios the pack assigns to TASK-004."
+
+DATA:
+    ID: data.sec_scenario_plans
+    TYPE: LIST[STRING]
+    VALUE: ["RC-T01 | TT-22 | Proved at runtime by TASK-022, TASK-030, TASK-055, TASK-060, TASK-068, TASK-070, TASK-073, TASK-074 and TASK-075 | Fresh profiles on both devices.", "RC-T08 | TT-23 | Proved at runtime by TASK-007, TASK-015, TASK-022, TASK-023, TASK-025, TASK-031, TASK-033, TASK-055, TASK-060, TASK-066, TASK-067, TASK-069, TASK-070, TASK-073, TASK-074 and TASK-075 | Generated envelopes against a destination in a disposable profile.", "RC-T12 | TT-24 | Proved at runtime by TASK-022, TASK-023, TASK-024, TASK-025, TASK-031, TASK-033, TASK-070, TASK-073, TASK-074 and TASK-075 | A disposable session with test desktop entries; never the owner's applications.", "RC-T15 | TT-25 | Proved at runtime by TASK-025, TASK-060, TASK-069, TASK-070, TASK-073, TASK-074 and TASK-075 | Isolated authorized networks and profiles only."]
+    DESCRIPTION: "How each assigned scenario will be proved: its threat test, its runtime owners and the environment it needs."
+
+DATA:
+    ID: data.sec_execution_checks
+    TYPE: LIST[STRING]
+    VALUE: ["EC-01 | The protocol version is at or above the destination's minimum secure version; otherwise unsupported.", "EC-02 | The envelope is well formed, within binding.sec_max_frame, with a known operation and typed arguments.", "EC-03 | The channel peer is authenticated with its pinned key and not revoked, and requesting_device_id equals it.", "EC-04 | destination_device_id, destination_user_id and destination_session_id are this host's.", "EC-05 | The request ID is new in the ledger; a duplicate gets the recorded outcome and never runs again.", "EC-06 | The request has not expired by the destination's clock, within the skew allowance and the maximum lifetime.", "EC-07 | An unrevoked grant covers this peer, user, direction, capability and scope at the current permission epoch.", "EC-08 | The lock policy permits the operation's category in the current lock state; never-remote operations are refused.", "EC-09 | The capability and target exist here: the workspace, the agent or the allowlisted application.", "EC-10 | The expected revisions equal the current ones.", "EC-11 | workspace_id and agent_id match the bound session; nothing is taken from focus.", "EC-12 | Policy and risk class allow it; a required approval is valid, unused, bound to this request hash and at the current epoch.", "EC-13 | The request ID is claimed in the ledger and the effect journaled before it starts.", "EC-14 | The effect runs through the single tool dispatch or session control, which authorizes it again (RC-25); the outcome is recorded and acknowledged."]
+    DESCRIPTION: "The destination's checks immediately before a remote effect, in order (RC-10). The first failure decides."
+
+DATA:
+    ID: data.sec_receiver_defaults
+    TYPE: OBJECT[REF(type.sec_receiver_settings)]
+    VALUE:
+        receive_enabled: FALSE
+        start_at_login: FALSE
+        keep_after_window_close: FALSE
+        app_allowlist: []
+        confirmation_policy: "ask_every_time"
+    DESCRIPTION: "The receiver settings of a fresh install (RC-02)."
+
+DATA:
+    ID: data.sec_lock_policy_default
+    TYPE: OBJECT[REF(type.sec_lock_policy)]
+    VALUE:
+        allowed_while_locked: []
+        never_remote: REF(binding.sec_never_remote)
+    DESCRIPTION: "The lock policy of a fresh install (RC-18): nothing sensitive while locked."
+
+DATA:
+    ID: data.sec_envelope_example
+    TYPE: OBJECT[REF(type.sec_request_envelope)]
+    VALUE:
+        protocol_version: "1.0"
+        request_id: "example-request-0001"
+        requesting_device_id: "example-phone-key-fingerprint"
+        requesting_user_id: "example-user"
+        destination_device_id: "example-pc-key-fingerprint"
+        destination_user_id: "example-user"
+        destination_session_id: "example-pc-login-session"
+        operation: "app.launch"
+        arguments:
+            allowlist_key: "hoptodesk"
+        expected_revisions: []
+        permission_epoch: 3
+        issued_at: DATETIME("2026-10-03T21:00:00+02:00")
+        expires_at: DATETIME("2026-10-03T21:05:00+02:00")
+    DESCRIPTION: "Illustration only, with invented identifiers: a phone asks a PC to launch an allowlisted application. It names no workspace or agent because the operation has none."
+
+DATA:
+    ID: data.sec_grant_example
+    TYPE: OBJECT[REF(type.sec_grant)]
+    VALUE:
+        grant_id: "example-grant-0001"
+        destination_device_id: "example-pc-key-fingerprint"
+        peer_device_id: "example-phone-key-fingerprint"
+        peer_user_id: "example-user"
+        direction: "android_to_desktop"
+        capability: "app_launch"
+        scope: ["hoptodesk"]
+        permission_epoch: 3
+        granted_by: "example-user"
+        granted_at: DATETIME("2026-10-03T20:00:00+02:00")
+        revoked: FALSE
+    DESCRIPTION: "Illustration only: the PC-held grant the example envelope relies on."
+
+DATA:
+    ID: data.sec_approval_example
+    TYPE: OBJECT[REF(type.sec_approval)]
+    VALUE:
+        approval_id: "example-approval-0001"
+        request_id: "example-request-0001"
+        request_hash: "sha256-of-the-canonical-example-envelope"
+        destination_device_id: "example-pc-key-fingerprint"
+        decided_by: "example-user"
+        decided_at: DATETIME("2026-10-03T21:01:00+02:00")
+        expires_at: DATETIME("2026-10-03T21:05:00+02:00")
+        permission_epoch: 3
+        used: FALSE
+    DESCRIPTION: "Illustration only: a local approval of exactly the example request."
+
+DATA:
+    ID: data.sec_audit_example
+    TYPE: OBJECT[REF(type.sec_audit_record)]
+    VALUE:
+        audit_id: "example-audit-0001"
+        recorded_at: DATETIME("2026-10-03T21:01:30+02:00")
+        host_device_id: "example-pc-key-fingerprint"
+        event: "request_executed"
+        request_id: "example-request-0001"
+        peer_device_id: "example-phone-key-fingerprint"
+        peer_user_id: "example-user"
+        normalized_target: "device:example-pc-key-fingerprint/session:example-pc-login-session/app:hoptodesk"
+        operation: "app.launch"
+        decision: "allow"
+        reason_code: "granted"
+        policy_revision: "example-policy-7"
+        permission_epoch: 3
+        outcome: "completed"
+    DESCRIPTION: "Illustration only: the audit record of the example request. It holds identifiers, not content."

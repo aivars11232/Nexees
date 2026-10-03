@@ -1,0 +1,57 @@
+TASK-004 required reading, recorded 2026-10-03T23:29:01+02:00.
+Pack: /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3, content identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1, the same pack TASK-002 and TASK-003 read.
+"same as TASK-003" (or TASK-002) means the file's SHA-256 equals the hash in that task's logs/required_reading.txt.
+
+== Read for TASK-004 ==
+01 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9  policies/task_002_075_continuation.lcl.txt  [same as TASK-003; read first for TASK-004; CA-05 to CA-08 and CA-10 read again in full for the owner-requested TASK-003 correction]
+02 3ec982757fc2ca0f98aa48b92c1ad589fb0646f9080258fb30abbde09bebd1bd  tasks/task_004.lcl.txt  [not in the earlier lists; read in full: objective, scope, verification, the 33 check IDs, RC-02/03/07/09/10/17/18/19/22/23/24 and RC-T01/08/12/15]
+03 ae0d3943cf66ce8afe131eadd66f35eab9077bb04c60a838a5404636cef053f0  policies/security_baseline.lcl.txt  [same as TASK-003; read in full again: trust hierarchy, required controls, data-boundary, credential, developer-settings and v0.2/v0.3 rules (the invariants cite POL.policies_security_baseline.02 to .09)]
+04 87850325a2d613c93c716dd2dfb931316d10f53528252f84dce101b8eb17f64d  architecture/authority_hierarchy.lcl.txt  [same as TASK-003; read in full again: the eight levels and six rules behind data.sec_trust_levels]
+05 c8c1e700d0ff0ab17ff26e1a093d0461e601aaab496900035b0c051ebaae1729  verification/security_gate.lcl.txt  [same as TASK-003; read in full again: per-task demonstrations, release review, v0.2 abuse cases and the v0.3 archive/orientation/documentation/cleanup gate]
+06 afa9b2dcb9b3df808097c8e4fa1b350403b054a08956fa14cfbe99417847bfed  checks/stop_conditions.lcl.txt  [same as TASK-003; read in full again (required by TASK-004): STOP-04 security, STOP-09 to STOP-12]
+07 ad16c8b61cd9c84d5dc60884e2900e858594d3f2ccaf5c912b40401a388c180f  policies/global_contracts.lcl.txt  [same as TASK-003; required by TASK-004; C3, C6 to C14, C19, C21 to C24 and C28 to C31 read again]
+08 7d91532203589febd37811a0e28adb4e81e87a70951da50f80bfd542a5eba145  architecture/remote_device_control.lcl.txt  [same as TASK-003; RC-02, 03, 07, 09, 10, 17, 18, 19, 22, 23 and 24 read again for the remote security contracts]
+09 544ac6195525b0d6019aae1ee326e6bfeddb4c55907346744201f0fad29fafd5  verification/remote_control_acceptance.lcl.txt  [same as TASK-003; RC-T01 to RC-T18 read again; RC-T01, 08, 12 and 15 are assigned to TASK-004]
+10 a6cde8759da83eacca4adbd50abd63d42412425fe82743a84ca4591723b80b72  architecture/lcl_import_pipeline.lcl.txt  [same as TASK-003; read in full again: I1 to I6 and IM-01 to IM-10 (malicious archives, imported-rule injection)]
+11 bd178ec68c0615e525c4804239266b08b2755a0bcda1278597723bfae21391c5  architecture/model_handoff.lcl.txt  [same as TASK-002; read in full again: H1 to H5 and HO-01 to HO-10 (model-switch races, new-provider disclosure)]
+12 638e4d6d8f433f3996dd349eca02479de4cf06c8b95ef8b5a4d728a327182875  architecture/manuals_and_help.lcl.txt  [same as TASK-003; required by TASK-004; read again: passive rendering and MAN-01 to MAN-05 (active help content)]
+13 cd49629e16e714a0dc40bceaca81470330d9868ff1eed9451f06dbb35d7f3f97  policies/code_readability_and_cleanup.lcl.txt  [same as TASK-003; required by TASK-004; Q3 and Q5 RC-01 to RC-05 read again (unsafe cleanup)]
+14 1aa74791017abf30495994755d8f30e5534fb59bf509e35f2cac1f0a4c6bf244  architecture/auth_and_settings.lcl.txt  [same as TASK-003; read in full again: step-up list, 2FA, v0.2 separate authorities, v0.3 limits]
+15 669cdee9c343924d2299b88c022a9444fca9ff690b5b1e5686671db78c6f912c  architecture/provider_and_agent_model.lcl.txt  [same as TASK-003; provider credential and disclosure rules read again]
+16 7dcf4e8a1765d5d6404e0594d10933aa315337b9b43e9f0d5152192dedb23d20  architecture/android_operating_model.lcl.txt  [same as TASK-003; A4 to A8 and AN-01 to AN-12 read again]
+17 c2e67f60229a5a5d106a82ef4b8caf33ad24b0b0f624af5bcb297b22754c0e65  verification/test_strategy.lcl.txt  [same as TASK-003; v0.3 cross-feature matrix read again]
+18 50c2098dc26caa2e6943e597dedefe32e613f1025ee802aea57322f6f19d49dd  verification/v0.3_requirement_coverage.lcl.txt  [same as TASK-002; read in full again: owners of the v0.3 threat categories]
+19 666b655bb987f453d3c577e3922c8915b055244c002f9d9ec186ca8358f336cf  reuse/reuse_matrix.lcl.txt  [same as TASK-003; reuse-first check: TASK-004 adds no dependency; the auth, secrets and sandbox candidates match docs/dependencies]
+20 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836  accept_task.lcl.txt  [same as TASK-003; receipt gates read again for the TASK-004 receipt and the TASK-003 correction]
+21 3529983147c2af3a3d0767f7698f72f094017feed4f06df9eb0b0e1565a477ac  checks/runtime_gates.lcl.txt  [same as TASK-003; validate.scope, validate.no_blocker and the predecessor gates read again]
+22 6ec13fb02cec78d937eb6e29a73a3d95432d4ad2436fd4365916d038a4bc7612  data/invocation_inputs.lcl.txt  [same as TASK-003; input.no_unrelated_changes, input.blocker_codes and input.predecessor_evidence_current read again]
+
+== The rest of the mandatory read order, reused ==
+Read in full earlier in this session for TASK-002 and byte-identical now, so reused as the continuation profile
+allows ("reuse only verified unchanged reads"); master_rules R9, R10, R16, R17 and R22 to R29 were consulted again.
+01 aec37d86e486f2d403797d6a61c0cd199aaf2a3173938706a1310d770a16540a  guidance/usage.lcl.txt  [same as TASK-003; reused]
+02 8b8cc8813dc12b6b7237bb5a952b6dc5e2847631919a4ca4ed6357fd8f5fae85  policies/no_unnecessary_code.lcl.txt  [same as TASK-003; reused]
+03 2307183519d203e547a031a11dde634a5222588febfd6bd706e429d8ca8473a5  policies/master_rules.lcl.txt  [same as TASK-003; reused]
+04 51677c6af1cb4f045fa2a9672acd3536198bb75d1482f145cf0860eea4950c6e  bindings/bindings.lcl.txt  [same as TASK-003; reused]
+05 ce1115d1e1db3da02dda7484959a11d5e7e028d6fea1143224759e204fa6510f  bindings/read_order.lcl.txt  [same as TASK-003; reused]
+06 b8382ec17bcaa75317b26ce8238305d8d004f2a9aaf1ed9d6038b56ee4bd8a02  policies/reuse_policy.lcl.txt  [same as TASK-003; reused]
+07 2fc8668acfe23069eb4a9fe378729a55e2a65e7ac409c70bfc4cd0263ff98473  policies/acceptance_criteria.lcl.txt  [same as TASK-003; reused]
+08 5b68c8feaa79dc6c43782f6a0a0c4949367ec34af6c4e2f5321fd40e387ab547  policies/usage_and_agents.lcl.txt  [same as TASK-003; reused]
+09 8f8cec1cbe7e615e9f14a608cbfce6fed40b8d7d2b8af9792d898ee55b42ec5e  policies/project_charter.lcl.txt  [same as TASK-003; reused]
+10 2f65ff575dbfade3fde459efd125c62e5f7d0a47874b2dbf6d5c22b289443956  architecture/system_architecture.lcl.txt  [same as TASK-003; reused]
+11 e0a2c21d22a13037f7188f3131050e99b02a44880ffa8b947a8c9cbfeae605c2  architecture/workspace_model.lcl.txt  [same as TASK-002; reused]
+12 d50fc3a3e4f6487861289b7088d7b0289c7543bda253566584ee0484733917e6  architecture/persistent_state_model.lcl.txt  [same as TASK-003; reused]
+13 4a83ecfaac2c63bfbfe03f9893d0d79f8211aaf021800e47823c0e05d9459e3a  architecture/lcl_integration.lcl.txt  [same as TASK-003; reused]
+14 319c19c730973b831dec5ef648b0e9548a0e80eb0a9731286da0b48f52270466  architecture/desktop_ui.lcl.txt  [same as TASK-003; reused]
+15 b049368991443c6ac7ea248c15ec675c9e1a6296bdb5f0fbc62d328c083ce8b1  architecture/android_ui.lcl.txt  [same as TASK-003; reused]
+16 5166634ebfdab4e67a9876b68c7b9d085f309f479f4e41756adff7939b4d4f9d  main.lcl.txt  [same as TASK-003; reused]
+17 960dedd6f7c1bc90bed915f75455ba770b38f3b4dc37c519e765bb7e98ae10e3  README_FIRST.txt  [same as TASK-003; reused]
+
+== Pack data files used ==
+   9f257d67c28d79718dead07137774b9f59208e4190395e53e2300b8493c03af2  TASK_REQUIREMENT_MAP.json  [same as TASK-002; runtime owners of the assigned RC IDs and the TASK-004 procedural-change entry]
+   7dc96677324c2e5ad40520d4072c690f6c5d4c69c72cb654b632a2a3bf56bed8  PROCEDURAL_CHANGES.json  [same as TASK-002; runtime owners of the assigned RC IDs and the TASK-004 procedural-change entry]
+
+Unverified reuse: none
+
+External sources consulted: none. The Theia 1.76.0 and Electron 42.11.10 facts in logs/foundation_security_facts.txt
+come from the TASK-003 prototype installation on this machine, read without network access.

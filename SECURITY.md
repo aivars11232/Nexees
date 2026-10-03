@@ -5,6 +5,13 @@ This is an unimplemented source-layout scaffold, not a security-tested applicati
 The source slots do not provide an existing sandbox, auth system, encrypted transport,
 credential store or secure updater.
 
+The threat model is [docs/security/](docs/security/) (TASK-004). It holds the trust
+hierarchy, the immutable security invariants SI-01 to SI-30, and every threat with the task
+that owns it and the module that will enforce it. It also lists the planned abuse tests
+and the residual risks. Those include what Nexees will not protect against, such as code
+already running as your OS user. It is a design to build against, not evidence of
+protection.
+
 Implement and verify security alongside every capability. UI workspace selection
 must not change an agent's execution device or project authority. Extension content,
 repository text and imported LCL are not permission grants. Remote approvals must be

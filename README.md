@@ -3,8 +3,8 @@
 **Application-only source layout — pre-implementation, structure revision 0.4.**
 
 This repository contains the planned Nexees application folders and named files, the
-frozen project charter, the modular architecture and the evidence of completed
-implementation tasks. It does not contain the implementation task pack, numbered task
+frozen project charter, the modular architecture, the dependency inventory, the threat
+model and the evidence of completed implementation tasks. It does not contain the implementation task pack, numbered task
 documents or task-to-path maps.
 Keep the implementation pack separate; the charter refers to it by identity.
 
@@ -45,6 +45,16 @@ on and the open items. Its entry is `docs/dependencies/dependencies.lcl.txt`, an
 The feasibility prototypes behind it are evidence under
 [docs/evidence/TASK-003/](docs/evidence/TASK-003/), not product code.
 
+[docs/security/](docs/security/) is the threat model (TASK-004). It applies the pack's
+eight-level trust hierarchy to Nexees and records the separate authorities, the trust
+boundaries, assets and attack surfaces, and 30 immutable security invariants. It lists
+threats across Desktop, Android, agent tools, providers, LCL, extensions, auth, updates and
+cross-device sessions. Each threat is traced to the later tasks that own it and to the
+architecture subsystems and module slots that will enforce it, with planned threat tests.
+It also holds TASK-004's security contracts for its remote-control requirements. Its entry
+is `docs/security/security.lcl.txt`. It is a design: nothing in it is implemented or tested
+yet.
+
 ## Source-file status
 
 Every `*.source` file is an **empty named placeholder**, not executable source or a
@@ -73,6 +83,7 @@ that upstream frameworks or implementation will eventually generate.
 | `docs/charter/` | Frozen project charter as an LCL project: scope, traceability, open decisions and structural checks. |
 | `docs/architecture/` | Modular architecture as an LCL project: subsystems and module ownership, hosts, interfaces, authoritative state, flows, failure domains and decisions. |
 | `docs/dependencies/` | Dependency inventory as an LCL project, the license matrix and the initial dependency strategy. |
+| `docs/security/` | Threat model as an LCL project: trust hierarchy, boundaries, attack surfaces, security invariants, threats, threat tests and remote security contracts. |
 | `docs/evidence/` | Evidence of completed implementation tasks, one folder per task. |
 | `docs/manuals/` | Nexees and integrated-LCL manual drafts, retained from the previous pack. |
 | `tests/` | Named unit, integration, conformance, security and end-to-end test slots. |

@@ -1,0 +1,1115 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.sec_threats
+    NAME: "Threats"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "Every threat names its actor, assets, surfaces and scenario, the invariants and mitigations that answer it, the runtime-enforced boundary (subsystems, interfaces and module slots), the later tasks that own it, the tests that will prove it and the residual risk. The six v0.3 categories each have threats here and threat tests in tests.lcl.txt."
+
+DATA:
+    ID: data.sec_th_01
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-01"
+        title: "A same-user process drives the host through local IPC"
+        areas: ["desktop"]
+        category: "general"
+        actor: "Another program running as the same OS user"
+        assets: ["AS-03", "AS-05", "AS-09"]
+        surfaces: ["SF-01"]
+        scenario: "The program connects to the window-to-host socket and sends intents as if it were the window: approve a pending remote request, change a setting, start an agent."
+        invariants: ["SI-17", "SI-02", "SI-14"]
+        mitigations: "The peer-credential check refuses other OS users. Every intent is authorized by the host's permission engine like any request, so the program gains nothing the user's grants do not already allow, and sensitive changes need step-up with the user's own factor (SI-14)."
+        enforced_by: ["SS-LOCAL-HOST", "SS-PLATFORM-DESKTOP", "SS-SECURITY", "SS-DOMAIN-PROTOCOL", "IF-ATTACH"]
+        enforcement_points: ["apps/desktop/src/application_host", "core/security/permission_engine", "core/protocol/serialization"]
+        owner_tasks: ["TASK-009", "TASK-022", "TASK-024"]
+        tests: ["GAP-01", "GAP-04", "RC-T15"]
+        residual: "Code already running as the user can also drive the real window and read the user's files; Nexees does not claim protection from it (SA-01, SEC-A08)."
+
+DATA:
+    ID: data.sec_th_02
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-02"
+        title: "Another OS user reaches the host or the IDE backend"
+        areas: ["desktop"]
+        category: "general"
+        actor: "A different OS user on the same machine"
+        assets: ["AS-01", "AS-05", "AS-13"]
+        surfaces: ["SF-01", "SF-02"]
+        scenario: "The other user connects to the host socket, or to the Theia backend on 127.0.0.1, to read workspaces or run terminals as the Nexees user."
+        invariants: ["SI-17", "SI-28"]
+        mitigations: "The socket lives in a 0700 per-user folder and checks the peer uid. Theia 1.76.0 requires its per-launch token cookie on every backend HTTP and WebSocket request, compared in constant time; because its validator allows everything when the token variable is missing, Nexees starts the backend only from its own main process and refuses to serve without a token (logs/foundation_security_facts.txt)."
+        enforced_by: ["SS-LOCAL-HOST", "SS-PLATFORM-DESKTOP", "SS-IDE", "SS-BUILD-RELEASE", "SS-DESKTOP-CLIENT"]
+        enforcement_points: ["apps/desktop/src/application_host", "apps/desktop/src/main", "packaging/desktop/"]
+        owner_tasks: ["TASK-009", "TASK-021", "TASK-073"]
+        tests: ["SG-05", "GAP-04", "RC-T15"]
+        residual: "None intended; any cross-user access is a stop condition."
+
+DATA:
+    ID: data.sec_th_03
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-03"
+        title: "The shipped Electron binary is used as an interpreter or debugger"
+        areas: ["desktop"]
+        category: "general"
+        actor: "A same-user process, or an environment polluted by another Electron application"
+        assets: ["AS-13", "AS-14", "AS-02"]
+        surfaces: ["SF-04"]
+        scenario: "ELECTRON_RUN_AS_NODE, NODE_OPTIONS or an --inspect argument makes the Nexees binary run arbitrary code or expose a debugger under Nexees's identity, for example to read the backend token or bypass application checks. The TASK-003 prototype's Electron 42.11.10 has exactly these fuses on, and TASK-003 met the variable in practice."
+        invariants: ["SI-28"]
+        mitigations: "Packaging flips the fuses: RunAsNode, EnableNodeOptionsEnvironmentVariable and EnableNodeCliInspectArguments off; EnableEmbeddedAsarIntegrityValidation and OnlyLoadAppFromAsar on; GrantFileProtocolExtraPrivileges off where Theia permits. A release check reads the fuse wire of the packaged binary."
+        enforced_by: ["SS-BUILD-RELEASE", "SS-DESKTOP-CLIENT"]
+        enforcement_points: ["packaging/desktop/", "scripts/release/", "apps/desktop/src/main"]
+        owner_tasks: ["TASK-009", "TASK-073", "TASK-075"]
+        tests: ["SG-05"]
+        residual: "Same-user code can run its own interpreter; the fuses only stop the Nexees binary being the vehicle."
+
+DATA:
+    ID: data.sec_th_04
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-04"
+        title: "Untrusted content escalates inside the workbench renderer"
+        areas: ["desktop"]
+        category: "general"
+        actor: "Malicious repository content, extension output or model output shown in the workbench"
+        assets: ["AS-01", "AS-02", "AS-13"]
+        surfaces: ["SF-03"]
+        scenario: "Script injection in a preview, notebook output, webview or notification. Theia 1.76.0 runs the window with context isolation and without Node integration, but without the Chromium sandbox and with a Node-capable preload, so a renderer compromise is close to the backend."
+        invariants: ["SI-01", "SI-23", "SI-28"]
+        mitigations: "Untrusted HTML is shown only in sandboxed webviews with a restrictive content security policy; Nexees panels render text, not HTML. The main frame loads no remote content, in-page navigation stays blocked, and external links open in the system browser after confirmation. TASK-009 and TASK-021 enable the renderer sandbox if Theia allows it, or record why not."
+        enforced_by: ["SS-IDE", "SS-DESKTOP-CLIENT", "SS-BUILD-RELEASE"]
+        enforcement_points: ["integrations/ide/editor_adapter", "apps/desktop/src/panels/", "apps/desktop/src/shell/"]
+        owner_tasks: ["TASK-009", "TASK-018", "TASK-021", "TASK-073"]
+        tests: ["SG-05", "tests/security/permissions/untrusted_instructions"]
+        residual: "With the sandbox off, a Chromium renderer exploit is contained only by context isolation (R-03)."
+
+DATA:
+    ID: data.sec_th_05
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-05"
+        title: "Opening a repository runs its code"
+        areas: ["desktop"]
+        category: "general"
+        actor: "A malicious repository"
+        assets: ["AS-13", "AS-02", "AS-01"]
+        surfaces: ["SF-07", "SF-13"]
+        scenario: "Opening or importing a workspace runs its task, launch or hook configurations, recommended extensions or toolchain installers, or an agent Git operation triggers repository hooks."
+        invariants: ["SI-01", "SI-02", "SI-06"]
+        mitigations: "A newly opened or imported workspace is untrusted: no task, debug configuration, hook or recommended extension runs without an explicit user action. Agent Git operations run with hooks disabled unless a grant names them."
+        enforced_by: ["SS-IDE", "SS-TOOLS", "SS-SECURITY"]
+        enforcement_points: ["integrations/ide/terminal_adapter", "integrations/ide/debugger_adapter", "core/tools/git_tools", "core/security/permission_engine"]
+        owner_tasks: ["TASK-019", "TASK-020", "TASK-033", "TASK-022"]
+        tests: ["tests/security/permissions/untrusted_instructions", "SG-01"]
+        residual: "The user's own terminal runs with the user's authority by design."
+
+DATA:
+    ID: data.sec_th_06
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-06"
+        title: "Start-at-login or receiver lifetime is changed behind the user's back"
+        areas: ["desktop"]
+        category: "general"
+        actor: "A remote request, a model, an update or a same-user process"
+        assets: ["AS-09", "AS-13"]
+        surfaces: ["SF-05"]
+        scenario: "Something enables start-at-login or keep-running-after-close without the user, or rewrites the command of the autostart entry."
+        invariants: ["SI-14", "SI-15", "SI-26"]
+        mitigations: "These are separate settings, off by default, changed only by a local user action with step-up, never by a remote request, model, sync or update. The entry names the installed binary with no shell. Disabling, revoking or uninstalling removes only the entry Nexees owns (RC-24)."
+        enforced_by: ["SS-SETTINGS", "SS-PLATFORM-DESKTOP", "SS-SECURITY"]
+        enforcement_points: ["core/settings/settings_model", "platform/desktop/lifecycle/application_lifecycle", "core/security/permission_engine"]
+        owner_tasks: ["TASK-030", "TASK-009", "TASK-056", "TASK-022"]
+        tests: ["RC-T01", "RC-T04", "RC-T16", "GAP-02"]
+        residual: "A same-user process can add its own autostart entry; that is outside Nexees (SA-01)."
+
+DATA:
+    ID: data.sec_th_07
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-07"
+        title: "An allowlisted application launch is abused"
+        areas: ["desktop", "cross-device sessions"]
+        category: "general"
+        actor: "A malicious paired peer or an injected model"
+        assets: ["AS-13", "AS-02"]
+        surfaces: ["SF-06", "SF-31"]
+        scenario: "A launch request carries a crafted label, extra arguments, a path, a URL or deep link, or the allowlisted application's desktop entry has been replaced by a different program with the same name (RC-T12)."
+        invariants: ["SI-02", "SI-12", "SI-06"]
+        mitigations: "A launch names only an allowlist key. The host maps it to a desktop entry ID pinned when the user allowlisted it (ID, path and a hash of its Exec line) and starts it by ID with an argument vector and closed standard streams, as TASK-003 proved: no shell, no request-supplied arguments, paths or URLs. A changed entry suspends that allowlist item until the user approves it again. Launching is not device control (C31)."
+        enforced_by: ["SS-PLATFORM-DESKTOP", "SS-REMOTE", "SS-SECURITY"]
+        enforcement_points: ["platform/desktop/execution/process_host", "core/remote/command_dispatch", "core/security/permission_engine"]
+        owner_tasks: ["TASK-024", "TASK-070", "TASK-022", "TASK-023"]
+        tests: ["RC-T12", "RC-T17", "SG-09"]
+        residual: "An allowlisted application does what it does; HopToDesk keeps its own permission model (RC-T17)."
+
+DATA:
+    ID: data.sec_th_08
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-08"
+        title: "Another app sends intents or deep links to Nexees"
+        areas: ["android"]
+        category: "general"
+        actor: "A malicious application on the phone"
+        assets: ["AS-01", "AS-03", "AS-05"]
+        surfaces: ["SF-08"]
+        scenario: "An intent or deep link to an exported activity carries extras that pick a workspace, approve a request, import a file or start an agent; or another app intercepts an implicit intent Nexees sends."
+        invariants: ["SI-29", "SI-01", "SI-02"]
+        mitigations: "Only the launcher activity and system-protected receivers are exported. Extras and deep links are hints that may open a screen, never act; every effect goes through the permission engine after a user action. Internal intents are explicit; files arrive only through the system picker."
+        enforced_by: ["SS-ANDROID-CLIENT", "SS-PLATFORM-ANDROID", "SS-SECURITY"]
+        enforcement_points: ["apps/android/src/main", "platform/android/storage/document_picker", "core/security/permission_engine"]
+        owner_tasks: ["TASK-057", "TASK-060", "TASK-022"]
+        tests: ["SG-04", "RC-T12"]
+        residual: "None beyond Android's own application isolation (SEC-A01)."
+
+DATA:
+    ID: data.sec_th_09
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-09"
+        title: "The locked phone or a notification approves or reveals something"
+        areas: ["android", "cross-device sessions"]
+        category: "general"
+        actor: "A person holding the locked phone"
+        assets: ["AS-03", "AS-02", "AS-01"]
+        surfaces: ["SF-09", "SF-33"]
+        scenario: "A notification action approves a remote request, reveals content or changes a setting from the lock screen; or the receiver runs a sensitive remote action while the phone is locked."
+        invariants: ["SI-14", "SI-11", "SI-29"]
+        mitigations: "Sensitive remote actions are denied while locked unless a narrow lock policy allows the category (RC-18, type.sec_lock_policy). Notification actions only open the app or stop receiving. Approving needs an unlocked device and step-up for sensitive categories, and a deferred approval rechecks expiry, lock and policy (RC-T07). Lock-screen notifications show no private content."
+        enforced_by: ["SS-PLATFORM-ANDROID", "SS-SECURITY", "SS-REMOTE"]
+        enforcement_points: ["platform/android/lifecycle/notification_backend", "core/security/permission_engine", "core/remote/notifications"]
+        owner_tasks: ["TASK-060", "TASK-067", "TASK-070", "TASK-022"]
+        tests: ["RC-T06", "RC-T07", "SG-04"]
+        residual: "A phone without a screen lock gives its holder the user's authority (SEC-A02)."
+
+DATA:
+    ID: data.sec_th_10
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-10"
+        title: "App-private data leaks through backup, adb or shared storage"
+        areas: ["android"]
+        category: "general"
+        actor: "Anyone with the unlocked phone and a computer, or a backup service"
+        assets: ["AS-02", "AS-04", "AS-01"]
+        surfaces: ["SF-10"]
+        scenario: "A device or adb backup copies the state database, the device identity key or tokens; workspace files written to shared storage are read by other apps."
+        invariants: ["SI-08", "SI-29", "SI-04"]
+        mitigations: "Backups are off (as in the TASK-003 prototype) or exclude state and keys. The device identity key moves into the Android Keystore (OI-09). Phone-local workspaces live in app-private storage unless the user picks a folder through the system picker. Secrets are never files."
+        enforced_by: ["SS-PLATFORM-ANDROID", "SS-SECURITY"]
+        enforcement_points: ["platform/android/secrets/credential_store", "platform/android/storage/scoped_filesystem", "platform/android/storage/document_picker"]
+        owner_tasks: ["TASK-025", "TASK-060", "TASK-057", "TASK-062"]
+        tests: ["tests/security/credentials/credential_storage", "SG-04"]
+        residual: "A rooted or compromised phone is outside this model (SEC-A01)."
+
+DATA:
+    ID: data.sec_th_11
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-11"
+        title: "The Android receiver acts silently or keeps running"
+        areas: ["android", "cross-device sessions"]
+        category: "general"
+        actor: "A malicious paired peer, or the Android lifecycle"
+        assets: ["AS-01", "AS-10", "AS-13"]
+        surfaces: ["SF-09", "SF-31"]
+        scenario: "The receiver accepts commands with no visible indication, launches activities from the background, or comes back after the user stopped it."
+        invariants: ["SI-15", "SI-11", "SI-13"]
+        mitigations: "Receiving runs only in a user-started foreground service with a visible notification and Stop. Android blocks background activity launches, so a request that needs UI becomes needs-user-action and is rechecked when the user continues, as TASK-003 proved on the emulator. A stop survives restarts, and nothing starts at boot unless start-at-login is on."
+        enforced_by: ["SS-PLATFORM-ANDROID", "SS-REMOTE", "SS-LOCAL-HOST"]
+        enforcement_points: ["platform/android/lifecycle/background_execution", "core/remote/command_dispatch", "apps/android/src/application_host"]
+        owner_tasks: ["TASK-060", "TASK-066", "TASK-070", "TASK-057"]
+        tests: ["RC-T01", "RC-T06", "RC-T07", "tests/e2e/android/lifecycle_resume"]
+        residual: "OEM power management may stop the receiver; real-phone evidence is still owed (OI-08)."
+
+DATA:
+    ID: data.sec_th_12
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-12"
+        title: "Malformed input crosses the JNI bridge"
+        areas: ["android"]
+        category: "general"
+        actor: "Network or file input forwarded by the Kotlin shell; a defect in native code"
+        assets: ["AS-05", "AS-01"]
+        surfaces: ["SF-11"]
+        scenario: "Invalid text, oversized buffers or a call during process teardown crash the core or corrupt state."
+        invariants: ["SI-18", "SI-02"]
+        mitigations: "The bridge passes only bounded, typed, serialized messages; the core validates every input with size limits; panics are caught and returned as errors; no native pointer outlives a call."
+        enforced_by: ["SS-PLATFORM-ANDROID", "SS-DOMAIN-PROTOCOL"]
+        enforcement_points: ["platform/android/execution/local_tool_host", "core/protocol/serialization"]
+        owner_tasks: ["TASK-057", "TASK-007", "TASK-066"]
+        tests: ["tests/conformance/protocol/client_protocol_compatibility", "tests/e2e/android/standalone_no_pc"]
+        residual: "Unsafe code inside dependencies remains a supply-chain risk (TH-41)."
+
+DATA:
+    ID: data.sec_th_13
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-13"
+        title: "Prompt injection in repository text drives tool calls"
+        areas: ["agent tools"]
+        category: "general"
+        actor: "A malicious repository, issue, web page or dependency description"
+        assets: ["AS-01", "AS-02", "AS-03"]
+        surfaces: ["SF-12", "SF-14"]
+        scenario: "Text in a README, comment or test output tells the model to send secrets out, push to another remote, disable checks or approve its own actions."
+        invariants: ["SI-01", "SI-02", "SI-03", "SI-07"]
+        mitigations: "The context builder carries such text as data. Each tool call is decided by the permission engine on scope, risk class and grants, so a convincing instruction gains nothing; sensitive actions need the user (SI-14), and network access and Git pushes are separate permissions."
+        enforced_by: ["SS-SECURITY", "SS-CONTEXT", "SS-TOOLS", "IF-TOOL", "IF-AUTHORIZE"]
+        enforcement_points: ["core/security/authority_policy", "core/context/context_builder", "core/tools/tool_dispatch"]
+        owner_tasks: ["TASK-022", "TASK-040", "TASK-031"]
+        tests: ["tests/security/permissions/untrusted_instructions", "tests/unit/tool_dispatch"]
+        residual: "Within its granted scope an injected model can still make wrong but permitted edits; checkpoints and review limit the damage (C12)."
+
+DATA:
+    ID: data.sec_th_14
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-14"
+        title: "A tool path escapes the workspace"
+        areas: ["agent tools"]
+        category: "general"
+        actor: "An injected model, a repository with planted links, or a race"
+        assets: ["AS-01", "AS-13"]
+        surfaces: ["SF-12"]
+        scenario: "A path with \"..\", an absolute path, a symbolic or hard link pointing outside, a case or Unicode alias, or a swap between check and open makes a tool read or write outside the root."
+        invariants: ["SI-04"]
+        mitigations: "Paths resolve beneath an open root handle (openat2 with RESOLVE_BENEATH and no symlink following on Linux; app-private roots and picker grants on Android); writes refuse links and special files; files are written atomically."
+        enforced_by: ["SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-TOOLS"]
+        enforcement_points: ["core/security/workspace_scope", "platform/desktop/storage/scoped_filesystem", "platform/android/storage/scoped_filesystem", "core/tools/file_tools"]
+        owner_tasks: ["TASK-023", "TASK-032", "TASK-062"]
+        tests: ["tests/security/permissions/project_confinement"]
+        residual: "None intended; an escape is a stop condition (STOP-04)."
+
+DATA:
+    ID: data.sec_th_15
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-15"
+        title: "A command escapes mediation"
+        areas: ["agent tools"]
+        category: "general"
+        actor: "An injected model, or build, install and test scripts in the repository"
+        assets: ["AS-02", "AS-13", "AS-01"]
+        surfaces: ["SF-13"]
+        scenario: "A permitted build or test runs repository code that reads secrets from the environment or home folder, writes outside the workspace, opens connections, or installs persistence such as autostart entries or shell profiles."
+        invariants: ["SI-06", "SI-07", "SI-08", "SI-04"]
+        mitigations: "Commands get an allowlisted environment with no secrets and no SSH or GPG agent socket unless granted, the workspace as working directory, resource limits and, where available, OS confinement: on Linux a bubblewrap profile with a read-only system, a writable workspace and temporary folder, no home folder and no network unless granted. Where no confinement exists, running repository code is a high-risk class that needs approval."
+        enforced_by: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-TOOLS", "SS-SECURITY"]
+        enforcement_points: ["platform/desktop/execution/process_host", "platform/desktop/execution/sandbox_backend", "platform/android/execution/local_tool_host", "core/tools/command_tools", "core/security/network_policy"]
+        owner_tasks: ["TASK-024", "TASK-033", "TASK-025", "TASK-066"]
+        tests: ["SG-01", "tests/security/permissions/project_confinement"]
+        residual: "Without OS confinement on a host, executing repository code equals running it as the user; Nexees reports the gap and asks first (R-05, DS-11)."
+
+DATA:
+    ID: data.sec_th_16
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-16"
+        title: "Secrets are sent out through tools"
+        areas: ["agent tools"]
+        category: "general"
+        actor: "An injected model"
+        assets: ["AS-02", "AS-01"]
+        surfaces: ["SF-12", "SF-14"]
+        scenario: "The model reads key files, environment variables or the credential store through tools, or posts workspace content to a URL."
+        invariants: ["SI-08", "SI-07", "SI-04"]
+        mitigations: "Tools cannot read outside the workspace and no tool exposes the credential store; process environments carry no secrets; network access is per destination. Redaction of known secret patterns in tool output, before it enters context or logs, is defence in depth."
+        enforced_by: ["SS-SECURITY", "SS-TOOLS", "SS-CONTEXT"]
+        enforcement_points: ["core/security/secret_redaction", "core/security/network_policy", "core/context/context_builder"]
+        owner_tasks: ["TASK-025", "TASK-024", "TASK-040"]
+        tests: ["tests/security/credentials/secret_redaction", "SG-02"]
+        residual: "A secret the user put into a workspace file is workspace content; redaction is best effort."
+
+DATA:
+    ID: data.sec_th_17
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-17"
+        title: "Destructive actions without recovery"
+        areas: ["agent tools"]
+        category: "general"
+        actor: "An injected or mistaken model"
+        assets: ["AS-01", "AS-05"]
+        surfaces: ["SF-12", "SF-13"]
+        scenario: "Mass deletion, a force push, history rewriting, dropping a database, or a destructive script run as a build."
+        invariants: ["SI-02", "SI-03", "SI-25", "SI-30"]
+        mitigations: "Each tool has a risk class; destructive classes need approval; a checkpoint precedes risky operations (C12); force pushes, hard resets and branch deletion are separate high-risk Git capabilities; everything is audited."
+        enforced_by: ["SS-TOOLS", "SS-STATE", "SS-SECURITY"]
+        enforcement_points: ["core/tools/tool_registry", "core/state/checkpoints", "core/tools/git_tools"]
+        owner_tasks: ["TASK-031", "TASK-026", "TASK-033", "TASK-038"]
+        tests: ["tests/unit/state_recovery", "tests/unit/tool_dispatch"]
+        residual: "Effects outside the workspace, such as pushes and external APIs, cannot be undone; Nexees records them and never claims a rollback (RC-24)."
+
+DATA:
+    ID: data.sec_th_18
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-18"
+        title: "Cleanup deletes user work or bypasses gates"
+        areas: ["agent tools"]
+        category: "unsafe cleanup"
+        actor: "The agent at task close, failed or cancelled work, or a model in read-only orientation"
+        assets: ["AS-01", "AS-05", "AS-07"]
+        surfaces: ["SF-15"]
+        scenario: "Cleanup removes untracked user files, regression fixtures, source archives or evidence; runs git clean -fdx, reset --hard or stash; or a failed task, cancelled run or orientation phase uses cleanup to write."
+        invariants: ["SI-24", "SI-20", "SI-02"]
+        mitigations: "Cleanup removes only what the operation journal records as created by that task; unknown files are reported, not deleted; blanket commands do not exist as tools; cleanup is a normal scoped tool call, unavailable during orientation; verification runs again after cleanup (Q3)."
+        enforced_by: ["SS-TASKING", "SS-TOOLS", "SS-STATE", "SS-SECURITY"]
+        enforcement_points: ["core/tasking/cleanup_gate", "core/tools/file_tools", "core/state/operation_journal"]
+        owner_tasks: ["TASK-037", "TASK-053", "TASK-054", "TASK-022"]
+        tests: ["Q5-RC-02", "Q5-RC-03", "Q5-RC-04", "GAP-06", "HO-03"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_19
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-19"
+        title: "Runaway loops exhaust resources or budget"
+        areas: ["agent tools", "providers"]
+        category: "general"
+        actor: "A looping model, or a repository that produces endless output"
+        assets: ["AS-05", "AS-13", "AS-11"]
+        surfaces: ["SF-12", "SF-13", "SF-16"]
+        scenario: "Endless tool calls, huge outputs, fork bombs, or provider costs that keep growing."
+        invariants: ["SI-06", "SI-21"]
+        mitigations: "The agent loop, context and usage budgets are bounded; output is capped; processes have resource limits; stuck detection pauses the session (TASK-035); quota exhaustion pauses rather than switching providers."
+        enforced_by: ["SS-AGENT", "SS-CONTEXT", "SS-PROVIDERS", "SS-PLATFORM-DESKTOP"]
+        enforcement_points: ["core/agent/action_loop", "core/context/context_budget", "core/providers/usage_limits", "platform/desktop/execution/process_host"]
+        owner_tasks: ["TASK-034", "TASK-035", "TASK-040", "TASK-041", "TASK-024"]
+        tests: ["tests/unit/agent_runtime", "tests/unit/context_budget"]
+        residual: "Provider costs incurred before a limit trips are real."
+
+DATA:
+    ID: data.sec_th_20
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-20"
+        title: "A compromised provider returns harmful tool calls"
+        areas: ["providers"]
+        category: "general"
+        actor: "A malicious or compromised provider, or an attacker on its network path"
+        assets: ["AS-01", "AS-13"]
+        surfaces: ["SF-16"]
+        scenario: "Replies propose destructive or exfiltrating tool calls, or misreport usage and capabilities."
+        invariants: ["SI-01", "SI-02"]
+        mitigations: "Replies are untrusted proposals (IF-PROVIDER); every call is validated and authorized; provider traffic uses TLS with system trust; no provider receives another provider's credentials."
+        enforced_by: ["SS-PROVIDERS", "SS-TOOLS", "SS-SECURITY", "IF-PROVIDER"]
+        enforcement_points: ["core/providers/provider_interface", "core/tools/tool_dispatch", "core/security/permission_engine"]
+        owner_tasks: ["TASK-041", "TASK-042", "TASK-043", "TASK-031", "TASK-022"]
+        tests: ["tests/unit/provider_registry", "tests/unit/tool_dispatch"]
+        residual: "A provider sees whatever was disclosed to it (SEC-A06)."
+
+DATA:
+    ID: data.sec_th_21
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-21"
+        title: "A provider switch discloses code to an unapproved provider"
+        areas: ["providers"]
+        category: "new-provider data disclosure"
+        actor: "A fallback rule, a quota failure, or a user who picks a provider in a hurry"
+        assets: ["AS-01", "AS-11"]
+        surfaces: ["SF-18", "SF-16"]
+        scenario: "When the current provider hits its limit, a fallback or the newly chosen provider receives the workspace context, including files approved only for the first provider; a local-only workspace reaches a cloud provider; a different paid tier is chosen silently."
+        invariants: ["SI-21", "SI-05"]
+        mitigations: "Disclosure is approved per workspace and provider. Before code goes to a provider not yet approved for that workspace, the switch transaction asks (H2 step 4). There is no automatic fallback to another provider or paid tier; local-only files stay local; the kickoff carries only the scoped manifest."
+        enforced_by: ["SS-PROVIDERS", "SS-CONTEXT"]
+        enforcement_points: ["core/providers/handoff/model_switch", "core/providers/usage_limits", "core/context/context_builder"]
+        owner_tasks: ["TASK-044", "TASK-041", "TASK-068", "TASK-040"]
+        tests: ["HO-09", "tests/integration/handoff/quota_exhaustion_switch", "tests/unit/provider_registry"]
+        residual: "Once sent, data is subject to the provider's own retention."
+
+DATA:
+    ID: data.sec_th_22
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-22"
+        title: "Old-model replies act after a switch"
+        areas: ["providers"]
+        category: "model-switch races"
+        actor: "A delayed reply or queued tool call of the previous model"
+        assets: ["AS-05", "AS-01"]
+        surfaces: ["SF-18"]
+        scenario: "A late reply or queued tool call executes after the switch; a tool with an unknown outcome is replayed by the new model; a toggle change races with promotion."
+        invariants: ["SI-20", "SI-13", "SI-05"]
+        mitigations: "Every tool call carries the session generation, and calls from an older generation are rejected and audited. In-flight outcomes are settled or recorded as unknown before the switch, and an unknown outcome pauses the run instead of being replayed. Toggle changes apply at the next safe boundary."
+        enforced_by: ["SS-AGENT", "SS-PROVIDERS", "SS-TOOLS", "SS-STATE"]
+        enforcement_points: ["core/agent/execution_fence", "core/providers/handoff/model_switch", "core/tools/tool_dispatch", "core/state/operation_journal"]
+        owner_tasks: ["TASK-044", "TASK-045", "TASK-035", "TASK-038"]
+        tests: ["tests/integration/handoff/stale_state", "HO-05", "HO-07"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_23
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-23"
+        title: "A write slips through read-only orientation"
+        areas: ["providers", "agent tools"]
+        category: "model-switch races"
+        actor: "The new model, malicious or confused, or an external agent that cannot enforce read-only"
+        assets: ["AS-01", "AS-05"]
+        surfaces: ["SF-18", "SF-12", "SF-19"]
+        scenario: "During orientation the model calls a write, shell, Git, cleanup, install or permission tool, uses a tool an extension contributed, or an external agent writes on its own."
+        invariants: ["SI-20", "SI-22", "SI-24"]
+        mitigations: "During orientation the runtime offers only read, list, search and state tools, enforced at the dispatcher, not by prompt wording. External agents that cannot prove the restriction are unsupported in this mode. Promotion needs verified read receipts and a revision recheck."
+        enforced_by: ["SS-PROVIDERS", "SS-TOOLS", "SS-CONTEXT", "SS-AGENT"]
+        enforcement_points: ["core/providers/handoff/orientation_controller", "core/tools/tool_dispatch", "core/context/mandatory_reads", "integrations/agents/external_agent_adapter"]
+        owner_tasks: ["TASK-045", "TASK-031", "TASK-040", "TASK-034"]
+        tests: ["tests/integration/handoff/readonly_orientation", "tests/integration/handoff/orientation_disabled", "HO-03", "HO-08"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_24
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-24"
+        title: "Provider credentials leak or move"
+        areas: ["providers"]
+        category: "general"
+        actor: "An injected model, a log reader, a sync peer, or a changed endpoint"
+        assets: ["AS-02"]
+        surfaces: ["SF-17"]
+        scenario: "An API key appears in a prompt, log, crash report, sync record or tool environment, or a key for one provider is sent to another endpoint after the base URL is changed in Developer Settings."
+        invariants: ["SI-08", "SI-09", "SI-14"]
+        mitigations: "Keys live in the OS store and are attached only by the adapter for its configured endpoint. Changing an endpoint unbinds its credential and needs step-up. Keys are never synced."
+        enforced_by: ["SS-PROVIDERS", "SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-SETTINGS"]
+        enforcement_points: ["core/providers/provider_registry", "core/security/secret_redaction", "platform/desktop/secrets/credential_store", "platform/android/secrets/credential_store"]
+        owner_tasks: ["TASK-025", "TASK-041", "TASK-043", "TASK-030"]
+        tests: ["tests/security/credentials/credential_storage", "tests/security/credentials/secret_redaction"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_25
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-25"
+        title: "Local model endpoints and external agents act as open doors"
+        areas: ["providers"]
+        category: "general"
+        actor: "Other local users, LAN hosts, or the external agent process itself"
+        assets: ["AS-01", "AS-11", "AS-13"]
+        surfaces: ["SF-19"]
+        scenario: "A local model endpoint listening on all interfaces is driven by others, a \"local\" endpoint is reached over plain HTTP across the network, or an external agent edits files outside Nexees mediation."
+        invariants: ["SI-21", "SI-06", "SI-07"]
+        mitigations: "Local endpoints are providers under the same disclosure policy, and plain HTTP is allowed only for loopback. External agents run as mediated processes with no Nexees authority, and are offered only where their own restriction is verified (H3)."
+        enforced_by: ["SS-PROVIDERS", "SS-PLATFORM-DESKTOP"]
+        enforcement_points: ["integrations/providers/ollama/provider_adapter", "integrations/agents/external_agent_adapter", "platform/desktop/execution/process_host"]
+        owner_tasks: ["TASK-043", "TASK-024", "TASK-041"]
+        tests: ["tests/unit/provider_registry", "SG-01", "SG-02"]
+        residual: "An external agent that edits files itself is outside Nexees mediation; it is offered only with a verified sandbox."
+
+DATA:
+    ID: data.sec_th_26
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-26"
+        title: "Archive entries escape or collide"
+        areas: ["lcl"]
+        category: "malicious archives"
+        actor: "The author of an imported archive"
+        assets: ["AS-01", "AS-13"]
+        surfaces: ["SF-20"]
+        scenario: "Entries with \"..\", absolute, drive-letter or UNC paths, symbolic or hard links, device or pipe entries, executable bits or autostart metadata, or names that collide after case, Unicode or separator normalization."
+        invariants: ["SI-18", "SI-04"]
+        mitigations: "The I2 rules, applied in staging: escaping, absolute and colliding paths and link or special entries are rejected; execution bits are dropped; nothing is published until the whole set is valid. TASK-003 proved the rejection on Desktop and Android."
+        enforced_by: ["SS-LCL", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        enforcement_points: ["core/lcl/importing/safe_extraction", "core/lcl/importing/archive_intake", "core/lcl/importing/import_transaction"]
+        owner_tasks: ["TASK-051", "TASK-052", "TASK-063"]
+        tests: ["tests/security/archives/path_escape", "tests/security/archives/ambiguous_paths", "IM-05"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_27
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-27"
+        title: "An archive exhausts resources"
+        areas: ["lcl"]
+        category: "malicious archives"
+        actor: "The author of an imported archive"
+        assets: ["AS-05", "AS-13"]
+        surfaces: ["SF-20"]
+        scenario: "High-ratio or overlapping entries, too many entries, deep nesting, very long names, nested archives, encrypted or unsupported methods, truncated data, or headers that lie about sizes."
+        invariants: ["SI-18"]
+        mitigations: "Limits on compressed size, entry count, per-file and total expanded bytes counted while streaming rather than read from headers, depth, name length, time and memory. Nested archives are not extracted; only stored and deflate are accepted; a failure leaves no partial tree."
+        enforced_by: ["SS-LCL"]
+        enforcement_points: ["core/lcl/importing/archive_intake", "core/lcl/importing/safe_extraction"]
+        owner_tasks: ["TASK-051", "TASK-063"]
+        tests: ["tests/security/archives/archive_limits", "tests/fixtures/archives/archive_fixture_factory", "IM-06"]
+        residual: "The limits are finite defaults TASK-051 chooses and documents."
+
+DATA:
+    ID: data.sec_th_28
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-28"
+        title: "Imported rules claim authority"
+        areas: ["lcl"]
+        category: "imported-rule injection"
+        actor: "The author of an imported, synced or repository specification"
+        assets: ["AS-06", "AS-03", "AS-05"]
+        surfaces: ["SF-20", "SF-21", "SF-32"]
+        scenario: "An imported specification contains rules that grant permissions, disable stop conditions, raise autonomy, tell the agent to approve itself or declare themselves adopted; a draft reaches a running agent; a sync replaces the active specification."
+        invariants: ["SI-19", "SI-01", "SI-03", "SI-18"]
+        mitigations: "Imported content starts at trust level 6. Only a revision the user confirms, validates and explicitly adopts gains LCL authority, at a safe boundary, and even then it can only constrain (SI-19). Autonomy and permissions are separate from specifications."
+        enforced_by: ["SS-LCL", "SS-SECURITY", "SS-TASKING"]
+        enforcement_points: ["core/lcl/specification_revision", "core/lcl/execution_binding", "core/security/authority_policy"]
+        owner_tasks: ["TASK-050", "TASK-052", "TASK-022", "TASK-055"]
+        tests: ["tests/integration/lcl-import/spec_revision_adoption", "tests/security/permissions/untrusted_instructions", "IM-04", "AN-07"]
+        residual: "A user can knowingly adopt harmful constraints; they still cannot widen permissions."
+
+DATA:
+    ID: data.sec_th_29
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-29"
+        title: "An import overwrites or lands in the wrong place"
+        areas: ["lcl"]
+        category: "malicious archives"
+        actor: "The author of an imported archive, or a race with UI focus"
+        assets: ["AS-01", "AS-06"]
+        surfaces: ["SF-20"]
+        scenario: "The import silently overwrites files or unsaved buffers, the destination changes between preview and commit, a focus switch redirects it, or several projects in one archive are merged."
+        invariants: ["SI-18", "SI-05"]
+        mitigations: "The destination is captured when the import starts (I1). Preview, change detection and a separate copy or a reviewed replacement protect existing work (I4). Each project commits atomically on its own."
+        enforced_by: ["SS-LCL", "SS-WORKSPACES"]
+        enforcement_points: ["core/lcl/importing/import_preview", "core/lcl/importing/import_transaction", "core/workspaces/workspace_revision"]
+        owner_tasks: ["TASK-052", "TASK-051", "TASK-063"]
+        tests: ["tests/integration/lcl-import/atomic_import", "IM-07", "IM-08", "IM-10"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_30
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-30"
+        title: "LCL evaluation becomes an effect channel"
+        areas: ["lcl"]
+        category: "general"
+        actor: "The author of a specification"
+        assets: ["AS-13", "AS-05"]
+        surfaces: ["SF-21"]
+        scenario: "Evaluating a specification inside Nexees writes files, runs processes or uses the network, or exhausts CPU and memory."
+        invariants: ["SI-19", "SI-02"]
+        mitigations: "Nexees calls the core bridge for parsing, validation, diagnostics and compilation only; no specification action runs host effects; effects go through Nexees tools; evaluation is bounded in time and memory."
+        enforced_by: ["SS-LCL", "IF-LCL"]
+        enforcement_points: ["integrations/lcl/core_bridge", "core/lcl/lcl_service"]
+        owner_tasks: ["TASK-046", "TASK-049"]
+        tests: ["SG-07", "tests/conformance/lcl/shared_core_parity"]
+        residual: "Defects in the pinned engine (SA-05, SEC-A05)."
+
+DATA:
+    ID: data.sec_th_31
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-31"
+        title: "A malicious extension uses the user's privileges"
+        areas: ["extensions"]
+        category: "general"
+        actor: "An extension author or a compromised publisher on Open VSX"
+        assets: ["AS-02", "AS-01", "AS-05", "AS-13"]
+        surfaces: ["SF-23"]
+        scenario: "An installed extension reads secrets and files, runs processes, edits Nexees state, or opens connections."
+        invariants: ["SI-22", "SI-08"]
+        mitigations: "Extensions stay disabled until TASK-021 decides their confinement (SA-08). The extension host is a separate principal with no route to Nexees tools, grants or secrets (EXT-03), and Nexees exposes no API that reaches them. TASK-021 records the OS-level confinement decision before enabling (EXT-07)."
+        enforced_by: ["SS-IDE", "SS-SECURITY"]
+        enforcement_points: ["integrations/ide/extension_host_adapter", "core/security/extension_policy"]
+        owner_tasks: ["TASK-021", "TASK-022"]
+        tests: ["tests/security/permissions/extension_authority"]
+        residual: "Without OS confinement an extension can do anything the user can, including reading Nexees's state files; recorded as R-02 for TASK-021."
+
+DATA:
+    ID: data.sec_th_32
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-32"
+        title: "An extension package writes outside its folder"
+        areas: ["extensions"]
+        category: "general"
+        actor: "A malicious .vsix package"
+        assets: ["AS-13", "AS-01"]
+        surfaces: ["SF-22"]
+        scenario: "Theia's .vsix unpacker uses decompress 4.2.1, which has unfixed path-traversal advisories, so installing a crafted package can write outside the extension folder."
+        invariants: ["SI-22", "SI-18"]
+        mitigations: "Extension installation stays disabled. TASK-021 replaces the extraction with a bounded one, such as Nexees's own staging, before enabling it (OI-04)."
+        enforced_by: ["SS-IDE"]
+        enforcement_points: ["integrations/ide/extension_registry_adapter"]
+        owner_tasks: ["TASK-021"]
+        tests: ["tests/security/permissions/extension_authority", "tests/security/archives/path_escape"]
+        residual: "None while installation is disabled."
+
+DATA:
+    ID: data.sec_th_33
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-33"
+        title: "Extension output or edits are treated as authority"
+        areas: ["extensions"]
+        category: "general"
+        actor: "An extension"
+        assets: ["AS-01", "AS-05"]
+        surfaces: ["SF-23", "SF-14"]
+        scenario: "Diagnostics or language-server output instruct the agent; an extension edits files the agent then trusts; an extension contributes a tool during orientation."
+        invariants: ["SI-22", "SI-01", "SI-20"]
+        mitigations: "Extension output is tool-output data at trust level 7 (EXT-04); extension edits are user-session edits through revisions (EXT-05); no extension tool is offered during orientation (EXT-06)."
+        enforced_by: ["SS-IDE", "SS-SECURITY", "SS-CONTEXT"]
+        enforcement_points: ["core/security/extension_policy", "integrations/ide/language_server_adapter", "core/context/context_builder"]
+        owner_tasks: ["TASK-021", "TASK-020", "TASK-040"]
+        tests: ["tests/security/permissions/extension_authority", "tests/security/permissions/untrusted_instructions"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_34
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-34"
+        title: "Phishing or redirect interception at sign-in"
+        areas: ["auth"]
+        category: "general"
+        actor: "A phishing site, an app that registers the same redirect, or a network attacker"
+        assets: ["AS-08", "AS-02"]
+        surfaces: ["SF-24"]
+        scenario: "A fake sign-in page, an authorization code stolen through a custom URI scheme or a loopback port race, or a token captured in transit."
+        invariants: ["SI-09", "SI-08"]
+        mitigations: "Sign-in uses the system browser with PKCE, verified App Links on Android and a loopback redirect with a state check on Desktop, never an embedded web view. Second factors are TOTP or passkeys, not SMS by default. Tokens are short-lived."
+        enforced_by: ["SS-ACCOUNTS", "IF-ACCOUNT"]
+        enforcement_points: ["core/accounts/account_service", "integrations/auth/github_login_adapter", "integrations/auth/account_provider_adapter"]
+        owner_tasks: ["TASK-027", "TASK-028", "TASK-029", "TASK-060"]
+        tests: ["GAP-05"]
+        residual: "Depends on the auth backend still to be chosen (OI-02)."
+
+DATA:
+    ID: data.sec_th_35
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-35"
+        title: "Session tokens are stolen and replayed"
+        areas: ["auth"]
+        category: "general"
+        actor: "Malware running as the user, a log reader, or a backup"
+        assets: ["AS-08", "AS-02"]
+        surfaces: ["SF-25"]
+        scenario: "Refresh tokens end up in files, logs or sync and are replayed from another device."
+        invariants: ["SI-08", "SI-09"]
+        mitigations: "Tokens live only in the OS store, rotate and can be revoked; sign-out revokes them on the server; they are never synced."
+        enforced_by: ["SS-ACCOUNTS", "SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        enforcement_points: ["core/accounts/account_session", "platform/desktop/secrets/credential_store", "platform/android/secrets/credential_store"]
+        owner_tasks: ["TASK-027", "TASK-025", "TASK-029"]
+        tests: ["tests/security/credentials/credential_storage", "GAP-05"]
+        residual: "Same-user malware can use the OS store while it is unlocked (SA-01, SEC-A08)."
+
+DATA:
+    ID: data.sec_th_36
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-36"
+        title: "Step-up or account recovery is bypassed"
+        areas: ["auth"]
+        category: "general"
+        actor: "Someone with a briefly unlocked device, or an attacker who controls the user's email"
+        assets: ["AS-08", "AS-02", "AS-04"]
+        surfaces: ["SF-25"]
+        scenario: "A password or second-factor change, a provider-key view, a trusted-device change, disabling a control or an export happens without reauthentication; recovery codes leak; the recovery flow takes over the account."
+        invariants: ["SI-14", "SI-09", "SI-08"]
+        mitigations: "The permission engine requires step-up for the auth policy's list through the step-up port, with a short-lived proof bound to the action (IF-ACCOUNT). Recovery codes are shown once, stored only as hashes by the backend, and never enter state, logs or sync. Recovering an account restores no device trust or grant."
+        enforced_by: ["SS-ACCOUNTS", "SS-SECURITY", "IF-ACCOUNT"]
+        enforcement_points: ["core/accounts/mfa_service", "core/accounts/account_recovery", "core/security/permission_engine"]
+        owner_tasks: ["TASK-029", "TASK-022", "TASK-028"]
+        tests: ["GAP-05", "tests/unit/settings"]
+        residual: "Email-based recovery inherits the email account's security (OI-02)."
+
+DATA:
+    ID: data.sec_th_37
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-37"
+        title: "Account access is turned into device control"
+        areas: ["auth", "cross-device sessions"]
+        category: "general"
+        actor: "An attacker who has the user's account through a backend breach or password reuse"
+        assets: ["AS-03", "AS-04", "AS-13"]
+        surfaces: ["SF-24", "SF-30", "SF-31"]
+        scenario: "The attacker signs in on their own device and expects to reach the user's PC or phone because the account is the same."
+        invariants: ["SI-09", "SI-10"]
+        mitigations: "An account grants no device trust or remote authority. Pairing needs proof of the physical device and approval on both sides, and grants are held by each destination."
+        enforced_by: ["SS-REMOTE", "SS-ACCOUNTS", "SS-SECURITY"]
+        enforcement_points: ["core/remote/pairing", "core/remote/device_registry", "core/security/approval_grants"]
+        owner_tasks: ["TASK-060", "TASK-022", "TASK-070", "TASK-027"]
+        tests: ["RC-T01", "tests/security/remote/pairing_revocation"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_38
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-38"
+        title: "Offline unlock weakens protection"
+        areas: ["auth"]
+        category: "general"
+        actor: "A thief who keeps the device offline"
+        assets: ["AS-02", "AS-08", "AS-01"]
+        surfaces: ["SF-25"]
+        scenario: "Loss of network is treated as permission to unlock secrets or to skip session expiry."
+        invariants: ["SI-09", "SI-08"]
+        mitigations: "TASK-027 defines offline unlock: the local unlock is a device factor, secrets stay behind the OS store and the device lock, and network loss never unlocks anything."
+        enforced_by: ["SS-ACCOUNTS"]
+        enforcement_points: ["core/accounts/offline_access"]
+        owner_tasks: ["TASK-027", "TASK-029"]
+        tests: ["GAP-05"]
+        residual: "A device without a screen lock (SEC-A02)."
+
+DATA:
+    ID: data.sec_th_39
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-39"
+        title: "A tampered or downgraded update is installed"
+        areas: ["updates"]
+        category: "general"
+        actor: "A compromised release host or mirror, or a network attacker"
+        assets: ["AS-14", "AS-13"]
+        surfaces: ["SF-26"]
+        scenario: "A modified package or manifest is installed, an older vulnerable version is offered as an update, or a signing key leaks."
+        invariants: ["SI-26"]
+        mitigations: "Packages are verified against a pinned key that does not arrive with the update; the manifest lists hashes; versions only increase unless the owner explicitly allows a downgrade; transport security is not the trust anchor. Platform signatures apply as well (APK signing, the package manager's signatures). The signing key stays offline and never enters the repository."
+        enforced_by: ["SS-UPDATES", "SS-BUILD-RELEASE"]
+        enforcement_points: ["core/updates/package_verification", "core/updates/update_service", "packaging/desktop/", "packaging/android/"]
+        owner_tasks: ["TASK-073", "TASK-074", "TASK-075", "TASK-008"]
+        tests: ["tests/e2e/release/update_recovery", "SG-03"]
+        residual: "No task builds an updater (GAP-07). If a release ships without one, updates come from the platform's package mechanism and this threat moves there."
+
+DATA:
+    ID: data.sec_th_40
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-40"
+        title: "An update resets security state"
+        areas: ["updates"]
+        category: "general"
+        actor: "A defective migration"
+        assets: ["AS-09", "AS-03", "AS-04"]
+        surfaces: ["SF-27"]
+        scenario: "An update turns receiving back on, resets grants to allow, loses revocations or silently downgrades the schema."
+        invariants: ["SI-26", "SI-15", "SI-10"]
+        mitigations: "Migrations keep opt-in settings, grants, revocations and epochs exactly and never default to allow (RC-24). Tests compare the security state before and after; the migration guard blocks an incompatible state."
+        enforced_by: ["SS-UPDATES", "SS-STATE", "SS-SETTINGS"]
+        enforcement_points: ["core/updates/migration_guard", "core/state/migrations/migration_registry", "core/settings/settings_store"]
+        owner_tasks: ["TASK-008", "TASK-030", "TASK-073", "TASK-074"]
+        tests: ["tests/e2e/release/update_recovery", "tests/unit/state_recovery", "RC-T16"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_41
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-41"
+        title: "A dependency is compromised"
+        areas: ["updates"]
+        category: "general"
+        actor: "A compromised npm or crates.io package, registry account or install script"
+        assets: ["AS-14", "AS-13", "AS-02"]
+        surfaces: ["SF-28"]
+        scenario: "A malicious version of a transitive dependency runs code at build or run time."
+        invariants: ["SI-26"]
+        mitigations: "Exact pins and lockfiles (DS-05); install scripts approved one by one (DS-06); the advisory gate with cargo-deny and OSV (DS-08); isolated builds (DS-09); no automatic dependency updates; the release audit rechecks the whole tree (TASK-073)."
+        enforced_by: ["SS-BUILD-RELEASE"]
+        enforcement_points: ["scripts/build/", "scripts/ci/", "scripts/release/"]
+        owner_tasks: ["TASK-005", "TASK-073", "TASK-075"]
+        tests: ["SG-08"]
+        residual: "A malicious release published before pinning is caught only by advisories and review."
+
+DATA:
+    ID: data.sec_th_42
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-42"
+        title: "Version mismatch weakens remote checks"
+        areas: ["updates", "cross-device sessions"]
+        category: "general"
+        actor: "An old peer, or an attacker forcing an older protocol"
+        assets: ["AS-03", "AS-10"]
+        surfaces: ["SF-27", "SF-31"]
+        scenario: "Peers agree on an older protocol without the newer security fields, or a mismatch falls back to a weaker mode."
+        invariants: ["SI-12", "SI-16", "SI-26"]
+        mitigations: "Version negotiation refuses anything below the minimum secure version. A mismatch blocks remote control (STOP-08) instead of downgrading, and window and host check compatibility after an update (RC-23)."
+        enforced_by: ["SS-DOMAIN-PROTOCOL", "SS-REMOTE", "SS-UPDATES"]
+        enforcement_points: ["core/protocol/version_negotiation", "core/updates/migration_guard"]
+        owner_tasks: ["TASK-007", "TASK-070", "TASK-074"]
+        tests: ["tests/conformance/protocol/client_protocol_compatibility", "RC-T16"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_43
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-43"
+        title: "An attacker on the network attacks the transport"
+        areas: ["cross-device sessions"]
+        category: "general"
+        actor: "An attacker on the LAN or on the off-LAN route"
+        assets: ["AS-10", "AS-04", "AS-01"]
+        surfaces: ["SF-29"]
+        scenario: "Eavesdropping, man-in-the-middle, impersonating a paired device, TLS downgrade, floods, oversized frames or slow connections."
+        invariants: ["SI-16", "SI-15"]
+        mitigations: "TLS 1.3 only, mutual authentication with per-device keys pinned at pairing (proved in TASK-003), bounded frames and queues, rate limits and a connection cap; the listener exists only while receiving is on and binds to the chosen interfaces; no public port."
+        enforced_by: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-REMOTE", "IF-TRANSPORT"]
+        enforcement_points: ["platform/desktop/transport/secure_channel", "platform/android/transport/secure_channel", "core/remote/remote_sessions"]
+        owner_tasks: ["TASK-060", "TASK-070", "TASK-025"]
+        tests: ["RC-T15", "GAP-04", "tests/security/remote/pairing_revocation"]
+        residual: "Availability against a flooding LAN peer is best effort."
+
+DATA:
+    ID: data.sec_th_44
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-44"
+        title: "Pairing is hijacked"
+        areas: ["cross-device sessions"]
+        category: "general"
+        actor: "An attacker nearby during pairing, or with brief access to a device"
+        assets: ["AS-04", "AS-03"]
+        surfaces: ["SF-30"]
+        scenario: "A man-in-the-middle during the key exchange, pairing with the wrong PC, a photographed or replayed pairing code, brute force of a short code, or silent pairing through the account."
+        invariants: ["SI-16", "SI-09", "SI-10"]
+        mitigations: "Pairing shows the peer key fingerprint or a short authentication string on both screens for the user to compare, needs approval on both devices, and uses single-use, short-lived secrets with an attempt limit. Pairing establishes identity only."
+        enforced_by: ["SS-REMOTE", "SS-SECURITY"]
+        enforcement_points: ["core/remote/pairing", "core/remote/device_registry"]
+        owner_tasks: ["TASK-060", "TASK-070"]
+        tests: ["tests/security/remote/pairing_revocation", "RC-T01"]
+        residual: "A user who approves the wrong device on both screens."
+
+DATA:
+    ID: data.sec_th_45
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-45"
+        title: "A stolen or hostile paired device oversteps"
+        areas: ["cross-device sessions"]
+        category: "general"
+        actor: "A lost or stolen phone, or a compromised peer"
+        assets: ["AS-01", "AS-03", "AS-05"]
+        surfaces: ["SF-31"]
+        scenario: "The device uses its pairing to send requests beyond its grants, into other workspaces, in the reverse direction, or after revocation."
+        invariants: ["SI-10", "SI-11", "SI-12", "SI-15"]
+        mitigations: "Grants are directional and held by the destination; the destination checks every request at execution time with explicit targets. Revocation from either device bumps the epoch, so pending and in-flight requests fail their execution check; stopping remote access closes sessions."
+        enforced_by: ["SS-REMOTE", "SS-SECURITY"]
+        enforcement_points: ["core/remote/command_dispatch", "core/security/approval_grants", "core/remote/device_registry"]
+        owner_tasks: ["TASK-060", "TASK-070", "TASK-022", "TASK-067"]
+        tests: ["tests/security/remote/pairing_revocation", "tests/security/remote/explicit_target_binding", "RC-T08", "RC-T11"]
+        residual: "Actions within its grants before revocation look legitimate to Nexees; the audit trail shows them."
+
+DATA:
+    ID: data.sec_th_46
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-46"
+        title: "Requests or approvals are replayed"
+        areas: ["cross-device sessions"]
+        category: "general"
+        actor: "Reconnect logic, a queued request, or a peer reusing an approval"
+        assets: ["AS-03", "AS-10", "AS-05"]
+        surfaces: ["SF-31"]
+        scenario: "A reconnect resends an executed command; a stale approval is queued and applied later; an approval is reused for a different request."
+        invariants: ["SI-13", "SI-11"]
+        mitigations: "The request ledger answers duplicates with the recorded result; approvals are single-use, bound to a hash of the request, and expire; the destination clamps lifetimes with its own clock; an epoch change voids them; unknown outcomes block replay; commands never enter sync queues."
+        enforced_by: ["SS-REMOTE", "SS-STATE", "SS-SECURITY", "SS-SYNC", "SS-AGENT"]
+        enforcement_points: ["core/remote/remote_sessions", "core/state/operation_journal", "core/security/approval_grants", "core/sync/sync_coordinator", "core/agent/session_control"]
+        owner_tasks: ["TASK-007", "TASK-069", "TASK-070", "TASK-026", "TASK-035"]
+        tests: ["tests/security/remote/stale_approval_rejection", "RC-T08", "RC-T09", "RC-T10", "AN-06"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_47
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-47"
+        title: "A request lands on the wrong target"
+        areas: ["cross-device sessions"]
+        category: "general"
+        actor: "A race with UI focus, or a peer exploiting ambiguity"
+        assets: ["AS-01", "AS-05"]
+        surfaces: ["SF-31"]
+        scenario: "A request without an explicit target runs in the foreground workspace or on the wrong device, user or session; two devices with the same display name are confused."
+        invariants: ["SI-12", "SI-05"]
+        mitigations: "The full envelope is required and there is no ambient fallback. Devices are identified by key fingerprints with user-given names, and duplicate names are flagged."
+        enforced_by: ["SS-DOMAIN-PROTOCOL", "SS-REMOTE", "SS-WORKSPACES"]
+        enforcement_points: ["core/protocol/messages", "core/remote/command_dispatch", "core/workspaces/workspace_binding"]
+        owner_tasks: ["TASK-006", "TASK-007", "TASK-015", "TASK-070"]
+        tests: ["tests/security/remote/explicit_target_binding", "RC-T08", "RC-T13"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_48
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-48"
+        title: "Sync carries authority or escapes roots"
+        areas: ["cross-device sessions"]
+        category: "imported-rule injection"
+        actor: "A hostile or compromised peer, or conflicting edits"
+        assets: ["AS-03", "AS-02", "AS-06", "AS-01", "AS-12"]
+        surfaces: ["SF-32"]
+        scenario: "Synced records include grants, approvals, secrets or a setting that enables receiving; synced paths escape the root; a synced specification replaces the active one; timestamps decide conflicts."
+        invariants: ["SI-18", "SI-10", "SI-08", "SI-19"]
+        mitigations: "Sync is a separate message family that never carries commands, approvals, grants, secrets or device keys. The receiving replica validates paths, sizes, schemas, revisions and peer authority before a transactional apply; conflicts keep both versions; a synced specification arrives as a draft."
+        enforced_by: ["SS-SYNC", "SS-SECURITY", "IF-SYNC"]
+        enforcement_points: ["core/sync/sync_coordinator", "core/sync/portable_paths", "core/sync/conflict_resolution"]
+        owner_tasks: ["TASK-069", "TASK-007", "TASK-008"]
+        tests: ["tests/integration/sync/two_way_sync", "tests/integration/sync/concurrent_edits", "AN-07", "AN-08"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_49
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-49"
+        title: "Status, notifications or audit leak private content"
+        areas: ["cross-device sessions"]
+        category: "general"
+        actor: "A shoulder surfer, the other device's user, or a log reader"
+        assets: ["AS-07", "AS-01", "AS-02"]
+        surfaces: ["SF-33"]
+        scenario: "Notifications show file content or secrets; remote status exposes more of a workspace than needed; audit records store full arguments."
+        invariants: ["SI-25", "SI-08"]
+        mitigations: "Audit records hold the normalized target and the decision, never content or secrets (type.sec_audit_record); lock-screen notifications are minimal; status separates live reachability from the last known state."
+        enforced_by: ["SS-SECURITY", "SS-REMOTE"]
+        enforcement_points: ["core/security/audit_log", "core/remote/notifications", "core/security/secret_redaction"]
+        owner_tasks: ["TASK-026", "TASK-056", "TASK-070", "TASK-025"]
+        tests: ["tests/security/credentials/secret_redaction", "SG-06"]
+        residual: "The paired user sees what the grants let them see."
+
+DATA:
+    ID: data.sec_th_50
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-50"
+        title: "The off-LAN route exposes the receiver"
+        areas: ["cross-device sessions"]
+        category: "general"
+        actor: "An internet attacker or the route provider"
+        assets: ["AS-10", "AS-13"]
+        surfaces: ["SF-29"]
+        scenario: "The chosen route exposes the receiver to more peers than intended, the route provider injects traffic, or router ports are opened automatically."
+        invariants: ["SI-16"]
+        mitigations: "The route only carries the already mutually authenticated channel with pinned keys, so it is untrusted transport. Nexees changes no router or firewall. The route is the owner's choice, with any cost approved (OI-03)."
+        enforced_by: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "IF-TRANSPORT"]
+        enforcement_points: ["platform/desktop/transport/transport_discovery", "platform/android/transport/transport_discovery"]
+        owner_tasks: ["TASK-060", "TASK-070"]
+        tests: ["RC-T15", "GAP-04", "RC-T03"]
+        residual: "The route provider can see that the two devices talk (R-07)."
+
+DATA:
+    ID: data.sec_th_51
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-51"
+        title: "Help content executes or leaks"
+        areas: ["desktop", "android"]
+        category: "active help content"
+        actor: "A tampered manual page, a malicious link, or Markdown carrying HTML"
+        assets: ["AS-15", "AS-01", "AS-05"]
+        surfaces: ["SF-34"]
+        scenario: "A script in a manual page, a remote image that reveals that help was opened, command or download links, or opening help switches the workspace or loses an unsaved buffer."
+        invariants: ["SI-23", "SI-01", "SI-05"]
+        mitigations: "The help renderer removes active content while parsing: raw HTML is shown as text, links are relative or https, images are relative only, and the viewer runs no script. External links open in the system browser after confirmation. Help uses no network and changes no binding or focus. TASK-003 proved this with a hostile page."
+        enforced_by: ["SS-HELP", "IF-HELP", "SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT"]
+        enforcement_points: ["core/help/manual_catalog", "core/help/help_navigation", "apps/desktop/src/panels/", "apps/android/src/panels/"]
+        owner_tasks: ["TASK-071", "TASK-072"]
+        tests: ["tests/e2e/help/offline_manuals", "tests/e2e/help/search_and_navigation", "MAN-04"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_52
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-52"
+        title: "Secrets leak through logs, crash reports or the repository"
+        areas: ["desktop", "android"]
+        category: "general"
+        actor: "Anyone who reads logs, crash reports, evidence or Git history"
+        assets: ["AS-02"]
+        surfaces: ["SF-14", "SF-33"]
+        scenario: "A debug log prints a token, a crash dump contains secrets from memory, or evidence and fixtures are committed with secrets in them."
+        invariants: ["SI-08", "SI-25"]
+        mitigations: "Redaction at the logging boundary; secret types that cannot be formatted in clear; no crash upload without consent; a repository secret scan in CI (TASK-005) and in each task's evidence, as TASK-003 and TASK-004 do."
+        enforced_by: ["SS-SECURITY", "SS-BUILD-RELEASE"]
+        enforcement_points: ["core/security/secret_redaction", "scripts/ci/"]
+        owner_tasks: ["TASK-025", "TASK-005", "TASK-026"]
+        tests: ["tests/security/credentials/secret_redaction"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_53
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-53"
+        title: "Settings weaken a boundary"
+        areas: ["desktop", "android"]
+        category: "general"
+        actor: "A user under social engineering, a model suggestion, or an imported configuration"
+        assets: ["AS-09", "AS-13"]
+        surfaces: ["SF-05", "SF-17"]
+        scenario: "A Developer Setting disables sandboxing, allows all network access or auto-approves sensitive actions, or a synced or imported settings file does it."
+        invariants: ["SI-27", "SI-14"]
+        mitigations: "Invariants are not settings. Weakening settings within them need a warning, step-up and an audit record, take effect at a safe boundary, and are never synced or imported silently."
+        enforced_by: ["SS-SETTINGS", "SS-SECURITY", "IF-SETTINGS"]
+        enforcement_points: ["core/settings/developer_settings", "core/security/authority_policy"]
+        owner_tasks: ["TASK-030", "TASK-022"]
+        tests: ["tests/unit/settings"]
+        residual: "A user can still choose wide grants within the invariants (SEC-A07)."
+
+DATA:
+    ID: data.sec_th_54
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-54"
+        title: "Authority crosses workspaces"
+        areas: ["desktop", "android"]
+        category: "general"
+        actor: "A race between a focus switch and an agent, or an approval applied to the wrong place"
+        assets: ["AS-01", "AS-03", "AS-05"]
+        surfaces: ["SF-12"]
+        scenario: "Agent A writes into workspace B after the user switches focus, or an approval for A is applied in B."
+        invariants: ["SI-05", "SI-12", "SI-04"]
+        mitigations: "Bindings are fixed per session; approvals name their workspace and revision; no flow reads focus to pick a target (AD-06)."
+        enforced_by: ["SS-WORKSPACES", "SS-AGENT", "SS-SECURITY"]
+        enforcement_points: ["core/workspaces/workspace_binding", "core/agent/execution_fence", "core/security/approval_grants"]
+        owner_tasks: ["TASK-015", "TASK-017", "TASK-022"]
+        tests: ["tests/integration/workspaces/foreground_background_isolation", "tests/e2e/desktop/workspace_switching", "RC-T13"]
+        residual: "None intended."
+
+DATA:
+    ID: data.sec_th_55
+    TYPE: OBJECT[REF(type.sec_threat)]
+    VALUE:
+        threat_id: "TH-55"
+        title: "The audit trail is altered or lost"
+        areas: ["desktop", "android"]
+        category: "general"
+        actor: "An agent, a remote peer, or a crash"
+        assets: ["AS-07"]
+        surfaces: ["SF-33"]
+        scenario: "An agent edits or deletes audit records to hide actions, a peer floods the log, or a crash loses records."
+        invariants: ["SI-25"]
+        mitigations: "Only SS-SECURITY appends to the audit trail and no tool writes it; writes are transactional; rotation is bounded and keeps security events; hash chaining makes tampering detectable."
+        enforced_by: ["SS-SECURITY", "SS-STATE"]
+        enforcement_points: ["core/security/audit_log", "core/state/state_store"]
+        owner_tasks: ["TASK-026", "TASK-036"]
+        tests: ["SG-06"]
+        residual: "A same-user process can still edit the database; tampering is detectable at best (SA-01)."
+
+DATA:
+    ID: data.sec_threats
+    TYPE: LIST[OBJECT[REF(type.sec_threat)]]
+    VALUE: [REF(data.sec_th_01), REF(data.sec_th_02), REF(data.sec_th_03), REF(data.sec_th_04), REF(data.sec_th_05), REF(data.sec_th_06), REF(data.sec_th_07), REF(data.sec_th_08), REF(data.sec_th_09), REF(data.sec_th_10), REF(data.sec_th_11), REF(data.sec_th_12), REF(data.sec_th_13), REF(data.sec_th_14), REF(data.sec_th_15), REF(data.sec_th_16), REF(data.sec_th_17), REF(data.sec_th_18), REF(data.sec_th_19), REF(data.sec_th_20), REF(data.sec_th_21), REF(data.sec_th_22), REF(data.sec_th_23), REF(data.sec_th_24), REF(data.sec_th_25), REF(data.sec_th_26), REF(data.sec_th_27), REF(data.sec_th_28), REF(data.sec_th_29), REF(data.sec_th_30), REF(data.sec_th_31), REF(data.sec_th_32), REF(data.sec_th_33), REF(data.sec_th_34), REF(data.sec_th_35), REF(data.sec_th_36), REF(data.sec_th_37), REF(data.sec_th_38), REF(data.sec_th_39), REF(data.sec_th_40), REF(data.sec_th_41), REF(data.sec_th_42), REF(data.sec_th_43), REF(data.sec_th_44), REF(data.sec_th_45), REF(data.sec_th_46), REF(data.sec_th_47), REF(data.sec_th_48), REF(data.sec_th_49), REF(data.sec_th_50), REF(data.sec_th_51), REF(data.sec_th_52), REF(data.sec_th_53), REF(data.sec_th_54), REF(data.sec_th_55)]
+    DESCRIPTION: "All threats, TH-01 to TH-55."

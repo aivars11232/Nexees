@@ -1,0 +1,70 @@
+Security-relevant facts of the Desktop and Android foundation selected by TASK-003, read for the TASK-004 threat model.
+Recorded 2026-10-03T23:30:05+02:00. Read-only inspection of the TASK-003 prototype installation in /mnt/F/Nexees-toolchains/theia-probe
+(built in TASK-003 from docs/evidence/TASK-003/prototypes/theia) and of the Android prototype sources in this
+repository. No network access and no process was started.
+
+== Theia ==
+@theia/core version: 1.76.0
+
+1. Main window web preferences (lib/electron-main/electron-main-application.js):
+    node_modules/@theia/core/lib/electron-main/electron-main-application.js:392: contextIsolation: true,
+    node_modules/@theia/core/lib/electron-main/electron-main-application.js:393: sandbox: false,
+    node_modules/@theia/core/lib/electron-main/electron-main-application.js:394: nodeIntegration: false,
+    node_modules/@theia/core/lib/electron-main/electron-main-application.js:397: nodeIntegrationInWorker: false,
+   contextIsolation is on and Node integration is off, but the renderer runs without the Chromium sandbox and with a
+   preload script.
+
+2. Navigation (same file): in-page navigation is blocked except to the secondary-window page, and new windows open
+   only for that page:
+    node_modules/@theia/core/lib/electron-main/electron-main-application.js:763: webContents.on('will-navigate', evt => {
+    node_modules/@theia/core/lib/electron-main/electron-main-application.js:768: webContents.setWindowOpenHandler(details => {
+
+3. The backend is forked with the whole Electron environment plus the security token (same file):
+    node_modules/@theia/core/lib/electron-main/electron-main-application.js:711: ...process.env,
+    node_modules/@theia/core/lib/electron-main/electron-main-application.js:712: [electron_token_1.ElectronSecurityToken]: JSON.stringify(this.electronSecurityToken),
+   Every variable of the main process environment reaches the backend, and from there terminals and the extension
+   host, unless Nexees scrubs it.
+
+4. Backend request validation (lib/electron-node/token/electron-token-validator.js):
+    node_modules/@theia/core/lib/electron-node/token/electron-token-validator.js:39: allowRequest(request) {
+    node_modules/@theia/core/lib/electron-node/token/electron-token-validator.js:40: if (!this.electronSecurityToken) {
+    node_modules/@theia/core/lib/electron-node/token/electron-token-validator.js:41: return true;
+    node_modules/@theia/core/lib/electron-node/token/electron-token-validator.js:64: return received.byteLength === expected.byteLength && crypto.timingSafeEqual(received, expected);
+    node_modules/@theia/core/lib/electron-node/token/electron-token-validator.js:76: const token = process.env[electron_token_1.ElectronSecurityToken];
+   HTTP and WebSocket requests to the backend must carry the token cookie, compared in constant time. When the
+   token variable is absent the validator allows every request: the backend is safe only when started by the
+   Electron main process.
+
+== Electron ==
+electron version: 42.11.10; binary SHA-256 723ce634729a2bd4b4288c0093fb11e926ed3f9f684d5a91d7842f99d097a590
+Fuse wire: sentinel found once at byte 34579872 (occurrences: 1), wire version 1, 9 fuses, in the order of @electron/fuses FuseV1Options:
+    0 RunAsNode: enabled
+    1 EnableCookieEncryption: disabled
+    2 EnableNodeOptionsEnvironmentVariable: enabled
+    3 EnableNodeCliInspectArguments: enabled
+    4 EnableEmbeddedAsarIntegrityValidation: disabled
+    5 OnlyLoadAppFromAsar: disabled
+    6 LoadBrowserProcessSpecificV8Snapshot: disabled
+    7 GrantFileProtocolExtraPrivileges: enabled
+    8 WasmTrapHandlers: enabled
+   The names follow the order of Electron's fuse schema (build/fuses/fuses.json5, mirrored by @electron/fuses);
+   @electron/fuses is not installed here, so the order is the documented one, and the nine observed values equal
+   that schema's documented defaults (1 0 1 1 0 0 0 1 1). The binary exports the matching fuse functions:
+    IsCookieEncryptionEnabled, IsEmbeddedAsarIntegrityValidationEnabled, IsGrantFileProtocolExtraPrivilegesEnabled, IsLoadBrowserProcessSpecificV8SnapshotEnabled, IsNodeCliInspectEnabled, IsNodeOptionsEnabled, IsOnlyLoadAppFromAsarEnabled, IsRunAsNodeEnabled, IsWasmTrapHandlersEnabled
+   These are Electron's defaults: the binary runs as plain Node with ELECTRON_RUN_AS_NODE, honours NODE_OPTIONS and
+   --inspect arguments, and does not validate its app archive. TASK-003 met the first in practice: shells started
+   from VS Code inherit ELECTRON_RUN_AS_NODE, which made the prototype binary start as Node, so its launcher
+   docs/evidence/TASK-003/prototypes/theia/run_nested.sh (line 14) unsets the variable.
+   In the shell that recorded this log, ELECTRON_RUN_AS_NODE is '1'.
+
+== Android prototype (TASK-003) ==
+    docs/evidence/TASK-003/prototypes/android-app/app/src/main/AndroidManifest.xml:27: android:allowBackup="false"
+    docs/evidence/TASK-003/prototypes/android-app/app/src/main/AndroidManifest.xml:34: android:exported="true"
+    docs/evidence/TASK-003/prototypes/android-app/app/src/main/AndroidManifest.xml:44: android:exported="false"
+    docs/evidence/TASK-003/prototypes/android-app/app/src/main/AndroidManifest.xml:45: android:foregroundServiceType="connectedDevice" />
+    docs/evidence/TASK-003/prototypes/android-app/app/src/main/AndroidManifest.xml:50: android:exported="true">
+    docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Notifications.kt:30: PendingIntent.FLAG_IMMUTABLE,
+    docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Notifications.kt:46: PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+    docs/evidence/TASK-003/prototypes/android-app/app/src/main/java/dev/nexees/feasibility/Notifications.kt:61: context, 2, Intent(context, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE,
+   Backups are off, only the launcher activity and the BOOT_COMPLETED receiver (a protected broadcast) are exported,
+   the receiver service is internal, and every notification PendingIntent is immutable.

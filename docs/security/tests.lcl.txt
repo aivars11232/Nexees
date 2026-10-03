@@ -1,0 +1,567 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.sec_tests
+    NAME: "Threat tests and missing test slots"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "Planned abuse cases for the threats, including malicious archives, imported-rule injection, model-switch races, new-provider data disclosure, unsafe cleanup and active help content. Each names its slot, or the gap that stands in for a missing slot, and the tasks that run it. None of them runs in TASK-004: the security task rule puts each test in the task that builds the capability."
+
+DATA:
+    ID: data.sec_tt_01
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-01"
+        category: "malicious archives"
+        threats: ["TH-26"]
+        attack: "Archives whose entries use \"..\", absolute, drive-letter and UNC paths, and \"a/../../x\"."
+        expected: "The whole import is rejected before publication; nothing is written outside staging; the prior revision is intact."
+        scenarios: ["IM-05"]
+        slot: "tests/security/archives/path_escape"
+        owner_tasks: ["TASK-051", "TASK-063"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_02
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-02"
+        category: "malicious archives"
+        threats: ["TH-26"]
+        attack: "Symbolic-link, hard-link, device and pipe entries, executable bits and autostart metadata, plus a destination that already contains a link."
+        expected: "Link and special entries are rejected, execution bits are dropped, and an existing link is never followed."
+        scenarios: ["IM-05"]
+        slot: "tests/security/archives/path_escape"
+        owner_tasks: ["TASK-051", "TASK-063"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_03
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-03"
+        category: "malicious archives"
+        threats: ["TH-26"]
+        attack: "Names that collide after normalization: case pairs, NFC and NFD forms, trailing dots or spaces, and a file and a folder with the same name."
+        expected: "Rejected as collisions with a diagnostic naming both entries."
+        scenarios: ["IM-05"]
+        slot: "tests/security/archives/ambiguous_paths"
+        owner_tasks: ["TASK-051", "TASK-063"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_04
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-04"
+        category: "malicious archives"
+        threats: ["TH-27"]
+        attack: "Bounded fixtures from the archive fixture factory: a high-ratio entry, overlapping entries, too many entries, deep nesting, long names, a nested ZIP, an encrypted entry, an unsupported method, a truncated archive and headers that understate sizes."
+        expected: "Each stops within the documented limits of time and memory, with no partial tree; no fixture is a real resource-exhaustion payload."
+        scenarios: ["IM-06"]
+        slot: "tests/security/archives/archive_limits"
+        owner_tasks: ["TASK-051", "TASK-063"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_05
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-05"
+        category: "malicious archives"
+        threats: ["TH-29"]
+        attack: "Kill the process, cancel and fill the disk during publication; change the destination between preview and commit; import a second time."
+        expected: "The prior active revision and unsaved buffers stay intact, staging is removed, the stale preview is regenerated, and a repeat import is reported as a duplicate."
+        scenarios: ["IM-07", "IM-08", "IM-10"]
+        slot: "tests/integration/lcl-import/atomic_import"
+        owner_tasks: ["TASK-052", "TASK-051"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_06
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-06"
+        category: "imported-rule injection"
+        threats: ["TH-28"]
+        attack: "Import a specification whose rules grant all permissions, disable stop conditions, set autonomy to autonomous and declare themselves adopted."
+        expected: "The result is an inactive draft; permission decisions and autonomy are unchanged; adoption needs the user's confirmation and validation, and even adopted it cannot widen a grant."
+        scenarios: ["IM-04"]
+        slot: "tests/integration/lcl-import/spec_revision_adoption"
+        owner_tasks: ["TASK-050", "TASK-052"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_07
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-07"
+        category: "imported-rule injection"
+        threats: ["TH-28", "TH-13"]
+        attack: "A README inside the archive tells the agent to ignore its instructions and push to another remote."
+        expected: "The text reaches the model only as data; no tool call beyond the existing grants is authorized."
+        scenarios: []
+        slot: "tests/security/permissions/untrusted_instructions"
+        owner_tasks: ["TASK-022", "TASK-040"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_08
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-08"
+        category: "imported-rule injection"
+        threats: ["TH-28", "TH-48"]
+        attack: "A peer syncs a changed version of the specification a running agent uses."
+        expected: "It arrives as a draft; the agent keeps its pinned revision until an explicit adoption at a safe boundary."
+        scenarios: ["AN-07"]
+        slot: "tests/integration/sync/concurrent_edits"
+        owner_tasks: ["TASK-069", "TASK-050"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_09
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-09"
+        category: "model-switch races"
+        threats: ["TH-22"]
+        attack: "Deliver the old model's delayed tool call after the generation has been incremented."
+        expected: "Rejected and audited, with no effect."
+        scenarios: ["HO-05"]
+        slot: "tests/integration/handoff/stale_state"
+        owner_tasks: ["TASK-044", "TASK-045"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_10
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-10"
+        category: "model-switch races"
+        threats: ["TH-22"]
+        attack: "Lose the acknowledgment of a write tool exactly at the switch."
+        expected: "The session pauses with outcome unknown until reconciled; the new model cannot replay the write."
+        scenarios: ["HO-05", "HO-07"]
+        slot: "tests/integration/handoff/stale_state"
+        owner_tasks: ["TASK-044", "TASK-035"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_11
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-11"
+        category: "model-switch races"
+        threats: ["TH-23"]
+        attack: "During orientation the model requests a write, a shell command, a Git action, cleanup, an install, a permission change and an extension-contributed tool."
+        expected: "Every request is denied by the runtime; reads continue; nothing is written."
+        scenarios: ["HO-03"]
+        slot: "tests/integration/handoff/readonly_orientation"
+        owner_tasks: ["TASK-045", "TASK-031"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_12
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-12"
+        category: "model-switch races"
+        threats: ["TH-22", "TH-23"]
+        attack: "Turn orientation off while orientation is running."
+        expected: "The change applies at the next safe boundary; no write access opens instantly; policy and context still apply."
+        scenarios: ["HO-04"]
+        slot: "tests/integration/handoff/orientation_disabled"
+        owner_tasks: ["TASK-045"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_13
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-13"
+        category: "model-switch races"
+        threats: ["TH-22", "TH-54"]
+        attack: "Switch the foreground to LCL workspace B while workspace A's session switches models."
+        expected: "A's binding, rules and authority stay unchanged and B stays in the foreground."
+        scenarios: ["HO-09"]
+        slot: "tests/integration/workspaces/foreground_background_isolation"
+        owner_tasks: ["TASK-044", "TASK-017"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_14
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-14"
+        category: "new-provider data disclosure"
+        threats: ["TH-21"]
+        attack: "Exhaust provider A, then choose provider B, which is not approved for this workspace."
+        expected: "No workspace content reaches B before the disclosure approval; the kickoff waits for it."
+        scenarios: ["HO-09"]
+        slot: "tests/integration/handoff/quota_exhaustion_switch"
+        owner_tasks: ["TASK-044", "TASK-068"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_15
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-15"
+        category: "new-provider data disclosure"
+        threats: ["TH-21", "TH-19"]
+        attack: "Configure a fallback provider and a more expensive tier, then hit the usage limit."
+        expected: "No automatic switch to either; the session pauses and shows the limit."
+        scenarios: ["HO-01"]
+        slot: "tests/unit/provider_registry"
+        owner_tasks: ["TASK-041", "TASK-044"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_16
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-16"
+        category: "new-provider data disclosure"
+        threats: ["TH-21", "TH-25"]
+        attack: "Ask a cloud provider to work on a local-only workspace, and point a \"local\" endpoint at a LAN address over plain HTTP."
+        expected: "Content is blocked until the user changes the workspace policy; plain HTTP to a non-loopback address is refused."
+        scenarios: []
+        slot: "tests/unit/provider_registry"
+        owner_tasks: ["TASK-041", "TASK-043"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_17
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-17"
+        category: "unsafe cleanup"
+        threats: ["TH-18"]
+        attack: "Cleanup in a workspace holding untracked user files, regression fixtures, source archives, evidence and task-created temporary files."
+        expected: "Only the files the journal records as created by the task are removed; everything else is byte-identical."
+        scenarios: ["Q5-RC-02"]
+        slot: "GAP-06"
+        owner_tasks: ["TASK-037", "TASK-054"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_18
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-18"
+        category: "unsafe cleanup"
+        threats: ["TH-18", "TH-23"]
+        attack: "A failed task, a cancelled run and a read-only orientation each attempt cleanup deletions, and an agent asks for git clean -fdx, reset --hard and stash."
+        expected: "Orientation is denied; failed and cancelled work may remove only its own staging; no blanket command exists as a tool."
+        scenarios: ["Q5-RC-04", "HO-03"]
+        slot: "GAP-06"
+        owner_tasks: ["TASK-053", "TASK-054", "TASK-045"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_19
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-19"
+        category: "unsafe cleanup"
+        threats: ["TH-18"]
+        attack: "A cleanup removes a file a test needs."
+        expected: "The post-cleanup verification fails and the task stays blocked until it passes again."
+        scenarios: ["Q5-RC-03"]
+        slot: "GAP-06"
+        owner_tasks: ["TASK-054"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_20
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-20"
+        category: "active help content"
+        threats: ["TH-51"]
+        attack: "A manual page with script tags, event handlers, javascript: and data: links, a remote image, an iframe, a form and a file link, opened while network requests are monitored."
+        expected: "Shown as text or dropped; no script runs; no network request is made."
+        scenarios: ["MAN-04"]
+        slot: "tests/e2e/help/offline_manuals"
+        owner_tasks: ["TASK-071", "TASK-072"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_21
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-21"
+        category: "active help content"
+        threats: ["TH-51", "TH-54"]
+        attack: "Open and search help during an agent run with unsaved buffers."
+        expected: "No binding, focus or buffer changes; no project data leaves the device."
+        scenarios: ["MAN-04"]
+        slot: "tests/e2e/help/search_and_navigation"
+        owner_tasks: ["TASK-071"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_22
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-22"
+        category: "general"
+        threats: ["TH-06", "TH-37", "TH-44"]
+        attack: "Fresh install on both devices; an unpaired request, and a paired request in the direction that has no grant."
+        expected: "Receiving and startup are off; both requests are denied with no change (RC-T01)."
+        scenarios: ["RC-T01"]
+        slot: "tests/e2e/cross-device/remote_agent_control"
+        owner_tasks: ["TASK-022", "TASK-030", "TASK-060", "TASK-070"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_23
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-23"
+        category: "general"
+        threats: ["TH-45", "TH-46", "TH-47"]
+        attack: "The RC-T08 matrix: malformed, wrong device, wrong user, wrong session, wrong workspace, missing scope, stale revision, revoked epoch, expired request and replayed approval."
+        expected: "Each is rejected at admission or at the execution check, with an audit record and no effect."
+        scenarios: ["RC-T08"]
+        slot: "tests/security/remote/explicit_target_binding"
+        owner_tasks: ["TASK-007", "TASK-022", "TASK-070"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_24
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-24"
+        category: "general"
+        threats: ["TH-07", "TH-08"]
+        attack: "The RC-T12 set: a label with shell metacharacters, extra arguments, a binary path, a URL or deep link, a replaced desktop entry with the same ID, and an Android intent with extras."
+        expected: "All denied; no command injection, path escape or allowlist bypass; no secret in diagnostics."
+        scenarios: ["RC-T12"]
+        slot: "SG-09"
+        owner_tasks: ["TASK-024", "TASK-070"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_25
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-25"
+        category: "general"
+        threats: ["TH-43", "TH-50", "TH-01", "TH-02"]
+        attack: "The RC-T15 set: a TLS downgrade, an unpinned and a revoked certificate, an oversized frame, a flood, queue overflow, a wrong-uid IPC client, an oversized IPC message and the off-LAN route."
+        expected: "Each is refused or limited, in isolated authorized environments only."
+        scenarios: ["RC-T15"]
+        slot: "GAP-04"
+        owner_tasks: ["TASK-060", "TASK-070", "TASK-025"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_26
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-26"
+        category: "general"
+        threats: ["TH-02", "TH-03", "TH-04"]
+        attack: "Read the fuse wire of the packaged binary; start it with ELECTRON_RUN_AS_NODE, NODE_OPTIONS and --inspect; start the backend without its token; check the renderer's preferences and the children's environment."
+        expected: "Fuses as SI-28 requires; the variables and flags have no effect; the backend refuses to serve; no secret in any child environment."
+        scenarios: []
+        slot: "SG-05"
+        owner_tasks: ["TASK-009", "TASK-073"]
+        platforms: ["desktop"]
+
+DATA:
+    ID: data.sec_tt_27
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-27"
+        category: "general"
+        threats: ["TH-08", "TH-09", "TH-10", "TH-11"]
+        attack: "Inspect the merged manifest; send intents with extras and deep links; trigger notification actions on the lock screen; take a backup."
+        expected: "Only the allowed components are exported; nothing acts without the user; the backup contains no state or keys."
+        scenarios: ["RC-T06", "RC-T07"]
+        slot: "SG-04"
+        owner_tasks: ["TASK-057", "TASK-060"]
+        platforms: ["android"]
+
+DATA:
+    ID: data.sec_tt_28
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-28"
+        category: "general"
+        threats: ["TH-16", "TH-24", "TH-35", "TH-52"]
+        attack: "Seed known secrets, then exercise logs, prompts, state, audit, sync, crash reports and tool environments."
+        expected: "No secret appears in any of them."
+        scenarios: []
+        slot: "tests/security/credentials/secret_redaction"
+        owner_tasks: ["TASK-025", "TASK-026"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_29
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-29"
+        category: "general"
+        threats: ["TH-24", "TH-35"]
+        attack: "Make the OS credential store unavailable or locked."
+        expected: "Operations needing a secret are blocked with a visible reason; nothing is stored in plaintext or a weaker store."
+        scenarios: []
+        slot: "tests/security/credentials/credential_storage"
+        owner_tasks: ["TASK-025"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_30
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-30"
+        category: "general"
+        threats: ["TH-14"]
+        attack: "Tool calls with \"..\", absolute paths, symbolic and hard links, case and Unicode aliases, and a path swapped between check and open."
+        expected: "Every attempt fails inside the root; nothing outside is read or written."
+        scenarios: []
+        slot: "tests/security/permissions/project_confinement"
+        owner_tasks: ["TASK-023", "TASK-032"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_31
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-31"
+        category: "general"
+        threats: ["TH-13", "TH-33"]
+        attack: "Instruction text in files, tool output, extension diagnostics and model replies."
+        expected: "Decisions are unchanged by any of it."
+        scenarios: []
+        slot: "tests/security/permissions/untrusted_instructions"
+        owner_tasks: ["TASK-022", "TASK-040"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_32
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-32"
+        category: "general"
+        threats: ["TH-31", "TH-32", "TH-33"]
+        attack: "An extension calls for agent tools, approvals, secrets, state and remote control, and a crafted .vsix is installed."
+        expected: "Every call fails; installation stays disabled until TASK-021 enables it with bounded extraction."
+        scenarios: []
+        slot: "tests/security/permissions/extension_authority"
+        owner_tasks: ["TASK-021"]
+        platforms: ["desktop"]
+
+DATA:
+    ID: data.sec_tt_33
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-33"
+        category: "general"
+        threats: ["TH-39", "TH-40", "TH-42"]
+        attack: "A package with a bad signature, one signed by another key, an older version, an interrupted update, and a migration of a profile with receiving on, grants and revocations."
+        expected: "The first three are refused; the interrupted update recovers; security state is identical after migration."
+        scenarios: ["RC-T16"]
+        slot: "tests/e2e/release/update_recovery"
+        owner_tasks: ["TASK-073", "TASK-008"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_34
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-34"
+        category: "general"
+        threats: ["TH-36", "TH-34", "TH-38"]
+        attack: "Each step-up action without reauthentication; a recovery flow; an offline unlock attempt."
+        expected: "Step-up is required each time; recovery restores no device trust; offline unlock releases nothing new."
+        scenarios: []
+        slot: "GAP-05"
+        owner_tasks: ["TASK-029", "TASK-027"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_35
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-35"
+        category: "general"
+        threats: ["TH-15", "TH-05"]
+        attack: "Repository build and test scripts that read the home folder and environment, write outside the workspace, open connections, install autostart entries and fork without limit."
+        expected: "Confinement or mediation stops each, or the command class required approval; resource limits hold."
+        scenarios: []
+        slot: "SG-01"
+        owner_tasks: ["TASK-024", "TASK-033"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_36
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-36"
+        category: "general"
+        threats: ["TH-16", "TH-25"]
+        attack: "Tools and extensions connect to destinations without a grant; check listening ports."
+        expected: "Denied; the only listener is the receiver while receiving is on."
+        scenarios: []
+        slot: "SG-02"
+        owner_tasks: ["TASK-025"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_37
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-37"
+        category: "general"
+        threats: ["TH-49", "TH-55"]
+        attack: "Generate every audited event, then try to edit the trail as an agent and as a peer."
+        expected: "Every event has the required fields and no content or secrets; edits are refused or detected."
+        scenarios: []
+        slot: "SG-06"
+        owner_tasks: ["TASK-026"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_38
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-38"
+        category: "general"
+        threats: ["TH-30"]
+        attack: "Validate and compile specifications whose actions would write files, start processes or use the network."
+        expected: "No host effect occurs; evaluation is bounded."
+        scenarios: []
+        slot: "SG-07"
+        owner_tasks: ["TASK-046", "TASK-049"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_tt_39
+    TYPE: OBJECT[REF(type.sec_threat_test)]
+    VALUE:
+        test_id: "TT-39"
+        category: "general"
+        threats: ["TH-41"]
+        attack: "Introduce a dependency with a known advisory, an unapproved install script and an unknown license in CI."
+        expected: "The gate fails the change."
+        scenarios: []
+        slot: "SG-08"
+        owner_tasks: ["TASK-005", "TASK-073"]
+        platforms: ["desktop", "android"]
+
+DATA:
+    ID: data.sec_threat_tests
+    TYPE: LIST[OBJECT[REF(type.sec_threat_test)]]
+    VALUE: [REF(data.sec_tt_01), REF(data.sec_tt_02), REF(data.sec_tt_03), REF(data.sec_tt_04), REF(data.sec_tt_05), REF(data.sec_tt_06), REF(data.sec_tt_07), REF(data.sec_tt_08), REF(data.sec_tt_09), REF(data.sec_tt_10), REF(data.sec_tt_11), REF(data.sec_tt_12), REF(data.sec_tt_13), REF(data.sec_tt_14), REF(data.sec_tt_15), REF(data.sec_tt_16), REF(data.sec_tt_17), REF(data.sec_tt_18), REF(data.sec_tt_19), REF(data.sec_tt_20), REF(data.sec_tt_21), REF(data.sec_tt_22), REF(data.sec_tt_23), REF(data.sec_tt_24), REF(data.sec_tt_25), REF(data.sec_tt_26), REF(data.sec_tt_27), REF(data.sec_tt_28), REF(data.sec_tt_29), REF(data.sec_tt_30), REF(data.sec_tt_31), REF(data.sec_tt_32), REF(data.sec_tt_33), REF(data.sec_tt_34), REF(data.sec_tt_35), REF(data.sec_tt_36), REF(data.sec_tt_37), REF(data.sec_tt_38), REF(data.sec_tt_39)]
+    DESCRIPTION: "All threat tests, TT-01 to TT-39."
+
+DATA:
+    ID: data.sec_test_gaps
+    TYPE: LIST[STRING]
+    VALUE: ["SG-01 | No test slot covers process mediation and OS confinement: allowlisted environment, working folder, resource limits, no elevation, escape attempts | TASK-024 adds it under tests/security/ | TH-15, TH-19, TH-25", "SG-02 | No test slot covers network permissioning: denied egress for tools and extensions, allowlisted destinations, no listener besides the receiver | TASK-025 adds it | TH-16, TH-25", "SG-03 | No test slot covers update verification: bad and foreign signatures, downgrade, interruption, security state kept across migration | TASK-073 adds it, with TASK-008 for migrations; no task builds the updater (GAP-07) | TH-39, TH-40", "SG-04 | No test slot covers Android component exposure: exported components, intent extras and deep links, notification actions, PendingIntent mutability, backup exclusion | TASK-057 and TASK-060 add it | TH-08 to TH-11", "SG-05 | No test slot covers Desktop runtime hardening: Electron fuses, the IDE backend token and its fail-closed start, renderer preferences, environment scrubbing | TASK-009 adds it and TASK-073 audits it | TH-02 to TH-04", "SG-06 | No test slot covers audit content and integrity: required fields, no secrets or content, append-only for agents and peers, bounded growth | TASK-026 adds it | TH-49, TH-55", "SG-07 | No test slot proves that evaluating LCL inside Nexees has no host effect | TASK-046 and TASK-049 add it | TH-30", "SG-08 | No CI slot runs the dependency advisory and license gate of DS-07 and DS-08 | TASK-005 adds it and TASK-073 audits it | TH-41", "SG-09 | No test slot covers application-launch abuse (RC-T12): crafted labels, arguments, paths, deep links and replaced entries | TASK-024 and TASK-070 add it | TH-07"]
+    DESCRIPTION: "Test slots the threat model needs that the source layout lacks, beyond the architecture's GAP-01 to GAP-07, with the task that adds each."

@@ -1,0 +1,123 @@
+TASK-004 final verification after cleanup, 2026-10-04T00:00:06+02:00.
+Read-only, except this file.
+
+Snapshot before: 3e87a9a7f540b1724d5d2d8a297fe66ac0e3458c85793ea1e7f5ea0b474ee6aa
+
+== LCL projects ==
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/security/security.lcl.txt
+  security.lcl.txt passed every stage through static_checking.
+  exit code: 0
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/security/security.lcl.txt
+  security.lcl.txt passed every stage through preflight.
+  exit code: 0
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/security/security.lcl.txt
+  status.succeeded
+    VERIFY verify.sec_trust_order = TRUE (required)
+    VERIFY verify.sec_threat_categories = TRUE (required)
+    VERIFY verify.sec_threats_traced = TRUE (required)
+    VERIFY verify.sec_invariants_enforced = TRUE (required)
+    VERIFY verify.sec_test_categories = TRUE (required)
+    VERIFY verify.sec_remote_scope = TRUE (required)
+    VERIFY verify.sec_remote_design_only = TRUE (required)
+    VERIFY verify.sec_safe_defaults = TRUE (required)
+    VERIFY verify.sec_examples_consistent = TRUE (required)
+    VERIFY verify.sec_record_delivery = TRUE (required)
+    SUCCESS success.sec_record ALL = TRUE
+  exit code: 0
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+  architecture.lcl.txt passed every stage through static_checking.
+  exit code: 0
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+  architecture.lcl.txt passed every stage through preflight.
+  exit code: 0
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+  status.succeeded
+    VERIFY verify.arch_review_gates = TRUE (required)
+    VERIFY verify.arch_reviews_hold = TRUE (required)
+    VERIFY verify.arch_decisions_accepted_by_task_002 = TRUE (required)
+    VERIFY verify.arch_renderer_resolved = TRUE (required)
+    VERIFY verify.arch_open_decision_status = TRUE (required)
+    VERIFY verify.arch_remote_scope = TRUE (required)
+    VERIFY verify.arch_remote_design_only = TRUE (required)
+    VERIFY verify.arch_android_host_standalone = TRUE (required)
+    VERIFY verify.arch_state_owners = TRUE (required)
+    VERIFY verify.arch_authority_never_synced = TRUE (required)
+    VERIFY verify.arch_subsystem_ids = TRUE (required)
+    VERIFY verify.arch_receiver_uses_no_model = TRUE (required)
+    VERIFY verify.arch_record_delivery = TRUE (required)
+    SUCCESS success.arch_record ALL = TRUE
+  exit code: 0
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+  dependencies.lcl.txt passed every stage through static_checking.
+  exit code: 0
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+  dependencies.lcl.txt passed every stage through preflight.
+  exit code: 0
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/dependencies/dependencies.lcl.txt
+  status.succeeded
+    VERIFY verify.dep_classifications_valid = TRUE (required)
+    VERIFY verify.dep_scopes_valid = TRUE (required)
+    VERIFY verify.dep_foundation = TRUE (required)
+    VERIFY verify.dep_shared_core_portable = TRUE (required)
+    VERIFY verify.dep_record_delivery = TRUE (required)
+    SUCCESS success.dep_record ALL = TRUE
+  exit code: 0
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+  charter.lcl.txt passed every stage through static_checking.
+  exit code: 0
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+  charter.lcl.txt passed every stage through preflight.
+  exit code: 0
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+  status.succeeded
+    VERIFY verify.charter_phase_total = TRUE (required)
+    VERIFY verify.charter_record_delivery = TRUE (required)
+    SUCCESS success.charter_record ALL = TRUE
+  exit code: 0
+
+== Cross-checks ==
+$ python3 -B docs/evidence/TASK-004/check_threat_model.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  PASS  every threat test names threats, a slot or gap, pack scenarios, later owners and platforms
+  55 threats, 30 invariants, 39 threat tests, 11 remote contracts
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-003/check_dependencies.py
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-001/check_charter_against_pack.py <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2
+  ALL CHECKS PASSED
+  exit code: 0
+
+== Pack, LCL repository, LCL SDK, home caches, processes ==
+Pack files newer than MANIFEST.json: 0
+MANIFEST.json SHA-256 is 8d9d0080…07e4
+LCL repository: HEAD fa1592b955639c4839f50861f9e89c5110064144, porcelain status lines: 0
+LCL SDK files written since TASK-004 began (2026-10-03 23:02:53): 0
+Files in ~/.cargo ~/.gradle ~/.android ~/.kotlin ~/.m2 ~/.rustup ~/.npm ~/.cache/electron ~/.cache/node-gyp ~/.electron-gyp ~/.theia written since TASK-004 began: 0
+Task processes running (toolchain binaries, lcl, nested KWin): 0
+
+== Git and worktree ==
+$ git diff --stat
+   FILE_TREE.txt | 213 +++++++++++++++++++++++++++++++++-------------------------
+   README.md     |  15 ++++-
+   SECURITY.md   |   7 ++
+   3 files changed, 142 insertions(+), 93 deletions(-)
+Modified tracked files: ['FILE_TREE.txt', 'README.md', 'SECURITY.md']
+Staged: 0; deleted: 0; untracked files: 21
+Untracked files outside docs/security and docs/evidence/TASK-004: 0
+Ignored files in the checkout (they would be missing from the commit): 0
+Files a commit of this worktree would hold, outside the receipt folder, equal the snapshot listing: 444 files
+HEAD and its parents: bccc9b1 a590eab 2eaa199
+
+== Layout ==
+Placeholder files still carrying their marker line: 278
+PNG files unchanged against HEAD: True
+Temporary files in the checkout (__pycache__, *.pyc, *.tmp, *.swp, *~, *.log other than the evidence log pc_receiver.log): 0
+FILE_TREE.txt matches the tree (449 files): True (with the six receipt files planned)
+
+Snapshot after: 3e87a9a7f540b1724d5d2d8a297fe66ac0e3458c85793ea1e7f5ea0b474ee6aa; unchanged by this verification: True
+
+Result: every exit 0 and every inspection as expected

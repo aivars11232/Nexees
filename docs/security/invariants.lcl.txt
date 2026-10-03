@@ -1,0 +1,417 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.sec_invariants
+    NAME: "Immutable security invariants"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "The security invariants no setting, specification, content, model, extension, peer or flag can weaken (binding.sec_immutability). Each names its sources, the subsystems and module slots that enforce it, the tasks that build that enforcement and the tests that will prove it."
+
+DATA:
+    ID: data.sec_si_01
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-01"
+        title: "Trust order and data boundary"
+        statement: "Authority follows the eight trust levels. Content can never raise its own level or override a higher one: instruction-like text in repository files, tool output, model replies, imported or synced content, extension output, help pages and remote status is data, however it is worded."
+        sources: ["POL.policies_security_baseline.02", "POL.policies_security_baseline.04", "authority_hierarchy", "C10", "EXT-04"]
+        enforced_by: ["SS-SECURITY", "SS-CONTEXT", "IF-TOOL"]
+        enforcement_points: ["core/security/authority_policy", "core/context/context_builder"]
+        owner_tasks: ["TASK-022", "TASK-040", "TASK-031"]
+        tests: ["tests/security/permissions/untrusted_instructions"]
+
+DATA:
+    ID: data.sec_si_02
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-02"
+        title: "One authorization point, fail closed"
+        statement: "Every effect, whether a file write, command, Git operation, network call, application launch, setting change, grant change, remote execution, sync apply, import publication or cleanup, passes one permission-engine decision on the executing host. Missing, ambiguous or unknown information means deny."
+        sources: ["C9", "C10", "R9", "AD-03", "RC-25", "POL.policies_security_baseline.03"]
+        enforced_by: ["SS-SECURITY", "SS-TOOLS", "IF-AUTHORIZE", "IF-TOOL"]
+        enforcement_points: ["core/security/permission_engine", "core/tools/tool_dispatch"]
+        owner_tasks: ["TASK-022", "TASK-031"]
+        tests: ["tests/unit/permission_engine", "tests/unit/tool_dispatch"]
+
+DATA:
+    ID: data.sec_si_03
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-03"
+        title: "Least privilege, no self-granted authority"
+        statement: "Every principal starts with no capability. Grants are scoped to the narrowest target, such as a workspace, a path set, a command class, an application, a peer and a direction, and are revocable and time-limited where possible. No model, agent, extension, specification, synced record, peer or setting can create, widen or extend a grant, approval or trust for itself."
+        sources: ["POL.policies_security_baseline.03", "authority_hierarchy", "RC-18", "C10"]
+        enforced_by: ["SS-SECURITY", "IF-AUTHORIZE"]
+        enforcement_points: ["core/security/approval_grants", "core/security/permission_engine"]
+        owner_tasks: ["TASK-022", "TASK-055"]
+        tests: ["tests/unit/approval_grants", "tests/security/permissions/untrusted_instructions"]
+
+DATA:
+    ID: data.sec_si_04
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-04"
+        title: "Workspace confinement"
+        statement: "Tools act only beneath the bound workspace root, resolved without races. Absolute paths, traversal, symbolic or hard links, special files and case or Unicode aliases cannot reach outside it, and another workspace needs its own explicit grant."
+        sources: ["POL.policies_security_baseline.03", "C3", "AD-10", "STOP-04"]
+        enforced_by: ["SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-TOOLS"]
+        enforcement_points: ["core/security/workspace_scope", "platform/desktop/storage/scoped_filesystem", "platform/android/storage/scoped_filesystem", "core/tools/file_tools"]
+        owner_tasks: ["TASK-023", "TASK-032", "TASK-062"]
+        tests: ["tests/security/permissions/project_confinement"]
+
+DATA:
+    ID: data.sec_si_05
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-05"
+        title: "Execution binding and one executor"
+        statement: "A session's workspace, execution host, checkout revision, approved specification revision, model and generation stay fixed until an explicit rebind or stop. Focus, provider switches, sync, connectivity and reconnects never move them, and one checkout revision never has two authoritative executors."
+        sources: ["C3", "C21", "AD-06", "STOP-07", "A7"]
+        enforced_by: ["SS-AGENT", "SS-WORKSPACES"]
+        enforcement_points: ["core/agent/agent_runtime", "core/agent/execution_fence", "core/workspaces/workspace_binding"]
+        owner_tasks: ["TASK-015", "TASK-017", "TASK-034"]
+        tests: ["tests/unit/workspace_binding", "tests/e2e/desktop/workspace_switching", "tests/e2e/cross-device/independent_workspaces", "RC-T13", "RC-T14"]
+
+DATA:
+    ID: data.sec_si_06
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-06"
+        title: "Mediated, confined processes"
+        statement: "Commands run only through process mediation: a working directory in the workspace, an allowlisted environment without secrets or agent sockets, bounded resources and no elevation. OS confinement is used where the platform offers it; where it does not, that is a reported capability gap and running repository code needs explicit approval."
+        sources: ["POL.policies_security_baseline.03", "A4", "DS-11"]
+        enforced_by: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-TOOLS"]
+        enforcement_points: ["platform/desktop/execution/process_host", "platform/desktop/execution/sandbox_backend", "platform/android/execution/local_tool_host", "core/tools/command_tools"]
+        owner_tasks: ["TASK-024", "TASK-033", "TASK-066"]
+        tests: ["SG-01"]
+
+DATA:
+    ID: data.sec_si_07
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-07"
+        title: "Network permissioning"
+        statement: "Tools and extensions reach the network only through network policy, to destinations a grant names. Nexees listens on no port except the authenticated transport receiver while receiving is enabled and loopback endpoints of its own components that authenticate their callers."
+        sources: ["POL.policies_security_baseline.03", "RC-19"]
+        enforced_by: ["SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        enforcement_points: ["core/security/network_policy", "platform/desktop/execution/process_host"]
+        owner_tasks: ["TASK-025", "TASK-024", "TASK-070"]
+        tests: ["SG-02"]
+
+DATA:
+    ID: data.sec_si_08
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-08"
+        title: "Secret isolation"
+        statement: "Provider credentials, account tokens, recovery codes, second-factor seeds, device private keys and signing keys live only in the OS-backed credential store. They never enter Git, workspace files, the state store, prompts, logs, audit records, diagnostics, sync, crash reports, tool or extension environments, or test fixtures. If the store is unavailable, the operation that needs the secret is blocked; there is no weaker fallback."
+        sources: ["POL.policies_security_baseline.05", "POL.policies_security_baseline.08", "R17", "STOP-04"]
+        enforced_by: ["SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-ACCOUNTS"]
+        enforcement_points: ["core/security/secret_redaction", "platform/desktop/secrets/credential_store", "platform/android/secrets/credential_store", "core/accounts/account_recovery"]
+        owner_tasks: ["TASK-025", "TASK-029"]
+        tests: ["tests/security/credentials/credential_storage", "tests/security/credentials/secret_redaction"]
+
+DATA:
+    ID: data.sec_si_09
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-09"
+        title: "Separate authorities"
+        statement: "Account login, local device unlock, provider credentials, device pairing and directional grants are independent (AU-01 to AU-05). None implies another, pairing exports no credential, and compromising the account backend yields no device trust, grant or provider access."
+        sources: ["POL.policies_security_baseline.08", "SA-06", "C13"]
+        enforced_by: ["SS-ACCOUNTS", "SS-REMOTE", "SS-SECURITY", "IF-ACCOUNT"]
+        enforcement_points: ["core/accounts/account_service", "core/remote/pairing", "core/security/approval_grants"]
+        owner_tasks: ["TASK-027", "TASK-060", "TASK-022"]
+        tests: ["tests/security/remote/pairing_revocation", "GAP-05", "RC-T01"]
+
+DATA:
+    ID: data.sec_si_10
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-10"
+        title: "Directional grants held by the destination"
+        statement: "Remote authority exists only as a grant on the destination, per peer device, user, direction and capability, with a permission epoch. Grants and device trust are never synced, never inferred from pairing or an account, and never copied to the reverse direction."
+        sources: ["RC-03", "AD-04", "C30", "A6"]
+        enforced_by: ["SS-SECURITY", "SS-REMOTE"]
+        enforcement_points: ["core/security/approval_grants", "core/remote/device_registry"]
+        owner_tasks: ["TASK-022", "TASK-060", "TASK-070"]
+        tests: ["tests/unit/approval_grants", "RC-T01", "RC-T05"]
+
+DATA:
+    ID: data.sec_si_11
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-11"
+        title: "The destination decides at execution time"
+        statement: "The destination's permission engine checks an admitted remote request immediately before execution: the envelope, the current grant and epoch, the lock state, capabilities, policy and freshness. Nothing the sender decided or displayed counts."
+        sources: ["RC-10", "C30", "AD-04"]
+        enforced_by: ["SS-REMOTE", "SS-SECURITY", "IF-REMOTE", "IF-AUTHORIZE"]
+        enforcement_points: ["core/remote/command_dispatch", "core/security/permission_engine"]
+        owner_tasks: ["TASK-022", "TASK-070", "TASK-060"]
+        tests: ["tests/security/remote/explicit_target_binding", "RC-T08"]
+
+DATA:
+    ID: data.sec_si_12
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-12"
+        title: "Explicit typed targets"
+        statement: "Every remote request carries the full envelope of type.sec_request_envelope, bound to the authenticated channel peer. A missing, ambiguous or mismatched destination, user, session, workspace or revision is rejected; it is never resolved to the current or foreground workspace."
+        sources: ["RC-09", "C30", "A5"]
+        enforced_by: ["SS-DOMAIN-PROTOCOL", "SS-REMOTE", "IF-REMOTE"]
+        enforcement_points: ["core/protocol/messages", "core/remote/command_dispatch"]
+        owner_tasks: ["TASK-006", "TASK-007", "TASK-070"]
+        tests: ["tests/security/remote/explicit_target_binding", "tests/conformance/protocol/client_protocol_compatibility", "RC-T08"]
+
+DATA:
+    ID: data.sec_si_13
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-13"
+        title: "Single use, expiry and no blind replay"
+        statement: "Request IDs and approvals are single-use, expire, and are bound to their exact request. A replayed, expired, stale-epoch or stale-revision request or approval is rejected. An unknown outcome of a non-idempotent action blocks its replay until reconciled, and commands and approvals never travel as sync data."
+        sources: ["RC-17", "C22", "A5", "STOP-09"]
+        enforced_by: ["SS-REMOTE", "SS-STATE", "SS-SECURITY"]
+        enforcement_points: ["core/remote/remote_sessions", "core/state/operation_journal", "core/security/approval_grants"]
+        owner_tasks: ["TASK-007", "TASK-026", "TASK-035", "TASK-070"]
+        tests: ["tests/security/remote/stale_approval_rejection", "RC-T08", "RC-T09", "RC-T10"]
+
+DATA:
+    ID: data.sec_si_14
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-14"
+        title: "Protected sensitive changes"
+        statement: "Disabling the lock, granting control rights, revealing or exporting secrets, changing startup or receiving, changing trusted devices, weakening authentication and disabling a security control need an explicit local user action, with step-up where the auth policy requires it. They are never accepted from a remote request or on a model's request alone."
+        sources: ["RC-18", "C13", "C14", "auth_and_settings"]
+        enforced_by: ["SS-SECURITY", "SS-ACCOUNTS", "SS-SETTINGS", "IF-ACCOUNT", "IF-SETTINGS"]
+        enforcement_points: ["core/security/permission_engine", "core/accounts/mfa_service", "core/settings/settings_model"]
+        owner_tasks: ["TASK-022", "TASK-029", "TASK-030", "TASK-055"]
+        tests: ["tests/unit/settings", "GAP-05", "RC-T07"]
+
+DATA:
+    ID: data.sec_si_15
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-15"
+        title: "Remote access off by default and stoppable at once"
+        statement: "Receiving remote control, start-at-login and keeping access after the window closes are off on a fresh install, are separate visible settings, and are never turned on by pairing, login, update, sync or a remote request. Stopping remote access revokes admission and pending approvals at once while local work continues."
+        sources: ["RC-02", "RC-07", "RC-24", "C29"]
+        enforced_by: ["SS-SETTINGS", "SS-REMOTE", "SS-LOCAL-HOST", "IF-SETTINGS"]
+        enforcement_points: ["core/settings/settings_model", "core/remote/remote_sessions", "apps/desktop/src/application_host"]
+        owner_tasks: ["TASK-030", "TASK-009", "TASK-056", "TASK-060"]
+        tests: ["RC-T01", "RC-T11", "GAP-02"]
+
+DATA:
+    ID: data.sec_si_16
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-16"
+        title: "Authenticated device transport"
+        statement: "Device-to-device traffic uses only the mutually authenticated, encrypted channel from an audited library, with the peer key pinned at pairing and bounded messages, rates and queues. There is no home-made cryptography, no unauthenticated command port, no automatic router or firewall change and no relay without approval."
+        sources: ["RC-19", "A5", "POL.policies_security_baseline.08", "STOP-04"]
+        enforced_by: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-REMOTE", "IF-TRANSPORT"]
+        enforcement_points: ["platform/desktop/transport/secure_channel", "platform/android/transport/secure_channel", "core/remote/pairing"]
+        owner_tasks: ["TASK-060", "TASK-070"]
+        tests: ["RC-T15", "GAP-04", "tests/security/remote/pairing_revocation"]
+
+DATA:
+    ID: data.sec_si_17
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-17"
+        title: "Local IPC caller identity"
+        statement: "The Desktop window-to-host channel admits only processes of the same OS user, checked by the OS peer credential, in a private folder, with bounded, schema-validated messages. The host runs without elevation and applies the same permission engine to UI intents as to any request."
+        sources: ["RC-23", "PD-LOCAL-IPC", "SA-02"]
+        enforced_by: ["SS-LOCAL-HOST", "SS-PLATFORM-DESKTOP", "SS-DOMAIN-PROTOCOL", "IF-ATTACH"]
+        enforcement_points: ["apps/desktop/src/application_host", "core/protocol/serialization"]
+        owner_tasks: ["TASK-009", "TASK-024"]
+        tests: ["RC-T15", "GAP-01", "GAP-04"]
+
+DATA:
+    ID: data.sec_si_18
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-18"
+        title: "Untrusted input is staged, bounded and inert"
+        statement: "Archives, imported files and synced changes are parsed in app-owned staging with finite limits, path and type validation and no execution. Nothing partial is published, and nothing imported or synced gains authority before validation and explicit adoption."
+        sources: ["I2", "I4", "I5", "A6", "C23", "POL.policies_security_baseline.09"]
+        enforced_by: ["SS-LCL", "SS-SYNC", "SS-WORKSPACES"]
+        enforcement_points: ["core/lcl/importing/archive_intake", "core/lcl/importing/safe_extraction", "core/lcl/importing/import_transaction", "core/sync/sync_coordinator"]
+        owner_tasks: ["TASK-051", "TASK-052", "TASK-063", "TASK-069"]
+        tests: ["tests/security/archives/path_escape", "tests/security/archives/archive_limits", "tests/security/archives/ambiguous_paths", "IM-05", "IM-06"]
+
+DATA:
+    ID: data.sec_si_19
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-19"
+        title: "LCL constrains, never empowers"
+        statement: "An adopted, validated specification can narrow work but never grants a permission, widens a scope or weakens an invariant. Nexees calls the LCL core for parsing, validation, diagnostics and compilation only, and evaluating a specification has no file, process or network effect."
+        sources: ["C6", "C23", "authority_hierarchy", "SA-05"]
+        enforced_by: ["SS-LCL", "SS-SECURITY", "IF-LCL"]
+        enforcement_points: ["integrations/lcl/core_bridge", "core/lcl/execution_binding", "core/security/authority_policy"]
+        owner_tasks: ["TASK-046", "TASK-049", "TASK-050"]
+        tests: ["tests/integration/lcl-import/spec_revision_adoption", "SG-07", "IM-04"]
+
+DATA:
+    ID: data.sec_si_20
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-20"
+        title: "Read-only orientation and the generation fence"
+        statement: "After a model switch and until promotion, the session has only read, list, search and state-inspection tools. Replies and tool calls from an obsolete generation are rejected, and the orientation toggle never grants or removes a permission."
+        sources: ["H2", "H3", "C24", "B23", "POL.policies_security_baseline.09"]
+        enforced_by: ["SS-PROVIDERS", "SS-AGENT", "SS-TOOLS"]
+        enforcement_points: ["core/providers/handoff/orientation_controller", "core/agent/execution_fence", "core/tools/tool_dispatch"]
+        owner_tasks: ["TASK-044", "TASK-045", "TASK-031"]
+        tests: ["tests/integration/handoff/readonly_orientation", "tests/integration/handoff/stale_state", "HO-03", "HO-05"]
+
+DATA:
+    ID: data.sec_si_21
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-21"
+        title: "Explicit provider disclosure"
+        statement: "Workspace content goes only to a provider the user approved for that workspace under the disclosure policy. A new provider, a fallback or a different paid tier receives nothing before that approval, local-only content never leaves the device, and provider secrets never move between devices."
+        sources: ["H2", "C8", "A6", "provider_and_agent_model"]
+        enforced_by: ["SS-PROVIDERS", "SS-CONTEXT"]
+        enforcement_points: ["core/providers/provider_registry", "core/providers/handoff/model_switch", "core/context/context_builder"]
+        owner_tasks: ["TASK-041", "TASK-044", "TASK-068", "TASK-040"]
+        tests: ["HO-09", "tests/integration/handoff/quota_exhaustion_switch", "tests/unit/provider_registry"]
+
+DATA:
+    ID: data.sec_si_22
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-22"
+        title: "Extension isolation"
+        statement: "Extensions are a separate principal without access to agent tools, the tool dispatch, approvals, grants, state, audit, secrets, provider credentials, remote control or sync. Their output is tool-output data, and installing extensions stays disabled until their confinement and package extraction are decided."
+        sources: ["EXT-01", "EXT-03", "EXT-04", "EXT-07", "AD-10", "STOP-04", "SA-08"]
+        enforced_by: ["SS-SECURITY", "SS-IDE"]
+        enforcement_points: ["core/security/extension_policy", "integrations/ide/extension_host_adapter", "integrations/ide/extension_registry_adapter"]
+        owner_tasks: ["TASK-021", "TASK-022"]
+        tests: ["tests/security/permissions/extension_authority"]
+
+DATA:
+    ID: data.sec_si_23
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-23"
+        title: "Passive help"
+        statement: "Manuals render as passive local content: no scripts, active HTML, remote images, implicit downloads, command links or network use. Opening help sends no project data and changes no binding, focus or buffer."
+        sources: ["manuals_and_help", "POL.policies_security_baseline.09", "MAN-04"]
+        enforced_by: ["SS-HELP", "IF-HELP"]
+        enforcement_points: ["core/help/manual_catalog", "core/help/help_navigation"]
+        owner_tasks: ["TASK-071", "TASK-072"]
+        tests: ["tests/e2e/help/offline_manuals", "tests/e2e/help/search_and_navigation", "MAN-04"]
+
+DATA:
+    ID: data.sec_si_24
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-24"
+        title: "Scoped cleanup"
+        statement: "Cleanup is an ordinary scoped tool action under the same permission engine. It removes only what the journal records as created by the task, never unknown or user files, never runs a blanket clean, reset or stash, and is not available during read-only orientation or to failed or cancelled work beyond its own staging."
+        sources: ["Q3", "Q5-RC-02", "Q5-RC-04", "STOP-10", "POL.policies_security_baseline.09"]
+        enforced_by: ["SS-TASKING", "SS-TOOLS", "SS-STATE"]
+        enforcement_points: ["core/tasking/cleanup_gate", "core/tools/file_tools", "core/state/operation_journal"]
+        owner_tasks: ["TASK-037", "TASK-053", "TASK-054"]
+        tests: ["Q5-RC-02", "Q5-RC-04", "GAP-06"]
+
+DATA:
+    ID: data.sec_si_25
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-25"
+        title: "Audit without secrets"
+        statement: "Every authorization decision, remote request, grant change, revocation, step-up and security-setting change is recorded with the request, normalized target, decision, policy revision, epoch and outcome, without secret values or unnecessary private content. Agents and peers can only append to the audit trail through SS-SECURITY."
+        sources: ["RC-22", "C9", "POL.policies_security_baseline.03"]
+        enforced_by: ["SS-SECURITY", "SS-STATE"]
+        enforcement_points: ["core/security/audit_log", "core/security/secret_redaction"]
+        owner_tasks: ["TASK-026", "TASK-022"]
+        tests: ["tests/security/credentials/secret_redaction", "SG-06"]
+
+DATA:
+    ID: data.sec_si_26
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-26"
+        title: "Verified updates that preserve security state"
+        statement: "An update is installed only after its signature and integrity are verified against a key that does not arrive with the update; a downgrade needs explicit owner action. Updates and migrations keep opt-in settings, grants, revocations and epochs exactly, never reset them to allow, and refuse incompatible peers instead of weakening."
+        sources: ["POL.policies_security_baseline.03", "RC-24", "STOP-08", "GAP-07"]
+        enforced_by: ["SS-UPDATES", "SS-BUILD-RELEASE", "SS-STATE"]
+        enforcement_points: ["core/updates/package_verification", "core/updates/migration_guard", "core/updates/update_service"]
+        owner_tasks: ["TASK-008", "TASK-073", "TASK-074", "TASK-075"]
+        tests: ["tests/e2e/release/update_recovery", "RC-T16", "SG-03"]
+
+DATA:
+    ID: data.sec_si_27
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-27"
+        title: "Settings cannot weaken invariants"
+        statement: "No setting, Developer Setting or specification can turn off an SI invariant. A setting that weakens isolation within the invariants needs an explicit warning and step-up, takes effect at a safe boundary, is audited, and is never imported or synced silently."
+        sources: ["POL.policies_security_baseline.06", "C14", "authority_hierarchy"]
+        enforced_by: ["SS-SETTINGS", "SS-SECURITY", "IF-SETTINGS"]
+        enforcement_points: ["core/settings/developer_settings", "core/security/authority_policy"]
+        owner_tasks: ["TASK-030", "TASK-022"]
+        tests: ["tests/unit/settings"]
+
+DATA:
+    ID: data.sec_si_28
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-28"
+        title: "Hardened Desktop runtime"
+        statement: "The packaged Desktop application cannot be used as a general interpreter or debugger: Electron's RunAsNode, NODE_OPTIONS and inspector-argument fuses are off, and its app archive is integrity-checked and the only code it loads. The IDE backend runs only when started by the application with its security token, and serves only that window; the environment passed to it and to its children is scrubbed of secrets."
+        sources: ["POL.policies_security_baseline.03", "SA-01", "PD-IDE-PLACEMENT"]
+        enforced_by: ["SS-BUILD-RELEASE", "SS-DESKTOP-CLIENT", "SS-IDE"]
+        enforcement_points: ["packaging/desktop/", "apps/desktop/src/main", "scripts/release/"]
+        owner_tasks: ["TASK-009", "TASK-021", "TASK-073"]
+        tests: ["SG-05"]
+
+DATA:
+    ID: data.sec_si_29
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-29"
+        title: "Minimal Android exposure"
+        statement: "Only the launcher activity and receivers of system-protected broadcasts are exported. Services and providers are internal, PendingIntents are immutable, and intent extras, deep links and notification actions can at most open a screen; they never approve, grant or execute. App data, including state and keys, is excluded from backups."
+        sources: ["POL.policies_security_baseline.03", "A3", "RC-18"]
+        enforced_by: ["SS-PLATFORM-ANDROID", "SS-ANDROID-CLIENT", "SS-BUILD-RELEASE"]
+        enforcement_points: ["apps/android/src/main", "platform/android/lifecycle/notification_backend", "packaging/android/"]
+        owner_tasks: ["TASK-057", "TASK-060"]
+        tests: ["SG-04"]
+
+DATA:
+    ID: data.sec_si_30
+    TYPE: OBJECT[REF(type.sec_invariant)]
+    VALUE:
+        invariant_id: "SI-30"
+        title: "Recoverable risky operations"
+        statement: "Before a substantial or risky operation there is a checkpoint, or the record states why rollback does not apply. Interrupted effects are reconciled from the journal, and an effect that already happened outside the workspace is never reported as rolled back."
+        sources: ["C12", "RC-24", "POL.policies_security_baseline.03"]
+        enforced_by: ["SS-STATE", "SS-TOOLS"]
+        enforcement_points: ["core/state/checkpoints", "core/state/recovery", "core/tools/tool_registry"]
+        owner_tasks: ["TASK-026", "TASK-038", "TASK-031"]
+        tests: ["tests/unit/state_recovery"]
+
+DATA:
+    ID: data.sec_invariants
+    TYPE: LIST[OBJECT[REF(type.sec_invariant)]]
+    VALUE: [REF(data.sec_si_01), REF(data.sec_si_02), REF(data.sec_si_03), REF(data.sec_si_04), REF(data.sec_si_05), REF(data.sec_si_06), REF(data.sec_si_07), REF(data.sec_si_08), REF(data.sec_si_09), REF(data.sec_si_10), REF(data.sec_si_11), REF(data.sec_si_12), REF(data.sec_si_13), REF(data.sec_si_14), REF(data.sec_si_15), REF(data.sec_si_16), REF(data.sec_si_17), REF(data.sec_si_18), REF(data.sec_si_19), REF(data.sec_si_20), REF(data.sec_si_21), REF(data.sec_si_22), REF(data.sec_si_23), REF(data.sec_si_24), REF(data.sec_si_25), REF(data.sec_si_26), REF(data.sec_si_27), REF(data.sec_si_28), REF(data.sec_si_29), REF(data.sec_si_30)]
+    DESCRIPTION: "The immutable invariants, SI-01 to SI-30."
+
+DATA:
+    ID: data.sec_control_coverage
+    TYPE: LIST[STRING]
+    VALUE: ["least privilege | SI-03", "project-root isolation | SI-04", "path traversal/symlink escape protection | SI-04", "command mediation | SI-06", "process sandboxing where feasible | SI-06", "network permissioning | SI-07", "secret isolation and OS-backed secret storage | SI-08", "redaction of secrets in logs/prompts/state | SI-08, SI-25", "explicit handling of destructive operations | SI-02, SI-03, SI-30", "audit logging | SI-25", "checkpoints/rollback | SI-30", "signed/integrity-checked update path | SI-26", "extension isolation from agent authority | SI-22", "protocol authentication | SI-16, SI-17", "secure Desktop↔Android pairing | SI-16, SI-09", "replay-resistant sessions | SI-13", "fail-closed authorization | SI-02", "step-up authentication for sensitive account/security changes | SI-14"]
+    DESCRIPTION: "Every required control of the security baseline (POL.policies_security_baseline.03), named as there, with the invariants that realise it."
+
+DATA:
+    ID: data.sec_stop_coverage
+    TYPE: LIST[STRING]
+    VALUE: ["path escapes project scope unexpectedly | SI-04", "command executes outside permitted sandbox/scope | SI-06", "secret appears in prompt/log/state/Git | SI-08", "authentication or authorization can be bypassed | SI-02, SI-14", "extension inherits agent privileges unexpectedly | SI-22", "untrusted content gains instruction authority | SI-01", "Desktop↔Android session cannot be authenticated | SI-16", "insecure credential-storage fallback would store secrets without adequate protection | SI-08"]
+    DESCRIPTION: "Every security stop condition (STOP-04), named as there, with the invariants whose violation it is."
