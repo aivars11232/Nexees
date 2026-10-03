@@ -1,0 +1,33 @@
+Secret and privacy scan of the files TASK-002 added or changed, run 2026-10-03T19:20:52+02:00.
+Scope: git status --porcelain --untracked-files=all, without this report itself (25 files):
+  FILE_TREE.txt
+  README.md
+  docs/architecture/architecture.lcl.txt
+  docs/architecture/baseline.lcl.txt
+  docs/architecture/checks.lcl.txt
+  docs/architecture/decisions.lcl.txt
+  docs/architecture/failure_domains.lcl.txt
+  docs/architecture/flows.lcl.txt
+  docs/architecture/interfaces.lcl.txt
+  docs/architecture/record.lcl.txt
+  docs/architecture/remote_control.lcl.txt
+  docs/architecture/reviews.lcl.txt
+  docs/architecture/state.lcl.txt
+  docs/architecture/subsystems.lcl.txt
+  docs/evidence/TASK-002/TASK-002_EVIDENCE.md
+  docs/evidence/TASK-002/check_architecture.py
+  docs/evidence/TASK-002/logs/architecture_lcl.txt
+  docs/evidence/TASK-002/logs/architecture_run.record.json
+  docs/evidence/TASK-002/logs/check_architecture.txt
+  docs/evidence/TASK-002/logs/dispatch_task_002.record.json
+  docs/evidence/TASK-002/logs/native_language_suite.json
+  docs/evidence/TASK-002/logs/negative_tests.txt
+  docs/evidence/TASK-002/logs/preflight.txt
+  docs/evidence/TASK-002/logs/regression.txt
+  docs/evidence/TASK-002/logs/required_reading.txt
+
+1. Credential formats (private keys; GitHub, OpenAI, Anthropic, AWS, Google and Slack tokens; URL credentials; assigned passwords or tokens):
+   matches: 0
+2. E-mail addresses: matches: 0
+3. Executable files: 0 (every file is mode 644 when this is 0)
+4. Active content in the Markdown files (scripts, frames, remote images, raw HTML tags): matches: 0

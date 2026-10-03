@@ -206,6 +206,19 @@ Nexees/
 │       ├── workspace_registry.source
 │       └── workspace_revision.source
 ├── docs/
+│   ├── architecture/
+│   │   ├── architecture.lcl.txt
+│   │   ├── baseline.lcl.txt
+│   │   ├── checks.lcl.txt
+│   │   ├── decisions.lcl.txt
+│   │   ├── failure_domains.lcl.txt
+│   │   ├── flows.lcl.txt
+│   │   ├── interfaces.lcl.txt
+│   │   ├── record.lcl.txt
+│   │   ├── remote_control.lcl.txt
+│   │   ├── reviews.lcl.txt
+│   │   ├── state.lcl.txt
+│   │   └── subsystems.lcl.txt
 │   ├── charter/
 │   │   ├── baseline.lcl.txt
 │   │   ├── charter.lcl.txt
@@ -215,29 +228,50 @@ Nexees/
 │   │   ├── scope.lcl.txt
 │   │   └── traceability.lcl.txt
 │   ├── evidence/
-│   │   └── TASK-001/
+│   │   ├── TASK-001/
+│   │   │   ├── logs/
+│   │   │   │   ├── charter_check.txt
+│   │   │   │   ├── charter_run.record.json
+│   │   │   │   ├── charter_run.txt
+│   │   │   │   ├── charter_validate.txt
+│   │   │   │   ├── check_charter_against_pack.txt
+│   │   │   │   ├── dispatch_task_001.record.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── security_scan.txt
+│   │   │   │   └── setup_marker_restoration.json
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   ├── snapshot_files.sha256
+│   │   │   │   ├── synthetic_projection.evaluation.record.json
+│   │   │   │   └── synthetic_projection.receipt.json
+│   │   │   ├── AUTHORIZATION.md
+│   │   │   ├── TASK-001_EVIDENCE.md
+│   │   │   └── check_charter_against_pack.py
+│   │   └── TASK-002/
 │   │       ├── logs/
-│   │       │   ├── charter_check.txt
-│   │       │   ├── charter_run.record.json
-│   │       │   ├── charter_run.txt
-│   │       │   ├── charter_validate.txt
-│   │       │   ├── check_charter_against_pack.txt
-│   │       │   ├── dispatch_task_001.record.json
+│   │       │   ├── architecture_lcl.txt
+│   │       │   ├── architecture_run.record.json
+│   │       │   ├── check_architecture.txt
+│   │       │   ├── dispatch_task_002.record.json
+│   │       │   ├── native_language_suite.json
 │   │       │   ├── negative_tests.txt
+│   │       │   ├── preflight.txt
+│   │       │   ├── regression.txt
 │   │       │   ├── required_reading.txt
-│   │       │   ├── security_scan.txt
-│   │       │   └── setup_marker_restoration.json
+│   │       │   └── security_scan.txt
 │   │       ├── receipt/
 │   │       │   ├── RECEIPT_RESULT.md
+│   │       │   ├── corroboration.txt
 │   │       │   ├── evaluation.record.json
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
-│   │       │   ├── snapshot_files.sha256
-│   │       │   ├── synthetic_projection.evaluation.record.json
-│   │       │   └── synthetic_projection.receipt.json
-│   │       ├── AUTHORIZATION.md
-│   │       ├── TASK-001_EVIDENCE.md
-│   │       └── check_charter_against_pack.py
+│   │       │   └── snapshot_files.sha256
+│   │       ├── TASK-002_EVIDENCE.md
+│   │       └── check_architecture.py
 │   └── manuals/
 │       ├── LCL_IN_NEXEES_USER_MANUAL.md
 │       └── NEXEES_USER_MANUAL.md

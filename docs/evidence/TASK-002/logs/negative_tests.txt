@@ -1,0 +1,37 @@
+Run 2026-10-03T19:16:00+02:00 by the coding agent; harness kept outside the repository (session scratch), mutations applied to scratch copies only.
+
+Negative tests of the TASK-002 checks. Each test changes one thing in a scratch copy of the worktree
+(no .git) and expects the named check to fail. The real worktree is not touched.
+
+M01 one subsystem dropped from the catalogue list
+   lcl validate: exit 1; error.validation.failed [validation]: required check `validate.arch_subsystem_count` asserts a condition that is FALSE  -> detected
+M02 a state category given an unknown owner
+   lcl run: exit 2; error.verification.failed [verification_or_completion]: required VERIFY `verify.arch_state_owners` asserted FALSE  -> detected
+   check_architecture.py: exit 1; failed checks ['every state category has exactly one owning subsystem']  -> detected
+M03 a module slot removed (orphan module core/remote/pairing)
+   check_architecture.py: exit 1; failed checks ['every product file belongs to exactly one subsystem']  -> detected
+M04 one module claimed by two subsystems
+   check_architecture.py: exit 1; failed checks ['every product file belongs to exactly one subsystem']  -> detected
+M05 the receiver subsystem made to depend on providers (RC-08)
+   lcl run: exit 2; error.verification.failed [verification_or_completion]: required VERIFY `verify.arch_receiver_uses_no_model` asserted FALSE  -> detected
+M06 a dependency cycle (security depends on settings)
+   check_architecture.py: exit 1; failed checks ['the dependency graph is acyclic (AD-12)']  -> detected
+M07 grants made synchronizable
+   lcl run: exit 2; error.verification.failed [verification_or_completion]: required VERIFY `verify.arch_authority_never_synced` asserted FALSE  -> detected
+M08 a contract retargeted to a requirement not assigned (RC-19 -> RC-18)
+   lcl run: exit 2; error.verification.failed [verification_or_completion]: required VERIFY `verify.arch_remote_scope` asserted FALSE  -> detected
+   check_architecture.py: exit 1; failed checks ['the contracts cover exactly the requirements the pack assigns to TASK-002', 'runtime owners equal the pack requirement map after TASK-002']  -> detected
+M09 a contract claiming runtime testing
+   lcl run: exit 2; error.verification.failed [verification_or_completion]: required VERIFY `verify.arch_remote_design_only` asserted FALSE  -> detected
+M10 one digit of the pack identity changed
+   check_architecture.py: exit 1; failed checks ['content identity recomputed from the pack files']  -> detected
+M11 a test plan citing a test file that does not exist
+   check_architecture.py: exit 1; failed checks ['test plans name RC-T01 to RC-T18, planned test files or recorded gaps']  -> detected
+M12 a gate review recording a broken boundary
+   lcl run: exit 2; error.verification.failed [verification_or_completion]: required VERIFY `verify.arch_reviews_hold` asserted FALSE  -> detected
+M13 an implementation task left without any subsystem (TASK-069)
+   check_architecture.py: exit 1; failed checks ['every implementation task from TASK-005 to TASK-075 owns part of a subsystem']  -> detected
+M14 a new product file added without a slot (core/remote/receiver)
+   check_architecture.py: exit 1; failed checks ['every product file belongs to exactly one subsystem']  -> detected
+
+ALL DEFECTS DETECTED; scratch copies removed.

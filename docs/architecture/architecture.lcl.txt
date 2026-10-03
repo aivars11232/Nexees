@@ -1,0 +1,67 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.architecture
+    NAME: "Nexees modular architecture"
+    VERSION: "0.5.0"
+    KIND: kind.project
+    DESCRIPTION: "WORKING DIRECTORY: /mnt/F/Nexees/ | REPOSITORY: https://github.com/aivars11232/Nexees | Defined by TASK-002. Entry of the architecture project: it returns the architecture record and checks its structure. No coding, process, network, remote-control or Git side effects are authorized or performed."
+
+PART:
+    ID: part.arch_baseline
+    SOURCE: PATH("baseline.lcl.txt")
+    KIND: kind.part.definitions
+
+PART:
+    ID: part.arch_subsystems
+    SOURCE: PATH("subsystems.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.arch_state
+    SOURCE: PATH("state.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.arch_interfaces
+    SOURCE: PATH("interfaces.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.arch_flows
+    SOURCE: PATH("flows.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.arch_failure_domains
+    SOURCE: PATH("failure_domains.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.arch_remote_control
+    SOURCE: PATH("remote_control.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.arch_decisions
+    SOURCE: PATH("decisions.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.arch_reviews
+    SOURCE: PATH("reviews.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.arch_checks
+    SOURCE: PATH("checks.lcl.txt")
+    KIND: kind.part.checks
+
+PART:
+    ID: part.arch_record
+    SOURCE: PATH("record.lcl.txt")
+    KIND: kind.part.task
+
+EXECUTE:
+    REFERENCE: REF(task.arch_record)

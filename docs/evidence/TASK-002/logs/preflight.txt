@@ -1,0 +1,81 @@
+TASK-002 checkout preflight (binding B26), pack verification and predecessor lineage.
+Re-run 2026-10-03T19:16:40+02:00 with the same read-only commands as the task-start preflight. At task start, before the
+native verification began at 18:34, the worktree was clean; the status below shows only TASK-002's own new and changed files.
+
+== B26 checkout identity ==
+cwd (physical): /mnt/F/Nexees
+git toplevel: /mnt/F/Nexees
+git dir: /mnt/F/Nexees/.git
+superproject: []
+parent .git at /mnt/F or /mnt: none
+remotes (credentials redacted):
+origin	https://github.com/aivars11232/Nexees.git (fetch)
+origin	https://github.com/aivars11232/Nexees.git (push)
+url rewrite rules: none
+explicit origin pushurl: none
+branch: main
+HEAD: 284f97a02d3ad9288f3701860e608b366b10979f
+origin/main (local tracking ref, not fetched): 284f97a02d3ad9288f3701860e608b366b10979f
+upstream: origin/main
+worktrees:
+/mnt/F/Nexees 284f97a [main]
+hooks path: []; non-sample hooks: 0
+staged files: 0; stash entries: 0; tracked files: 311
+status (porcelain, untracked shown per file):
+ M FILE_TREE.txt
+ M README.md
+?? docs/architecture/architecture.lcl.txt
+?? docs/architecture/baseline.lcl.txt
+?? docs/architecture/checks.lcl.txt
+?? docs/architecture/decisions.lcl.txt
+?? docs/architecture/failure_domains.lcl.txt
+?? docs/architecture/flows.lcl.txt
+?? docs/architecture/interfaces.lcl.txt
+?? docs/architecture/record.lcl.txt
+?? docs/architecture/remote_control.lcl.txt
+?? docs/architecture/reviews.lcl.txt
+?? docs/architecture/state.lcl.txt
+?? docs/architecture/subsystems.lcl.txt
+?? docs/evidence/TASK-002/check_architecture.py
+?? docs/evidence/TASK-002/logs/architecture_lcl.txt
+?? docs/evidence/TASK-002/logs/architecture_run.record.json
+?? docs/evidence/TASK-002/logs/check_architecture.txt
+?? docs/evidence/TASK-002/logs/dispatch_task_002.record.json
+?? docs/evidence/TASK-002/logs/native_language_suite.json
+?? docs/evidence/TASK-002/logs/negative_tests.txt
+?? docs/evidence/TASK-002/logs/preflight.txt
+?? docs/evidence/TASK-002/logs/regression.txt
+Result: the root is the worktree root, origin fetch and push are https://github.com/aivars11232/Nexees.git (an approved equivalent), no rewrite, branch main.
+
+== Pack verification (v0.5.3) ==
+manifest files: 201 | hash mismatches: [] | unlisted on disk: [] | listed but missing: []
+MANIFEST.json sha256: 8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4
+content identity recomputed: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | declared: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | manifest: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+tasks/task_002.lcl.txt sha256: d1350a751b2de0fc5701562e8b61bf582276eef1bf0d81006683f1b79e015624 (PROCEDURAL_CHANGES after_sha256 d1350a75...)
+tasks/task_001.lcl.txt sha256: 6c96309ac4fda208d9da16e2b38e1652e6cc51b419f9f1d3dbb7aee81e89ae2e
+history/task_001_baseline_v0.5.2.zip sha256: fb7522fda9b1ce113992590e9d9aa170568365f363dde4a1688eeb75978cdfb0
+
+== What pack 0.5.3 changes against the 0.5.2 baseline the charter froze ==
+changed task files: 74 (TASK-002 to TASK-075; procedural fields only per PROCEDURAL_CHANGES.json)
+other changed files: ['CONTENT_IDENTITY.json', 'CORRECTION_NOTES.txt', 'FILE_TREE.txt', 'MANIFEST.json', 'README_FIRST.txt', 'VALIDATION_REPORT.json', 'VALIDATION_REPORT.txt', 'accept_task.lcl.txt', 'bindings/content_identity.lcl.txt', 'data/instruction_packet.lcl.txt', 'language_tests/positive_language_test.json', 'language_tests/positive_task_003_language_test.json', 'language_tests/positive_task_045_language_test.json', 'language_tests/positive_task_070_language_test.json', 'language_tests/positive_task_075_language_test.json', 'language_tests/reject_active_blocker.json', 'language_tests/reject_android_always_available_claim.json', 'language_tests/reject_cleanup_missing.json', 'language_tests/reject_failed_checks.json', 'language_tests/reject_invalid_task_above_range.json', 'language_tests/reject_invalid_task_zero.json', 'language_tests/reject_launch_implies_screen_control.json', 'language_tests/reject_malformed_snapshot.json', 'language_tests/reject_missing_evidence.json', 'language_tests/reject_missing_pc_to_phone_test.json', 'language_tests/reject_missing_policy.json', 'language_tests/reject_missing_task_check.json', 'language_tests/reject_no_receiver_fake_success.json', 'language_tests/reject_phone_control_not_verified.json', 'language_tests/reject_post_cleanup_snapshot.json', 'language_tests/reject_predecessor_not_closed.json', 'language_tests/reject_receiver_enabled_by_default.json', 'language_tests/reject_renderer_unresolved.json', 'language_tests/reject_reverse_permission_implicit.json', 'language_tests/reject_stale_snapshot.json', 'language_tests/reject_startup_enabled_by_default.json', 'language_tests/reject_unapproved_git.json', 'language_tests/reject_unauthorized_agents.json', 'language_tests/reject_unverified_evidence.json', 'language_tests/reject_wrong_repository.json', 'language_tests/reject_wrong_root.json', 'language_tests/reject_wrong_task.json', 'main.lcl.txt', 'tools/verify_with_lcl.py']
+added files: ['PROCEDURAL_CHANGES.json', 'START_TASK_002.txt', 'history/task_001_baseline_v0.5.2.zip', 'history/v0_5_2_correction_notes.txt', 'history/v0_5_2_readme_first.txt', 'history/v0_5_2_validation_report.json', 'history/v0_5_2_validation_report.txt', 'language_tests/positive_task_002_language_test.json', 'language_tests/reject_task_002_cleanup_missing.json', 'language_tests/reject_task_002_unapproved_git.json', 'language_tests/reject_task_002_uncorroborated.json', 'language_tests/reject_task_002_unresolved_blocker.json', 'policies/task_002_075_continuation.lcl.txt']
+removed files: []
+changed requirement documents (architecture, policies, reuse, verification, guidance, manuals, templates, checks): []
+
+== TASK-001 predecessor lineage ==
+baseline MANIFEST.json sha256: e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a | file mismatches: []
+baseline content identity recomputed: e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672
+TASK-001 receipt: task TASK-001 | purpose implementation_review | blockers [] | host verified True | pack identity e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672 | manifest e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a
+TASK-001 evaluation.record.json sha256: bbda5d839f7713bbd43a0fb3c0c299043abe8f7b055e6e3ce8c110fde3ba07e7 | outcome accepted | terminal status.succeeded | diagnostics 0 | checks not TRUE []
+TASK-001 commit: 284f97a02d3ad9288f3701860e608b366b10979f Freeze the Nexees project charter (TASK-001)
+TASK-001 deliverables changed since that commit:
+(none)
+
+== TASK-002 record: 0.5.2 against 0.5.3 ==
+record fields compared: 28 | changed: ['continuation', 'section_document_scope', 'section_read_order_and_continuation_binding', 'section_required_reading', 'section_stop_conditions']
+changed fields are exactly the five declared procedural fields: True
+objective, scope, deliverables, verification, dependencies, check IDs and RC lists unchanged: True
+native TASK declaration unchanged: True
+
+== All 75 task records: 0.5.2 against 0.5.3 ==
+changed task files: 74 | changes outside the five procedural fields or in a native TASK declaration: []

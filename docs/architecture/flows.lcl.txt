@@ -1,0 +1,153 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_flows
+    NAME: "Device hosts and data and authority flows"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "The two device hosts, which own execution and storage on their own device, and the flows that move data and authority between subsystems and devices. The local, remote and sync paths are independent: local work needs neither of the other two, remote control moves requests but never execution, and sync moves content but never authority (A1, A9). Every shared-core subsystem except SS-HELP runs unchanged in both hosts; SS-HELP is passive library code the clients use directly."
+
+DATA:
+    ID: data.arch_host_desktop
+    TYPE: OBJECT[REF(type.arch_host)]
+    VALUE:
+        host_id: "HOST-DESKTOP"
+        device: "desktop"
+        process_model: "A local host process separate from the window process, both running as the same non-elevated OS user. There is one host per OS user: a second start attaches to the running host instead of creating another. Windows attach over IF-ATTACH. With keep-running-after-close enabled, closing the last window leaves the host and its authorized background work running; with it disabled, the host pauses its sessions at a checkpoint and then stops. The IDE foundation's own backend services, wherever TASK-003 and TASK-009 place them, reach workspace files only through workspace scope and the revision service and gain no agent authority."
+        runs: ["SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-CONTEXT", "SS-TASKING", "SS-PROVIDERS", "SS-LCL", "SS-ACCOUNTS", "SS-SETTINGS", "SS-REMOTE", "SS-SYNC", "SS-UPDATES", "SS-PLATFORM-DESKTOP"]
+        attaches: "Desktop client windows over authenticated local IPC; paired peer hosts through the receiver, only while receiving is enabled."
+        receiver: "Off on a fresh install. When enabled it runs inside the host and lives exactly as long as the host does. Start-at-user-login starts the host in the user's login session. Boot before login and operation after logout are reported as unsupported unless TASK-003 proves a user-level mechanism for them (RC-05)."
+        independence: "Needs no other device. Remote control and sync with Android are optional additions to local work."
+
+DATA:
+    ID: data.arch_host_android
+    TYPE: OBJECT[REF(type.arch_host)]
+    VALUE:
+        host_id: "HOST-ANDROID"
+        device: "android"
+        process_model: "The local host runs inside the Nexees Android app, in the app's process or in its own app service, under Android lifecycle rules. It persists every edit before showing it as saved and checkpoints at action boundaries, so process death loses no committed work and interrupted effects are reconciled on restart (A3, A4)."
+        runs: ["SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-CONTEXT", "SS-TASKING", "SS-PROVIDERS", "SS-LCL", "SS-ACCOUNTS", "SS-SETTINGS", "SS-REMOTE", "SS-SYNC", "SS-UPDATES", "SS-PLATFORM-ANDROID"]
+        attaches: "The Android client in the same app; paired peer hosts through the receiver, only while receiving is enabled."
+        receiver: "Off on a fresh install. When enabled, availability uses the mechanisms the supported Android versions permit, such as a visible foreground-service notification with a stop control. Doze, process death, force-stop and revoked permissions make it unavailable, which is reported as such; permanent availability is never promised (RC-15)."
+        independence: "Creates and edits local workspaces, validates LCL and runs the local agent with no PC and, apart from network models and first-time online signup, with no internet (A1, A2)."
+
+DATA:
+    ID: data.arch_hosts
+    TYPE: LIST[OBJECT[REF(type.arch_host)]]
+    VALUE: [REF(data.arch_host_desktop), REF(data.arch_host_android)]
+
+DATA:
+    ID: data.arch_flow_local_execution
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-LOCAL-EXECUTION"
+        name: "Local agent execution"
+        trigger: "A user, the scheduler or an adopted LCL task starts or continues work in a workspace whose session runs on this device."
+        steps: ["SS-TASKING | Selects the task whose dependencies are closed and checks stop conditions and blockers.", "SS-AGENT | Loads the session binding of device, workspace, revisions and generation from the state store.", "SS-CONTEXT | Builds the model context from authoritative state, scoped files and the adopted LCL constraints.", "SS-PROVIDERS | Sends the request through the provider interface within the disclosure policy and the budget.", "SS-AGENT | Checks the proposed action against the session's generation and phase.", "SS-TOOLS | Dispatches the typed tool call, which SS-SECURITY authorizes and SS-STATE journals.", "SS-PLATFORM-DESKTOP, SS-PLATFORM-ANDROID | Executes it within workspace scope, the sandbox and resource bounds.", "SS-STATE | Records the structured result, its outcome and evidence tied to the input revisions.", "SS-TASKING | Verifies, then continues, stops or asks for approval; completion goes only through the verification and cleanup gates."]
+        authority: "The execution host's permission engine and the user's explicit approvals. Models and content only propose."
+        never: ["Use another device's host, a PC endpoint or a remote snapshot as the source of truth for local work (A2).", "Let UI focus, a model change or sync change the session's workspace, device or rules (R11, R22)."]
+
+DATA:
+    ID: data.arch_flow_standalone_start
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-STANDALONE-START"
+        name: "Start without a PC or network"
+        trigger: "Nexees starts on a device with no paired PC reachable, or with no network at all."
+        steps: ["SS-LOCAL-HOST | Starts the shared core with this device's adapters.", "SS-ACCOUNTS | Applies the local-unlock policy for previously authorized setup; first-time signup needs the network (A2).", "SS-WORKSPACES | Opens the local workspaces, and SS-LCL validates LCL locally through the core bridge.", "SS-PROVIDERS | Offers only providers reachable directly from this device and shows the others as unavailable.", "SS-REMOTE | Shows paired devices as unavailable; nothing local waits for them."]
+        authority: "This device's own policies."
+        never: ["Block local work on PC connectivity or pairing (C19).", "Unlock secrets or grant remote authority because the network is absent (A2)."]
+
+DATA:
+    ID: data.arch_flow_focus_switch
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-FOCUS-SWITCH"
+        name: "Foreground workspace switch"
+        trigger: "The user selects another workspace in a client."
+        steps: ["SS-DESKTOP-CLIENT, SS-ANDROID-CLIENT | Persists the current workspace's view state through SS-WORKSPACES.", "SS-WORKSPACES | Changes that client's foreground workspace and nothing else.", "SS-DESKTOP-CLIENT, SS-ANDROID-CLIENT | Shows the new workspace's tree, tabs and panels and restores its view state."]
+        authority: "None is needed: this is presentation only."
+        never: ["Rebind, pause or retarget any agent session, remote request, import or model switch (R11, RC-20).", "Change the foreground of another client or device (A3)."]
+
+DATA:
+    ID: data.arch_flow_remote_request
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-REMOTE-REQUEST"
+        name: "Remote request, Android to Desktop or Desktop to Android"
+        trigger: "A user on one device asks for a supported action on a paired device."
+        steps: ["SS-DESKTOP-CLIENT, SS-ANDROID-CLIENT | The user chooses an explicit destination device, session, workspace or application and the typed operation.", "SS-REMOTE | On the sending host, builds the typed envelope with request ID, expected revisions, permission epoch and expiry, and records it as pending.", "SS-PLATFORM-DESKTOP, SS-PLATFORM-ANDROID | Carries it over the authenticated, encrypted channel.", "SS-REMOTE | On the destination, admits it only if receiving is enabled, the sender is paired and not revoked, the direction has a grant, and the target, epoch and expiry are valid and the request ID is unseen.", "SS-SECURITY | On the destination, rechecks capabilities, scope, policy, lock state and freshness immediately before execution, and asks the local user when policy requires it.", "SS-TOOLS, SS-AGENT | On the destination, executes through the same tool dispatch or session control that local work uses.", "SS-REMOTE | On the destination, records the outcome by request ID and acknowledges it; SS-SECURITY audits it.", "SS-REMOTE | On the sending host, reconciles the pending record; without an acknowledgment the outcome stays unknown."]
+        authority: "The destination host alone (RC-01, RC-10)."
+        never: ["Treat a natural-language request, a shared account, pairing or sync as permission (RC-01, RC-03).", "Move execution, transfer a task or change either device's foreground workspace (RC-20).", "Fall back to an ambient or foreground workspace when the target is missing (RC-09).", "Report success without the destination's acknowledged outcome (RC-12)."]
+
+DATA:
+    ID: data.arch_flow_sync
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-SYNC"
+        name: "Content synchronization"
+        trigger: "Content of a workspace the user selected for sync changes on one replica, or a paired peer reconnects."
+        steps: ["SS-WORKSPACES | Records the change as a new revision.", "SS-SYNC | Adds it durably to the outbox with its base revision and hash.", "SS-PLATFORM-DESKTOP, SS-PLATFORM-ANDROID | Carries it to the peer when the peer is reachable.", "SS-SYNC | On the peer, validates path, size, schema, revision and peer authority.", "SS-SYNC | On the peer, applies it transactionally through SS-WORKSPACES, or records a conflict that keeps both versions."]
+        authority: "Each replica's own validation. Sync carries content, never authority."
+        never: ["Carry commands, approvals, grants, secrets or device keys (C22).", "Adopt synced LCL text into a running session, or change an execution owner (A7).", "Overwrite unsaved buffers, or resurrect or silently delete newer work (A6)."]
+
+DATA:
+    ID: data.arch_flow_import
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-IMPORT"
+        name: "LCL file and ZIP import"
+        trigger: "The user imports LCL files or a ZIP archive into a chosen workspace on a device."
+        steps: ["SS-DESKTOP-CLIENT, SS-ANDROID-CLIENT | The platform picker selects the sources and the user chooses an existing destination workspace or a new one.", "SS-LCL | Captures the import transaction: target device, workspace, root mapping, permissions and base revision.", "SS-LCL | Streams the entries into app-private staging within the resource bounds and path checks.", "SS-LCL | Plans the structure from the roles the LCL core establishes; any ambiguity becomes a decision for the user.", "SS-DESKTOP-CLIENT, SS-ANDROID-CLIENT | Shows the preview; the user confirms or cancels.", "SS-LCL | Rechecks the destination revision and publishes atomically through SS-WORKSPACES and SS-STATE.", "SS-LCL | Records the result as a draft revision; validation and adoption are separate steps (FL-ADOPTION)."]
+        authority: "The user's confirmation, for publication only. Adoption is a separate flow."
+        never: ["Extract into a live workspace, or overwrite existing or unsaved work (I2, I4).", "Execute, adopt or give authority to imported content (I5).", "Redirect the import or steal focus when the user switches workspace (I1)."]
+
+DATA:
+    ID: data.arch_flow_adoption
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-ADOPTION"
+        name: "LCL revision adoption"
+        trigger: "A draft LCL revision exists for a workspace whose specification constrains a session."
+        steps: ["SS-LCL | Validates the draft through the core bridge.", "SS-TASKING | Waits for an explicit safe task boundary.", "SS-SECURITY | Re-evaluates permissions under the new constraints, and the user explicitly adopts the revision.", "SS-LCL | Records the adopted revision and binds it to the session; SS-SECURITY audits the adoption."]
+        authority: "The user's explicit adoption at a safe boundary (C22)."
+        never: ["Apply edited, synced or imported rules to a running session without validation and adoption (C22).", "Let LCL rules weaken Nexees security (authority_hierarchy)."]
+
+DATA:
+    ID: data.arch_flow_model_switch
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-MODEL-SWITCH"
+        name: "Model switch and read-only orientation"
+        trigger: "The user selects another model, or the current provider reaches its limit."
+        steps: ["SS-AGENT | Stops dispatching to the old model and increments the session generation.", "SS-STATE | Settles or records in-flight tool outcomes; an uncertain outcome pauses the run.", "SS-STATE | Checkpoints the bound device, workspace, task, working-tree revision, LCL revision, evidence, blockers and pending approvals.", "SS-PROVIDERS | Validates the new model's access, context and tool capabilities and the disclosure policy.", "SS-CONTEXT | Rebuilds the context from the checkpoint and the current scoped files.", "SS-PROVIDERS | With orientation ON, runs the read-only orientation while SS-TOOLS offers only read, list, search and state-inspection tools.", "SS-PROVIDERS | Verifies read receipts, identifiers and revisions; then the same session's normal permissions reopen."]
+        authority: "The user's model choice; the runtime's gates decide when writes may resume."
+        never: ["Ask the old model for a summary (H1).", "Change the execution device, workspace or permissions (H2).", "Let a reply from an old generation act (B23).", "Treat the orientation toggle as a permission toggle (C24)."]
+
+DATA:
+    ID: data.arch_flow_help
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-HELP"
+        name: "Opening the manuals"
+        trigger: "The user opens Help or contextual help."
+        steps: ["SS-DESKTOP-CLIENT, SS-ANDROID-CLIENT | Opens a help tab in the current client.", "SS-HELP | Serves the catalogue, search and passive content of the bundled manuals."]
+        authority: "None is needed."
+        never: ["Load remote content, run scripts or send project data (manuals_and_help).", "Change an agent binding, the foreground tree or an unsaved buffer (MAN-04)."]
+
+DATA:
+    ID: data.arch_flow_task_closure
+    TYPE: OBJECT[REF(type.arch_flow)]
+    VALUE:
+        flow_id: "FL-TASK-CLOSURE"
+        name: "Task closure"
+        trigger: "An agent proposes that its task is complete."
+        steps: ["SS-TASKING | Runs the task's deterministic verification on the current revision.", "SS-TASKING | Requires a readability review and a cleanup plan limited to task-owned items.", "SS-TOOLS | Performs the cleanup as ordinary permissioned tool calls within scope.", "SS-TASKING | Re-runs the affected verification on the final, post-cleanup revision.", "SS-STATE | Records the evidence, and the verification gate marks the task complete."]
+        authority: "Deterministic gates, never the model's claim (C11, B24)."
+        never: ["Delete unknown or user-owned files (Q3).", "Close a task whose post-cleanup verification failed (Q5)."]
+
+DATA:
+    ID: data.arch_flows
+    TYPE: LIST[OBJECT[REF(type.arch_flow)]]
+    VALUE: [REF(data.arch_flow_local_execution), REF(data.arch_flow_standalone_start), REF(data.arch_flow_focus_switch), REF(data.arch_flow_remote_request), REF(data.arch_flow_sync), REF(data.arch_flow_import), REF(data.arch_flow_adoption), REF(data.arch_flow_model_switch), REF(data.arch_flow_help), REF(data.arch_flow_task_closure)]

@@ -1,0 +1,416 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_subsystems
+    NAME: "Subsystems, module ownership and shared versus client-specific code"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "The 24 subsystems of Nexees and the module slots each one owns. Every file of the product layout (apps, core, platform, integrations, assets, config, packaging, scripts and the manual sources) belongs to exactly one slot of one subsystem, and every planned test file is attributed to the subsystem it primarily proves. Shared code is the shared_core layer, which runs unchanged in both local hosts; client-specific code is confined to the client_ui and platform_adapter layers and to the Desktop-only IDE integration."
+
+DATA:
+    ID: data.arch_ss_desktop_client
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-DESKTOP-CLIENT"
+        name: "Desktop client"
+        layer: "client_ui"
+        devices: ["desktop"]
+        purpose: "The installed Desktop application's window: the compact, VS Code-like shell, its panels, settings and workspace views. It presents the Desktop local host's state and turns user actions into typed intents for that host. It holds no execution, permission or project state, and closing it does not stop the local host (RC-04)."
+        slots: ["apps/desktop/src/main | Window process entry: attaches to the running Desktop local host over the authenticated local channel, or asks the platform lifecycle to start the host; it never starts a second executor (RC-04, RC-T14).", "apps/desktop/src/shell/ | Main window, title bar with the single-row top-right sidebar toggles, activity bar, panel layout and controls, and status bar (TASK-009 to TASK-012).", "apps/desktop/src/panels/ | Agent, chat, task, log, terminal, Git, problems, extensions, devices, import-preview and help panels: presentation of host state and typed user intents, never direct store or tool access.", "apps/desktop/src/settings/ | Settings, Developer Settings, account, model selector and security-approval views over the settings, accounts and security services.", "apps/desktop/src/workspaces/ | Workspace switcher, file tree, editor tabs, workspace and LCL workspace views; the visible tree is always the foreground workspace's (B2, C4).", "apps/desktop/resources/ | Desktop application metadata and packaged resources."]
+        owns_state: []
+        depends_on: ["SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-HELP", "SS-IDE", "SS-ASSETS"]
+        must_not: ["Decide or hold authority: permissions, approvals, grants, agent bindings and task status are decided by the local host.", "Read or write the state store, secrets or workspace files except through the local host and the editor integration's scoped, revisioned writes.", "Retarget a running agent, a remote command, an import or a model switch because the foreground workspace changed (R11, RC-20).", "Depend on a hosted website for core local operation (C20)."]
+        owner_tasks: ["TASK-009", "TASK-010", "TASK-011", "TASK-012", "TASK-014", "TASK-016", "TASK-018", "TASK-030", "TASK-047", "TASK-052", "TASK-056", "TASK-071", "TASK-072"]
+        test_slots: ["tests/e2e/desktop/local_application"]
+
+DATA:
+    ID: data.arch_ss_android_client
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-ANDROID-CLIENT"
+        name: "Android client"
+        layer: "client_ui"
+        devices: ["android"]
+        purpose: "The Android user interface: the same Nexees concepts, vocabulary and status model as Desktop in a responsive phone layout (R19). It presents the Android local host's state, opens local workspaces without any pairing, and always shows where execution happens and whether remote status is live or last observed (A3)."
+        slots: ["apps/android/src/main | App entry: opens local workspaces directly, with no blocking connection screen and no PC requirement (android_ui v0.2).", "apps/android/src/shell/ | Main screen, responsive layout, panel navigation through tabs, drawers and sheets, and lifecycle binding to the host (TASK-059).", "apps/android/src/panels/ | Agent, chat, task, log, terminal, Git, problems, devices, import-preview and help panels with the Desktop vocabulary, showing execution location and live versus last-observed state.", "apps/android/src/settings/ | Settings, Developer Settings, account, model selector and security approvals; the model selector lists only what the selected execution host supports (TASK-068).", "apps/android/src/workspaces/ | Workspace switcher, workspace-bound file tree, editor tabs and LCL workspace for local, remote-only and synchronized workspaces (TASK-061 to TASK-063).", "apps/android/resources/ | Android application metadata and packaged resources."]
+        owns_state: []
+        depends_on: ["SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-HELP", "SS-ASSETS"]
+        must_not: ["Decide or hold authority; the local host decides.", "Hide normal navigation or local work behind PC pairing or a connection (android_ui v0.3).", "Show remote status as live when it is only last observed (A3).", "Retarget a running agent, a remote command, an import or a model switch because the foreground workspace changed (RC-20)."]
+        owner_tasks: ["TASK-057", "TASK-058", "TASK-059", "TASK-060", "TASK-061", "TASK-062", "TASK-063", "TASK-064", "TASK-065", "TASK-067", "TASK-068"]
+        test_slots: ["tests/e2e/android/responsive_workspace"]
+
+DATA:
+    ID: data.arch_ss_local_host
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-LOCAL-HOST"
+        name: "Local host"
+        layer: "local_host"
+        devices: ["desktop", "android"]
+        purpose: "One per device: the composition root that runs the shared core with that device's platform adapters (HOST-DESKTOP, HOST-ANDROID). It owns execution on the device: agent sessions, tools, the state store, LCL validation, local storage and, only when the user has enabled it, the remote receiver. UI clients attach to it. It contains wiring, not domain logic."
+        slots: ["apps/desktop/src/application_host | Desktop local host composition root: a process separate from the window at the user's privilege, single instance per OS user so that a reopened window reattaches instead of starting a second executor; starts the receiver only when receiving is enabled (RC-02, RC-04).", "apps/android/src/application_host | Android local host composition root inside the Nexees app: runs local work with no PC (A1, A2); receiver availability follows the Android lifecycle (RC-15)."]
+        owns_state: []
+        depends_on: ["SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-CONTEXT", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-TASKING", "SS-PROVIDERS", "SS-LCL", "SS-ACCOUNTS", "SS-SETTINGS", "SS-REMOTE", "SS-SYNC", "SS-UPDATES", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Contain domain logic of its own: behaviour lives in the shared core.", "Run elevated, install a system service, enable linger, add firewall rules or enable automatic login (RC-05, RC-23).", "Start the receiver, start at login or keep running after the window closes unless the user enabled each separately (RC-02).", "Run a second authoritative executor for the same workspace checkout and revision (C21).", "Depend on another device's host for local authoring, LCL validation or local agent work (A2, C19)."]
+        owner_tasks: ["TASK-009", "TASK-038", "TASK-056", "TASK-057", "TASK-066"]
+        test_slots: ["tests/e2e/android/standalone_no_pc", "tests/e2e/android/lifecycle_resume"]
+
+DATA:
+    ID: data.arch_ss_domain_protocol
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-DOMAIN-PROTOCOL"
+        name: "Shared domain model and protocol"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "The one vocabulary both clients and both hosts share: versioned domain types and the versioned messages that carry them between a UI client and its host and between hosts. Neither client defines its own interpretation of workspace, agent, task, LCL or security state (C15, B11)."
+        slots: ["core/domain/workspace | Workspace, replica, device-local root mapping and content-availability types (B18).", "core/domain/session | Agent session with its binding: workspace, execution device, checkout revision, approved specification revision, provider and model, and generation (B17, B23).", "core/domain/task | Task, dependency, status, evidence and verification-result types; evidence carries the input revisions and environment it was produced under (B20).", "core/domain/model_capabilities | Provider and model capabilities, kept separate from execution-host and toolchain capabilities (provider_and_agent_model v0.2).", "core/domain/events | Domain events that report facts such as state changes and progress; an event never carries authority.", "core/domain/errors | Shared error and outcome vocabulary, including blocked, needs-user-action, unsupported, expired and outcome-unknown (RC-12).", "core/protocol/messages | Typed message families kept apart: client-to-host intents and state snapshots, remote request envelopes with acknowledgments (RC-09), and content-sync records (C22).", "core/protocol/serialization | Canonical serialization with bounded sizes and strict schema validation on decode (RC-23).", "core/protocol/version_negotiation | Protocol and schema version negotiation; an incompatible peer or host is refused, never guessed (STOP-08)."]
+        owns_state: []
+        depends_on: []
+        must_not: ["Contain behaviour, storage or transport: only types, validation and serialization.", "Depend on a client, a platform adapter or a UI toolkit.", "Let one message type mix content synchronization with remote commands or approvals (C22)."]
+        owner_tasks: ["TASK-006", "TASK-007"]
+        test_slots: ["tests/conformance/protocol/client_protocol_compatibility"]
+
+DATA:
+    ID: data.arch_ss_state
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-STATE"
+        name: "Persistent state"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Each host's single authoritative store: versioned schema, migrations, crash-safe transactional writes, integrity checks, the journal of in-flight effects, checkpoints and recovery. Every subsystem that persists records does so through this store, writing only the entities it owns, and none keeps a second store (no_unnecessary_code). Workspace files live under the workspace roots, and secrets in the platform credential store."
+        slots: ["core/state/state_store | The host's one transactional store: stable IDs, schema version, integrity checks, no secret payloads (persistent_state_model).", "core/state/migrations/migration_registry | Ordered, tested schema migrations that preserve unsynced edits, drafts and uncommitted work (TASK-008).", "core/state/operation_journal | Write-ahead record of every started effect and its known outcome, so an interrupted or unacknowledged effect is reconciled and never blindly replayed (RC-17).", "core/state/checkpoints | Checkpoints of a session's bound workspace, task, working-tree revision, approved LCL revision, evidence, blockers and pending approvals before risky mutations and at handoff (C12, H2).", "core/state/recovery | Crash-safe resume: rebuilds a known state from the journal, marks unknown outcomes, and never resumes a task as complete or starts a duplicate executor (TASK-038)."]
+        owns_state: ["ST-HISTORY", "ST-JOURNAL"]
+        depends_on: ["SS-DOMAIN-PROTOCOL", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Store secrets, recovery codes or private keys (R17); those stay in the platform credential store.", "Report data saved before it is durable, or accept a write outside a transaction (A3).", "Treat a remote snapshot or a synced record as locally authoritative execution state (persistent_state_model v0.2)."]
+        owner_tasks: ["TASK-008", "TASK-026", "TASK-036", "TASK-037", "TASK-038"]
+        test_slots: ["tests/unit/state_recovery"]
+
+DATA:
+    ID: data.arch_ss_workspaces
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-WORKSPACES"
+        name: "Workspaces"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Workspace registry and lifecycle, device-local roots, content revisions for every write path, each UI client's foreground and view state, and the binding rules that keep what the user sees separate from what an agent may change (C1 to C4)."
+        slots: ["core/workspaces/workspace_registry | Create, open, close and list workspaces with stable ID, type (CODE or LCL), name, device-local root and content availability (C1, B18).", "core/workspaces/workspace_binding | Agent-to-workspace and workspace-to-root bindings, stable until an explicit rebind, stop or new session; UI focus never changes them (B3, B4, R11).", "core/workspaces/workspace_revision | Content revisions and base hashes for every write path (editor saves, agent tools, sync, import publication), so a stale writer is detected (B20, B22).", "core/workspaces/file_tree_model | A workspace's file tree, including remote-only and synchronized-copy availability; the visible tree is the foreground workspace's (B2, B5, B6).", "core/workspaces/view_state | Per-client, per-workspace view state: foreground workspace, tree expansion, tabs, cursor, panels and terminal sessions; never an authority input (R13, C2)."]
+        owns_state: ["ST-CONTENT", "ST-WORKSPACE", "ST-VIEW"]
+        depends_on: ["SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Let a foreground switch, sync, reconnection or import completion rebind an agent or steal focus (R11, C4, RC-20).", "Treat a PC absolute path as an Android path or copy roots between devices (B18).", "Present a remote-only listing as content available offline (A3)."]
+        owner_tasks: ["TASK-013", "TASK-014", "TASK-015", "TASK-016", "TASK-017", "TASK-061", "TASK-065"]
+        test_slots: ["tests/unit/workspace_binding", "tests/unit/view_state", "tests/integration/workspaces/foreground_background_isolation", "tests/integration/workspaces/view_state_restore", "tests/e2e/desktop/workspace_switching", "tests/e2e/cross-device/independent_workspaces"]
+
+DATA:
+    ID: data.arch_ss_security
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-SECURITY"
+        name: "Security and authority"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Decides, below every convenience layer, whether an action may happen: the trust hierarchy, the permission engine with risk classes, grant and approval records including directional remote grants, workspace scope, network policy, secret redaction, the extension policy and the audit log. Every effect is decided on the host that executes it, and ambiguity fails closed (R9, C10)."
+        slots: ["core/security/authority_policy | The immutable trust hierarchy and security invariants; repository, tool, network, imported or synced text never raises its own authority (authority_hierarchy, B15).", "core/security/permission_engine | The single authorization point: evaluates principal, action, target scope, risk class, grants, lock state and freshness for every tool call and every admitted remote request, and records the decision (C10, RC-10, RC-25).", "core/security/approval_grants | Device-local grants and approvals bound to principal, action, target, revision, permission epoch and expiry, including directional remote grants per peer device, user and capability (RC-03, RC-17); never synced (C22).", "core/security/workspace_scope | Canonical path and symlink containment of every file operation within the bound root, which it resolves from the authoritative binding records rather than from the caller's claim, with explicit approval for anything outside (TASK-023).", "core/security/network_policy | Permission of outbound network endpoints for tools and providers; no listening port opens without the receiving setting (RC-19).", "core/security/secret_redaction | Removes credentials and secret material from logs, prompts, state snapshots and diagnostics (R17).", "core/security/extension_policy | The extension principal's capability limits (data.arch_extension_limits, B14).", "core/security/audit_log | Append-only per-device record of decisions, effects, remote requests and revocations, without secrets or unnecessary private content (RC-22)."]
+        owns_state: ["ST-AUTHORITY", "ST-AUDIT", "ST-SECRETS"]
+        depends_on: ["SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Let Developer Settings, LCL rules, imported content or a model request weaken an immutable invariant (B13, C6).", "Accept a sender-side permission display, a shared account or file synchronization as authorization (RC-03, RC-10).", "Exist in a second copy for remote requests, the UI or extensions (RC-25)."]
+        owner_tasks: ["TASK-004", "TASK-021", "TASK-022", "TASK-023", "TASK-025", "TASK-026", "TASK-055"]
+        test_slots: ["tests/unit/permission_engine", "tests/unit/approval_grants", "tests/security/permissions/project_confinement", "tests/security/permissions/untrusted_instructions", "tests/security/permissions/extension_authority", "tests/security/credentials/secret_redaction", "tests/security/credentials/credential_storage"]
+
+DATA:
+    ID: data.arch_ss_tools
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-TOOLS"
+        name: "Typed tools"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "The only route from a decision to an effect: the tool registry, the single dispatch that runs every call through the permission engine and the operation journal, and the file, command, Git and verification tools with structured, auditable results (C9). Which tools a host offers depends on its real capabilities."
+        slots: ["core/tools/tool_registry | Each tool's typed schema, risk class, required host capability and audit metadata (TASK-031).", "core/tools/tool_dispatch | The single dispatcher: validates the call, obtains the permission engine's decision, journals it, executes the tool and returns a structured result. Agent sessions, admitted remote requests and UI-initiated agent actions all use it (RC-25).", "core/tools/file_tools | Workspace-scoped list, search, read, create, edit, patch and delete through workspace scope, revisions and atomic writes (TASK-032).", "core/tools/command_tools | Mediated commands, builds, tests and allowlisted application launches through the platform process host; never a model-supplied shell string to launch an app (RC-11, TASK-024, TASK-033).", "core/tools/git_tools | Git operations as typed tools with structured results (TASK-033).", "core/tools/verification_tools | Deterministic verification runs such as build, test, lint and LCL validation, whose results become evidence tied to input revisions (R15, TASK-054).", "integrations/git/git_adapter | Adapter to the Git CLI, or to a Git library only if the CLI proves insufficient (reuse_matrix); capability-gated where Git is unavailable (A4)."]
+        owns_state: []
+        depends_on: ["SS-SECURITY", "SS-STATE", "SS-WORKSPACES", "SS-LCL", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Execute anything without a permission-engine decision and a journal entry.", "Offer a mutating tool to a session in read-only orientation (H3).", "Run above the user's privilege (RC-23), or outside the bound workspace scope without explicit approval (TASK-023)."]
+        owner_tasks: ["TASK-020", "TASK-024", "TASK-031", "TASK-032", "TASK-033"]
+        test_slots: ["tests/unit/tool_dispatch"]
+
+DATA:
+    ID: data.arch_ss_agent
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-AGENT"
+        name: "Agent runtime"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Runs agent sessions on the host that owns them: the objective, context, model, tool, result, state and verify loop; pause, resume, cancel and stop; bounded retries and stuck detection; and the generation fence that stops a late or replaced model reply from acting (B17, B23). The same runtime serves Desktop, Android and remote-requested sessions."
+        slots: ["core/agent/agent_runtime | Owns this host's agent sessions and their bindings; one authoritative executor per workspace checkout and revision (C21).", "core/agent/action_loop | The bounded agent loop over the context builder, the provider interface and the tool dispatch; a model's claim that a task is done is reported to the task gates as a proposal, never applied (provider_and_agent_model, TASK-034).", "core/agent/session_control | Start, pause, resume, cancel and stop with confirmed outcomes, bounded retries and stuck detection; invokes the model-switch transaction (TASK-035, TASK-044).", "core/agent/execution_fence | Session generation epoch: a reply or tool request from an older generation, a cancelled turn or a replaced model is rejected before dispatch (H2, B23)."]
+        owns_state: ["ST-SESSION"]
+        depends_on: ["SS-CONTEXT", "SS-PROVIDERS", "SS-TOOLS", "SS-STATE", "SS-WORKSPACES", "SS-LCL"]
+        must_not: ["Change its workspace, execution device or approved specification because of UI focus, a model switch, sync or reconnection (R22, C3).", "Mark a task complete; completion belongs to the verification gate (C11, B9).", "Use a model to stay available, listen or watch a connection (RC-08)."]
+        owner_tasks: ["TASK-015", "TASK-034", "TASK-035", "TASK-066"]
+        test_slots: ["tests/unit/agent_runtime", "tests/e2e/desktop/autonomous_run", "tests/fixtures/code/sample_project_factory"]
+
+DATA:
+    ID: data.arch_ss_context
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-CONTEXT"
+        name: "Context"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Builds each model context from authoritative state and scoped files, never from provider chat history (R14): repository map, mandatory reads with observed read receipts, and budgets."
+        slots: ["core/context/context_builder | Assembles a session's next context from persisted state, the current task, adopted LCL constraints and scoped files; repository, tool and network text enters as data (security_baseline).", "core/context/context_budget | Token, read and time budgets and selection; stops rather than silently omitting a mandatory rule (H3).", "core/context/mandatory_reads | A session's required read order and the runtime-observed read receipts that the orientation gate checks (B23).", "core/context/repository_map | File, symbol and dependency map for relevance (TASK-039).", "integrations/code_index/syntax_index_adapter | Adapter to the selected reusable syntax-tree component; no custom parser (reuse_matrix lists Tree-sitter as a candidate)."]
+        owns_state: ["ST-CONTEXT"]
+        depends_on: ["SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-LCL"]
+        must_not: ["Treat assembled context or a provider conversation as authoritative state (R14).", "Send content to a provider outside the workspace and provider disclosure policy (H2)."]
+        owner_tasks: ["TASK-039", "TASK-040", "TASK-045"]
+        test_slots: ["tests/unit/context_budget"]
+
+DATA:
+    ID: data.arch_ss_tasking
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-TASKING"
+        name: "Task execution gates"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Advances work only through deterministic gates: the task graph, the scheduler, the verification gate, stop conditions with approval interruptions, and the cleanup gate that requires verification of the post-cleanup revision before completion (B8, B9, B24)."
+        slots: ["core/tasking/task_graph | Tasks and dependencies of a project, from Standard mode or from the adopted LCL specification (C6).", "core/tasking/task_scheduler | Starts the next task only when its dependencies are closed and no stop condition or blocker is active (TASK-053).", "core/tasking/verification_gate | Marks a task complete only when its configured build, test, LCL and security checks pass on the final revision (C11, TASK-054).", "core/tasking/stop_conditions | Evaluates Nexees and adopted LCL stop conditions and pauses affected work for approvals, contradictions or missing decisions (TASK-055).", "core/tasking/cleanup_gate | Requires readability review, a record of task-owned cleanup and post-cleanup verification before completion; the cleanup itself runs as ordinary permissioned tool calls (B24, Q3)."]
+        owns_state: ["ST-TASK"]
+        depends_on: ["SS-AGENT", "SS-STATE", "SS-TOOLS", "SS-SECURITY", "SS-LCL"]
+        must_not: ["Advance on a model's claim of completion (C11).", "Let cleanup bypass permissions, scope or ownership, or run during read-only orientation (Q5).", "Treat an expired approval or an outcome-unknown effect as satisfied (RC-17)."]
+        owner_tasks: ["TASK-050", "TASK-053", "TASK-054", "TASK-055"]
+        test_slots: ["tests/unit/task_graph"]
+
+DATA:
+    ID: data.arch_ss_providers
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-PROVIDERS"
+        name: "Providers and model handoff"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Puts every model behind one capability interface and owns the mid-session model switch with its default-ON read-only orientation. A model supplies reasoning only; it never holds project state or authority (R14). Handoff lives here, inside the provider subsystem, rather than as a separate service."
+        slots: ["core/providers/provider_interface | The common provider contract: access type, model discovery, streaming, tool-call compatibility, limits, usage, cancellation and errors (C8).", "core/providers/provider_registry | Providers configured on this execution host, with reachability and authentication kept separate from host and toolchain capability (TASK-041).", "core/providers/model_catalog | Models and capabilities actually available to the selected execution host; unavailable combinations are shown as unavailable (android_ui v0.2).", "core/providers/usage_limits | Usage, quota and budget policy; exhaustion pauses the session for an explicit model choice and never cycles accounts or providers to evade limits (H4).", "core/providers/handoff/model_switch | The switch transaction run by session control: requires the old generation fenced, settles in-flight tool outcomes, checkpoints, validates the new model's capabilities and disclosure policy, and rebuilds context (H2, TASK-044).", "core/providers/handoff/continuation_snapshot | Bounded current-state record for the replacement model, built from the checkpoint and never from the old model (H3).", "core/providers/handoff/orientation_controller | Orientation state machine with the persisted ON/OFF default and the session override; while ORIENTING only read, list, search and state-inspection tools are offered (H1, H3, TASK-045).", "core/providers/handoff/orientation_prompt | The kickoff template; its fields bind to the protocol schema and it is guidance, not the security boundary (H3).", "integrations/providers/ | Provider adapters for Anthropic, Google, OpenAI, Ollama and OpenAI-compatible endpoints, and a DeepSeek profile over the OpenAI-compatible adapter, each using only provider-supported access (TASK-042, TASK-043).", "integrations/agents/external_agent_adapter | External coding agents through an interoperability protocol (ACP is a candidate); such an agent may claim read-only orientation support only where the tool restriction is enforced (H3, TASK-041)."]
+        owns_state: ["ST-HANDOFF", "ST-PROVIDER-CATALOG"]
+        depends_on: ["SS-STATE", "SS-CONTEXT", "SS-SECURITY", "SS-SETTINGS"]
+        must_not: ["Ask the exhausted or replaced model for a summary to preserve progress (H1).", "Change the session's execution device, workspace or permissions when the model changes (H2, B10).", "Treat a consumer subscription or a desktop login as a general API, or route around provider access rules (reuse_policy).", "Give model output instruction authority (authority_hierarchy)."]
+        owner_tasks: ["TASK-041", "TASK-042", "TASK-043", "TASK-044", "TASK-045", "TASK-068"]
+        test_slots: ["tests/unit/provider_registry", "tests/unit/model_orientation", "tests/integration/handoff/orientation_disabled", "tests/integration/handoff/quota_exhaustion_switch", "tests/integration/handoff/readonly_orientation", "tests/integration/handoff/stale_state"]
+
+DATA:
+    ID: data.arch_ss_lcl
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-LCL"
+        name: "LCL integration and import"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Optional LCL inside Nexees: the bridge to the one existing LCL core, specification modes, validation and diagnostics, specification revisions with their explicit adoption into execution, and the single file and ZIP import pipeline both clients use (C6, C7, C23). Import lives here, inside the LCL subsystem, rather than as a separate service."
+        slots: ["core/lcl/lcl_service | The Nexees-side LCL service: validation, diagnostics, templates and compiled output requested through the core bridge; Nexees remains the workspace shell (lcl_integration).", "core/lcl/specification_revision | Draft, validated and adopted revisions of a workspace's LCL specification; a draft never gains authority (C22, B20).", "core/lcl/execution_binding | Binds an adopted, validated revision to a session's constraints, read order, stop conditions and verification at an explicit safe boundary (B7, B8, TASK-050).", "core/lcl/diagnostic_model | Diagnostics with source spans exactly as the core reports them; never re-derived by a second checker.", "core/lcl/modes/specification_modes | Standard, Full Project, Task-Decomposed and Hybrid mode metadata and structure (TASK-048).", "core/lcl/modes/mode_conversion | Mode conversion that shows affected content and revalidates; never discards meaning silently (STOP-06).", "core/lcl/importing/archive_intake | Bounded intake of files and ZIP archives into app-private staging on the target host (I1, I2, TASK-051).", "core/lcl/importing/safe_extraction | Entry validation: path containment and normalization, duplicates, links, special entries, encryption and resource bounds (I2).", "core/lcl/importing/structure_resolver | Roles and references established by the LCL core or a verified export manifest; ambiguity becomes a visible decision, never a guess (I3).", "core/lcl/importing/import_preview | The preview model of destination tree, mapping, conflicts and diagnostics that both clients' preview panels display (I4).", "core/lcl/importing/import_transaction | Publication of a confirmed import through the workspace revision service and state transactions; no partial tree becomes active (I4, B22).", "integrations/lcl/core_bridge | The only path to LCL semantics on both hosts: the pinned existing LCL core, with no second parser or validator (AD-09).", "integrations/lcl/compatibility_check | Checks the bridged core's language and engine versions against the pinned versions before use (MAN-03, AN-12).", "integrations/lcl/template_adapter | LCL templates taken from the core or its verified documentation, never invented grammar.", "integrations/lcl/workspace_extension | Desktop contribution that presents the LCL workspace inside the IDE foundation's shell; presentation only (C7)."]
+        owns_state: ["ST-LCL-REVISION", "ST-IMPORT"]
+        depends_on: ["SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Parse, check or validate LCL anywhere except in the bridged core; on Android neither a second implementation nor a PC-only validation is allowed (A4).", "Embed the standalone LCL application, its updater or its Android remote client (TASK-046).", "Extract into a live workspace, follow archive links, or give imported text authority before validation and explicit adoption (I2, I5).", "Switch a running session to a new revision outside an explicit safe-boundary adoption (C22)."]
+        owner_tasks: ["TASK-046", "TASK-047", "TASK-048", "TASK-049", "TASK-050", "TASK-051", "TASK-052", "TASK-063"]
+        test_slots: ["tests/unit/lcl_modes", "tests/unit/import_structure", "tests/integration/lcl-import/archive_structure", "tests/integration/lcl-import/atomic_import", "tests/integration/lcl-import/single_file_import", "tests/integration/lcl-import/spec_revision_adoption", "tests/security/archives/ambiguous_paths", "tests/security/archives/archive_limits", "tests/security/archives/path_escape", "tests/conformance/lcl/shared_core_parity", "tests/e2e/android/offline_lcl", "tests/fixtures/archives/archive_fixture_factory", "tests/fixtures/lcl/verified_fixture_loader"]
+
+DATA:
+    ID: data.arch_ss_accounts
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-ACCOUNTS"
+        name: "Accounts and local access"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Nexees account sign-in, creation, two-factor authentication, recovery and step-up reauthentication through the selected auth backend, and the device-local unlock that keeps authorized local work available offline. Account access, local unlock, provider credentials and device trust stay four separate authorities (auth_and_settings v0.2)."
+        slots: ["core/accounts/account_service | Account sign-in, creation and email verification through the auth adapter (C13, TASK-028).", "core/accounts/account_session | Session lifecycle and expiry; session secrets live in the credential store.", "core/accounts/mfa_service | Strong second factors such as TOTP and passkeys, and step-up reauthentication for sensitive actions (B12, TASK-029).", "core/accounts/account_recovery | Recovery codes and the recovery flow; recovery material never enters state, prompts, logs or sync (R17).", "core/accounts/offline_access | Device-local unlock after authorized setup: local work stays available offline, and network loss never unlocks secrets or grants remote authority (A2, TASK-027).", "integrations/auth/account_provider_adapter | Adapter to the selected auth backend (reuse_matrix lists Supabase Auth or an equivalent as a candidate).", "integrations/auth/github_login_adapter | GitHub sign-in through the provider-supported OAuth flow.", "integrations/auth/mfa_adapter | Adapter for the selected backend's two-factor primitives."]
+        owns_state: ["ST-ACCOUNT"]
+        depends_on: ["SS-SECURITY", "SS-STATE", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Treat account login as device pairing, remote authority or provider access (RC-02, RC-03).", "Fabricate a session, or unlock beyond the defined local-unlock policy, while offline (TASK-027).", "Make standalone Android signup or use depend on a paired PC (A2)."]
+        owner_tasks: ["TASK-027", "TASK-028", "TASK-029", "TASK-060"]
+        test_slots: []
+
+DATA:
+    ID: data.arch_ss_settings
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-SETTINGS"
+        name: "Settings"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Normal settings and separated Developer Settings with safe defaults, validation, warnings and step-up for sensitive changes. Settings express user preferences; none can switch off an immutable security boundary (B13, C14)."
+        slots: ["core/settings/settings_model | Typed settings with documented finite defaults: receiving, start-at-login and keep-running-after-close OFF and separately visible (RC-02); read-only orientation ON (H1).", "core/settings/settings_store | Device-local persistence through the state store; portable non-secret preferences are copied to another device only when the user selects them (A6).", "core/settings/developer_settings | Advanced options with warnings and reauthentication where they weaken isolation; no unrestricted bypass (security_baseline).", "config/application_defaults | Shipped application defaults.", "config/provider_profiles | Shipped provider profile defaults, without credentials.", "config/security_defaults | Shipped security defaults, fail-closed.", "config/sync_defaults | Shipped synchronization defaults; nothing is enrolled in sync by default (A6)."]
+        owns_state: ["ST-SETTINGS"]
+        depends_on: ["SS-STATE", "SS-SECURITY", "SS-ACCOUNTS"]
+        must_not: ["Store credentials or recovery material (R17).", "Turn on receiving, startup, linger or a firewall change as a side effect of another setting, of pairing or of an update (RC-02, RC-24).", "Let the orientation toggle disable identity, state, permission or security checks (C24)."]
+        owner_tasks: ["TASK-030"]
+        test_slots: ["tests/unit/settings"]
+
+DATA:
+    ID: data.arch_ss_remote
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-REMOTE"
+        name: "Remote control"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Two-way remote control between paired Nexees hosts: pairing and device trust, remote sessions, admission of typed request envelopes on the destination, acknowledgment and outcome reconciliation, and notifications. An admitted request reaches the destination's own permission engine and tool dispatch; there is no second dispatcher or agent engine (RC-01, RC-25)."
+        slots: ["core/remote/pairing | Explicit pairing with proof of the selected device and user approval; revocable peer trust. Pairing alone enables nothing (RC-02, A5).", "core/remote/device_registry | Paired devices with identity, trust state, protocol version and revocation; private keys stay in the credential store (RC-24).", "core/remote/remote_sessions | Authenticated peer sessions, reconnect with finite backoff, real reachability versus last-known state, and the request-ID ledger that deduplicates and reconciles outcomes (RC-08, RC-17, RC-22).", "core/remote/command_dispatch | Destination-side admission of remote request envelopes: authenticates the sender, checks the explicit destination, direction grant, permission epoch, expiry and replay, then hands the typed operation to the tool dispatch or session control. Despite its name it executes nothing itself (RC-09, RC-10, RC-25).", "core/remote/notifications | Actionable notifications to the user and to peers without forcing a workspace switch; an approval given from a notification is revalidated before use (RC-16, RC-22)."]
+        owns_state: ["ST-DEVICE-TRUST", "ST-REMOTE-REQUEST", "ST-REMOTE-SNAPSHOT"]
+        depends_on: ["SS-DOMAIN-PROTOCOL", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-STATE", "SS-SETTINGS", "SS-ACCOUNTS", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Admit a request while receiving is disabled, from an unpaired or revoked peer, or in a direction that has no grant (RC-02, RC-03).", "Fall back to the current or foreground workspace when a target is missing (RC-09).", "Replay an expired or outcome-unknown request, or carry commands and approvals through the sync channel (RC-17, C22).", "Claim that a peer is reachable, an app opened or screen control exists without evidence (RC-06, RC-12, RC-21).", "Call a model to listen, reconnect or stay available (RC-08)."]
+        owner_tasks: ["TASK-007", "TASK-056", "TASK-060", "TASK-067", "TASK-070"]
+        test_slots: ["tests/security/remote/explicit_target_binding", "tests/security/remote/pairing_revocation", "tests/security/remote/stale_approval_rejection", "tests/e2e/cross-device/remote_agent_control"]
+
+DATA:
+    ID: data.arch_ss_sync
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-SYNC"
+        name: "Content synchronization"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Selected two-way reconciliation of workspace content and portable records between device replicas: durable outbox, base revisions and hashes, three-way merge where safe, visible conflicts that keep both versions, tombstones, and resumable integrity-checked transfers. Sync moves content, never authority (A6, C22)."
+        slots: ["core/sync/sync_coordinator | Reconciles only the workspaces and records the user selected; validates paths, sizes, schemas, revisions and peer authority before applying (A6).", "core/sync/change_tracking | Durable outgoing change records with base revisions per replica; local-only work is never enrolled automatically (A6).", "core/sync/conflict_resolution | Three-way merge where safe, otherwise a visible conflict that keeps both versions; never timestamp-only last-writer-wins for source, LCL, task completion, permissions or approvals (A6).", "core/sync/transfer_journal | Resumable, integrity-checked transfers and crash-safe application (AN-08).", "core/sync/portable_paths | Maps workspace-relative paths between device-local roots and rejects escapes and absolute PC paths on Android (B18)."]
+        owns_state: ["ST-SYNC"]
+        depends_on: ["SS-DOMAIN-PROTOCOL", "SS-WORKSPACES", "SS-STATE", "SS-SECURITY", "SS-REMOTE", "SS-SETTINGS", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        must_not: ["Synchronize secrets, recovery material, private device keys, grants, approvals or remote commands (A6, C22).", "Overwrite unsaved buffers or unresolved changes, or adopt synced LCL rules into a running session (A3, A7).", "Change an execution owner or a foreground workspace (A6)."]
+        owner_tasks: ["TASK-007", "TASK-008", "TASK-069"]
+        test_slots: ["tests/unit/sync_conflicts", "tests/integration/sync/concurrent_edits", "tests/integration/sync/interrupted_transfer", "tests/integration/sync/two_way_sync", "tests/e2e/cross-device/reconnect_and_conflicts"]
+
+DATA:
+    ID: data.arch_ss_help
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-HELP"
+        name: "Help and manuals"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "The two offline manuals inside both clients from one shared content source: catalogue, search and navigation over bundled release-matched content, shown passively in each client's help panel (C26). Help lives here and in the existing help panels rather than as a separate application."
+        slots: ["core/help/manual_catalog | The two manuals with app version, supported LCL core versions, manual revision and review date (B25).", "core/help/manual_search | Local search; no network use and no project data leaves the device.", "core/help/help_navigation | Contents, back and forward, cross-links and contextual entry points that never change agent binding, the foreground tree or unsaved buffers.", "docs/manuals/ | The one content source of the Nexees User Manual and the LCL in Nexees User Manual, still marked as drafts until verified (C26, MAN-02)."]
+        owns_state: ["ST-MANUALS"]
+        depends_on: []
+        must_not: ["Execute active content, load remote resources or send project state (manuals_and_help).", "Ship divergent per-client manuals, invented LCL syntax or untested examples (MAN-02, MAN-03)."]
+        owner_tasks: ["TASK-071", "TASK-072"]
+        test_slots: ["tests/unit/manual_search", "tests/e2e/help/offline_manuals", "tests/e2e/help/search_and_navigation"]
+
+DATA:
+    ID: data.arch_ss_updates
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-UPDATES"
+        name: "Updates"
+        layer: "shared_core"
+        devices: ["desktop", "android"]
+        purpose: "Verified updates and safe migration of persisted state and peer compatibility: package verification, the update service and the migration guard, which refuses unsafe upgrades and preserves unsynced data, explicit opt-ins and grants (RC-24, AN-12)."
+        slots: ["core/updates/update_service | Finds and applies verified updates; preserves opt-in settings and grants without resetting them to allow (RC-24).", "core/updates/package_verification | Signature and integrity verification of update packages (security_baseline).", "core/updates/migration_guard | Blocks an update whose state migration or peer protocol is incompatible until recovery is possible; preserves unsynced Android changes (AN-12, STOP-08).", "packaging/updates/ | Release manifest and signing configuration slots; never private signing material (SECURITY.md)."]
+        owns_state: []
+        depends_on: ["SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-SETTINGS", "SS-SECURITY"]
+        must_not: ["Reset explicit opt-ins, grants or startup registration to permissive values (RC-24).", "Install an unverified package or migrate state without a recoverable path (TASK-008)."]
+        owner_tasks: ["TASK-008", "TASK-073", "TASK-074", "TASK-075"]
+        test_slots: ["tests/e2e/release/update_recovery"]
+
+DATA:
+    ID: data.arch_ss_ide
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-IDE"
+        name: "IDE infrastructure"
+        layer: "integration_adapter"
+        devices: ["desktop"]
+        purpose: "Editor, search, terminal, language servers, debugging and the extension host from the selected IDE foundation, behind adapters, inside the Nexees shell: reused, not reimplemented (CH-03). Editor saves are user edits through workspace scope and revisions; extensions form their own principal without Nexees agent authority (B14)."
+        slots: ["integrations/ide/editor_adapter | The foundation's editor for tabs, editing, undo, syntax and save; a save is a user edit through workspace scope and the revision service (TASK-018).", "integrations/ide/search_adapter | Workspace-scoped project search (TASK-019).", "integrations/ide/terminal_adapter | User terminals in the selected workspace under the user's own authority; they are not agent tools and carry no agent grants (TASK-019).", "integrations/ide/language_server_adapter | Language servers and diagnostics; their output reaches agents only as tool-output data (TASK-020).", "integrations/ide/debugger_adapter | Debugging through the foundation's debug-protocol support (TASK-020).", "integrations/ide/extension_host_adapter | Runs VS Code-compatible extensions in the foundation's extension host under the extension policy (TASK-021).", "integrations/ide/extension_registry_adapter | The approved extension source (Open VSX is a candidate); Marketplace terms are not assumed (license_and_dependency_gate)."]
+        owns_state: []
+        depends_on: ["SS-WORKSPACES", "SS-SECURITY"]
+        must_not: ["Give an extension agent tools, approvals, grants, secrets, provider credentials, remote control or sync (B14).", "Write workspace files around workspace scope and the revision service.", "Be assumed on Android, where the phone has its own practical editor and capability-gated tools (A4)."]
+        owner_tasks: ["TASK-018", "TASK-019", "TASK-020", "TASK-021"]
+        test_slots: []
+
+DATA:
+    ID: data.arch_ss_platform_desktop
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-PLATFORM-DESKTOP"
+        name: "Desktop platform adapters"
+        layer: "platform_adapter"
+        devices: ["desktop"]
+        purpose: "Linux Desktop implementations of the ports the core defines: process execution and sandboxing, host lifecycle and notifications, the OS credential store, scoped file access with atomic writes and file picking, and the peer transport. Nothing here decides authority; it enforces what the core decided."
+        slots: ["platform/desktop/execution/process_host | Starts mediated processes with controlled working directory, environment, resources and privileges; launches allowlisted applications by native identifiers in the correct graphical session (RC-11, RC-12, TASK-024).", "platform/desktop/execution/sandbox_backend | Process and filesystem isolation where suitable (reuse_matrix lists bubblewrap or an equivalent as a candidate) (TASK-024).", "platform/desktop/execution/tool_capabilities | Reports which toolchains and capabilities this host really has (A4).", "platform/desktop/lifecycle/application_lifecycle | Host process lifetime: the single-instance host, window attach and detach, and a user-level start-at-login registration only when enabled; boot-before-login and after-logout states are reported as they really are (RC-04, RC-05).", "platform/desktop/lifecycle/notification_backend | Desktop notifications that never steal focus (TASK-056).", "platform/desktop/secrets/credential_store | OS-backed credential storage for provider credentials, session secrets and the device key (TASK-025).", "platform/desktop/storage/scoped_filesystem | Root-relative file access that applies the core's containment race-safely (TASK-023).", "platform/desktop/storage/atomic_file_writer | Crash-safe writes used by the state store, file tools, sync and import publication.", "platform/desktop/storage/file_picker | User selection of files and folders for workspaces and imports.", "platform/desktop/transport/secure_channel | The authenticated, encrypted peer channel from an audited library, shared by remote control and sync; no home-made cryptography (RC-19).", "platform/desktop/transport/transport_discovery | LAN discovery and the configured secure off-LAN route; no unauthenticated public port, router change or paid relay without approval (RC-19)."]
+        owns_state: []
+        depends_on: ["SS-DOMAIN-PROTOCOL"]
+        must_not: ["Decide authority, grants or policy.", "Require root, a system service, linger, a firewall or router change, or automatic login (RC-05, RC-19)."]
+        owner_tasks: ["TASK-009", "TASK-023", "TASK-024", "TASK-025", "TASK-056", "TASK-060", "TASK-070"]
+        test_slots: []
+
+DATA:
+    ID: data.arch_ss_platform_android
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-PLATFORM-ANDROID"
+        name: "Android platform adapters"
+        layer: "platform_adapter"
+        devices: ["android"]
+        purpose: "Android implementations of the same core ports: phone-local tool execution and capability reporting, compliant background work and lifecycle recovery, notifications, the Android credential store, app-private and user-granted storage with durable writes, the document picker and the peer transport."
+        slots: ["platform/android/execution/local_tool_host | Runs phone-local tools and the on-device code and test backend chosen by TASK-003 inside the app sandbox (A4).", "platform/android/execution/runtime_capabilities | Reports the phone's real tool, toolchain and OS capabilities, so unsupported work becomes a visible blocker (A4).", "platform/android/lifecycle/background_execution | Compliant background work and, for the receiver where needed, a user-visible foreground service with a stop control; never a promise of permanent availability (RC-15).", "platform/android/lifecycle/lifecycle_recovery | Handles process death, Doze, force-stop and revoked permissions with checkpointed recovery and honest needs-user-action states (RC-15, RC-16, AN-09).", "platform/android/lifecycle/notification_backend | Android notifications with explicit user actions; never simulated taps or hidden permission screens (RC-16).", "platform/android/secrets/credential_store | Keystore-backed credential storage for session secrets and the device key (an Android Keystore candidate).", "platform/android/storage/scoped_filesystem | App-private and user-granted storage access with containment checks (A3).", "platform/android/storage/atomic_file_writer | Durable writes before Saved is shown, and staged revisions where external storage is not atomic (A3, I4).", "platform/android/storage/document_picker | The authorized storage picker for files and imports, with no PC (I1).", "platform/android/transport/secure_channel | The same authenticated, encrypted peer channel as Desktop (RC-19).", "platform/android/transport/transport_discovery | LAN discovery and the configured secure off-LAN route (RC-19)."]
+        owns_state: []
+        depends_on: ["SS-DOMAIN-PROTOCOL"]
+        must_not: ["Decide authority, grants or policy.", "Depend on a PC endpoint for local storage, tools or validation (A2).", "Bypass Android user-interaction, background-start or app-sandbox rules (RC-14, RC-16)."]
+        owner_tasks: ["TASK-057", "TASK-060", "TASK-062", "TASK-063", "TASK-066", "TASK-070"]
+        test_slots: []
+
+DATA:
+    ID: data.arch_ss_assets
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-ASSETS"
+        name: "Visual identity and shared assets"
+        layer: "supporting"
+        devices: ["desktop", "android"]
+        purpose: "The approved visual identity and the resources both clients share, so that Android is recognisably the same product (R18, R19)."
+        slots: ["assets/branding/ | The approved logo reference and the source and derived icon folders; derived icons are produced only from the bound logo source, which is open item BIND-B1-LOGO (B1).", "assets/design/ | The approved compact Desktop layout and sidebar-control references (R18).", "assets/theme/ | Design tokens and icon mapping shared by both clients (TASK-010, TASK-058).", "assets/strings/ | The English UI strings both clients share: one vocabulary (R19)."]
+        owns_state: []
+        depends_on: []
+        must_not: ["Redraw, regenerate or substitute the logo (B1).", "Fork the visual system per client (R19)."]
+        owner_tasks: ["TASK-010", "TASK-058"]
+        test_slots: []
+
+DATA:
+    ID: data.arch_ss_build_release
+    TYPE: OBJECT[REF(type.arch_subsystem)]
+    VALUE:
+        subsystem_id: "SS-BUILD-RELEASE"
+        name: "Build, verification and release tooling"
+        layer: "supporting"
+        devices: ["desktop", "android"]
+        purpose: "Builds, the repository check runner, continuous integration, packaging and release verification. It produces and checks artifacts; it is not part of either running host."
+        slots: ["scripts/build/ | Desktop and Android builds, and manual bundling from the one content source (TASK-009, TASK-057, TASK-071).", "scripts/ci/ | The continuous integration skeleton (TASK-005).", "scripts/test/ | The repository check runner (TASK-005).", "scripts/release/ | Release packaging and verification (TASK-073 to TASK-075).", "packaging/desktop/ | The Desktop package definition for an installed local application (C20).", "packaging/android/ | The Android package definition.", "config/local-paths | Non-secret example of the development bindings; not a runtime schema and not shipped."]
+        owns_state: []
+        depends_on: []
+        must_not: ["Contain signing keys, credentials or user data (SECURITY.md).", "Publish a release without the owner's explicit authorization (final_release_gate v0.4)."]
+        owner_tasks: ["TASK-005", "TASK-009", "TASK-057", "TASK-073", "TASK-074", "TASK-075"]
+        test_slots: ["tests/e2e/release/clean_install"]
+
+DATA:
+    ID: data.arch_subsystems
+    TYPE: LIST[OBJECT[REF(type.arch_subsystem)]]
+    VALUE: [REF(data.arch_ss_desktop_client), REF(data.arch_ss_android_client), REF(data.arch_ss_local_host), REF(data.arch_ss_domain_protocol), REF(data.arch_ss_state), REF(data.arch_ss_workspaces), REF(data.arch_ss_security), REF(data.arch_ss_tools), REF(data.arch_ss_agent), REF(data.arch_ss_context), REF(data.arch_ss_tasking), REF(data.arch_ss_providers), REF(data.arch_ss_lcl), REF(data.arch_ss_accounts), REF(data.arch_ss_settings), REF(data.arch_ss_remote), REF(data.arch_ss_sync), REF(data.arch_ss_help), REF(data.arch_ss_updates), REF(data.arch_ss_ide), REF(data.arch_ss_platform_desktop), REF(data.arch_ss_platform_android), REF(data.arch_ss_assets), REF(data.arch_ss_build_release)]
+
+DATA:
+    ID: data.arch_subsystem_ids
+    TYPE: LIST[STRING]
+    VALUE: ["SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT", "SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-CONTEXT", "SS-TASKING", "SS-PROVIDERS", "SS-LCL", "SS-ACCOUNTS", "SS-SETTINGS", "SS-REMOTE", "SS-SYNC", "SS-HELP", "SS-UPDATES", "SS-IDE", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-ASSETS", "SS-BUILD-RELEASE"]
+    DESCRIPTION: "The subsystem identifiers in catalogue order; verify.arch_subsystem_ids checks that this list matches the records."
+
+DATA:
+    ID: data.arch_single_paths
+    TYPE: LIST[STRING]
+    VALUE: ["Authorization | core/security/permission_engine | No second authorization path for remote requests, the UI, extensions or Developer Settings.", "Effects | core/tools/tool_dispatch | No second dispatcher; core/remote/command_dispatch admits and hands over only.", "Agent loop | core/agent/action_loop | No separate agent engine for remote control, handoff or import.", "Project state | core/state/state_store | One store per host; import, handoff and evidence records extend it.", "Audit | core/security/audit_log | One append-only log per device.", "Shared types | core/domain/ | No client-specific interpretation of domain state.", "Messages | core/protocol/ | One versioned message set for client attachment, remote control and sync.", "LCL semantics | integrations/lcl/core_bridge | No second parser or validator, and no PC-only validation.", "LCL import | core/lcl/importing/ | Both clients use this pipeline; they add only pickers and preview panels.", "Model handoff | core/providers/handoff/ | One switch and orientation state machine for Desktop, Android and remote sessions.", "Peer transport | platform/desktop/transport/secure_channel | One channel per platform, its Android counterpart being platform/android/transport/secure_channel, for both remote control and sync.", "Manual content | docs/manuals/ | One content source for both clients, served through core/help/.", "Content revisions | core/workspaces/workspace_revision | Every write path records and checks revisions here."]
+    DESCRIPTION: "Capabilities that exist exactly once, as 'capability | the one owning slot | the duplicate that is excluded' (RC-25, no_unnecessary_code). check_architecture.py verifies that each owning slot is in the catalogue."
+
+DATA:
+    ID: data.arch_extension_limits
+    TYPE: LIST[STRING]
+    VALUE: ["EXT-01 Extensions run in the IDE foundation's extension host as their own principal, outside the agent runtime. They exist on Desktop only and are absent on Android (A4).", "EXT-02 Nexees exposes no write or execute capability of its own to extensions. The Nexees-owned data an extension may see is read-only: the workspace files the foundation already shows it, and diagnostics.", "EXT-03 Extensions never reach agent tools, the tool dispatch, approvals, grants, the state store, the audit log, secrets, provider credentials, remote control or sync (B14).", "EXT-04 Output an extension contributes to an agent, such as diagnostics or language-server results, is tool-output data at trust level 7, never an instruction (authority_hierarchy).", "EXT-05 A change an extension makes through the foundation's editor API is a user-session edit: it passes workspace scope and the revision service, is never an agent action and approves nothing.", "EXT-06 During read-only orientation the runtime offers no extension-contributed tool to the model unless it enforces read-only for that tool (H3).", "EXT-07 Whether extension code is confined at the operating-system level depends on the IDE foundation. TASK-003, TASK-004 and TASK-021 must decide this and record the residual risk explicitly before any extension is enabled."]
+    DESCRIPTION: "The extension principal's capability limits, enforced by core/security/extension_policy."

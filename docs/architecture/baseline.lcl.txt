@@ -1,0 +1,458 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_baseline
+    NAME: "Architecture baseline and record types"
+    VERSION: "0.5.0"
+    KIND: kind.part.definitions
+    DESCRIPTION: "Identifies the specification revision this architecture refines and the repository state it describes, and declares the record types used by the other architecture parts. The implementation pack stays outside this repository; it is referenced by identity, not copied."
+
+DEFINE:
+    ID: binding.arch_defined_by
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "TASK-002"
+
+DEFINE:
+    ID: binding.arch_pack_name
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "Nexees LCL Implementation Pack"
+
+DEFINE:
+    ID: binding.arch_pack_archive_revision
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "0.5.3"
+    DESCRIPTION: "The charter froze revision 0.5.2. Revision 0.5.3 changes only the procedure for TASK-002 to TASK-075; every requirement document this architecture refines is byte-identical in both revisions, which check_architecture.py verifies, so the charter's requirement baseline still applies."
+
+DEFINE:
+    ID: binding.arch_pack_specification_version
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "0.5.0"
+
+DEFINE:
+    ID: binding.arch_pack_content_identity
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1"
+    DESCRIPTION: "SHA-256 identity of the pack's active LCL sources, as defined in its CONTENT_IDENTITY.json."
+
+DEFINE:
+    ID: binding.arch_pack_manifest_sha256
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4"
+    DESCRIPTION: "SHA-256 of the pack's MANIFEST.json, which hashes every other file of that archive."
+
+DEFINE:
+    ID: binding.arch_language_core
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "0.3.0"
+
+DEFINE:
+    ID: binding.arch_repository
+    KIND: kind.constant
+    TYPE: URI
+    VALUE: URI("https://github.com/aivars11232/Nexees")
+
+DEFINE:
+    ID: binding.arch_base_commit
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "284f97a02d3ad9288f3701860e608b366b10979f"
+    DESCRIPTION: "Repository commit on which TASK-002 wrote this architecture: the accepted TASK-001 charter."
+
+DEFINE:
+    ID: binding.arch_layout_revision
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "0.4"
+    DESCRIPTION: "Structure revision of the planned repository layout whose slots the subsystem catalogue maps. A task that moves, merges or adds a slot updates the catalogue in the same change."
+
+DEFINE:
+    ID: type.arch_subsystem
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One subsystem: a cohesive responsibility with one set of owning tasks. layer is client_ui, local_host, shared_core, platform_adapter, integration_adapter or supporting. devices lists where it runs: desktop, android or both. Each slot is 'path | responsibility'; a path ending in '/' covers every file below it, any other path names one file by its path without extension, so the entry survives the real file extensions TASK-005 chooses. Every product file belongs to exactly one slot of one subsystem. owns_state lists the state categories this subsystem alone writes. must_not states boundary prohibitions. test_slots lists the planned test files that primarily prove this subsystem."
+    FIELD:
+        NAME: subsystem_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: layer
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: devices
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: purpose
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: slots
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: owns_state
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: depends_on
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: must_not
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: owner_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: test_slots
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_host
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "The local host of one kind of device: the process that owns execution, authoritative state and, only when enabled, the remote receiver on that device. runs lists the subsystems composed into it."
+    FIELD:
+        NAME: host_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: device
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: process_model
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: runs
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: attaches
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: receiver
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: independence
+        TYPE: STRING
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_state
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One category of state. owner is the only subsystem that writes it; store is where its authoritative copy lives. authority_class is authoritative, derived (rebuilt from authoritative state and never an authority input) or release_content. sync_policy is never, selected_content (only workspaces the user selected), portable_record (copied as records that never change the receiving device's execution or completion state), explicit_preference (only preferences the user selects) or view_only (another device may display it, never merge it). sensitivity is secret, security_critical, private or ordinary."
+    FIELD:
+        NAME: state_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: content
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: owner
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: store
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: authority_class
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: copies
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: sync_policy
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: sensitivity
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: notes
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: schema_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_interface
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One boundary between subsystems: who provides it, who uses it, what crosses it and the invariants every implementation keeps. schema_tasks are the tasks that fix its concrete types or protocol."
+    FIELD:
+        NAME: interface_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: providers
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: consumers
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: carries
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: invariants
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: schema_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_flow
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One data and authority flow. Each step is 'subsystem IDs | what happens'; several IDs are separated by commas when either client or either platform performs the step. authority names who decides; never lists shortcuts the flow must not take."
+    FIELD:
+        NAME: flow_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: trigger
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: steps
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: authority
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: never
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_failure_domain
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One failure domain: what fails, how far the failure may reach, what stays protected and how recovery works."
+    FIELD:
+        NAME: domain_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: name
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: failure
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: contained_to
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: protects
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: recovery
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: owner_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_remote_contract
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "TASK-002's design contract for one remote-control requirement it owns. elements are the subsystems, hosts, state categories, interfaces and flows that realise it. Each test_plan entry is an RC-T scenario of verification/remote_control_acceptance.lcl.txt or a planned test file. runtime_owners are the later tasks that own the requirement, from the pack's TASK_REQUIREMENT_MAP.json."
+    FIELD:
+        NAME: requirement_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: title
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: design
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: elements
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: test_plan
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: runtime_owners
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: status
+        TYPE: STRING
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_decision
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One architecture decision taken by TASK-002, with the fields of the pack's templates/decision_log_template.lcl.txt."
+    FIELD:
+        NAME: decision_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: title
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: status
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: task
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: date
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: problem
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: options
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: decision
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: why
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: security_impact
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: reuse_impact
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: reversal
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: verification
+        TYPE: STRING
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_open_decision
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "A portability or platform decision this architecture identifies but does not take. constraint is what any answer must satisfy; decide_by are the tasks that must answer it, with evidence, before the affected foundation or interface is fixed."
+    FIELD:
+        NAME: decision_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: question
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: constraint
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: affects
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: decide_by
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: evidence_needed
+        TYPE: STRING
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.arch_review
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One finding of a gate review that TASK-002 must perform. gate is the check identifier. result is holds, or holds_with_open_items when the design holds and the remaining feasibility questions are recorded for a named later task. Every review is the coding agent's own."
+    FIELD:
+        NAME: review_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: gate
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: topic
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: finding
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: references
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: result
+        TYPE: STRING
+        REQUIRED: TRUE

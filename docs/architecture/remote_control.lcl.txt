@@ -1,0 +1,158 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_remote_control
+    NAME: "Remote-control design contracts owned by TASK-002"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "TASK-002's part of the eleven remote-control requirements assigned to it in the pack's TASK_REQUIREMENT_MAP.json: the design, the contract and the test plan, with the later tasks that own their implementation and runtime proof. This closes design only. None of these requirements is implemented or runtime-tested by TASK-002, and a design document never counts as runtime testing (remote_control_acceptance). Each test_plan entry is an RC-T scenario, a planned test file, or a recorded gap where no test slot exists yet."
+
+DATA:
+    ID: data.arch_rc_01
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-01"
+        title: "Two-way device actions"
+        design: "Both hosts run the same SS-REMOTE in both roles: a sender builds typed envelopes and a destination admits them. Android to Desktop and Desktop to Android are the same flow (FL-REMOTE-REQUEST) with the roles swapped. The destination alone authorizes and executes, through its own permission engine and tool dispatch. A natural-language request never grants permission: only the typed operation it becomes is evaluated, and only on the destination."
+        elements: ["SS-REMOTE", "SS-SECURITY", "SS-TOOLS", "IF-REMOTE", "FL-REMOTE-REQUEST"]
+        test_plan: ["RC-T01 | An unpaired or reverse-direction request is denied without changes.", "RC-T02 | Android to Desktop: a permitted application launch through the receiver.", "RC-T05 | Desktop to Android: create and edit a phone-local LCL fixture.", "tests/e2e/cross-device/remote_agent_control | Both directions through the destination's tool dispatch.", "tests/security/remote/explicit_target_binding | The destination's checks decide, not the sender's."]
+        runtime_owners: ["TASK-007", "TASK-066", "TASK-068", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_03
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-03"
+        title: "Directional trust"
+        design: "Grants are records of SS-SECURITY on the destination host, keyed by peer device, user, direction and capability (ST-AUTHORITY). Phone-to-PC and PC-to-phone are separate records with separate permission epochs. Pairing (ST-DEVICE-TRUST) establishes identity only. Account login (ST-ACCOUNT) and synchronization (IF-SYNC) never create or copy a grant, and grants are never synced."
+        elements: ["SS-SECURITY", "SS-REMOTE", "ST-AUTHORITY", "ST-DEVICE-TRUST", "IF-AUTHORIZE"]
+        test_plan: ["RC-T01 | A reverse-direction request is denied.", "RC-T05 | With the reverse permission absent or revoked, the request is denied.", "RC-T08 | Missing scopes and revoked permission epochs are rejected.", "tests/unit/approval_grants | Grants are per peer, direction and capability.", "tests/security/remote/pairing_revocation | Revocation ends admission."]
+        runtime_owners: ["TASK-004", "TASK-007", "TASK-022", "TASK-025", "TASK-030", "TASK-055", "TASK-060", "TASK-068", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_04
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-04"
+        title: "Desktop receiver independent of window"
+        design: "The Desktop local host is a process separate from the window (HOST-DESKTOP), and the receiver runs inside the host. The window attaches over IF-ATTACH; detaching it does not stop the host. The host is a single instance per OS user, so a reopened window reattaches to the running host instead of starting a second executor. Keep-running-after-close is its own opt-in setting."
+        elements: ["SS-LOCAL-HOST", "SS-DESKTOP-CLIENT", "SS-PLATFORM-DESKTOP", "HOST-DESKTOP", "IF-ATTACH"]
+        test_plan: ["RC-T02 | Close only the PC window, then launch through the receiver.", "RC-T14 | Reopen the window repeatedly: exactly one authoritative executor.", "tests/e2e/desktop/local_application | The window detaches and reattaches to one host.", "tests/e2e/cross-device/remote_agent_control | A request is served while the window is closed."]
+        runtime_owners: ["TASK-009", "TASK-017", "TASK-038", "TASK-056", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_05
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-05"
+        title: "Startup and login are distinct"
+        design: "Startup is a user-level start-at-login registration owned by platform/desktop/lifecycle/application_lifecycle; it exists only while the user has enabled it and is removed on disable or uninstall. The design distinguishes four lifecycle states: not running, running in the user's graphical login session, boot before login, and after logout. The first two are supported targets. The other two are reported as unsupported unless TASK-003 proves a user-privilege mechanism. A privileged system service, linger, a firewall rule or automatic login is never part of the design."
+        elements: ["SS-PLATFORM-DESKTOP", "SS-SETTINGS", "SS-LOCAL-HOST", "HOST-DESKTOP"]
+        test_plan: ["RC-T04 | Login startup, restart, disabled startup, and the logged-out, no-GUI and locked states.", "RC-T16 | Uninstall removes only the startup state Nexees owns.", "GAP-02 | No test slot exists yet for the startup and lifetime states."]
+        runtime_owners: ["TASK-003", "TASK-009", "TASK-024", "TASK-030", "TASK-056", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_08
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-08"
+        title: "No idle model usage"
+        design: "The receiver is deterministic host code in SS-REMOTE and the platform transport. Only agent sessions use the provider interface (IF-PROVIDER), and SS-REMOTE does not depend on SS-PROVIDERS, which verify.arch_receiver_uses_no_model checks. Waiting is event-driven, with bounded memory and queues and a finite reconnect backoff."
+        elements: ["SS-REMOTE", "SS-PROVIDERS", "IF-PROVIDER", "IF-TRANSPORT"]
+        test_plan: ["RC-T18 | An idle receiver makes no provider call and keeps resources and reconnect attempts bounded.", "GAP-03 | No test slot exists yet for idle receiver behaviour."]
+        runtime_owners: ["TASK-009", "TASK-030", "TASK-056", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_09
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-09"
+        title: "Typed request envelope"
+        design: "The envelope is a message type of SS-DOMAIN-PROTOCOL (core/protocol/messages) with exactly the fields RC-09 lists; TASK-006 defines its types and TASK-007 its wire schema. A missing or ambiguous destination is a rejection at admission, never a fallback to the current or foreground workspace. An application launch names an explicit device, session and allowlisted application."
+        elements: ["SS-DOMAIN-PROTOCOL", "SS-REMOTE", "IF-REMOTE"]
+        test_plan: ["RC-T08 | Malformed, wrong-destination, wrong-user, wrong-workspace, stale and replayed requests are rejected.", "RC-T10 | An expired request is not replayed after reconnection.", "tests/security/remote/explicit_target_binding | No ambient target.", "tests/security/remote/stale_approval_rejection | Stale epochs and approvals are rejected.", "tests/conformance/protocol/client_protocol_compatibility | Both clients produce and parse the same envelope."]
+        runtime_owners: ["TASK-004", "TASK-007", "TASK-015", "TASK-031", "TASK-033", "TASK-044", "TASK-045", "TASK-066", "TASK-068", "TASK-069", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_13
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-13"
+        title: "Phone-hosted actions"
+        design: "A Desktop-to-Android request is admitted by the Android host's SS-REMOTE and executed by the same SS-TOOLS, SS-WORKSPACES and SS-LCL code that standalone Android uses, over the Android platform adapters. No PC proxy takes part in the execution, and the request's explicit workspace target never changes the phone's foreground workspace."
+        elements: ["HOST-ANDROID", "SS-REMOTE", "SS-TOOLS", "SS-LCL", "SS-PLATFORM-ANDROID", "FL-REMOTE-REQUEST"]
+        test_plan: ["RC-T05 | Create and edit an isolated phone-local LCL fixture from Desktop and inspect the saved revision.", "RC-T13 | Both foregrounds switch during background work; the operation stays on its destination.", "tests/e2e/cross-device/remote_agent_control | A PC-to-phone action through the phone's own tools.", "tests/e2e/android/standalone_no_pc | The same tools work with no PC."]
+        runtime_owners: ["TASK-023", "TASK-031", "TASK-033", "TASK-057", "TASK-061", "TASK-063", "TASK-065", "TASK-066", "TASK-070", "TASK-071", "TASK-072", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_19
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-19"
+        title: "Transport and private networking"
+        design: "One authenticated, encrypted channel per platform (IF-TRANSPORT), from an audited library, carries both remote control and sync, with pairing and revocation in SS-REMOTE. Discovery covers the LAN and one documented secure off-LAN route that TASK-003 selects and TASK-070 hardens. The design has no unauthenticated public command port, no automatic router or firewall change, and no hosted relay or cloud cost without explicit approval."
+        elements: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-REMOTE", "SS-SYNC", "IF-TRANSPORT"]
+        test_plan: ["RC-T15 | Transport encryption and authentication, rate, message and queue limits, the off-LAN route and local IPC caller checks.", "RC-T03 | With every route stopped, the phone reports unavailable.", "tests/security/remote/pairing_revocation | A revoked peer cannot reconnect.", "GAP-04 | No test slot exists yet for transport security or local IPC caller checks."]
+        runtime_owners: ["TASK-003", "TASK-004", "TASK-025", "TASK-060", "TASK-069", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_20
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-20"
+        title: "Cross-workspace independence"
+        design: "The foreground workspace is per-client view state (ST-VIEW) and never an input to targeting. Sessions are bound to device, workspace and revisions (ST-SESSION), and envelopes carry explicit targets. Sync and reconnection apply content without touching bindings or focus, and an application launch is a tool call that transfers no task."
+        elements: ["SS-WORKSPACES", "SS-AGENT", "SS-REMOTE", "ST-VIEW", "ST-SESSION", "FL-FOCUS-SWITCH"]
+        test_plan: ["RC-T13 | Switch both foregrounds during background work.", "RC-T14 | Reconnection alters no task status and starts no agent.", "tests/e2e/cross-device/independent_workspaces | Each device keeps its own tree.", "tests/integration/workspaces/foreground_background_isolation | Focus never retargets a session.", "tests/unit/workspace_binding | Bindings change only explicitly."]
+        runtime_owners: ["TASK-007", "TASK-015", "TASK-017", "TASK-023", "TASK-031", "TASK-044", "TASK-045", "TASK-056", "TASK-061", "TASK-063", "TASK-065", "TASK-066", "TASK-068", "TASK-069", "TASK-070", "TASK-071", "TASK-072", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_23
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-23"
+        title: "Secure service integration"
+        design: "The window, the host and the tool processes run as the same OS user, never elevated. The Desktop local IPC channel authenticates the peer process by OS identity and rejects any other user; messages, queues and paths are bounded and schema-validated (core/protocol/serialization). The host applies the same permission engine to UI intents, remote requests and agents, with no privileged bypass. Window and host check protocol compatibility after an update and refuse a mismatch."
+        elements: ["SS-LOCAL-HOST", "SS-DESKTOP-CLIENT", "SS-PLATFORM-DESKTOP", "SS-SECURITY", "SS-DOMAIN-PROTOCOL", "IF-ATTACH"]
+        test_plan: ["RC-T15 | Local IPC caller checks and message and queue limits.", "RC-T16 | Compatibility across update and restart.", "RC-T12 | Malicious application labels, arguments, paths and deep links are denied.", "GAP-01 | The local IPC channel has no slot yet.", "GAP-04 | No test slot exists yet for local IPC caller checks."]
+        runtime_owners: ["TASK-003", "TASK-004", "TASK-007", "TASK-009", "TASK-022", "TASK-024", "TASK-025", "TASK-056", "TASK-057", "TASK-070", "TASK-071", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_rc_25
+    TYPE: OBJECT[REF(type.arch_remote_contract)]
+    VALUE:
+        requirement_id: "RC-25"
+        title: "One product, reused services"
+        design: "data.arch_single_paths names the one slot for request types, state, transport, authorization, tool dispatch, audit and manuals. core/remote/command_dispatch admits and hands over; it has no tool table and no agent loop. Platform receiver, launch and lifecycle code are adapters. Supervised OS processes are allowed; parallel AI assistants developing Nexees are not."
+        elements: ["SS-REMOTE", "SS-TOOLS", "SS-SECURITY", "SS-STATE", "SS-HELP", "IF-TOOL"]
+        test_plan: ["RC-T05 | A phone-local action uses the standalone tools.", "RC-T14 | Exactly one executor.", "tests/unit/tool_dispatch | Remote requests and local agents share one dispatcher."]
+        runtime_owners: ["TASK-003", "TASK-031", "TASK-033", "TASK-057", "TASK-066", "TASK-070", "TASK-071", "TASK-072", "TASK-073", "TASK-074", "TASK-075"]
+        status: "Design closed by TASK-002; not implemented and not runtime-tested."
+
+DATA:
+    ID: data.arch_remote_contracts
+    TYPE: LIST[OBJECT[REF(type.arch_remote_contract)]]
+    VALUE: [REF(data.arch_rc_01), REF(data.arch_rc_03), REF(data.arch_rc_04), REF(data.arch_rc_05), REF(data.arch_rc_08), REF(data.arch_rc_09), REF(data.arch_rc_13), REF(data.arch_rc_19), REF(data.arch_rc_20), REF(data.arch_rc_23), REF(data.arch_rc_25)]
+
+DATA:
+    ID: data.arch_remote_status
+    TYPE: STRING
+    VALUE: "Design closed by TASK-002; not implemented and not runtime-tested."
+    DESCRIPTION: "The only status a TASK-002 contract may carry (verify.arch_remote_design_only)."
+
+DATA:
+    ID: data.arch_assigned_remote_requirements
+    TYPE: LIST[STRING]
+    VALUE: ["RC-01", "RC-03", "RC-04", "RC-05", "RC-08", "RC-09", "RC-13", "RC-19", "RC-20", "RC-23", "RC-25"]
+    DESCRIPTION: "The remote requirements the pack assigns to TASK-002, in canonical order. check_architecture.py compares this list with TASK_REQUIREMENT_MAP.json."

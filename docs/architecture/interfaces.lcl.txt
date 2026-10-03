@@ -1,0 +1,182 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_interfaces
+    NAME: "Interfaces between subsystems"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "The boundaries across which subsystems interact, with the invariants every implementation keeps. This part fixes what crosses each boundary and under which rules; the concrete types, wire schemas and signatures are fixed by the tasks listed in schema_tasks."
+
+DATA:
+    ID: data.arch_if_attach
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-ATTACH"
+        name: "UI client attachment"
+        providers: ["SS-LOCAL-HOST"]
+        consumers: ["SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT"]
+        carries: "Typed user intents from a UI client to its own device's local host; state snapshots and domain events from the host back to the client."
+        invariants: ["Uses the shared protocol message types; the client never touches the state store, tools or secrets directly.", "On Desktop the window and the host are separate processes joined by local IPC that authenticates the peer process by operating-system identity, admits only the same OS user, and bounds message sizes, queues and paths (RC-23).", "An intent that causes an effect is authorized by the host's permission engine like any other request; a UI convenience is never authority.", "Detaching or closing a client never stops the host or authorized background work, and reattaching never starts a second executor (RC-04)."]
+        schema_tasks: ["TASK-007", "TASK-009", "TASK-057"]
+
+DATA:
+    ID: data.arch_if_remote
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-REMOTE"
+        name: "Remote request and acknowledgment"
+        providers: ["SS-REMOTE"]
+        consumers: ["SS-REMOTE"]
+        carries: "Typed request envelopes from a sending host's SS-REMOTE to a destination host's SS-REMOTE, and acknowledgments with explicit outcomes back."
+        invariants: ["Every envelope names the protocol version, request ID, authenticated requesting device and user, exact destination device, user and session, operation with typed arguments, workspace and agent IDs where applicable, expected revisions, permission epoch and expiry (RC-09).", "The destination rechecks capabilities, scope, policy, grants, lock state and freshness immediately before execution; nothing decided on the sender counts (RC-10).", "An admitted operation runs through the destination's single tool dispatch or session control (RC-25).", "Outcomes are explicit: accepted, running, completed, denied, unsupported, needs-user-action, expired or outcome-unknown (RC-12).", "Requests are deduplicated by request ID; a lost acknowledgment is reconciled, never answered by blind replay (RC-17)."]
+        schema_tasks: ["TASK-006", "TASK-007", "TASK-070"]
+
+DATA:
+    ID: data.arch_if_sync
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-SYNC"
+        name: "Content synchronization"
+        providers: ["SS-SYNC"]
+        consumers: ["SS-SYNC"]
+        carries: "Revisioned changes of the content and portable records the user selected, with base revisions, content hashes and tombstones, between two replicas' SS-SYNC."
+        invariants: ["A message family separate from remote control that never carries commands, approvals, grants, secrets or device keys (C22).", "The receiving replica validates paths, sizes, schemas, revisions and peer authority before a transactional apply (A6).", "Conflicts keep both versions, and unsaved buffers are never overwritten (A3, A6)."]
+        schema_tasks: ["TASK-007", "TASK-069"]
+
+DATA:
+    ID: data.arch_if_transport
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-TRANSPORT"
+        name: "Secure peer channel"
+        providers: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        consumers: ["SS-REMOTE", "SS-SYNC"]
+        carries: "Mutually authenticated, encrypted, replay-resistant streams between paired hosts, over the LAN or the configured secure off-LAN route."
+        invariants: ["One channel implementation per platform from an audited library, used by both remote control and sync; no home-made cryptography (RC-19).", "No unauthenticated public command port, automatic router or firewall change, or hosted relay or cloud cost without explicit approval (RC-19).", "Revoking a peer closes its live sessions and refuses its reconnection (RC-07)."]
+        schema_tasks: ["TASK-003", "TASK-060", "TASK-070"]
+
+DATA:
+    ID: data.arch_if_provider
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-PROVIDER"
+        name: "Provider interface"
+        providers: ["SS-PROVIDERS"]
+        consumers: ["SS-AGENT"]
+        carries: "Model requests built by the context builder; streamed responses, tool-call proposals, usage reports and errors."
+        invariants: ["One capability model for every provider, and required capabilities are checked before use (C8).", "Responses and tool-call proposals are untrusted proposals until validated and authorized (security_baseline).", "Only content the workspace and provider disclosure policy permits is sent (H2).", "Only agent sessions use it; the receiver, sync and the UI never call a model (RC-08).", "Cancellation and errors are explicit, and quota exhaustion pauses the session (H4)."]
+        schema_tasks: ["TASK-041"]
+
+DATA:
+    ID: data.arch_if_tool
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-TOOL"
+        name: "Tool call"
+        providers: ["SS-TOOLS"]
+        consumers: ["SS-AGENT", "SS-REMOTE", "SS-TASKING"]
+        carries: "Typed tool calls with principal, session, generation and target; structured results with audit metadata."
+        invariants: ["The only route to an effect: each call is validated, authorized, journaled and audited (C9).", "Calls from an obsolete generation or a cancelled turn are rejected, and during read-only orientation only read, list, search and state-inspection tools exist (B23, H3).", "Results are data, never instructions (authority_hierarchy)."]
+        schema_tasks: ["TASK-031"]
+
+DATA:
+    ID: data.arch_if_authorize
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-AUTHORIZE"
+        name: "Authorization decision"
+        providers: ["SS-SECURITY"]
+        consumers: ["SS-TOOLS", "SS-REMOTE", "SS-SYNC", "SS-LCL", "SS-SETTINGS", "SS-WORKSPACES"]
+        carries: "A request for a decision with principal, action, target scope, risk class, revision, permission epoch and expiry; the decision with its reason."
+        invariants: ["One permission engine per host, and anything ambiguous is denied (R9).", "Decisions use the grants held on the deciding host only; a sender's or client's view is never trusted (RC-10).", "Every decision is audited (RC-22)."]
+        schema_tasks: ["TASK-022"]
+
+DATA:
+    ID: data.arch_if_platform
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-PLATFORM"
+        name: "Platform ports"
+        providers: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        consumers: ["SS-LOCAL-HOST", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-LCL", "SS-ACCOUNTS", "SS-REMOTE", "SS-SYNC"]
+        carries: "The execution, storage, secret, lifecycle, notification and transport ports that the core defines and each platform implements."
+        invariants: ["The core defines each port; platform code implements it and holds no domain or authority logic.", "Ports report capabilities honestly; a missing capability is a visible blocker, never a silent fallback (A4).", "File ports enforce containment race-safely and write atomically (TASK-023)."]
+        schema_tasks: ["TASK-005", "TASK-009", "TASK-057"]
+
+DATA:
+    ID: data.arch_if_lcl
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-LCL"
+        name: "LCL service"
+        providers: ["SS-LCL"]
+        consumers: ["SS-TOOLS", "SS-TASKING", "SS-AGENT", "SS-CONTEXT"]
+        carries: "Parse, validate, diagnose, template and compile requests for a given specification revision; diagnostics and results bound to that revision."
+        invariants: ["All LCL semantics come from the pinned existing LCL core through integrations/lcl/core_bridge, on both hosts, with no second parser or validator (lcl_integration).", "Validation on Android needs neither a PC nor the network (A2, A4).", "Every result is bound to the exact source revision and core version that produced it (B20)."]
+        schema_tasks: ["TASK-046", "TASK-049"]
+
+DATA:
+    ID: data.arch_if_store
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-STORE"
+        name: "State store"
+        providers: ["SS-STATE"]
+        consumers: ["SS-WORKSPACES", "SS-AGENT", "SS-TASKING", "SS-LCL", "SS-PROVIDERS", "SS-SECURITY", "SS-REMOTE", "SS-SYNC", "SS-SETTINGS", "SS-ACCOUNTS", "SS-CONTEXT", "SS-UPDATES"]
+        carries: "Versioned entities, transactions, journal entries, checkpoints and migrations."
+        invariants: ["One store per host; owning subsystems extend its schema instead of adding stores (no_unnecessary_code).", "Writes are transactional and durable before they are reported saved, and integrity is checked on read (A3).", "Each entity is written only by the subsystem that owns its state category (data.arch_states)."]
+        schema_tasks: ["TASK-008", "TASK-036"]
+
+DATA:
+    ID: data.arch_if_revision
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-REVISION"
+        name: "Content revisions"
+        providers: ["SS-WORKSPACES"]
+        consumers: ["SS-TOOLS", "SS-SYNC", "SS-LCL", "SS-IDE", "SS-AGENT"]
+        carries: "Write requests with an expected base revision, new revisions and change notifications."
+        invariants: ["Every write path, whether an editor save, an agent tool, a sync apply or an import publication, records a revision and checks the expected base, so a stale writer is detected (B20, B22).", "A change notification updates the target workspace's tree without changing any client's foreground workspace (C4)."]
+        schema_tasks: ["TASK-013", "TASK-032", "TASK-069"]
+
+DATA:
+    ID: data.arch_if_settings
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-SETTINGS"
+        name: "Effective settings"
+        providers: ["SS-SETTINGS"]
+        consumers: ["SS-REMOTE", "SS-PROVIDERS", "SS-LOCAL-HOST", "SS-SYNC", "SS-UPDATES"]
+        carries: "The effective values of receiving, start-at-login, keep-running-after-close, allowlists, the orientation default and documented limits."
+        invariants: ["Receiving, start-at-login and keep-running-after-close default to OFF and are separate settings; read-only orientation defaults to ON (RC-02, H1).", "Security-relevant values such as the application allowlist, the lock policy and the approval policy reach the permission engine through a policy input that SS-SECURITY defines, so the permission engine never depends on the settings subsystem; changing any of them is itself an action the permission engine authorizes (RC-18, B13).", "A security-sensitive change needs confirmation and, where policy says so, step-up authentication; immutable invariants cannot be changed (B13, C14).", "A changed setting applies at a safe boundary and never grants write access or authority instantly (H1)."]
+        schema_tasks: ["TASK-030"]
+
+DATA:
+    ID: data.arch_if_account
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-ACCOUNT"
+        name: "Account and local access"
+        providers: ["SS-ACCOUNTS"]
+        consumers: ["SS-SETTINGS", "SS-REMOTE", "SS-LOCAL-HOST"]
+        carries: "The signed-in account, session state, step-up results and the local-unlock state."
+        invariants: ["Account state never implies device trust, remote authority or provider access (auth_and_settings v0.2).", "SS-SECURITY states when step-up is required; SS-ACCOUNTS performs it and supplies a short-lived proof bound to the requesting action through a step-up port that SS-SECURITY defines, so the permission engine never depends on the accounts subsystem (B12).", "Signing out or an account-policy change stops admission of future remote requests on that device (RC-24)."]
+        schema_tasks: ["TASK-027", "TASK-029"]
+
+DATA:
+    ID: data.arch_if_help
+    TYPE: OBJECT[REF(type.arch_interface)]
+    VALUE:
+        interface_id: "IF-HELP"
+        name: "Help content"
+        providers: ["SS-HELP"]
+        consumers: ["SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT"]
+        carries: "The manual catalogue, search results and passive document content."
+        invariants: ["Local, offline and read-only: no network use, no scripts, and no project data leaves the device (manuals_and_help).", "Opening help changes no binding, focus or buffer (MAN-04)."]
+        schema_tasks: ["TASK-071", "TASK-072"]
+
+DATA:
+    ID: data.arch_interfaces
+    TYPE: LIST[OBJECT[REF(type.arch_interface)]]
+    VALUE: [REF(data.arch_if_attach), REF(data.arch_if_remote), REF(data.arch_if_sync), REF(data.arch_if_transport), REF(data.arch_if_provider), REF(data.arch_if_tool), REF(data.arch_if_authorize), REF(data.arch_if_platform), REF(data.arch_if_lcl), REF(data.arch_if_store), REF(data.arch_if_revision), REF(data.arch_if_settings), REF(data.arch_if_account), REF(data.arch_if_help)]

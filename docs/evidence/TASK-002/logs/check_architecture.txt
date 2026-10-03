@@ -1,0 +1,31 @@
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+PASS  pack files match the pack manifest  [201 files]
+PASS  content identity recomputed from the pack files  [bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1]
+PASS  manifest hash
+PASS  archive revision  [0.5.3]
+PASS  specification version and language core
+PASS  refined documents are byte-identical to the charter baseline 0.5.2  [26 documents]
+PASS  every product file belongs to exactly one subsystem  [217 files]
+PASS  every slot names existing files and states a responsibility
+PASS  slot layers match their roots (AD-01)
+PASS  every test file is attributed to exactly one subsystem  [59 test files]
+PASS  a subsystem without test files is a recorded gap  [SS-ACCOUNTS, SS-ASSETS, SS-IDE, SS-PLATFORM-ANDROID, SS-PLATFORM-DESKTOP]
+PASS  dependencies name other catalogued subsystems
+PASS  the dependency graph is acyclic (AD-12)
+PASS  every state category has exactly one owning subsystem
+PASS  state classifications use the documented vocabulary
+PASS  secret state never synchronizes
+PASS  interface consumers are subsystems that depend on a provider
+PASS  both hosts compose the same shared core and differ only in platform adapters
+PASS  every flow step names the subsystems that perform it
+PASS  contract elements and review references resolve
+PASS  every task reference is one of TASK-001 to TASK-075
+PASS  open decisions affect catalogued subsystems
+PASS  every implementation task from TASK-005 to TASK-075 owns part of a subsystem
+PASS  each single path is a catalogued slot
+PASS  the contracts cover exactly the requirements the pack assigns to TASK-002  [RC-01 RC-03 RC-04 RC-05 RC-08 RC-09 RC-13 RC-19 RC-20 RC-23 RC-25]
+PASS  runtime owners equal the pack requirement map after TASK-002
+PASS  test plans name RC-T01 to RC-T18, planned test files or recorded gaps
+
+ALL CHECKS PASSED
+exit code: 0

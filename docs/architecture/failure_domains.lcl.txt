@@ -1,0 +1,182 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_failure_domains
+    NAME: "Failure domains"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "How far each kind of failure may reach. A failure stops the affected operation and keeps unrelated work available; nothing recovers by replaying an effect whose outcome is unknown, by starting a second executor, or by marking work complete (R9, STOP-09, STOP-12)."
+
+DATA:
+    ID: data.arch_fd_ui_client
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-UI-CLIENT"
+        name: "UI client"
+        failure: "The Desktop window or the Android user interface crashes, hangs or is closed."
+        contained_to: "Presentation on that client. The host, its sessions, the receiver and other clients continue."
+        protects: "All authoritative state, because none lives in the client; view state was persisted."
+        recovery: "The client reattaches to the running host and restores its view state; no executor is started (RC-T14)."
+        owner_tasks: ["TASK-009", "TASK-012", "TASK-057"]
+
+DATA:
+    ID: data.arch_fd_local_host
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-LOCAL-HOST"
+        name: "Local host"
+        failure: "A device's local host crashes or is killed."
+        contained_to: "That device's sessions, receiver and in-flight local work. Other devices continue and see the host as unreachable."
+        protects: "The last committed state, through the journal, checkpoints and atomic writes; unknown outcomes are marked as unknown."
+        recovery: "On restart the host recovers from the journal and checkpoints, and a task resumes only after reconciliation. No duplicate executor is started and no uncertain effect is replayed automatically (TASK-038)."
+        owner_tasks: ["TASK-038", "TASK-056", "TASK-066"]
+
+DATA:
+    ID: data.arch_fd_provider
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-PROVIDER"
+        name: "Model provider"
+        failure: "A provider is unreachable, out of quota, unauthorized or lacks a capability the session needs."
+        contained_to: "The model calls of the sessions using that provider."
+        protects: "Session binding, checkpoint and evidence: no project state lives with the provider (R14)."
+        recovery: "The session pauses visibly, and the user may choose another supported model through the switch transaction (H4)."
+        owner_tasks: ["TASK-035", "TASK-041", "TASK-044"]
+
+DATA:
+    ID: data.arch_fd_tool
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-TOOL"
+        name: "Tool execution"
+        failure: "A tool process fails, times out or is refused by the sandbox, or its outcome is unknown."
+        contained_to: "That tool call and its session."
+        protects: "The journal records the attempt, and a partial result is never promoted without verification."
+        recovery: "A structured error reaches the agent. A retry is allowed only for a demonstrated safe cause; a non-idempotent effect with unknown outcome is reconciled, never replayed (RC-17)."
+        owner_tasks: ["TASK-024", "TASK-033", "TASK-035"]
+
+DATA:
+    ID: data.arch_fd_storage
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-STORAGE"
+        name: "Persistent storage"
+        failure: "The disk is full, state is corrupt, a write is interrupted or a migration fails."
+        contained_to: "Writes on that device and reads of the affected entities."
+        protects: "The previous committed revision, unsynced edits and drafts."
+        recovery: "Writes fail closed and integrity errors are reported; recovery and migration follow only tested paths (TASK-008, AN-08, AN-12)."
+        owner_tasks: ["TASK-008", "TASK-038"]
+
+DATA:
+    ID: data.arch_fd_lcl_core
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-LCL-CORE"
+        name: "LCL core bridge"
+        failure: "The bridged LCL core is unavailable or incompatible, or reports invalid input."
+        contained_to: "LCL validation and the LCL-gated tasks of the affected workspace. Standard-mode work continues."
+        protects: "Adopted revisions stay as they were, and drafts stay inactive."
+        recovery: "Work blocks with the core's diagnostics (STOP-06); there is never a fallback to another parser or to a PC."
+        owner_tasks: ["TASK-046", "TASK-049"]
+
+DATA:
+    ID: data.arch_fd_remote
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-REMOTE"
+        name: "Remote peer and channel"
+        failure: "A peer is unreachable, revoked or incompatible, or the channel drops in the middle of a request."
+        contained_to: "Remote operations with that peer."
+        protects: "Local work on both devices. Pending requests keep their outcome-unknown state until reconciled."
+        recovery: "Reconnection with finite backoff and reconciliation by request ID. An expired request is not replayed, and no failover executor is started (B19, RC-T09, RC-T10)."
+        owner_tasks: ["TASK-060", "TASK-069", "TASK-070"]
+
+DATA:
+    ID: data.arch_fd_sync
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-SYNC"
+        name: "Synchronization"
+        failure: "A conflict, an invalid path or schema, low storage or an interrupted transfer during sync."
+        contained_to: "The affected items of the selected workspace."
+        protects: "Both conflicting versions, local-only and unsaved work, and execution ownership."
+        recovery: "A visible conflict awaits the user's decision; transfers resume and applies are transactional (A6)."
+        owner_tasks: ["TASK-069"]
+
+DATA:
+    ID: data.arch_fd_import
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-IMPORT"
+        name: "LCL import"
+        failure: "A malicious, corrupt, oversized, ambiguous or colliding import."
+        contained_to: "That import transaction."
+        protects: "The active revision and the existing files; staging is app-private."
+        recovery: "The import is rejected or the user is asked to decide; only task-owned staging is removed, and a retry is safe (I4, IM-05 to IM-07)."
+        owner_tasks: ["TASK-051", "TASK-052"]
+
+DATA:
+    ID: data.arch_fd_account
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-ACCOUNT"
+        name: "Account service"
+        failure: "The auth backend is unreachable or the account session has expired."
+        contained_to: "Online account operations and actions that require a live account check."
+        protects: "Authorized local work under the local-unlock policy; secrets stay locked."
+        recovery: "Reauthentication when the network returns; a session is never fabricated (TASK-027)."
+        owner_tasks: ["TASK-027"]
+
+DATA:
+    ID: data.arch_fd_extension
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-EXTENSION"
+        name: "Extension"
+        failure: "An extension crashes, hangs or misbehaves."
+        contained_to: "The extension host and the features the extension contributes."
+        protects: "Agent authority, grants, secrets and the state store, which extensions cannot reach (B14)."
+        recovery: "The extension host restarts the extension, or the user disables it."
+        owner_tasks: ["TASK-021"]
+
+DATA:
+    ID: data.arch_fd_android_lifecycle
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-ANDROID-LIFECYCLE"
+        name: "Android lifecycle"
+        failure: "Android suspends or kills the app, applies Doze, revokes a permission or force-stops it."
+        contained_to: "The Android host and its receiver."
+        protects: "Saved edits and checkpoints; no task is ever marked complete by an interruption."
+        recovery: "Recovery from durable state on the next start, with needs-user-action or unavailable reported honestly; no relaunch after force-stop without a user or OS action (RC-15, AN-09)."
+        owner_tasks: ["TASK-057", "TASK-066", "TASK-067"]
+
+DATA:
+    ID: data.arch_fd_handoff
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-HANDOFF"
+        name: "Model handoff"
+        failure: "A quota, capability, budget or state-drift failure during a model switch or the orientation."
+        contained_to: "That session."
+        protects: "The checkpoint and the paused session; writes are not promoted."
+        recovery: "The session stays paused with a precise reason, and the user may choose another model (H4, HO-07)."
+        owner_tasks: ["TASK-044", "TASK-045"]
+
+DATA:
+    ID: data.arch_fd_help
+    TYPE: OBJECT[REF(type.arch_failure_domain)]
+    VALUE:
+        domain_id: "FD-HELP"
+        name: "Manuals"
+        failure: "A manual is missing, does not match the app version or does not render."
+        contained_to: "Help only."
+        protects: "All work state, because help is passive."
+        recovery: "The client shows the mismatch or the missing content; a release with a missing manual is blocked (STOP-10)."
+        owner_tasks: ["TASK-071", "TASK-072"]
+
+DATA:
+    ID: data.arch_failure_domains
+    TYPE: LIST[OBJECT[REF(type.arch_failure_domain)]]
+    VALUE: [REF(data.arch_fd_ui_client), REF(data.arch_fd_local_host), REF(data.arch_fd_provider), REF(data.arch_fd_tool), REF(data.arch_fd_storage), REF(data.arch_fd_lcl_core), REF(data.arch_fd_remote), REF(data.arch_fd_sync), REF(data.arch_fd_import), REF(data.arch_fd_account), REF(data.arch_fd_extension), REF(data.arch_fd_android_lifecycle), REF(data.arch_fd_handoff), REF(data.arch_fd_help)]

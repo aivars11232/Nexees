@@ -1,0 +1,101 @@
+TASK-002 required reading, as read in this session (2026-10-03).
+Pack: /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3  content identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+"same as v0.5.2" means the bytes equal the file of the TASK-001 baseline archive; such files were read again anyway.
+
+== Read first, as TASK-002 requires ==
+01 960dedd6f7c1bc90bed915f75455ba770b38f3b4dc37c519e765bb7e98ae10e3  README_FIRST.txt  [changed in v0.5.3; read in full]
+02 7a0b838c84921cb984ac0ebd349c7d380afac0468511f0243b6bad4443e03409  START_TASK_002.txt  [new in v0.5.3; read in full]
+03 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9  policies/task_002_075_continuation.lcl.txt  [new in v0.5.3; read in full]
+04 d1350a751b2de0fc5701562e8b61bf582276eef1bf0d81006683f1b79e015624  tasks/task_002.lcl.txt  [changed in v0.5.3; read in full]
+05 5166634ebfdab4e67a9876b68c7b9d085f309f479f4e41756adff7939b4d4f9d  main.lcl.txt  [changed in v0.5.3; read in full]
+06 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836  accept_task.lcl.txt  [changed in v0.5.3; read in full]
+
+== Mandatory read order of bindings/read_order.lcl.txt ==
+01 aec37d86e486f2d403797d6a61c0cd199aaf2a3173938706a1310d770a16540a  guidance/usage.lcl.txt  [same as v0.5.2; read in full]
+02 8f8cec1cbe7e615e9f14a608cbfce6fed40b8d7d2b8af9792d898ee55b42ec5e  policies/project_charter.lcl.txt  [same as v0.5.2; read in full]
+03 2307183519d203e547a031a11dde634a5222588febfd6bd706e429d8ca8473a5  policies/master_rules.lcl.txt  [same as v0.5.2; read in full]
+04 ad16c8b61cd9c84d5dc60884e2900e858594d3f2ccaf5c912b40401a388c180f  policies/global_contracts.lcl.txt  [same as v0.5.2; read in full]
+05 51677c6af1cb4f045fa2a9672acd3536198bb75d1482f145cf0860eea4950c6e  bindings/bindings.lcl.txt  [same as v0.5.2; read in full]
+06 b8382ec17bcaa75317b26ce8238305d8d004f2a9aaf1ed9d6038b56ee4bd8a02  policies/reuse_policy.lcl.txt  [same as v0.5.2; read in full]
+07 8b8cc8813dc12b6b7237bb5a952b6dc5e2847631919a4ca4ed6357fd8f5fae85  policies/no_unnecessary_code.lcl.txt  [same as v0.5.2; read in full]
+08 cd49629e16e714a0dc40bceaca81470330d9868ff1eed9451f06dbb35d7f3f97  policies/code_readability_and_cleanup.lcl.txt  [same as v0.5.2; read in full]
+09 ae0d3943cf66ce8afe131eadd66f35eab9077bb04c60a838a5404636cef053f0  policies/security_baseline.lcl.txt  [same as v0.5.2; read in full]
+10 afa9b2dcb9b3df808097c8e4fa1b350403b054a08956fa14cfbe99417847bfed  checks/stop_conditions.lcl.txt  [same as v0.5.2; read in full]
+11 2fc8668acfe23069eb4a9fe378729a55e2a65e7ac409c70bfc4cd0263ff98473  policies/acceptance_criteria.lcl.txt  [same as v0.5.2; read in full]
+12 5b68c8feaa79dc6c43782f6a0a0c4949367ec34af6c4e2f5321fd40e387ab547  policies/usage_and_agents.lcl.txt  [same as v0.5.2; read in full]
+13 7d91532203589febd37811a0e28adb4e81e87a70951da50f80bfd542a5eba145  architecture/remote_device_control.lcl.txt  [same as v0.5.2; read in full]
+14 544ac6195525b0d6019aae1ee326e6bfeddb4c55907346744201f0fad29fafd5  verification/remote_control_acceptance.lcl.txt  [same as v0.5.2; read in full]
+15 7dcf4e8a1765d5d6404e0594d10933aa315337b9b43e9f0d5152192dedb23d20  architecture/android_operating_model.lcl.txt  [same as v0.5.2; read in full]
+16 b049368991443c6ac7ea248c15ec675c9e1a6296bdb5f0fbc62d328c083ce8b1  architecture/android_ui.lcl.txt  [same as v0.5.2; read in full]
+17 87850325a2d613c93c716dd2dfb931316d10f53528252f84dce101b8eb17f64d  architecture/authority_hierarchy.lcl.txt  [same as v0.5.2; read in full]
+18 1aa74791017abf30495994755d8f30e5534fb59bf509e35f2cac1f0a4c6bf244  architecture/auth_and_settings.lcl.txt  [same as v0.5.2; read in full]
+19 319c19c730973b831dec5ef648b0e9548a0e80eb0a9731286da0b48f52270466  architecture/desktop_ui.lcl.txt  [same as v0.5.2; read in full]
+20 a6cde8759da83eacca4adbd50abd63d42412425fe82743a84ca4591723b80b72  architecture/lcl_import_pipeline.lcl.txt  [same as v0.5.2; read in full]
+21 4a83ecfaac2c63bfbfe03f9893d0d79f8211aaf021800e47823c0e05d9459e3a  architecture/lcl_integration.lcl.txt  [same as v0.5.2; read in full]
+22 638e4d6d8f433f3996dd349eca02479de4cf06c8b95ef8b5a4d728a327182875  architecture/manuals_and_help.lcl.txt  [same as v0.5.2; read in full]
+23 bd178ec68c0615e525c4804239266b08b2755a0bcda1278597723bfae21391c5  architecture/model_handoff.lcl.txt  [same as v0.5.2; read in full]
+24 d50fc3a3e4f6487861289b7088d7b0289c7543bda253566584ee0484733917e6  architecture/persistent_state_model.lcl.txt  [same as v0.5.2; read in full]
+25 669cdee9c343924d2299b88c022a9444fca9ff690b5b1e5686671db78c6f912c  architecture/provider_and_agent_model.lcl.txt  [same as v0.5.2; read in full]
+26 2f65ff575dbfade3fde459efd125c62e5f7d0a47874b2dbf6d5c22b289443956  architecture/system_architecture.lcl.txt  [same as v0.5.2; read in full]
+27 e0a2c21d22a13037f7188f3131050e99b02a44880ffa8b947a8c9cbfeae605c2  architecture/workspace_model.lcl.txt  [same as v0.5.2; read in full]
+28 59c77c872904bffa668cf08e59e929d2f052e015edf48e7cc6468ba131a5ae0b  reuse/decision_template.lcl.txt  [same as v0.5.2; read in full]
+29 f807af93abd67ac0715c3f93c3fb1af056549d08edb95fb9110d568286a6ae0a  reuse/import_handoff_sources.lcl.txt  [same as v0.5.2; read in full]
+30 9ca0cd99c0c790de2481c1b08eee1c79929ac6ef5dc406dbbf873f4b05cd9134  reuse/license_and_dependency_gate.lcl.txt  [same as v0.5.2; read in full]
+31 666b655bb987f453d3c577e3922c8915b055244c002f9d9ec186ca8358f336cf  reuse/reuse_matrix.lcl.txt  [same as v0.5.2; read in full]
+32 692596534b4a36225733d2801dedcf88f393b62080b652991ae938a6f73a1343  guidance/build_order.lcl.txt  [same as v0.5.2; read in full]
+33 bb3dff69f040b27813989e0cd58fb11fb1dfffc33c79fda14d9286590df30ea9  guidance/task_id_migration_v0.2_to_v0.3.lcl.txt  [same as v0.5.2; read in full]
+34 2880cdfc3134777b7c1abe618666378d4e053620c7fc48ef090da8b150d2c41b  guidance/task_index.lcl.txt  [same as v0.5.2; read in full]
+35 1428cf857c5fe866fdf59eb661775a4ddd02c91b0b44d1b9c1b18a4e4c50f98e  verification/final_release_gate.lcl.txt  [same as v0.5.2; read in full]
+36 c8c1e700d0ff0ab17ff26e1a093d0461e601aaab496900035b0c051ebaae1729  verification/security_gate.lcl.txt  [same as v0.5.2; read in full]
+37 c2e67f60229a5a5d106a82ef4b8caf33ad24b0b0f624af5bcb297b22754c0e65  verification/test_strategy.lcl.txt  [same as v0.5.2; read in full]
+38 50c2098dc26caa2e6943e597dedefe32e613f1025ee802aea57322f6f19d49dd  verification/v0.3_requirement_coverage.lcl.txt  [same as v0.5.2; read in full]
+39 ecfafbad5001cb2ce270ca9ad4d397c2fa397ce4a5080de83cd53b9ff4c77e33  manuals/lcl_in_nexees_user_manual.lcl.txt  [same as v0.5.2; read in full]
+40 6d920d4740f58e88dce188b775bce278e0c8e5446f7e58b7558b4bd68cf30894  manuals/nexees_user_manual.lcl.txt  [same as v0.5.2; read in full]
+41 6b2fe591fba7cfc12cee626627d731bce1c8875d89dd006c40346846080201f4  manuals/readme.lcl.txt  [same as v0.5.2; read in full]
+42 a1fdf9e4f236cd442605e174e1d4effd0ab14f77d35529dd9dd4519cac1fdded  bindings/content_identity.lcl.txt  [changed in v0.5.3; read in full]
+43 6ec13fb02cec78d937eb6e29a73a3d95432d4ad2436fd4365916d038a4bc7612  data/invocation_inputs.lcl.txt  [same as v0.5.2; read in full]
+44 3529983147c2af3a3d0767f7698f72f094017feed4f06df9eb0b0e1565a477ac  checks/runtime_gates.lcl.txt  [same as v0.5.2; read in full; the 135 policy-mirror gates follow one pattern and were read through]
+45 88c73e18c1461d62d31b8c8136f98dd7dfaf714450e54824a2cbb91c5b7dfbf8  workflow/dispatch.lcl.txt  [same as v0.5.2; read in full]
+
+TASK-002 section_required_reading names usage, the continuation profile, readability, no-unnecessary-code,
+manuals_and_help, master_rules, global_contracts, bindings, stop_conditions and android_operating_model: all above.
+
+== Other pack files ==
+   9ce28c518c5bc0477d557f55ecaf1ad182d5b3f40ad11f764b00100cf682fa6d  bindings/dispatch_mode.lcl.txt  [same as v0.5.2; read in full]
+   1a552ef94ceaf02b0bfa7bb2ae4a1c85e755f994e12f326021e1120e72cb014d  bindings/receipt_mode.lcl.txt  [same as v0.5.2; read in full]
+   ce1115d1e1db3da02dda7484959a11d5e7e028d6fea1143224759e204fa6510f  bindings/read_order.lcl.txt  [same as v0.5.2; read in full]
+   5b3b5f6c5d1865a0ac113b3d80e84da1a79237921597702086f8e7bed53f7d70  data/instruction_packet.lcl.txt  [changed in v0.5.3; read in full]
+   fe91d6ae249a65a073b8ddb6576a769172d66b88cf8aac30e99ea6a703c26b2c  data/task_catalog.lcl.txt  [same as v0.5.2; head and tail read; the middle is the list of 75 task references and the policy-text references]
+   d8fa183d2ea41aa8fabe455bf581893f5be39804a8e249f19a3d6438046a8251  templates/decision_log_template.lcl.txt  [same as v0.5.2; read in full]
+   be396786ec55eff8dd556c985827451e376339fb8bfb0e2fd0fc99b96f598a64  templates/model_handoff_prompt.lcl.txt  [same as v0.5.2; read in full]
+   658162afbfb5de75dece32aa8f8ea863e289e465d2608897f98ab6f11a5e441f  templates/task_evidence_template.lcl.txt  [same as v0.5.2; read in full]
+   c469192acd64216082b8942de702da4fd8739e4072c7e27bab1382b7939e62f6  templates/task_template.lcl.txt  [same as v0.5.2; read in full]
+   03978d78670c86b1dd6d0ce90cfaf796f6926d01f6423a32aae6d49cb97b9ee5  evidence/receipt_unverified.json  [same as v0.5.2; read in full]
+   9cc2c3fb96868d75fb96843a2eccd7df50da2368af160bfbad9c701d184f17ae  tools/verify_with_lcl.py  [changed in v0.5.3; read in full]
+   478d41b9f78a2b4e1321acfe047cb15582137957e24276ecbabf486c1b2605c7  VALIDATION_REPORT.txt  [changed in v0.5.3; read in full]
+   dbf69008a78a3715281d61cf9046edb0d76b911afe975ca24e77ab4e01309c40  CORRECTION_NOTES.txt  [changed in v0.5.3; read in full]
+   8a4ba22fa5746d2de64e997f02c1564c385dac1a3763e3c6a8eb8f7493cc6b84  SOURCES.json  [same as v0.5.2; read in full]
+   7dc96677324c2e5ad40520d4072c690f6c5d4c69c72cb654b632a2a3bf56bed8  PROCEDURAL_CHANGES.json  [new in v0.5.3; summary fields and the TASK-002 entry read; every entry used programmatically]
+   8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4  MANIFEST.json  [changed in v0.5.3; summary fields read; every listed hash verified programmatically]
+   20d2f968bde8aa1287ec045021264f6f222b52535a6c9e69c14b97266fe2364d  CONTENT_IDENTITY.json  [changed in v0.5.3; summary read; identity recomputed programmatically]
+   f73d9d15206778e80e3c1aba1f3cfc9f1084683ad9362f9c1007d8b56acef9c1  SOURCE_MAP.json  [same as v0.5.2; summary and the TASK-002 mapping read]
+   9f257d67c28d79718dead07137774b9f59208e4190395e53e2300b8493c03af2  TASK_REQUIREMENT_MAP.json  [same as v0.5.2; TASK-002 entry read; whole map used programmatically]
+   1c74288ba20e9586ac526a7395f11bc9461d83b13ce72ca496b7c4c0be201cfe  VALIDATION_REPORT.json  [changed in v0.5.3; summary fields read]
+   16b9f9f800f2838c387d8c488922a0dab63b7076e60afa0199aaf54bafaec06b  FILE_TREE.txt  [changed in v0.5.3; first 80 lines read]
+   6c96309ac4fda208d9da16e2b38e1652e6cc51b419f9f1d3dbb7aee81e89ae2e  tasks/task_001.lcl.txt  [same as v0.5.2; hash verified only: TASK-001 is closed and was not reread]
+   fb7522fda9b1ce113992590e9d9aa170568365f363dde4a1688eeb75978cdfb0  history/task_001_baseline_v0.5.2.zip  [new in v0.5.3; listing read; every file hash verified; tasks/task_002 compared field by field]
+   tasks/task_003.lcl.txt to tasks/task_075.lcl.txt  [objective of every task read; scope, reuse, deliverables, verification
+      and remote evidence scope of TASK-003 to TASK-008 read in full; all tasks searched for update, ACP, extension and receiver ownership]
+   language_tests/*.json (38 files)  [the two TASK-002 fixtures positive_task_002 and reject_task_002_uncorroborated read in full;
+      every fixture summarized by task number, expected outcome and expected failed checks; all run by the native suite]
+   history/*.txt and history/*.lcl.txt (13 files)  [read in full: changelogs v0.2 to v0.4, pack checks v0.2 to v0.4, the v0.4 source
+      readme, the v0.5 and v0.5.1 validation reports, the v0.5.1 correction notes and the v0.5.2 readme, correction notes and report]
+   history/*.json (4 files)  [not read in detail: historical machine reports of v0.5, v0.5.1 and v0.5.2]
+
+== Outside the pack, read-only ==
+   /mnt/F/LCL/users_manual/09_Checking_Results.md and 14_Projects_and_Imports.md  [which expressions a VALIDATE may use; project parts]
+   /mnt/F/LCL/canonical/LCL_Core_0.3.0/05_SEMANTICS/13_PROJECTS_PARTS_AND_PROJECT_ADMISSION.txt and 06_STANDARD_LIBRARY/04_BUILT_IN_FUNCTIONS.txt
+   LCL repository reuse inspection: impl/Cargo.toml, impl/crates (listing), impl/crates/lcl-protocol/Cargo.toml and src (listing),
+      android/README.md, android/app/build.gradle.kts (searched), remote/README.md (searched), remote/lcl-remote.service.in
+   The whole Nexees checkout: README.md, SECURITY.md, LICENSE_STATUS.md, FILE_TREE.txt, config files, docs/charter/*,
+      docs/evidence/TASK-001/ (evidence, authorization, receipt, script, logs) and samples of the placeholder files

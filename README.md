@@ -3,8 +3,9 @@
 **Application-only source layout — pre-implementation, structure revision 0.4.**
 
 This repository contains the planned Nexees application folders and named files, the
-frozen project charter and the evidence of completed implementation tasks. It does not
-contain the implementation task pack, numbered task documents or task-to-path maps.
+frozen project charter, the modular architecture and the evidence of completed
+implementation tasks. It does not contain the implementation task pack, numbered task
+documents or task-to-path maps.
 Keep the implementation pack separate; the charter refers to it by identity.
 
 ## Authoritative requirements
@@ -23,6 +24,14 @@ exists.
 The charter also records what is still open: the Desktop renderer decision, the
 Review/Supervisor amendment deferred to TASK-075, and the logo source path, which does
 not currently resolve.
+
+[docs/architecture/](docs/architecture/) defines the modular architecture (TASK-002): the
+subsystems and the module files each one owns, shared versus client-specific code, the
+Desktop and Android local hosts, interfaces, which state is authoritative and who writes
+it, data and authority flows, failure domains, and the portability decisions left to
+TASK-003. It is an LCL Core 0.3.0 project whose entry is
+`docs/architecture/architecture.lcl.txt`; it refines the pack, and where they differ the
+pack governs. It selects no technology, dependency or renderer.
 
 ## Source-file status
 
@@ -49,11 +58,18 @@ that upstream frameworks or implementation will eventually generate.
 | `assets/` | Existing approved visual references, future verified icon imports and shared visual resources. |
 | `config/` | Configuration slots and the existing non-secret local-path example. |
 | `docs/charter/` | Frozen project charter as an LCL project: scope, traceability, open decisions and structural checks. |
+| `docs/architecture/` | Modular architecture as an LCL project: subsystems and module ownership, hosts, interfaces, authoritative state, flows, failure domains and decisions. |
 | `docs/evidence/` | Evidence of completed implementation tasks, one folder per task. |
 | `docs/manuals/` | Nexees and integrated-LCL manual drafts, retained from the previous pack. |
 | `tests/` | Named unit, integration, conformance, security and end-to-end test slots. |
 | `scripts/` | Build, check, manual-bundling, CI and release helper slots. |
 | `packaging/` | Desktop, Android and update packaging slots; no signing secrets. |
+
+Every product file, meaning everything under `apps/`, `core/`, `platform/`,
+`integrations/`, `assets/`, `config/`, `packaging/`, `scripts/` and `docs/manuals/`,
+belongs to exactly one subsystem in `docs/architecture/subsystems.lcl.txt`, and each
+planned test file is attributed to the subsystem it proves. A task that adds, moves or
+merges a file updates that catalogue in the same change.
 
 `core/tasking/` and the task-panel files are **Nexees runtime functionality**, not tasks
 for building Nexees. Similarly, the LCL adapter integrates the existing core rather

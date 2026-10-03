@@ -1,0 +1,135 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_reviews
+    NAME: "Gate reviews of TASK-002"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "The two design reviews TASK-002's verification requires. T002.VERIFY.01 reviews the state and permission boundaries against imported content, late replies and cleanup. T002.VERIFY.06 reviews the data and authority flows against A1 to A8 of the Android operating model: no local authoring or LCL-validation path may require a PC, and every mobile portability decision is identified before foundation selection. Both reviews are the coding agent's own; no independent human or model reviewed them. Each finding names the records it relies on, which check_architecture.py resolves."
+
+DATA:
+    ID: data.arch_rv_imported_content
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-01"
+        gate: "T002.VERIFY.01"
+        topic: "Imported content"
+        finding: "Imported files enter as untrusted content in app-private staging that belongs to the target host (ST-IMPORT), and touch no live workspace until the user confirms the preview. Publication goes through the revision service and the state store and yields a draft LCL revision. Validation is the LCL core's; authority comes only from explicit adoption at a safe boundary, and even adopted LCL cannot weaken Nexees security. No import path writes grants, approvals, settings or secrets, starts an agent, or changes another workspace's rules or the user's focus. The boundary holds."
+        references: ["FL-IMPORT", "FL-ADOPTION", "ST-IMPORT", "ST-LCL-REVISION", "SS-LCL", "SS-SECURITY", "IF-REVISION", "IF-STORE", "AD-08"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_late_replies
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-02"
+        gate: "T002.VERIFY.01"
+        topic: "Late replies"
+        finding: "Five kinds of late arrival were traced. A reply or tool request from an older model generation is rejected by the execution fence before dispatch. A tool result that arrives after cancellation or timeout is recorded in the operation journal, and a non-idempotent effect with unknown outcome is reconciled, not replayed. A late remote acknowledgment reconciles the sender's pending record by request ID without executing again, and an expired request is refused at admission. A delayed sync change meets a base-revision check and becomes a conflict, never an overwrite. A late approval is revalidated against epoch, expiry, lock state and target before use. The boundary holds."
+        references: ["SS-AGENT", "SS-REMOTE", "SS-SYNC", "ST-JOURNAL", "ST-REMOTE-REQUEST", "ST-SYNC", "ST-AUTHORITY", "IF-REMOTE", "FL-MODEL-SWITCH", "FD-TOOL"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_cleanup
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-03"
+        gate: "T002.VERIFY.01"
+        topic: "Cleanup"
+        finding: "Product cleanup runs as ordinary tool calls through the one dispatch, the permission engine and workspace scope; the cleanup gate only requires and records it. Cleanup can remove only items recorded as task-owned, never unknown or user files. It is unavailable during read-only orientation, a failed or cancelled task cannot use it to bypass a gate, and completion needs verification of the post-cleanup revision. The boundary holds."
+        references: ["FL-TASK-CLOSURE", "SS-TASKING", "SS-TOOLS", "SS-SECURITY", "IF-TOOL", "AD-03"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_a1
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-A1"
+        gate: "T002.VERIFY.06"
+        topic: "A1 Three capabilities, not a remote-only companion"
+        finding: "Standalone operation is HOST-ANDROID composing the full shared core; remote control is SS-REMOTE through FL-REMOTE-REQUEST; synchronization is SS-SYNC through FL-SYNC. They are separate subsystems with separate enablement, and switching a view never changes an execution host."
+        references: ["HOST-ANDROID", "SS-REMOTE", "SS-SYNC", "FL-REMOTE-REQUEST", "FL-SYNC", "AD-01", "AD-06"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_a2
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-A2"
+        gate: "T002.VERIFY.06"
+        topic: "A2 Behaviour by connection state"
+        finding: "With the PC off, local authoring, saving, LCL validation and the local agent run entirely in the Android host, and no step of FL-STANDALONE-START or FL-LOCAL-EXECUTION uses SS-REMOTE or SS-SYNC. Without internet only provider calls, first-time signup and remote operations become unavailable. With the PC reachable, remote control is added to local work, not substituted for it, and on reconnection sync reconciles content without executing stale commands. No local authoring or LCL-validation path requires a PC."
+        references: ["FL-STANDALONE-START", "FL-LOCAL-EXECUTION", "HOST-ANDROID", "FD-PROVIDER", "FD-ACCOUNT", "FD-REMOTE", "IF-LCL"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_a3
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-A3"
+        gate: "T002.VERIFY.06"
+        topic: "A3 Local storage, workspace identity and UI"
+        finding: "Phone-local state is durable through the host's store and atomic writer. Workspace IDs are stable, with a root per device and explicit content availability; each client has its own foreground; execution location and live versus last-observed status are shown; unsaved buffers are protected from incoming changes."
+        references: ["SS-STATE", "SS-PLATFORM-ANDROID", "ST-WORKSPACE", "ST-VIEW", "ST-REMOTE-SNAPSHOT", "ST-CONTENT"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_a4
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-A4"
+        gate: "T002.VERIFY.06"
+        topic: "A4 Phone-hosted agent and LCL reuse"
+        finding: "The phone runs the same agent loop, tools and LCL bridge as Desktop; the minimum mobile tools come from SS-TOOLS over Android adapters, and a missing tool is a capability-gated blocker. Whether the existing LCL core and an on-device test backend run on the phone is not yet proven: those are open decisions for TASK-003."
+        references: ["HOST-ANDROID", "SS-AGENT", "SS-TOOLS", "SS-LCL", "AD-09", "PD-LCL-ANDROID", "PD-ANDROID-EXECUTION"]
+        result: "holds_with_open_items"
+
+DATA:
+    ID: data.arch_rv_a5
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-A5"
+        gate: "T002.VERIFY.06"
+        topic: "A5 Remote control and target authority"
+        finding: "Explicit pairing, an encrypted transport, envelopes bound to device, workspace, agent, action, revision, request ID and expiry, checks on the executing host, acknowledgments, and no replay after reconnection."
+        references: ["SS-REMOTE", "IF-REMOTE", "IF-TRANSPORT", "ST-AUTHORITY", "ST-REMOTE-REQUEST", "AD-04", "AD-05"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_a6
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-A6"
+        gate: "T002.VERIFY.06"
+        topic: "A6 Selected two-way synchronization"
+        finding: "Only selected content and portable records travel, through a durable outbox with base revisions, transactional apply, conflicts that keep both versions, and tombstones. Secrets, recovery codes, device keys, grants, approvals and build caches are excluded."
+        references: ["SS-SYNC", "IF-SYNC", "ST-SYNC", "ST-SECRETS", "ST-AUTHORITY", "FL-SYNC"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_a7
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-A7"
+        gate: "T002.VERIFY.06"
+        topic: "A7 Handoff, concurrent work and instruction changes"
+        finding: "A checkout and revision has one authoritative executor; edits create drafts and adoption is explicit; execution moves only by an acknowledged checkpoint handoff; live processes and secrets never travel."
+        references: ["ST-SESSION", "ST-JOURNAL", "ST-LCL-REVISION", "FL-ADOPTION", "AD-06"]
+        result: "holds"
+
+DATA:
+    ID: data.arch_rv_a8
+    TYPE: OBJECT[REF(type.arch_review)]
+    VALUE:
+        review_id: "RV-A8"
+        gate: "T002.VERIFY.06"
+        topic: "A8 Reuse and uncertainty gates"
+        finding: "No dependency, foundation or renderer is selected here. The architecture requires a portable core and identifies sixteen portability and platform decisions for TASK-003 and later tasks before foundation selection; a failed feasibility check is a blocker, never a reason to demote Android."
+        references: ["AD-01", "PD-CORE-RUNTIME", "PD-RENDERER", "PD-LCL-ANDROID", "PD-PERSISTENCE"]
+        result: "holds_with_open_items"
+
+DATA:
+    ID: data.arch_reviews
+    TYPE: LIST[OBJECT[REF(type.arch_review)]]
+    VALUE: [REF(data.arch_rv_imported_content), REF(data.arch_rv_late_replies), REF(data.arch_rv_cleanup), REF(data.arch_rv_a1), REF(data.arch_rv_a2), REF(data.arch_rv_a3), REF(data.arch_rv_a4), REF(data.arch_rv_a5), REF(data.arch_rv_a6), REF(data.arch_rv_a7), REF(data.arch_rv_a8)]

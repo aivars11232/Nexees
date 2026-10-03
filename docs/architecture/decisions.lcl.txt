@@ -1,0 +1,429 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_decisions
+    NAME: "Architecture decisions, open portability decisions, assumptions and gaps"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "The decisions TASK-002 takes, in the shape of the pack's decision log template; the portability and platform decisions it identifies but leaves to later tasks, as TASK-002's v0.2 gate requires before foundation selection; the explicit security assumptions; what the reuse inspection observed; and the gaps later tasks must close. Nothing here selects a technology, a dependency or the Desktop renderer."
+
+DATA:
+    ID: data.arch_ad_01
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-01"
+        title: "A portable shared core in a local host on each device, with thin clients"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "Desktop and Android must share one meaning of workspace, agent, task, LCL and security state (C15), and Android must work as a standalone host with no PC (C19, A1, A2)."
+        options: "(a) One PC-hosted server with thin clients. (b) Separate Desktop and Android implementations. (c) One portable core running in a local host on each device, with platform adapters and thin UI clients."
+        decision: "(c). core/ holds the domain, security, state, agent, tool, LCL, sync and remote logic and runs unchanged in both hosts; platform/ implements the core's ports for each operating system; apps/ composes the host and presents its state."
+        why: "(a) fails standalone Android (A1, A2), and (b) duplicates domain logic (no_unnecessary_code). (c) is the shape system_architecture v0.2 describes."
+        security_impact: "One permission engine, one audit implementation and one set of invariants to test on both devices."
+        reuse_impact: "The core needs a language, runtime and libraries that run on Android as well as on Desktop: open decision PD-CORE-RUNTIME for TASK-003."
+        reversal: "If TASK-003 cannot prove a portable core, this decision is reopened before TASK-005 fixes the scaffold. Android is never demoted to a remote-only client instead (A8)."
+        verification: "check_architecture.py checks that every core/ slot belongs to a shared_core subsystem and that both hosts compose the same core; TASK-003 must prove the Android hosting path."
+
+DATA:
+    ID: data.arch_ad_02
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-02"
+        title: "The Desktop host is separate from the window, one per OS user"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "The receiver and authorized background work must survive closing the window, and reopening the window must not start a second executor (RC-04, RC-T14)."
+        options: "(a) Everything in the window process. (b) A separate privileged system service. (c) A separate host process at user privilege that windows attach to."
+        decision: "(c). apps/desktop/src/application_host is the host's composition root, a single instance per OS user; windows attach to it over authenticated local IPC (IF-ATTACH)."
+        why: "(a) dies with the window, and (b) violates RC-05 and RC-23. (c) satisfies RC-04 at user privilege."
+        security_impact: "It adds a local IPC boundary, which must authenticate the peer process by OS identity, admit only the same user and bound its messages (RC-23)."
+        reuse_impact: "The IPC mechanism and the IDE foundation's backend placement are open decisions PD-LOCAL-IPC and PD-IDE-PLACEMENT; the layout has no slot for the IPC channel yet (GAP-01)."
+        reversal: "If the approved renderer or foundation rules out a separate process, the host role moves to whichever process outlives the window; the receiver still may not depend on the window."
+        verification: "RC-T02 and RC-T14, at TASK-009, TASK-056 and TASK-070."
+
+DATA:
+    ID: data.arch_ad_03
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-03"
+        title: "One effect path under one permission engine"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "Agents, remote requests and UI-initiated agent actions all cause effects; separate paths would duplicate authorization and invite bypasses (C9, C10, RC-25)."
+        options: "(a) A dispatcher for each kind of caller. (b) One tool dispatch under one permission engine, with each caller as an adapter."
+        decision: "(b). core/tools/tool_dispatch is the only route to an effect and core/security/permission_engine the only authorization point; core/remote/command_dispatch only admits remote envelopes and hands them over."
+        why: "One place enforces scope, journaling, audit and the read-only orientation (H3)."
+        security_impact: "There is no privileged bypass path (RC-23), and every effect is journaled and audited."
+        reuse_impact: "None."
+        reversal: "A new kind of caller is added as an adapter; a second dispatcher would need an explicit architecture change with a security review."
+        verification: "tests/unit/tool_dispatch and RC-T05; check_architecture.py checks the single-path list against the catalogue."
+
+DATA:
+    ID: data.arch_ad_04
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-04"
+        title: "Authority is decided on the executing host"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "Two-way remote control needs per-direction trust that neither a sender, a shared account nor synchronization can manufacture (RC-01, RC-03, C30)."
+        options: "(a) The sender authorizes. (b) Grants are synchronized between devices. (c) The destination decides, using grants it holds itself."
+        decision: "(c). Grants and approvals are device-local records of SS-SECURITY, keyed by peer, direction and capability (ST-AUTHORITY) and never synced; the destination rechecks everything immediately before execution."
+        why: "Both (a) and (b) let one device, or a copied file, grant authority on another."
+        security_impact: "Revocation is local and immediate, and a compromised sender cannot widen its own grant."
+        reuse_impact: "None."
+        reversal: "None foreseen: this follows directly from RC-10."
+        verification: "RC-T01, RC-T05 and RC-T08; verify.arch_authority_never_synced."
+
+DATA:
+    ID: data.arch_ad_05
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-05"
+        title: "Control and content travel separately over one secure channel per platform"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "Commands and approvals must never be replayed like offline content, yet both need an authenticated peer channel (C22, RC-17, RC-19)."
+        options: "(a) One message stream for everything. (b) Separate transports. (c) One secure channel per platform carrying two separate message families."
+        decision: "(c). IF-REMOTE and IF-SYNC are separate message families over IF-TRANSPORT, sharing pairing and revocation."
+        why: "(a) lets commands ride a sync queue, and (b) duplicates transport and pairing (RC-25)."
+        security_impact: "Expired control messages are never queued as content, and there is one channel to audit and harden."
+        reuse_impact: "The channel library and the off-LAN route are open decision PD-TRANSPORT."
+        reversal: "If the selected library changes, only the transport adapters change."
+        verification: "RC-T10 and RC-T15; tests/integration/sync/two_way_sync."
+
+DATA:
+    ID: data.arch_ad_06
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-06"
+        title: "Execution binding is independent of UI focus"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "The foreground workspace changes constantly; an agent's authority must not (R11, B3, B17, RC-20)."
+        options: "(a) Agents follow the foreground workspace. (b) Agents are bound explicitly to device, workspace, checkout revision, specification revision and generation."
+        decision: "(b). ST-SESSION holds the binding and ST-VIEW the focus, and no flow reads focus to choose a target."
+        why: "(a) is exactly the failure STOP-07 forbids."
+        security_impact: "A focus change cannot redirect writes, remote requests, imports or model switches."
+        reuse_impact: "None."
+        reversal: "None foreseen."
+        verification: "RC-T13; tests/integration/workspaces/foreground_background_isolation and tests/unit/workspace_binding."
+
+DATA:
+    ID: data.arch_ad_07
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-07"
+        title: "One state store per host, extended by its owners"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "Import, handoff, evidence and sync each need persistent records; separate stores would drift apart and break crash recovery (persistent_state_model v0.3)."
+        options: "(a) A store for each feature. (b) One versioned store per host whose schema the owning tasks extend."
+        decision: "(b). core/state/state_store is the one store, and each state category is written only by its owner (data.arch_states)."
+        why: "One transaction and recovery model, and no duplicate state store (no_unnecessary_code)."
+        security_impact: "One place for integrity checks and for keeping secrets out of ordinary state."
+        reuse_impact: "The persistence primitive is open decision PD-PERSISTENCE."
+        reversal: "None foreseen."
+        verification: "tests/unit/state_recovery; check_architecture.py checks that every state category has exactly one owner."
+
+DATA:
+    ID: data.arch_ad_08
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-08"
+        title: "Import, handoff and help stay inside existing subsystems"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "Version 0.3 added LCL import, model handoff and manuals, and each could have become a separate service (TASK-002 v0.3 scope)."
+        options: "(a) A new service for each. (b) Modules inside the subsystems whose services they reuse."
+        decision: "(b). Import is core/lcl/importing in SS-LCL, with client pickers and preview panels; handoff is core/providers/handoff in SS-PROVIDERS over SS-STATE, SS-CONTEXT and SS-AGENT; help is SS-HELP, shown in the existing help panels."
+        why: "Each reuses existing transactions, state, permissions and rendering, and none needs authority of its own."
+        security_impact: "Import keeps no ambient authority, and the orientation is enforced by the one tool dispatch."
+        reuse_impact: "The ZIP implementation and the manual renderer are open decisions PD-ARCHIVE and PD-MANUAL-RENDERER."
+        reversal: "None foreseen."
+        verification: "IM-01 to IM-10, HO-01 to HO-10 and MAN-01 to MAN-05 at their owning tasks."
+
+DATA:
+    ID: data.arch_ad_09
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-09"
+        title: "LCL semantics come only through the bridge to the existing core, on both hosts"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "LCL must validate on Android without a PC (A4) and must not be reimplemented (lcl_integration)."
+        options: "(a) A Nexees parser. (b) Remote validation by a PC service. (c) The pinned existing LCL core through one bridge in both hosts."
+        decision: "(c). integrations/lcl/core_bridge is the only path to LCL semantics, on Desktop and on Android."
+        why: "(a) duplicates the core, and (b) fails validation in airplane mode (AN-02, IM-09)."
+        security_impact: "LCL results constrain work but never grant authority beyond validated rules, which cannot weaken Nexees security."
+        reuse_impact: "The LCL engine's headless facade is the bridge's target (RO-01). Whether it runs on Android is open decision PD-LCL-ANDROID; the existing LCL Android app does not meet the need (RO-02)."
+        reversal: "If the core cannot run on Android, TASK-003 reports a blocker; Android LCL is never demoted to remote-only validation (A8)."
+        verification: "tests/conformance/lcl/shared_core_parity and tests/e2e/android/offline_lcl."
+
+DATA:
+    ID: data.arch_ad_10
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-10"
+        title: "Extensions are a separate principal with read-only limits"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "VS Code-compatible extensions run third-party code next to the agent (B14, TASK-021)."
+        options: "(a) Extensions share the agent's authority. (b) Extensions are their own principal, with the limits of data.arch_extension_limits."
+        decision: "(b). core/security/extension_policy enforces EXT-01 to EXT-07."
+        why: "(a) would let any installed extension act with agent permissions."
+        security_impact: "Whether extension code is confined at the operating-system level stays open (EXT-07) and must be recorded as residual risk before extensions are enabled."
+        reuse_impact: "Depends on the IDE foundation and extension registry that TASK-003 and TASK-021 select."
+        reversal: "None foreseen for the principal separation."
+        verification: "tests/security/permissions/extension_authority."
+
+DATA:
+    ID: data.arch_ad_11
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-11"
+        title: "The receiver is deterministic code that uses no model"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "Staying available for remote requests must not consume model inference (RC-08)."
+        options: "(a) A model watches for work. (b) Deterministic, event-driven host code."
+        decision: "(b). SS-REMOTE and the platform transport listen and reconnect; only agent sessions call providers."
+        why: "Cost, privacy and predictability."
+        security_impact: "No prompt-injection surface while idle."
+        reuse_impact: "None."
+        reversal: "None foreseen."
+        verification: "verify.arch_receiver_uses_no_model; RC-T18."
+
+DATA:
+    ID: data.arch_ad_12
+    TYPE: OBJECT[REF(type.arch_decision)]
+    VALUE:
+        decision_id: "AD-12"
+        title: "Subsystem dependencies are acyclic and follow the build order"
+        status: "accepted"
+        task: "TASK-002"
+        date: "2026-10-03"
+        problem: "The permission engine (TASK-022) is built before settings (TASK-030) and accounts (TASK-027), and the agent loop (TASK-034) before the scheduler (TASK-053), yet each pair interacts."
+        options: "(a) Mutual dependencies. (b) Dependency inversion: the earlier subsystem defines a port or emits an event, and the later one implements or consumes it."
+        decision: "(b). SS-SECURITY defines the policy input and the step-up port that SS-SETTINGS and SS-ACCOUNTS supply; SS-AGENT reports completion proposals that SS-TASKING evaluates; SS-SECURITY reads binding records from the store instead of calling SS-WORKSPACES."
+        why: "Each task can then build and test its subsystem against finished dependencies only."
+        security_impact: "The permission engine never trusts a caller's claim of scope; it reads the authoritative binding records."
+        reuse_impact: "None."
+        reversal: "A task that needs a reverse dependency changes this architecture explicitly."
+        verification: "check_architecture.py checks that the dependency graph is acyclic and that every interface consumer depends on one of its providers."
+
+DATA:
+    ID: data.arch_decisions
+    TYPE: LIST[OBJECT[REF(type.arch_decision)]]
+    VALUE: [REF(data.arch_ad_01), REF(data.arch_ad_02), REF(data.arch_ad_03), REF(data.arch_ad_04), REF(data.arch_ad_05), REF(data.arch_ad_06), REF(data.arch_ad_07), REF(data.arch_ad_08), REF(data.arch_ad_09), REF(data.arch_ad_10), REF(data.arch_ad_11), REF(data.arch_ad_12)]
+
+DATA:
+    ID: data.arch_pd_core_runtime
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-CORE-RUNTIME"
+        question: "Which language, runtime and libraries does the shared core use, so that the same core runs in the Desktop host and inside the Android app?"
+        constraint: "It runs on the supported Android versions without a PC, is independent of the Desktop renderer, and needs no per-client copy of domain logic (AD-01)."
+        affects: ["SS-LOCAL-HOST", "SS-DOMAIN-PROTOCOL", "SS-STATE", "SS-WORKSPACES", "SS-SECURITY", "SS-TOOLS", "SS-AGENT", "SS-CONTEXT", "SS-TASKING", "SS-PROVIDERS", "SS-LCL", "SS-ACCOUNTS", "SS-SETTINGS", "SS-REMOTE", "SS-SYNC", "SS-HELP", "SS-UPDATES"]
+        decide_by: ["TASK-003", "TASK-005"]
+        evidence_needed: "A core prototype built and run on Android and on Desktop, with version, license and maintenance evidence (TASK-003 v0.2 gate)."
+
+DATA:
+    ID: data.arch_pd_renderer
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-RENDERER"
+        question: "DESKTOP-RENDERER-01: is an Electron-style installed Desktop application acceptable, or is all Electron, Chromium and WebView rendering excluded?"
+        constraint: "The owner's decision, obtained at TASK-003 and never inferred. It affects only the Desktop client, the IDE integration and the Desktop host's process layout; the core and Android must not depend on it (C20)."
+        affects: ["SS-DESKTOP-CLIENT", "SS-IDE", "SS-LOCAL-HOST"]
+        decide_by: ["TASK-003"]
+        evidence_needed: "The owner's recorded answer, native_only or electron_permitted."
+
+DATA:
+    ID: data.arch_pd_ide_placement
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-IDE-PLACEMENT"
+        question: "In which process do the IDE foundation's backend services (file system, terminals, language servers, extension host) run, relative to the Desktop host and the window?"
+        constraint: "Whichever process hosts them, they reach workspace files only through workspace scope and revisions, and gain no agent authority (AD-10)."
+        affects: ["SS-IDE", "SS-LOCAL-HOST", "SS-DESKTOP-CLIENT"]
+        decide_by: ["TASK-003", "TASK-009"]
+        evidence_needed: "The selected foundation's process model, mapped onto HOST-DESKTOP."
+
+DATA:
+    ID: data.arch_pd_lcl_android
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-LCL-ANDROID"
+        question: "How does the existing LCL core run inside the Android host?"
+        constraint: "The same pinned core as on Desktop, with no second implementation and no PC (AD-09)."
+        affects: ["SS-LCL", "SS-PLATFORM-ANDROID"]
+        decide_by: ["TASK-003", "TASK-046", "TASK-063"]
+        evidence_needed: "On-device validation of shared fixtures with the same results as on Desktop (IM-09, tests/conformance/lcl/shared_core_parity)."
+
+DATA:
+    ID: data.arch_pd_persistence
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-PERSISTENCE"
+        question: "Which durable, transactional storage primitive backs the state store on both hosts?"
+        constraint: "Crash-safe, migratable and portable to Android, with no second database server (reuse_matrix v0.2, AD-07)."
+        affects: ["SS-STATE", "SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID"]
+        decide_by: ["TASK-003", "TASK-008"]
+        evidence_needed: "Crash-recovery and migration tests on both platforms."
+
+DATA:
+    ID: data.arch_pd_android_execution
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-ANDROID-EXECUTION"
+        question: "Which on-device code and test execution backend serves the phone-hosted agent?"
+        constraint: "License-compatible, inside the app sandbox, and able to take a runnable fixture through fail, repair and pass (A4)."
+        affects: ["SS-TOOLS", "SS-PLATFORM-ANDROID"]
+        decide_by: ["TASK-003", "TASK-066"]
+        evidence_needed: "A runnable fixture on a real phone (AN-03)."
+
+DATA:
+    ID: data.arch_pd_android_background
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-ANDROID-BACKGROUND"
+        question: "Which background-work and receiver mechanisms do the supported Android versions permit?"
+        constraint: "A permitted foreground-service type with a visible notification and a stop control, and honest unavailability otherwise (RC-15)."
+        affects: ["SS-PLATFORM-ANDROID", "SS-LOCAL-HOST", "SS-REMOTE"]
+        decide_by: ["TASK-003", "TASK-057", "TASK-066"]
+        evidence_needed: "RC-T06 on real devices."
+
+DATA:
+    ID: data.arch_pd_transport
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-TRANSPORT"
+        question: "Which secure channel library, pairing primitives and off-LAN route are used on both platforms?"
+        constraint: "An audited library usable in both hosts, with mutual authentication; no unauthenticated public port, router change or paid relay without approval (RC-19)."
+        affects: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-REMOTE", "SS-SYNC"]
+        decide_by: ["TASK-003", "TASK-060", "TASK-070"]
+        evidence_needed: "RC-T15 in an isolated environment."
+
+DATA:
+    ID: data.arch_pd_secrets
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-SECRETS"
+        question: "Which OS credential stores back the platform credential-store adapters?"
+        constraint: "OS-backed on Desktop and on Android, with no fallback that stores secrets without adequate protection (STOP-04)."
+        affects: ["SS-PLATFORM-DESKTOP", "SS-PLATFORM-ANDROID", "SS-SECURITY"]
+        decide_by: ["TASK-003", "TASK-025"]
+        evidence_needed: "tests/security/credentials/credential_storage on both platforms."
+
+DATA:
+    ID: data.arch_pd_local_ipc
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-LOCAL-IPC"
+        question: "Which local IPC mechanism joins the Desktop window and host with operating-system peer identity?"
+        constraint: "Same user only, authenticated and bounded (RC-23)."
+        affects: ["SS-PLATFORM-DESKTOP", "SS-LOCAL-HOST", "SS-DESKTOP-CLIENT"]
+        decide_by: ["TASK-003", "TASK-009"]
+        evidence_needed: "The local IPC caller checks of RC-T15."
+
+DATA:
+    ID: data.arch_pd_startup
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-STARTUP"
+        question: "Which user-level start-at-login mechanism does the Desktop host use, and which lifecycle states does it really support?"
+        constraint: "User level only, with no system service, linger or automatic login; unsupported states are reported as unsupported (RC-05)."
+        affects: ["SS-PLATFORM-DESKTOP", "SS-LOCAL-HOST"]
+        decide_by: ["TASK-003", "TASK-009"]
+        evidence_needed: "RC-T04."
+
+DATA:
+    ID: data.arch_pd_archive
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-ARCHIVE"
+        question: "Which ZIP implementation is available in the shared or mobile stack?"
+        constraint: "Maintained, license-approved and streaming, with no custom compression code (import_handoff_sources)."
+        affects: ["SS-LCL"]
+        decide_by: ["TASK-003", "TASK-051"]
+        evidence_needed: "IM-05 and IM-06 on both platforms."
+
+DATA:
+    ID: data.arch_pd_manual_renderer
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-MANUAL-RENDERER"
+        question: "Which passive offline document renderer do both clients use for the manuals?"
+        constraint: "No active scripts, remote resources or implicit downloads (manuals_and_help)."
+        affects: ["SS-HELP", "SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT"]
+        decide_by: ["TASK-003", "TASK-071"]
+        evidence_needed: "MAN-01 and MAN-04 on both clients."
+
+DATA:
+    ID: data.arch_pd_git_android
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-GIT-ANDROID"
+        question: "How, if at all, do phone-hosted agents get Git?"
+        constraint: "The Git CLI is not assumed on Android; a library only if justified, otherwise a visible capability gap (A4, reuse_matrix)."
+        affects: ["SS-TOOLS", "SS-PLATFORM-ANDROID"]
+        decide_by: ["TASK-003", "TASK-033", "TASK-066"]
+        evidence_needed: "Capability reporting and a Git fixture on the phone, or a documented gap."
+
+DATA:
+    ID: data.arch_pd_code_index_android
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-CODE-INDEX-ANDROID"
+        question: "Does the syntax index run on Android?"
+        constraint: "The same component as on Desktop where it is portable, otherwise capability-gated context (TASK-039)."
+        affects: ["SS-CONTEXT", "SS-PLATFORM-ANDROID"]
+        decide_by: ["TASK-003", "TASK-039"]
+        evidence_needed: "A repository-map fixture on the phone, or a documented gap."
+
+DATA:
+    ID: data.arch_pd_provider_android
+    TYPE: OBJECT[REF(type.arch_open_decision)]
+    VALUE:
+        decision_id: "PD-PROVIDER-ANDROID"
+        question: "Which providers can a phone reach directly, and with which supported authentication?"
+        constraint: "Only provider-supported access on Android; desktop logins and consumer subscriptions are not portable (provider_and_agent_model v0.2)."
+        affects: ["SS-PROVIDERS", "SS-ACCOUNTS"]
+        decide_by: ["TASK-041", "TASK-042", "TASK-068"]
+        evidence_needed: "AN-03 with a supported provider and no PC endpoint."
+
+DATA:
+    ID: data.arch_open_decisions
+    TYPE: LIST[OBJECT[REF(type.arch_open_decision)]]
+    VALUE: [REF(data.arch_pd_core_runtime), REF(data.arch_pd_renderer), REF(data.arch_pd_ide_placement), REF(data.arch_pd_lcl_android), REF(data.arch_pd_persistence), REF(data.arch_pd_android_execution), REF(data.arch_pd_android_background), REF(data.arch_pd_transport), REF(data.arch_pd_secrets), REF(data.arch_pd_local_ipc), REF(data.arch_pd_startup), REF(data.arch_pd_archive), REF(data.arch_pd_manual_renderer), REF(data.arch_pd_git_android), REF(data.arch_pd_code_index_android), REF(data.arch_pd_provider_android)]
+
+DATA:
+    ID: data.arch_security_assumptions
+    TYPE: LIST[STRING]
+    VALUE: ["SA-01 Each device's OS user account, file permissions and OS credential store protect that device's host. Code already running as the same OS user is beyond what local IPC peer checks can stop; TASK-004 threat-models it.", "SA-02 The window, the local host and tool processes run as the same non-elevated user (RC-23).", "SA-03 Peers are authenticated by keys established at explicit pairing, and transport cryptography comes from audited libraries (RC-19).", "SA-04 Providers, the network, repositories, tool output, and imported and synced content are untrusted for authority (authority_hierarchy).", "SA-05 The LCL core is trusted to evaluate LCL deterministically; validated LCL constrains work but cannot weaken Nexees security.", "SA-06 The external auth backend authenticates accounts only; compromising it must yield no device trust, grant or provider credential.", "SA-07 Android may stop the app at any time; durability rests on atomic writes and the journal, not on background execution.", "SA-08 Extension code is untrusted with respect to Nexees authority, and its OS-level confinement is unknown until the IDE foundation is chosen (EXT-07). Until then extensions stay disabled."]
+    DESCRIPTION: "Security assumptions the architecture relies on. An assumption that turns out false is a blocker for the affected work (TASK-002 security requirements)."
+
+DATA:
+    ID: data.arch_reuse_observations
+    TYPE: LIST[STRING]
+    VALUE: ["RO-01 | LCL engine crates (LCL repository, impl/crates) | The crate lcl-protocol describes itself as the stable, headless, UI-independent engine facade. It is the natural target of integrations/lcl/core_bridge in both hosts. Inspected read-only; whether it builds and runs on Android is unproven (PD-LCL-ANDROID). Candidate classification for TASK-003 to confirm: shared internal component.", "RO-02 | LCL for Android app (LCL repository, android) | A native remote client in which the PC is the authority and the phone never parses, checks or runs LCL. It cannot provide standalone Android LCL (A4); at most a reference for UI, Keystore and pairing patterns. For TASK-003 to classify.", "RO-03 | lcl-remote (LCL repository, remote) | A systemd user service with TLS 1.3 pairing that pins both ends, and revocation. It listens on all interfaces and expects the user to open the firewall, which RC-19 does not allow as is. A reference candidate for SS-REMOTE pairing and the Desktop receiver's lifetime. For TASK-003 to classify.", "RO-04 | reuse/reuse_matrix.lcl.txt candidates | Theia, Code-OSS, Monaco, Open VSX, LSP, Tree-sitter, xterm.js, Git, ACP, the auth, secret-store and sandbox candidates remain candidates only. This architecture gives each a boundary (SS-IDE, SS-CONTEXT, SS-TOOLS, SS-PROVIDERS, SS-ACCOUNTS, SS-PLATFORM-DESKTOP, SS-PLATFORM-ANDROID) without selecting any."]
+    DESCRIPTION: "What the reuse-first inspection of TASK-002 observed. Observations, not decisions: classification belongs to TASK-003 (reuse_policy)."
+
+DATA:
+    ID: data.arch_open_gaps
+    TYPE: LIST[STRING]
+    VALUE: ["GAP-01 | The Desktop local IPC channel between the window and the host has no slot | TASK-005 adds one under platform/desktop/transport/ (AD-02, PD-LOCAL-IPC), and TASK-009 implements it.", "GAP-02 | No test slot exists for the receiver's startup and lifetime states | TASK-005 or TASK-009 adds one for RC-T04 (RC-05).", "GAP-03 | No test slot exists for idle receiver behaviour | TASK-009 or TASK-056 adds one for RC-T18 (RC-08).", "GAP-04 | No test slot exists for transport security or local IPC caller checks | TASK-060 or TASK-070 adds them for RC-T15 (RC-19, RC-23).", "GAP-05 | SS-ACCOUNTS has no test slot | TASK-027 to TASK-029 add them.", "GAP-06 | SS-IDE, SS-PLATFORM-DESKTOP, SS-PLATFORM-ANDROID and SS-ASSETS have no test slot, and SS-TASKING has none for its verification, stop-condition and cleanup gates | Their owning tasks add them.", "GAP-07 | No task of the 75 is dedicated to building the updater | TASK-004 threat-models the update path, TASK-008 supplies the migrations, and TASK-073 to TASK-075 audit and exercise the update path if a release includes one (final release gate, step 21). Recorded only; the plan is unchanged."]
+    DESCRIPTION: "Gaps in the planned layout and test slots, and one observation about the task plan, each with the tasks that close it. A gap is a note for its owner, not a change to any task's scope."

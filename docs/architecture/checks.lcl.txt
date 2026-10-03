@@ -1,0 +1,119 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_checks
+    NAME: "Structural checks of the architecture"
+    VERSION: "0.5.0"
+    KIND: kind.part.checks
+    DESCRIPTION: "These checks confirm that the architecture is internally consistent: the expected catalogues, their cross-references and the remote-control scope assigned to TASK-002. They say nothing about whether any subsystem exists or works. Facts outside this project, such as the repository layout and the pack, are checked by docs/evidence/TASK-002/check_architecture.py. Checks that read a property of a record are declared as VERIFY, because the engine evaluates only counts, comparisons and IN inside a VALIDATE (LCL manual 9.1)."
+
+VALIDATE:
+    ID: validate.arch_subsystem_count
+    ASSERT: COUNT(REF(data.arch_subsystems)) == 24 AND COUNT(REF(data.arch_subsystem_ids)) == 24
+    DESCRIPTION: "All 24 subsystems are catalogued and identified."
+
+VALIDATE:
+    ID: validate.arch_single_path_count
+    ASSERT: COUNT(REF(data.arch_single_paths)) == 13 AND COUNT(REF(data.arch_extension_limits)) == 7
+    DESCRIPTION: "The thirteen capabilities that exist exactly once and the seven extension limits are recorded."
+
+VALIDATE:
+    ID: validate.arch_state_count
+    ASSERT: COUNT(REF(data.arch_states)) == 22
+    DESCRIPTION: "All 22 state categories are recorded."
+
+VALIDATE:
+    ID: validate.arch_interface_count
+    ASSERT: COUNT(REF(data.arch_interfaces)) == 14
+    DESCRIPTION: "All 14 interfaces are recorded. check_architecture.py checks that their providers and consumers are catalogued subsystems and that every consumer depends on a provider."
+
+VALIDATE:
+    ID: validate.arch_host_and_flow_count
+    ASSERT: COUNT(REF(data.arch_hosts)) == 2 AND COUNT(REF(data.arch_flows)) == 10
+    DESCRIPTION: "Both device hosts and all ten flows are recorded."
+
+VALIDATE:
+    ID: validate.arch_failure_domain_count
+    ASSERT: COUNT(REF(data.arch_failure_domains)) == 14
+    DESCRIPTION: "All 14 failure domains are recorded."
+
+VALIDATE:
+    ID: validate.arch_remote_contract_count
+    ASSERT: COUNT(REF(data.arch_remote_contracts)) == 11 AND COUNT(REF(data.arch_assigned_remote_requirements)) == 11
+    DESCRIPTION: "One design contract for each of the eleven remote-control requirements assigned to TASK-002."
+
+VALIDATE:
+    ID: validate.arch_decision_count
+    ASSERT: COUNT(REF(data.arch_decisions)) == 12 AND COUNT(REF(data.arch_open_decisions)) == 16
+    DESCRIPTION: "The twelve architecture decisions and the sixteen open portability and platform decisions are recorded."
+
+VALIDATE:
+    ID: validate.arch_assumption_and_gap_count
+    ASSERT: COUNT(REF(data.arch_security_assumptions)) == 8 AND COUNT(REF(data.arch_reuse_observations)) == 4 AND COUNT(REF(data.arch_open_gaps)) == 7
+    DESCRIPTION: "The security assumptions, reuse observations and gaps are recorded."
+
+VALIDATE:
+    ID: validate.arch_review_count
+    ASSERT: COUNT(REF(data.arch_reviews)) == 11
+    DESCRIPTION: "Three findings for T002.VERIFY.01 and eight, A1 to A8, for T002.VERIFY.06."
+
+VERIFY:
+    ID: verify.arch_review_gates
+    ASSERT: [REF(data.arch_rv_imported_content).gate, REF(data.arch_rv_late_replies).gate, REF(data.arch_rv_cleanup).gate, REF(data.arch_rv_a1).gate, REF(data.arch_rv_a2).gate, REF(data.arch_rv_a3).gate, REF(data.arch_rv_a4).gate, REF(data.arch_rv_a5).gate, REF(data.arch_rv_a6).gate, REF(data.arch_rv_a7).gate, REF(data.arch_rv_a8).gate] == ["T002.VERIFY.01", "T002.VERIFY.01", "T002.VERIFY.01", "T002.VERIFY.06", "T002.VERIFY.06", "T002.VERIFY.06", "T002.VERIFY.06", "T002.VERIFY.06", "T002.VERIFY.06", "T002.VERIFY.06", "T002.VERIFY.06"] AND [REF(data.arch_rv_imported_content).topic, REF(data.arch_rv_late_replies).topic, REF(data.arch_rv_cleanup).topic] == ["Imported content", "Late replies", "Cleanup"]
+    DESCRIPTION: "T002.VERIFY.01 covers imported content, late replies and cleanup, and T002.VERIFY.06 covers A1 to A8 in order."
+
+VERIFY:
+    ID: verify.arch_reviews_hold
+    ASSERT: ALL([REF(data.arch_rv_imported_content).result == "holds", REF(data.arch_rv_late_replies).result == "holds", REF(data.arch_rv_cleanup).result == "holds", REF(data.arch_rv_a1).result == "holds", REF(data.arch_rv_a2).result == "holds", REF(data.arch_rv_a3).result == "holds", REF(data.arch_rv_a4).result IN ["holds", "holds_with_open_items"], REF(data.arch_rv_a5).result == "holds", REF(data.arch_rv_a6).result == "holds", REF(data.arch_rv_a7).result == "holds", REF(data.arch_rv_a8).result IN ["holds", "holds_with_open_items"]])
+    DESCRIPTION: "Every boundary holds. Only A4 and A8, whose feasibility belongs to TASK-003, may hold with open items, and a review that found a broken boundary cannot pass."
+
+VERIFY:
+    ID: verify.arch_decisions_accepted_by_task_002
+    ASSERT: ALL([REF(data.arch_ad_01).status == "accepted" AND REF(data.arch_ad_01).task == "TASK-002", REF(data.arch_ad_02).status == "accepted" AND REF(data.arch_ad_02).task == "TASK-002", REF(data.arch_ad_03).status == "accepted" AND REF(data.arch_ad_03).task == "TASK-002", REF(data.arch_ad_04).status == "accepted" AND REF(data.arch_ad_04).task == "TASK-002", REF(data.arch_ad_05).status == "accepted" AND REF(data.arch_ad_05).task == "TASK-002", REF(data.arch_ad_06).status == "accepted" AND REF(data.arch_ad_06).task == "TASK-002", REF(data.arch_ad_07).status == "accepted" AND REF(data.arch_ad_07).task == "TASK-002", REF(data.arch_ad_08).status == "accepted" AND REF(data.arch_ad_08).task == "TASK-002", REF(data.arch_ad_09).status == "accepted" AND REF(data.arch_ad_09).task == "TASK-002", REF(data.arch_ad_10).status == "accepted" AND REF(data.arch_ad_10).task == "TASK-002", REF(data.arch_ad_11).status == "accepted" AND REF(data.arch_ad_11).task == "TASK-002", REF(data.arch_ad_12).status == "accepted" AND REF(data.arch_ad_12).task == "TASK-002"])
+    DESCRIPTION: "Every recorded decision is an accepted TASK-002 decision; anything another task must decide is an open decision instead."
+
+VERIFY:
+    ID: verify.arch_renderer_left_open
+    ASSERT: REF(data.arch_pd_renderer).decide_by == ["TASK-003"]
+    DESCRIPTION: "DESKTOP-RENDERER-01 stays an open decision for the owner at TASK-003; this architecture does not take it (C20)."
+
+VERIFY:
+    ID: verify.arch_remote_scope
+    ASSERT: [REF(data.arch_rc_01).requirement_id, REF(data.arch_rc_03).requirement_id, REF(data.arch_rc_04).requirement_id, REF(data.arch_rc_05).requirement_id, REF(data.arch_rc_08).requirement_id, REF(data.arch_rc_09).requirement_id, REF(data.arch_rc_13).requirement_id, REF(data.arch_rc_19).requirement_id, REF(data.arch_rc_20).requirement_id, REF(data.arch_rc_23).requirement_id, REF(data.arch_rc_25).requirement_id] == REF(data.arch_assigned_remote_requirements)
+    DESCRIPTION: "The contracts cover exactly the assigned requirements, in canonical order: none missing, none invented."
+
+VERIFY:
+    ID: verify.arch_remote_design_only
+    ASSERT: ALL([REF(data.arch_rc_01).status == REF(data.arch_remote_status), REF(data.arch_rc_03).status == REF(data.arch_remote_status), REF(data.arch_rc_04).status == REF(data.arch_remote_status), REF(data.arch_rc_05).status == REF(data.arch_remote_status), REF(data.arch_rc_08).status == REF(data.arch_remote_status), REF(data.arch_rc_09).status == REF(data.arch_remote_status), REF(data.arch_rc_13).status == REF(data.arch_remote_status), REF(data.arch_rc_19).status == REF(data.arch_remote_status), REF(data.arch_rc_20).status == REF(data.arch_remote_status), REF(data.arch_rc_23).status == REF(data.arch_remote_status), REF(data.arch_rc_25).status == REF(data.arch_remote_status)])
+    DESCRIPTION: "Every contract states that TASK-002 closed its design only, so no contract can claim implementation or a runtime test (remote_evidence_scope of TASK-002)."
+
+VERIFY:
+    ID: verify.arch_android_host_standalone
+    ASSERT: COUNT(REF(data.arch_host_android).runs) == COUNT(REF(data.arch_host_desktop).runs) AND ALL(["SS-WORKSPACES" IN REF(data.arch_host_android).runs, "SS-STATE" IN REF(data.arch_host_android).runs, "SS-LCL" IN REF(data.arch_host_android).runs, "SS-AGENT" IN REF(data.arch_host_android).runs, "SS-TOOLS" IN REF(data.arch_host_android).runs, "SS-SECURITY" IN REF(data.arch_host_android).runs, "SS-PROVIDERS" IN REF(data.arch_host_android).runs, "SS-PLATFORM-ANDROID" IN REF(data.arch_host_android).runs])
+    DESCRIPTION: "A1, A2, A4: the Android host composes as many subsystems as the Desktop host, including everything local authoring, LCL validation and a phone-hosted agent need. That the two lists differ only in their platform adapters is checked by check_architecture.py."
+
+VERIFY:
+    ID: verify.arch_state_owners
+    ASSERT: ALL([REF(data.arch_state_content).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_workspace).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_view).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_session).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_task).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_history).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_journal).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_lcl_revision).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_import).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_handoff).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_authority).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_audit).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_device_trust).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_secrets).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_account).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_settings).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_remote_request).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_sync).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_provider_catalog).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_context).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_remote_snapshot).owner IN REF(data.arch_subsystem_ids), REF(data.arch_state_manuals).owner IN REF(data.arch_subsystem_ids)])
+    DESCRIPTION: "Every state category is owned by a catalogued subsystem. That each owner lists the category in owns_state, and nothing else does, is checked by check_architecture.py."
+
+VERIFY:
+    ID: verify.arch_authority_never_synced
+    ASSERT: ALL([REF(data.arch_state_secrets).sync_policy == "never", REF(data.arch_state_authority).sync_policy == "never", REF(data.arch_state_device_trust).sync_policy == "never", REF(data.arch_state_session).sync_policy == "never", REF(data.arch_state_task).sync_policy == "never", REF(data.arch_state_journal).sync_policy == "never", REF(data.arch_state_lcl_revision).sync_policy == "never", REF(data.arch_state_handoff).sync_policy == "never", REF(data.arch_state_remote_request).sync_policy == "never", REF(data.arch_state_account).sync_policy == "never"])
+    DESCRIPTION: "Secrets, grants and approvals, device trust, session bindings, task status, the operation journal, LCL adoption, handoff records, remote requests and account state never synchronize: sync moves content, never authority (C22, A6, RC-17)."
+
+VERIFY:
+    ID: verify.arch_subsystem_ids
+    ASSERT: REF(data.arch_subsystem_ids) == [REF(data.arch_ss_desktop_client).subsystem_id, REF(data.arch_ss_android_client).subsystem_id, REF(data.arch_ss_local_host).subsystem_id, REF(data.arch_ss_domain_protocol).subsystem_id, REF(data.arch_ss_state).subsystem_id, REF(data.arch_ss_workspaces).subsystem_id, REF(data.arch_ss_security).subsystem_id, REF(data.arch_ss_tools).subsystem_id, REF(data.arch_ss_agent).subsystem_id, REF(data.arch_ss_context).subsystem_id, REF(data.arch_ss_tasking).subsystem_id, REF(data.arch_ss_providers).subsystem_id, REF(data.arch_ss_lcl).subsystem_id, REF(data.arch_ss_accounts).subsystem_id, REF(data.arch_ss_settings).subsystem_id, REF(data.arch_ss_remote).subsystem_id, REF(data.arch_ss_sync).subsystem_id, REF(data.arch_ss_help).subsystem_id, REF(data.arch_ss_updates).subsystem_id, REF(data.arch_ss_ide).subsystem_id, REF(data.arch_ss_platform_desktop).subsystem_id, REF(data.arch_ss_platform_android).subsystem_id, REF(data.arch_ss_assets).subsystem_id, REF(data.arch_ss_build_release).subsystem_id]
+    DESCRIPTION: "The identifier list names every catalogued subsystem, in catalogue order, so other parts can refer to subsystems by identifier."
+
+VERIFY:
+    ID: verify.arch_receiver_uses_no_model
+    ASSERT: NOT ("SS-PROVIDERS" IN REF(data.arch_ss_remote).depends_on)
+    DESCRIPTION: "RC-08: the remote subsystem, which hosts the receiver, does not depend directly on the provider subsystem, so listening, admission and reconnection have no path to a model. A model is called only when an admitted request runs an agent session, through SS-AGENT, which is task work rather than idle availability."
+
+VERIFY:
+    ID: verify.arch_record_delivery
+    ASSERT: REF(output.arch_record) == REF(data.arch_record)
+    DESCRIPTION: "The architecture record was returned unchanged."

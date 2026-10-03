@@ -1,0 +1,64 @@
+TASK-002 final verification, run after cleanup against the frozen worktree.
+Date: 2026-10-03T19:21:54+02:00
+HEAD: 284f97a02d3ad9288f3701860e608b366b10979f on main; origin: https://github.com/aivars11232/Nexees.git
+Snapshot before: 0756d8cf5a8138a81fe1926dcef2aa32f3846fdc978770df3c3be70ae2dd051b
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+architecture.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+architecture.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/architecture/architecture.lcl.txt
+status.succeeded
+  VERIFY verify.arch_review_gates = TRUE (required)
+  VERIFY verify.arch_reviews_hold = TRUE (required)
+  VERIFY verify.arch_decisions_accepted_by_task_002 = TRUE (required)
+  VERIFY verify.arch_renderer_left_open = TRUE (required)
+  VERIFY verify.arch_remote_scope = TRUE (required)
+  VERIFY verify.arch_remote_design_only = TRUE (required)
+  VERIFY verify.arch_android_host_standalone = TRUE (required)
+  VERIFY verify.arch_state_owners = TRUE (required)
+  VERIFY verify.arch_authority_never_synced = TRUE (required)
+  VERIFY verify.arch_subsystem_ids = TRUE (required)
+  VERIFY verify.arch_receiver_uses_no_model = TRUE (required)
+  VERIFY verify.arch_record_delivery = TRUE (required)
+  SUCCESS success.arch_record ALL = TRUE
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+ALL CHECKS PASSED
+exit code: 0
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through static_checking.
+exit code: 0
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through preflight.
+exit code: 0
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+status.succeeded
+exit code: 0
+
+Pack on disk: manifest 8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4; files newer than its manifest: 0
+
+Changes against HEAD:
+   FILE_TREE.txt | 64 +++++++++++++++++++++++++++++++++++++++++++++--------------
+   README.md     | 20 +++++++++++++++++--
+   2 files changed, 67 insertions(+), 17 deletions(-)
+  staged: 0; deleted: 0; untracked files: 25
+  untracked files outside docs/architecture and docs/evidence/TASK-002: 0
+  tracked files modified: FILE_TREE.txt README.md 
+
+Marker lines: 278 tracked files still carry one (unchanged from TASK-001).
+PNG files unchanged against HEAD: yes
+Temporary files in the checkout (__pycache__, *.pyc, *.tmp, *.log, *.swp): 0
+FILE_TREE.txt equals the actual tree plus the six receipt files written after this run: True
+Relative links in TASK-002_EVIDENCE.md: 12; unresolved outside receipt/: []
+
+Snapshot after:  0756d8cf5a8138a81fe1926dcef2aa32f3846fdc978770df3c3be70ae2dd051b
+Snapshot unchanged by the verification: yes

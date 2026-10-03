@@ -1,0 +1,366 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.arch_state
+    NAME: "Data ownership and authoritative state"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "Which state exists, which single subsystem writes it, where its authoritative copy lives, what other copies may exist and whether it may travel to another device. Every category has exactly one owner; the owner's subsystem record lists it in owns_state. Derived state is rebuilt from authoritative state and is never an input to authority."
+
+DATA:
+    ID: data.arch_state_content
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-CONTENT"
+        name: "Workspace content"
+        content: "The source files, LCL specification files and other files of a workspace replica, with their content revisions."
+        owner: "SS-WORKSPACES"
+        store: "The device-local replica under that device's authorized root, written only through workspace scope, atomic writes and the revision service, whoever the writer is: the user's editor, an agent tool, sync or import publication."
+        authority_class: "authoritative"
+        copies: "Another device's replica of a selected workspace is an independent replica reconciled by sync. Remote-only listings and unsaved editor buffers are views, not content."
+        sync_policy: "selected_content"
+        sensitivity: "private"
+        notes: "Each replica is authoritative for edits made on its device; concurrent edits become a sync conflict, never a silent replacement (A6). Unsaved buffers are protected from incoming changes (A3)."
+        schema_tasks: ["TASK-006", "TASK-013", "TASK-069"]
+
+DATA:
+    ID: data.arch_state_workspace
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-WORKSPACE"
+        name: "Workspace registry and root mapping"
+        content: "Workspace ID, type, name, the device-local root, content availability (phone-local, remote-only or synchronized copy) and attached sessions."
+        owner: "SS-WORKSPACES"
+        store: "Each device's state store."
+        authority_class: "authoritative"
+        copies: "A shared logical workspace ID, type and name are known to every participating device; each device maps that ID to its own root."
+        sync_policy: "portable_record"
+        sensitivity: "private"
+        notes: "The device-local root never travels, and a PC absolute path is never an Android path (B18)."
+        schema_tasks: ["TASK-006", "TASK-008", "TASK-013"]
+
+DATA:
+    ID: data.arch_state_view
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-VIEW"
+        name: "UI view state"
+        content: "Per UI client: the foreground workspace and, per workspace, tree expansion, open tabs, active editor, cursor and scroll, panels, the selected right panel and terminal sessions."
+        owner: "SS-WORKSPACES"
+        store: "The device's state store, keyed by UI client and workspace and written only on behalf of that client."
+        authority_class: "authoritative"
+        copies: "None. Another device's focus is never applied implicitly; a view transfer happens only on the user's explicit request (A6)."
+        sync_policy: "never"
+        sensitivity: "ordinary"
+        notes: "Authoritative for presentation only. It is never an input to authorization, agent binding, command targeting, import destination or model switching (C2, R11, RC-20)."
+        schema_tasks: ["TASK-012", "TASK-016"]
+
+DATA:
+    ID: data.arch_state_session
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-SESSION"
+        name: "Agent session and binding"
+        content: "Session ID, bound workspace, execution device, checkout or working-tree revision, approved LCL revision, provider and model, generation, autonomy policy and the session's effective orientation setting."
+        owner: "SS-AGENT"
+        store: "The execution host's state store."
+        authority_class: "authoritative"
+        copies: "Other devices show last-observed snapshots (ST-REMOTE-SNAPSHOT)."
+        sync_policy: "never"
+        sensitivity: "security_critical"
+        notes: "One authoritative execution owner per workspace checkout and revision. Ownership moves only by an acknowledged checkpoint handoff, never because a device is unreachable (A7, B17, C21)."
+        schema_tasks: ["TASK-006", "TASK-015", "TASK-034", "TASK-044"]
+
+DATA:
+    ID: data.arch_state_task
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-TASK"
+        name: "Task progression"
+        content: "Objective, task graph, current task, status, dependencies, current blocker, assigned session and required read order."
+        owner: "SS-TASKING"
+        store: "The execution host's state store."
+        authority_class: "authoritative"
+        copies: "Task definitions may live in workspace content, for example as LCL tasks; other devices see status as snapshots."
+        sync_policy: "never"
+        sensitivity: "private"
+        notes: "Only the verification gate on the execution host marks a task complete (B9, C11). Definitions travel as workspace content; status and completion never merge from another device."
+        schema_tasks: ["TASK-006", "TASK-036", "TASK-053", "TASK-054"]
+
+DATA:
+    ID: data.arch_state_history
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-HISTORY"
+        name: "Evidence, decisions and history"
+        content: "Decisions, evidence, verification runs, logs, and readability, cleanup and manual-impact records, each tied to the input revisions and environment it was produced under."
+        owner: "SS-STATE"
+        store: "The producing host's state store, append-only."
+        authority_class: "authoritative"
+        copies: "Portable decisions and evidence may be copied to another device as records."
+        sync_policy: "portable_record"
+        sensitivity: "private"
+        notes: "A copied record never changes a task's completion on the receiving device, and changed inputs invalidate incompatible evidence (A6, B20)."
+        schema_tasks: ["TASK-006", "TASK-037"]
+
+DATA:
+    ID: data.arch_state_journal
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-JOURNAL"
+        name: "Operation journal and checkpoints"
+        content: "Started effects with their known outcomes, unknown outcomes awaiting reconciliation, and session checkpoints."
+        owner: "SS-STATE"
+        store: "The execution host's state store."
+        authority_class: "authoritative"
+        copies: "None."
+        sync_policy: "never"
+        sensitivity: "security_critical"
+        notes: "Live processes, terminal handles, provider secrets and hidden provider context are never checkpoint data (A7)."
+        schema_tasks: ["TASK-008", "TASK-026", "TASK-038"]
+
+DATA:
+    ID: data.arch_state_lcl_revision
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-LCL-REVISION"
+        name: "LCL revisions and adoption"
+        content: "Draft, validated and adopted revisions of a workspace's LCL specification, their validation results, and which adopted revision each session executes."
+        owner: "SS-LCL"
+        store: "The specification text is workspace content (ST-CONTENT); revision status and adoption records are in the execution host's state store."
+        authority_class: "authoritative"
+        copies: "Synced, imported or edited specification text becomes a new draft revision on the receiving device."
+        sync_policy: "never"
+        sensitivity: "security_critical"
+        notes: "Validation status and adoption never travel. Only a validated revision explicitly adopted at a safe boundary constrains a session; a draft never does (C22, B7)."
+        schema_tasks: ["TASK-006", "TASK-049", "TASK-050"]
+
+DATA:
+    ID: data.arch_state_import
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-IMPORT"
+        name: "Import transactions"
+        content: "Target device, workspace and base revision, staged content hashes, the source-to-destination mapping, the preview and the user's decisions (B22)."
+        owner: "SS-LCL"
+        store: "The target host's state store, with the staged files in app-private staging."
+        authority_class: "authoritative"
+        copies: "None."
+        sync_policy: "never"
+        sensitivity: "private"
+        notes: "Staged content is untrusted and inactive; cancellation or failure removes only task-owned staging (I4)."
+        schema_tasks: ["TASK-006", "TASK-051", "TASK-052"]
+
+DATA:
+    ID: data.arch_state_handoff
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-HANDOFF"
+        name: "Model handoff records"
+        content: "Handoff ID, session, generation, checkpoint revision, specification revision, orientation state, required reads and observed read receipts."
+        owner: "SS-PROVIDERS"
+        store: "The execution host's state store."
+        authority_class: "authoritative"
+        copies: "None."
+        sync_policy: "never"
+        sensitivity: "security_critical"
+        notes: "Orientation completes only with runtime-observed reads and current bindings, and a reply from an old generation cannot change state (B23)."
+        schema_tasks: ["TASK-006", "TASK-044", "TASK-045"]
+
+DATA:
+    ID: data.arch_state_authority
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-AUTHORITY"
+        name: "Grants and approvals"
+        content: "Permission grants, approvals and directional remote-control grants, each with principal, action, target, revision, permission epoch and expiry."
+        owner: "SS-SECURITY"
+        store: "The deciding host's state store, integrity-checked."
+        authority_class: "authoritative"
+        copies: "A sender may display a grant it was told about; that display authorizes nothing (RC-10)."
+        sync_policy: "never"
+        sensitivity: "security_critical"
+        notes: "Granted per device, per direction and per capability on the destination; revocation takes effect there immediately (RC-03, RC-07)."
+        schema_tasks: ["TASK-006", "TASK-022", "TASK-055"]
+
+DATA:
+    ID: data.arch_state_audit
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-AUDIT"
+        name: "Audit log"
+        content: "Decisions, effects, remote requests with their normalized targets, policy revisions, outcomes and revocations."
+        owner: "SS-SECURITY"
+        store: "Each device's state store, append-only and redacted."
+        authority_class: "authoritative"
+        copies: "Another device may display it as a snapshot."
+        sync_policy: "view_only"
+        sensitivity: "private"
+        notes: "No secrets and no unnecessary private content (RC-22)."
+        schema_tasks: ["TASK-026"]
+
+DATA:
+    ID: data.arch_state_device_trust
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-DEVICE-TRUST"
+        name: "Paired devices and trust"
+        content: "Peer device identities and users, trust state, protocol versions, pairing history and revocation."
+        owner: "SS-REMOTE"
+        store: "Each device's state store; private keys are in the credential store (ST-SECRETS)."
+        authority_class: "authoritative"
+        copies: "None."
+        sync_policy: "never"
+        sensitivity: "security_critical"
+        notes: "Pairing establishes identity only. Authority comes from grants (ST-AUTHORITY)."
+        schema_tasks: ["TASK-006", "TASK-060", "TASK-070"]
+
+DATA:
+    ID: data.arch_state_secrets
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-SECRETS"
+        name: "Secrets"
+        content: "Provider credentials, account session tokens, MFA recovery material and private device keys."
+        owner: "SS-SECURITY"
+        store: "The platform credential store of each device, through the platform credential-store adapters."
+        authority_class: "authoritative"
+        copies: "None."
+        sync_policy: "never"
+        sensitivity: "secret"
+        notes: "Never in ordinary state, prompts, logs, sync, test fixtures or Git; rotation and revocation are supported (R17, security_baseline)."
+        schema_tasks: ["TASK-025"]
+
+DATA:
+    ID: data.arch_state_account
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-ACCOUNT"
+        name: "Account and local access"
+        content: "Account identity and MFA enrolment held by the auth backend; the device's account session and local-unlock state."
+        owner: "SS-ACCOUNTS"
+        store: "Identity at the external auth backend; session and unlock state on the device, with their secrets in ST-SECRETS."
+        authority_class: "authoritative"
+        copies: "None."
+        sync_policy: "never"
+        sensitivity: "security_critical"
+        notes: "Account login is not device pairing, remote authority or provider access (auth_and_settings v0.2)."
+        schema_tasks: ["TASK-027", "TASK-028", "TASK-029"]
+
+DATA:
+    ID: data.arch_state_settings
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-SETTINGS"
+        name: "Settings"
+        content: "User settings and Developer Settings, including receiving, start-at-login, keep-running-after-close, the orientation default and the application allowlist."
+        owner: "SS-SETTINGS"
+        store: "Each device's state store."
+        authority_class: "authoritative"
+        copies: "Portable, non-secret preferences may be copied to another device by the user's explicit choice."
+        sync_policy: "explicit_preference"
+        sensitivity: "security_critical"
+        notes: "Receiving, startup, allowlist and other security-relevant settings stay on their device and are never copied; updates preserve them (RC-02, RC-24)."
+        schema_tasks: ["TASK-030"]
+
+DATA:
+    ID: data.arch_state_remote_request
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-REMOTE-REQUEST"
+        name: "Remote request records"
+        content: "Request IDs with their state (received, admitted, denied, running, completed, needs-user-action, expired or outcome-unknown), the destination's deduplication ledger and the sender's pending records."
+        owner: "SS-REMOTE"
+        store: "The destination host's state store is authoritative; the sender keeps its pending record."
+        authority_class: "authoritative"
+        copies: "The sender's pending record, until it is reconciled by request ID."
+        sync_policy: "never"
+        sensitivity: "security_critical"
+        notes: "A lost acknowledgment means outcome unknown until reconciled; a request is never replayed from a sync queue (RC-17)."
+        schema_tasks: ["TASK-007", "TASK-008", "TASK-070"]
+
+DATA:
+    ID: data.arch_state_sync
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-SYNC"
+        name: "Synchronization metadata"
+        content: "Per replica: the outbox, base revisions and content hashes, tombstones, conflict records with both versions, and the transfer journal."
+        owner: "SS-SYNC"
+        store: "Each device's state store."
+        authority_class: "authoritative"
+        copies: "None."
+        sync_policy: "never"
+        sensitivity: "private"
+        notes: "Conflicts persist until the user decides them (A6)."
+        schema_tasks: ["TASK-007", "TASK-008", "TASK-069"]
+
+DATA:
+    ID: data.arch_state_provider_catalog
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-PROVIDER-CATALOG"
+        name: "Provider and capability observations"
+        content: "Configured providers, their reachability and authentication state, models and capabilities, and the host's toolchain capabilities."
+        owner: "SS-PROVIDERS"
+        store: "Each execution host's state store."
+        authority_class: "derived"
+        copies: "None; each host observes its own."
+        sync_policy: "never"
+        sensitivity: "private"
+        notes: "A model listed on one device is not available on another merely by name (provider_and_agent_model v0.2)."
+        schema_tasks: ["TASK-041"]
+
+DATA:
+    ID: data.arch_state_context
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-CONTEXT"
+        name: "Model context and provider conversation"
+        content: "The context assembled for a model call, and any conversation history a provider keeps."
+        owner: "SS-CONTEXT"
+        store: "Not stored as authority; rebuilt from authoritative state for every call."
+        authority_class: "derived"
+        copies: "The provider's own conversation history, which Nexees never relies on."
+        sync_policy: "never"
+        sensitivity: "private"
+        notes: "No project-critical state may exist only here (R14)."
+        schema_tasks: ["TASK-040"]
+
+DATA:
+    ID: data.arch_state_remote_snapshot
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-REMOTE-SNAPSHOT"
+        name: "Remote status snapshots"
+        content: "Last-observed status of another host's sessions, tasks, logs and workspaces."
+        owner: "SS-REMOTE"
+        store: "The observing device's state store, labelled with its source and observation time."
+        authority_class: "derived"
+        copies: "The source host holds the authoritative state."
+        sync_policy: "view_only"
+        sensitivity: "private"
+        notes: "Shown as live only while the session confirms it, otherwise as last observed (A3, RC-22)."
+        schema_tasks: ["TASK-007", "TASK-064"]
+
+DATA:
+    ID: data.arch_state_manuals
+    TYPE: OBJECT[REF(type.arch_state)]
+    VALUE:
+        state_id: "ST-MANUALS"
+        name: "Manual content"
+        content: "The Nexees User Manual and the LCL in Nexees User Manual with their version metadata."
+        owner: "SS-HELP"
+        store: "Bundled read-only in each release, built from one content source."
+        authority_class: "release_content"
+        copies: "Identical bundles in both clients."
+        sync_policy: "never"
+        sensitivity: "ordinary"
+        notes: "Passive content; opening it changes no state (MAN-04)."
+        schema_tasks: ["TASK-071", "TASK-072"]
+
+DATA:
+    ID: data.arch_states
+    TYPE: LIST[OBJECT[REF(type.arch_state)]]
+    VALUE: [REF(data.arch_state_content), REF(data.arch_state_workspace), REF(data.arch_state_view), REF(data.arch_state_session), REF(data.arch_state_task), REF(data.arch_state_history), REF(data.arch_state_journal), REF(data.arch_state_lcl_revision), REF(data.arch_state_import), REF(data.arch_state_handoff), REF(data.arch_state_authority), REF(data.arch_state_audit), REF(data.arch_state_device_trust), REF(data.arch_state_secrets), REF(data.arch_state_account), REF(data.arch_state_settings), REF(data.arch_state_remote_request), REF(data.arch_state_sync), REF(data.arch_state_provider_catalog), REF(data.arch_state_context), REF(data.arch_state_remote_snapshot), REF(data.arch_state_manuals)]
