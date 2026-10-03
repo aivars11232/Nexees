@@ -1,0 +1,54 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.charter_checks
+    NAME: "Structural checks of the charter record"
+    VERSION: "0.5.0"
+    KIND: kind.part.checks
+    DESCRIPTION: "These checks confirm that the charter record is internally consistent: the expected numbers of clauses, families, owners and tasks. They say nothing about whether any Nexees behaviour exists or works."
+
+VALIDATE:
+    ID: validate.charter_task_count
+    ASSERT: REF(binding.charter_task_count) == 75
+    DESCRIPTION: "The execution model has exactly 75 tasks."
+
+VALIDATE:
+    ID: validate.charter_clause_count
+    ASSERT: COUNT(REF(data.charter_clauses)) == 18
+    DESCRIPTION: "All eighteen charter clauses are present."
+
+VALIDATE:
+    ID: validate.charter_family_count
+    ASSERT: COUNT(REF(data.charter_requirement_families)) == 7
+    DESCRIPTION: "All seven acceptance families are recorded: import, handoff, manuals, readability, Android, remote requirements and remote scenarios."
+
+VALIDATE:
+    ID: validate.charter_remote_requirement_owners
+    ASSERT: COUNT(REF(data.charter_remote_requirement_owners)) == 26
+    DESCRIPTION: "Each of RC-01 to RC-26 has an owner line."
+
+VALIDATE:
+    ID: validate.charter_remote_scenario_owners
+    ASSERT: COUNT(REF(data.charter_remote_scenario_owners)) == 18
+    DESCRIPTION: "Each of RC-T01 to RC-T18 has an owner line."
+
+VALIDATE:
+    ID: validate.charter_phase_lists_align
+    ASSERT: COUNT(REF(data.charter_execution_phases)) == COUNT(REF(data.charter_phase_task_counts))
+    DESCRIPTION: "Every phase has a task count."
+
+VALIDATE:
+    ID: validate.charter_open_item_count
+    ASSERT: COUNT(REF(data.charter_open_items)) == 4
+    DESCRIPTION: "The renderer decision, the deferred amendment, the logo binding issue and the marker convention are all recorded."
+
+VERIFY:
+    ID: verify.charter_phase_total
+    ASSERT: SUM(REF(data.charter_phase_task_counts)) == REF(binding.charter_task_count)
+    DESCRIPTION: "The phases together contain exactly the 75 tasks. Declared as VERIFY because the engine does not evaluate SUM inside a VALIDATE (LCL manual 9.1)."
+
+VERIFY:
+    ID: verify.charter_record_delivery
+    ASSERT: REF(output.charter_record) == REF(data.charter_record)
+    DESCRIPTION: "The charter record was returned unchanged."

@@ -1,0 +1,58 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.charter_record
+    NAME: "Charter record delivery"
+    VERSION: "0.5.0"
+    KIND: kind.part.task
+    DESCRIPTION: "Returns one record that identifies the frozen requirement baseline. A pure core.return task: it reads nothing outside this project and changes nothing."
+
+DATA:
+    ID: data.charter_record
+    TYPE: OBJECT
+    VALUE:
+        record_kind: "nexees_frozen_charter"
+        frozen_by: "TASK-001"
+        specification_pack: REF(binding.charter_pack_name)
+        pack_archive_revision: REF(binding.charter_pack_archive_revision)
+        pack_specification_version: REF(binding.charter_pack_specification_version)
+        pack_content_identity: REF(binding.charter_pack_content_identity)
+        pack_manifest_sha256: REF(binding.charter_pack_manifest_sha256)
+        language_core: REF(binding.charter_language_core)
+        repository: REF(binding.charter_repository)
+        baseline_commit: REF(binding.charter_baseline_commit)
+        task_count: REF(binding.charter_task_count)
+        clause_count: COUNT(REF(data.charter_clauses))
+        requirement_family_count: COUNT(REF(data.charter_requirement_families))
+        open_item_ids: ["DESKTOP-RENDERER-01", "AMEND-075-01", "BIND-B1-LOGO", "CONV-MARKER-01"]
+        precedence: REF(data.charter_precedence)
+        limits: "This record identifies the frozen requirement baseline and passes structural checks only. It is not evidence that any Nexees feature exists or works, and it closes no task."
+
+OUTPUT:
+    ID: output.charter_record
+    TYPE: OBJECT
+    FORMAT: format.json
+
+GOAL:
+    ID: goal.charter_record
+    ASSERT: REF(output.charter_record) == REF(data.charter_record)
+    DESCRIPTION: "Deliver the charter record unchanged. This goal does not claim that any requirement is implemented."
+
+ACTION:
+    ID: action.return_charter_record
+    OPERATION: core.return
+    TARGET: REF(data.charter_record)
+    OUTPUT: REF(output.charter_record)
+
+SUCCESS:
+    ID: success.charter_record
+    ALL: [REF(verify.charter_phase_total), REF(verify.charter_record_delivery)]
+
+TASK:
+    ID: task.charter_record
+    GOAL: REF(goal.charter_record)
+    ACTION: REF(action.return_charter_record)
+    OUTPUT: REF(output.charter_record)
+    SUCCESS: REF(success.charter_record)
+    DESCRIPTION: "Return the charter record and run its structural checks."

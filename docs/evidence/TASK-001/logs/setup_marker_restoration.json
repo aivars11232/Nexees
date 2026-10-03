@@ -1,0 +1,1709 @@
+{
+ "summary": {
+  "baseline_commit": "0d6d3e5ee422182a38b793756e001ddd75df507f",
+  "restored": 281,
+  "skipped_changed_again": [],
+  "left_alone_not_marker_only": [],
+  "head_before": "0d6d3e5ee422182a38b793756e001ddd75df507f",
+  "head_after": "0d6d3e5ee422182a38b793756e001ddd75df507f",
+  "index_identity_before": "43aaf5680b313678ac525e4dc18875429a1176a743c335b2bb508e1362956d87",
+  "index_identity_after": "43aaf5680b313678ac525e4dc18875429a1176a743c335b2bb508e1362956d87",
+  "untouched_files": [
+   "assets/branding/reference/nexees-logo-approved-chat.png",
+   "assets/design/desktop/approved-compact-layout.png",
+   "assets/design/desktop/sidebar-controls-reference.png"
+  ],
+  "untouched_files_unchanged": true,
+  "modified_after": [],
+  "staged_after": [],
+  "files_with_marker_after": 281
+ },
+ "paths": [
+  {
+   "path": ".directory",
+   "local_before": "d6be2c25f72ea7dea0812eb1b3f4e3ad3afca1638aab7df20b21ddb31b7fdca5",
+   "restored": "e7a6659f8ccf314a512259e5bf555aebc0031e770d14b9d0289efd05d0dc56d1",
+   "matches_commit": true
+  },
+  {
+   "path": ".editorconfig",
+   "local_before": "feaf8718d174c26813f44e8340ddf13cd2ea12d8344eae931dff745199624601",
+   "restored": "047a25606f453a9bfb7592fa2cb09267d74367da62050dcae4622891c91e7274",
+   "matches_commit": true
+  },
+  {
+   "path": ".gitattributes",
+   "local_before": "8da2c437a82fe79eedfe13566435745ddc59644d0ec5c2af0af35ecfd1ef1f19",
+   "restored": "14411fedd5d3dc7ac8c682ff66036ff701a6045566a8c3c35abf75130ea4d86b",
+   "matches_commit": true
+  },
+  {
+   "path": ".gitignore",
+   "local_before": "a8f67bf6911c8a794aa616a39c60459a0974a35239c37df7e70e37609f78aa1d",
+   "restored": "6bee57307bf042038229385180ea68fdd1240f11dbecd4972e3ec8da3e5d3e08",
+   "matches_commit": true
+  },
+  {
+   "path": "FILE_TREE.txt",
+   "local_before": "491368bdc77a120698e3db52cbc4561c228e89cd29b34accdcb6dda230dde9b1",
+   "restored": "78a654bcf3ba489c6d3aa3e624b6b6e152de5cf1bebad420e91776de90f0e2cb",
+   "matches_commit": true
+  },
+  {
+   "path": "LICENSE_STATUS.md",
+   "local_before": "cecf433532f2c31ef2272f925da39885125507342dde5920af3ee207546f973e",
+   "restored": "f8c9121f8b4e601b49f07ff196f268f340b0bce949a317fb62f0a2330f61f202",
+   "matches_commit": true
+  },
+  {
+   "path": "README.md",
+   "local_before": "1afdf33e8deca304fba53bdb30d644ed26df1388e0d2ba9285453b834f9679be",
+   "restored": "11c918142e9d2cfc4ad79cbb755344557d7dfcbf1d4b779e768f5715b5ce6704",
+   "matches_commit": true
+  },
+  {
+   "path": "SECURITY.md",
+   "local_before": "14c975348f2a9f7d89aac9084d2f1dd5bc575161ca8a134a74062cc51e727712",
+   "restored": "48e1018ce97c08cefdb64199f7d3e2d56f2b9c4a32ffe9aa4730705be136e721",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/resources/application_metadata.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/application_host.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/main.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/agent_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/chat_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/devices_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/git_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/help_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/import_preview.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/logs_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/problems_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/task_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/panels/terminal_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/settings/account_view.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/settings/developer_settings_view.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/settings/model_selector.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/settings/security_approvals.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/settings/settings_view.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/shell/lifecycle_binding.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/shell/main_screen.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/shell/panel_navigation.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/shell/responsive_layout.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/workspaces/editor_tabs.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/workspaces/file_tree.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/workspaces/lcl_workspace.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/workspaces/workspace_switcher.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/android/src/workspaces/workspace_view.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/resources/application_metadata.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/application_host.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/main.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/agent_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/chat_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/devices_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/extensions_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/git_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/help_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/import_preview.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/logs_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/problems_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/task_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/panels/terminal_panel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/settings/account_view.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/settings/developer_settings_view.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/settings/model_selector.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/settings/security_approvals.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/settings/settings_view.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/shell/activity_bar.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/shell/main_window.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/shell/panel_controls.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/shell/panel_layout.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/shell/status_bar.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/shell/title_bar.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/workspaces/editor_tabs.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/workspaces/file_tree.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/workspaces/lcl_workspace.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/workspaces/workspace_switcher.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "apps/desktop/src/workspaces/workspace_view.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "assets/branding/derived/.gitkeep",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "49021cf9dbe016e9cd8b0651160a1a1d4bc39b5e33dad797b5298a83d5074a46",
+   "matches_commit": true
+  },
+  {
+   "path": "assets/branding/source/.gitkeep",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "49021cf9dbe016e9cd8b0651160a1a1d4bc39b5e33dad797b5298a83d5074a46",
+   "matches_commit": true
+  },
+  {
+   "path": "assets/strings/english.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "assets/theme/design_tokens.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "assets/theme/icon_mapping.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "config/application_defaults.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "config/local-paths.example.json",
+   "local_before": "761030998fb15a780bf3c9cf4007b153264c52e740105ca7270952e6b510912d",
+   "restored": "d832cf912ce2fc273880bc4e5db6df747937baf9d7bd1b535caad4477b0d7e40",
+   "matches_commit": true
+  },
+  {
+   "path": "config/provider_profiles.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "config/security_defaults.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "config/sync_defaults.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/accounts/account_recovery.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/accounts/account_service.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/accounts/account_session.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/accounts/mfa_service.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/accounts/offline_access.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/agent/action_loop.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/agent/agent_runtime.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/agent/execution_fence.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/agent/session_control.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/context/context_budget.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/context/context_builder.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/context/mandatory_reads.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/context/repository_map.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/domain/errors.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/domain/events.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/domain/model_capabilities.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/domain/session.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/domain/task.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/domain/workspace.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/help/help_navigation.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/help/manual_catalog.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/help/manual_search.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/diagnostic_model.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/execution_binding.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/importing/archive_intake.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/importing/import_preview.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/importing/import_transaction.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/importing/safe_extraction.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/importing/structure_resolver.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/lcl_service.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/modes/mode_conversion.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/modes/specification_modes.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/lcl/specification_revision.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/protocol/messages.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/protocol/serialization.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/protocol/version_negotiation.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/providers/handoff/continuation_snapshot.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/providers/handoff/model_switch.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/providers/handoff/orientation_controller.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/providers/handoff/orientation_prompt.txt",
+   "local_before": "805177bf415210178d095212fcbdfcbbb217850e69a5c4c81fcf4ebd53b93d7c",
+   "restored": "ecc4ce8daba77bf80fe9241b794cfdf74854b870bdf9816d47b83e1bc2115ae9",
+   "matches_commit": true
+  },
+  {
+   "path": "core/providers/model_catalog.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/providers/provider_interface.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/providers/provider_registry.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/providers/usage_limits.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/remote/command_dispatch.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/remote/device_registry.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/remote/notifications.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/remote/pairing.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/remote/remote_sessions.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/security/approval_grants.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/security/audit_log.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/security/authority_policy.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/security/extension_policy.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/security/network_policy.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/security/permission_engine.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/security/secret_redaction.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/security/workspace_scope.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/settings/developer_settings.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/settings/settings_model.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/settings/settings_store.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/state/checkpoints.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/state/migrations/migration_registry.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/state/operation_journal.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/state/recovery.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/state/state_store.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/sync/change_tracking.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/sync/conflict_resolution.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/sync/portable_paths.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/sync/sync_coordinator.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/sync/transfer_journal.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tasking/cleanup_gate.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tasking/stop_conditions.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tasking/task_graph.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tasking/task_scheduler.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tasking/verification_gate.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tools/command_tools.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tools/file_tools.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tools/git_tools.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tools/tool_dispatch.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tools/tool_registry.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/tools/verification_tools.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/updates/migration_guard.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/updates/package_verification.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/updates/update_service.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/workspaces/file_tree_model.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/workspaces/view_state.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/workspaces/workspace_binding.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/workspaces/workspace_registry.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "core/workspaces/workspace_revision.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "docs/manuals/LCL_IN_NEXEES_USER_MANUAL.md",
+   "local_before": "26c7ac26610c1964bf42e406082005a2bbfe8750628b3431cdafd745f37343f4",
+   "restored": "aba0ad21209398a27c45455cee44e28365f32c8833732192b62fea1b9e0e3344",
+   "matches_commit": true
+  },
+  {
+   "path": "docs/manuals/NEXEES_USER_MANUAL.md",
+   "local_before": "7ebca586de4ca43bca5b51b38ddadc0ec8ff59a3d8b698d35c17633cf5fdfc66",
+   "restored": "49e14ea8476deb2c010f89e8a989379173d32ff73587694c984ce175ff9b5d15",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/agents/external_agent_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/auth/account_provider_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/auth/github_login_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/auth/mfa_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/code_index/syntax_index_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/git/git_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/ide/debugger_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/ide/editor_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/ide/extension_host_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/ide/extension_registry_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/ide/language_server_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/ide/search_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/ide/terminal_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/lcl/compatibility_check.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/lcl/core_bridge.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/lcl/template_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/lcl/workspace_extension.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/providers/anthropic/provider_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/providers/deepseek/provider_profile.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/providers/google/provider_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/providers/ollama/provider_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/providers/openai-compatible/provider_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "integrations/providers/openai/provider_adapter.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "packaging/android/package_definition.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "packaging/desktop/package_definition.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "packaging/updates/release_manifest.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "packaging/updates/signing_configuration.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/execution/local_tool_host.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/execution/runtime_capabilities.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/lifecycle/background_execution.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/lifecycle/lifecycle_recovery.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/lifecycle/notification_backend.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/secrets/credential_store.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/storage/atomic_file_writer.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/storage/document_picker.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/storage/scoped_filesystem.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/transport/secure_channel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/android/transport/transport_discovery.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/execution/process_host.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/execution/sandbox_backend.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/execution/tool_capabilities.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/lifecycle/application_lifecycle.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/lifecycle/notification_backend.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/secrets/credential_store.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/storage/atomic_file_writer.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/storage/file_picker.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/storage/scoped_filesystem.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/transport/secure_channel.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "platform/desktop/transport/transport_discovery.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "scripts/build/build_android.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "scripts/build/build_desktop.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "scripts/build/bundle_manuals.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "scripts/ci/continuous_integration.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "scripts/release/package_release.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "scripts/release/verify_release.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "scripts/test/run_checks.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/conformance/lcl/shared_core_parity.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/conformance/protocol/client_protocol_compatibility.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/android/lifecycle_resume.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/android/offline_lcl.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/android/responsive_workspace.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/android/standalone_no_pc.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/cross-device/independent_workspaces.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/cross-device/reconnect_and_conflicts.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/cross-device/remote_agent_control.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/desktop/autonomous_run.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/desktop/local_application.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/desktop/workspace_switching.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/help/offline_manuals.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/help/search_and_navigation.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/release/clean_install.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/e2e/release/update_recovery.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/fixtures/archives/archive_fixture_factory.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/fixtures/code/sample_project_factory.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/fixtures/lcl/verified_fixture_loader.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/handoff/orientation_disabled.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/handoff/quota_exhaustion_switch.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/handoff/readonly_orientation.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/handoff/stale_state.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/lcl-import/archive_structure.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/lcl-import/atomic_import.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/lcl-import/single_file_import.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/lcl-import/spec_revision_adoption.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/sync/concurrent_edits.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/sync/interrupted_transfer.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/sync/two_way_sync.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/workspaces/foreground_background_isolation.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/integration/workspaces/view_state_restore.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/archives/ambiguous_paths.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/archives/archive_limits.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/archives/path_escape.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/credentials/credential_storage.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/credentials/secret_redaction.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/permissions/extension_authority.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/permissions/project_confinement.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/permissions/untrusted_instructions.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/remote/explicit_target_binding.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/remote/pairing_revocation.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/security/remote/stale_approval_rejection.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/agent_runtime.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/approval_grants.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/context_budget.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/import_structure.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/lcl_modes.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/manual_search.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/model_orientation.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/permission_engine.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/provider_registry.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/settings.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/state_recovery.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/sync_conflicts.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/task_graph.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/tool_dispatch.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/view_state.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  },
+  {
+   "path": "tests/unit/workspace_binding.test.source",
+   "local_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "restored": "12969733759471e508d37735015f37bdda4c9d1784275b27e2210c1032c8c293",
+   "matches_commit": true
+  }
+ ]
+}

@@ -1,0 +1,300 @@
+{
+  "protocol": "lcl.engine/1",
+  "command": "run",
+  "spec": {
+    "root": "/mnt/F/LCL/canonical/LCL_Core_0.3.0",
+    "formal_version": "0.3.0",
+    "identity_digest": "7c8d46931933fa28c212a84e6405ef4b3ad99cebf07831bb835deac96a701aff",
+    "authority": "authoritative"
+  },
+  "units": [
+    {
+      "id": "charter.lcl.txt",
+      "digest": "sha256:624239755f3e89b98c22132de7d9224575ac93c050ce14de7e6217e327a91482",
+      "bytes": 1114,
+      "root": true,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "baseline.lcl.txt",
+      "digest": "sha256:04218b25940744c0219b19e5c306dd50f017684ea5774ebf91ce4e4f25b250e9",
+      "bytes": 4754,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "scope.lcl.txt",
+      "digest": "sha256:247af56fcc69ff265eba0a5f50566e1b9b8ef2fa09fdaf6ed91bc23af51cb3bc",
+      "bytes": 17563,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "traceability.lcl.txt",
+      "digest": "sha256:dd44c16514aadb06d071f482798e9907c3e156ec4b8d09bf129e4127ff279135",
+      "bytes": 12727,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "decisions.lcl.txt",
+      "digest": "sha256:6a56ee64067e601ac0972145b8c66483527bf2fa3e1849684ebeb3037d9c955f",
+      "bytes": 5074,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "checks.lcl.txt",
+      "digest": "sha256:35f89fd08f3fe89b616c3bb3a733d94eeb6b008c6ca72fd217765035059232b3",
+      "bytes": 2278,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "record.lcl.txt",
+      "digest": "sha256:b1934c8c4a746032a52f8e564fb500bc9d69194b0c97df4896a7474919126438",
+      "bytes": 2372,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    }
+  ],
+  "reached": "completion",
+  "outcome": "accepted",
+  "inputs": [],
+  "diagnostics": [],
+  "execution": {
+    "invocations": [
+      {
+        "node": 0,
+        "iteration": "-",
+        "attempt": 0,
+        "block": "TASK",
+        "declaration": "task.charter_record",
+        "status": "status.running",
+        "result_schema": null,
+        "result_status": null,
+        "effects": []
+      },
+      {
+        "node": 1,
+        "iteration": "-",
+        "attempt": 0,
+        "block": "ACTION",
+        "declaration": "action.return_charter_record",
+        "status": "status.succeeded",
+        "result_schema": "result.value",
+        "result_status": "status.succeeded",
+        "effects": []
+      }
+    ],
+    "events": [],
+    "steps": 3
+  },
+  "completion": {
+    "checks": [
+      {
+        "id": "verify.charter_phase_total",
+        "kind": "VERIFY",
+        "source": "checks.lcl.txt",
+        "span": {
+          "start": 1821,
+          "end": 1847
+        },
+        "required": true,
+        "selection": "Targetless",
+        "outcome": "TRUE",
+        "skipped": null,
+        "evidence": []
+      },
+      {
+        "id": "verify.charter_record_delivery",
+        "kind": "VERIFY",
+        "source": "checks.lcl.txt",
+        "span": {
+          "start": 2118,
+          "end": 2148
+        },
+        "required": true,
+        "selection": "Targetless",
+        "outcome": "TRUE",
+        "skipped": null,
+        "evidence": []
+      }
+    ],
+    "evidence": [],
+    "verdict": {
+      "success": "success.charter_record",
+      "quantifier": "ALL",
+      "value": "TRUE",
+      "members": [
+        {
+          "id": "verify.charter_phase_total",
+          "value": "TRUE"
+        },
+        {
+          "id": "verify.charter_record_delivery",
+          "value": "TRUE"
+        }
+      ],
+      "failure": null,
+      "failure_status": null,
+      "failure_classification": null
+    },
+    "outputs": [
+      {
+        "id": "output.charter_record",
+        "declared_type": "OBJECT",
+        "required": true,
+        "publication": "published",
+        "value": "{baseline_commit: \"0d6d3e5ee422182a38b793756e001ddd75df507f\", clause_count: 18, frozen_by: \"TASK-001\", language_core: \"0.3.0\", limits: \"This record identifies the frozen requirement baseline and passes structural checks only. It is not evidence that any Nexees feature exists or works, and it closes no task.\", open_item_ids: [\"DESKTOP-RENDERER-01\", \"AMEND-075-01\", \"BIND-B1-LOGO\", \"CONV-MARKER-01\"], pack_archive_revision: \"0.5.2\", pack_content_identity: \"e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672\", pack_manifest_sha256: \"e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a\", pack_specification_version: \"0.5.0\", precedence: \"This charter consolidates; it does not replace. Each clause summarises agreed behaviour and names its authority in the specification pack identified in baseline.lcl.txt. Where a clause and its authority differ, the authority governs and the difference is a defect in this charter. Changing a requirement means an approved change to the pack and a new charter revision bound to the new pack identity.\", record_kind: \"nexees_frozen_charter\", repository: URI(\"https://github.com/aivars11232/Nexees\"), requirement_family_count: 7, specification_pack: \"Nexees LCL Implementation Pack\", task_count: 75}",
+        "instances": null
+      }
+    ],
+    "terminal_status": "status.succeeded",
+    "reason": "SuccessSatisfied"
+  },
+  "project": {
+    "entry": "charter.lcl.txt",
+    "entry_status": "ready",
+    "order": [
+      "charter.lcl.txt",
+      "baseline.lcl.txt",
+      "scope.lcl.txt",
+      "traceability.lcl.txt",
+      "decisions.lcl.txt",
+      "checks.lcl.txt",
+      "record.lcl.txt"
+    ],
+    "parts": [
+      {
+        "id": "part.charter_baseline",
+        "source": "baseline.lcl.txt",
+        "source_span": {
+          "start": 513,
+          "end": 537
+        },
+        "unit": "baseline.lcl.txt",
+        "kind": "kind.part.definitions",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.charter_scope",
+        "source": "scope.lcl.txt",
+        "source_span": {
+          "start": 616,
+          "end": 637
+        },
+        "unit": "scope.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.charter_traceability",
+        "source": "traceability.lcl.txt",
+        "source_span": {
+          "start": 716,
+          "end": 744
+        },
+        "unit": "traceability.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.charter_open_items",
+        "source": "decisions.lcl.txt",
+        "source_span": {
+          "start": 821,
+          "end": 846
+        },
+        "unit": "decisions.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.charter_checks",
+        "source": "checks.lcl.txt",
+        "source_span": {
+          "start": 919,
+          "end": 941
+        },
+        "unit": "checks.lcl.txt",
+        "kind": "kind.part.checks",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.charter_record",
+        "source": "record.lcl.txt",
+        "source_span": {
+          "start": 1016,
+          "end": 1038
+        },
+        "unit": "record.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      }
+    ],
+    "complete": true,
+    "admission": "admitted"
+  }
+}

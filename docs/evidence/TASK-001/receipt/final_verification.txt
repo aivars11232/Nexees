@@ -1,0 +1,45 @@
+TASK-001 final verification, run after cleanup against the frozen worktree.
+Date: 2026-10-03T17:08:08+02:00
+HEAD: 0d6d3e5ee422182a38b793756e001ddd75df507f on main; origin: https://github.com/aivars11232/Nexees.git
+Snapshot before: d50c39f776c797efa771830b4f462a4ed77e43de627f6486079f3f081bd78556
+
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0
+
+$ lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through preflight.
+This is a statement about canonical steps 1 to 9, before any effect, and not about execution.
+exit code: 0
+
+$ lcl run --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+status.succeeded
+  VERIFY verify.charter_phase_total = TRUE (required)
+  VERIFY verify.charter_record_delivery = TRUE (required)
+  SUCCESS success.charter_record ALL = TRUE
+  OUTPUT output.charter_record published = {baseline_commit: "0d6d3e5ee422182a38b793756e001ddd75df507f", clause_count: 18, frozen_by: "TASK-001", language_core: "0.3.0", limits: "This record identifies the frozen requirement baseline and pa
+  because: SuccessSatisfied
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-001/check_charter_against_pack.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.2
+ALL CHECKS PASSED
+exit code: 0
+
+Pack on disk: manifest e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a
+
+Changes against HEAD:
+   FILE_TREE.txt                      | 33 ++++++++++++++++++++++++++++++++-
+   README.md                          | 32 ++++++++++++++++++++++++++------
+   docs/manuals/NEXEES_USER_MANUAL.md |  5 ++++-
+   3 files changed, 62 insertions(+), 8 deletions(-)
+  staged: 0; deleted: 0; untracked files: 21
+  untracked files outside docs/charter and docs/evidence/TASK-001: 0
+  tracked files modified: FILE_TREE.txt README.md docs/manuals/NEXEES_USER_MANUAL.md 
+
+Marker lines: 278 tracked files still carry one (281 restored, 3 edited by this task).
+PNG files unchanged against HEAD: yes
+Temporary files in the checkout (__pycache__, *.pyc, *.tmp, *.log): 0
+
+Snapshot after:  d50c39f776c797efa771830b4f462a4ed77e43de627f6486079f3f081bd78556
+Snapshot unchanged by the verification: yes

@@ -1,4 +1,3 @@
-# start here
 Nexees/
 ├── apps/
 │   ├── android/
@@ -207,6 +206,38 @@ Nexees/
 │       ├── workspace_registry.source
 │       └── workspace_revision.source
 ├── docs/
+│   ├── charter/
+│   │   ├── baseline.lcl.txt
+│   │   ├── charter.lcl.txt
+│   │   ├── checks.lcl.txt
+│   │   ├── decisions.lcl.txt
+│   │   ├── record.lcl.txt
+│   │   ├── scope.lcl.txt
+│   │   └── traceability.lcl.txt
+│   ├── evidence/
+│   │   └── TASK-001/
+│   │       ├── logs/
+│   │       │   ├── charter_check.txt
+│   │       │   ├── charter_run.record.json
+│   │       │   ├── charter_run.txt
+│   │       │   ├── charter_validate.txt
+│   │       │   ├── check_charter_against_pack.txt
+│   │       │   ├── dispatch_task_001.record.json
+│   │       │   ├── negative_tests.txt
+│   │       │   ├── required_reading.txt
+│   │       │   ├── security_scan.txt
+│   │       │   └── setup_marker_restoration.json
+│   │       ├── receipt/
+│   │       │   ├── RECEIPT_RESULT.md
+│   │       │   ├── evaluation.record.json
+│   │       │   ├── final_verification.txt
+│   │       │   ├── receipt.json
+│   │       │   ├── snapshot_files.sha256
+│   │       │   ├── synthetic_projection.evaluation.record.json
+│   │       │   └── synthetic_projection.receipt.json
+│   │       ├── AUTHORIZATION.md
+│   │       ├── TASK-001_EVIDENCE.md
+│   │       └── check_charter_against_pack.py
 │   └── manuals/
 │       ├── LCL_IN_NEXEES_USER_MANUAL.md
 │       └── NEXEES_USER_MANUAL.md

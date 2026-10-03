@@ -1,0 +1,62 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.charter_open_items
+    NAME: "Open decisions, deferred amendments and conventions"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "Items the charter records but does not decide or implement. Recording an item here changes no task scope and selects no technology."
+
+DATA:
+    ID: data.charter_item_renderer
+    TYPE: OBJECT[REF(type.charter_open_item)]
+    VALUE:
+        item_id: "DESKTOP-RENDERER-01"
+        kind: "open_decision"
+        title: "Desktop renderer: Electron-style or native only"
+        status: "unresolved"
+        statement: "The owner has not yet said whether an Electron-style installed Desktop application is acceptable or whether all Electron, Chromium and WebView rendering is excluded. Neither interpretation may be selected or implied by any task, and a synthetic test fixture is never an owner decision. When decided, the value is native_only or electron_permitted."
+        revisit: "TASK-003 must obtain the owner's answer before approving a renderer-dependent foundation, and TASK-009 uses the approved choice. The decision may not remain unresolved at release."
+        source: "policies/global_contracts.lcl.txt C20; checks/stop_conditions.lcl.txt (v0.2); bindings/bindings.lcl.txt binding.permitted_renderer_decisions"
+
+DATA:
+    ID: data.charter_item_supervisor
+    TYPE: OBJECT[REF(type.charter_open_item)]
+    VALUE:
+        item_id: "AMEND-075-01"
+        kind: "deferred_amendment"
+        title: "Optional Review / Supervisor"
+        status: "deferred"
+        statement: "Owner's text, recorded as given on 2026-10-03.\nOPTIONAL REVIEW / SUPERVISOR\n- Provide a Review/Supervisor section accessible from Desktop and Android, with a user-selectable reviewer provider/model.\n- At a reviewable stop condition or checkpoint, pause the coding agent and automatically send the reviewer the relevant task, LCL rules/contracts, blocker, current changes and actual verification evidence.\n- The reviewer returns APPROVE, REPAIR, ASK USER or REMAIN STOPPED, together with a short continuation instruction.\n- Nexees checks the decision against previously delegated permissions and the reviewed workspace/task/file snapshot. Resume automatically only when those checks permit it.\n- A reviewer cannot approve away failed tests, override hard security stops or user cancellation, grant itself permissions, or decide an undelegated owner preference.\n- Include enable/disable, delegated decision categories, review/repair-round and usage limits, and a visible review log.\n- Run coding and review sequentially by default; unrestricted parallel agents are not implied.\n- Integrate and test this at TASK-075, before the final bug-fixing and regression pass and release. Keep exactly 75 numbered tasks.\n- TASK-001 only records this amendment. Do not implement it now or launch a reviewer/subagent in this development session."
+        revisit: "TASK-075, before the final bug-fixing and regression pass and the release. Until then the 75-task execution graph, every task scope and the specification pack are unchanged, and no reviewer or subagent is used in development."
+        source: "Owner instruction to the coding agent, 2026-10-03, recorded in docs/evidence/TASK-001/AUTHORIZATION.md"
+
+DATA:
+    ID: data.charter_item_logo
+    TYPE: OBJECT[REF(type.charter_open_item)]
+    VALUE:
+        item_id: "BIND-B1-LOGO"
+        kind: "binding_issue"
+        title: "Logo source path does not resolve"
+        status: "open"
+        statement: "On 2026-10-03 the bound logo source /home/aivars/Pictures/Nexees Logo/Icon.png did not exist on the development machine. The folder /home/aivars/Pictures holds one file whose name is Nexees Logo⁄Icon.png, with the character U+2044 FRACTION SLASH in the name instead of a folder separator. Binding B1 forbids substituting or redrawing the logo, so that file has not been treated as the bound source."
+        revisit: "The owner makes the bound path resolve or amends the binding before any logo-dependent work, which begins with TASK-010 and TASK-058."
+        source: "bindings/bindings.lcl.txt B1; observed in the TASK-001 evidence"
+
+DATA:
+    ID: data.charter_item_markers
+    TYPE: OBJECT[REF(type.charter_open_item)]
+    VALUE:
+        item_id: "CONV-MARKER-01"
+        kind: "repository_convention"
+        title: "Placeholder marker lines"
+        status: "in_force"
+        statement: "Placeholder files carry one start here line so that they are visible on GitHub. When a task edits a file, it removes that file's marker line in the same change, because the line serves no purpose after that. A task never strips markers from files it does not otherwise edit."
+        revisit: "Applies from TASK-001 onward."
+        source: "Owner instruction to the coding agent, 2026-10-03"
+
+DATA:
+    ID: data.charter_open_items
+    TYPE: LIST[OBJECT[REF(type.charter_open_item)]]
+    VALUE: [REF(data.charter_item_renderer), REF(data.charter_item_supervisor), REF(data.charter_item_logo), REF(data.charter_item_markers)]

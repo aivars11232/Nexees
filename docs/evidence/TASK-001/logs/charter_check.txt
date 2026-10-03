@@ -1,0 +1,4 @@
+$ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
+charter.lcl.txt passed every stage through static_checking.
+This is a statement about canonical steps 1 to 5, and not about execution.
+exit code: 0

@@ -1,0 +1,167 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.charter_baseline
+    NAME: "Charter baseline and record types"
+    VERSION: "0.5.0"
+    KIND: kind.part.definitions
+    DESCRIPTION: "Identifies the specification revision this charter freezes and declares the record types used by the other charter parts. The implementation pack stays outside this repository; it is referenced here by identity, not copied."
+
+DEFINE:
+    ID: binding.charter_pack_name
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "Nexees LCL Implementation Pack"
+
+DEFINE:
+    ID: binding.charter_pack_archive_revision
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "0.5.2"
+
+DEFINE:
+    ID: binding.charter_pack_specification_version
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "0.5.0"
+
+DEFINE:
+    ID: binding.charter_pack_content_identity
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672"
+    DESCRIPTION: "SHA-256 identity of the pack's 130 active LCL sources, as defined in its CONTENT_IDENTITY.json. A pack with another identity is a different specification and needs a new charter revision."
+
+DEFINE:
+    ID: binding.charter_pack_manifest_sha256
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "e55ec6130b3916bd249cb7ad6abc5277e2d1acfdd0586226c4a9a14e6eef639a"
+    DESCRIPTION: "SHA-256 of the pack's MANIFEST.json, which hashes every other file of that archive."
+
+DEFINE:
+    ID: binding.charter_language_core
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "0.3.0"
+
+DEFINE:
+    ID: binding.charter_development_root
+    KIND: kind.constant
+    TYPE: PATH
+    VALUE: PATH("/mnt/F/Nexees/")
+    DESCRIPTION: "Development binding of the coding agent that builds Nexees. It is not a root for Nexees users, runtime workspaces or Android storage."
+
+DEFINE:
+    ID: binding.charter_repository
+    KIND: kind.constant
+    TYPE: URI
+    VALUE: URI("https://github.com/aivars11232/Nexees")
+
+DEFINE:
+    ID: binding.charter_baseline_commit
+    KIND: kind.constant
+    TYPE: STRING
+    VALUE: "0d6d3e5ee422182a38b793756e001ddd75df507f"
+    DESCRIPTION: "Repository commit on which TASK-001 wrote this charter. The charter files are uncommitted work until the owner commits them."
+
+DEFINE:
+    ID: binding.charter_task_count
+    KIND: kind.constant
+    TYPE: INTEGER
+    VALUE: 75
+
+DEFINE:
+    ID: type.charter_clause
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One consolidated statement of agreed Nexees behaviour. The statement summarises; the listed authority governs. An empty primary_phases list means the clause applies to every phase."
+    FIELD:
+        NAME: clause_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: topic
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: statement
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: authority
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: primary_phases
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.charter_requirement_family
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "One family of numbered acceptance requirements, with the document that defines it and the tasks that implement and verify it. An empty primary_owner_tasks list means ownership differs per identifier and is listed separately."
+    FIELD:
+        NAME: family
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: identifiers
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: count
+        TYPE: INTEGER
+        REQUIRED: TRUE
+    FIELD:
+        NAME: authoritative_document
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: primary_owner_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: verification_tasks
+        TYPE: LIST[STRING]
+        REQUIRED: TRUE
+    FIELD:
+        NAME: note
+        TYPE: STRING
+        REQUIRED: TRUE
+
+DEFINE:
+    ID: type.charter_open_item
+    KIND: kind.type
+    BASE: OBJECT
+    DESCRIPTION: "Something this charter records without deciding or implementing: an open owner decision, a deferred amendment, a binding that does not resolve, or a repository convention."
+    FIELD:
+        NAME: item_id
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: kind
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: title
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: status
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: statement
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: revisit
+        TYPE: STRING
+        REQUIRED: TRUE
+    FIELD:
+        NAME: source
+        TYPE: STRING
+        REQUIRED: TRUE

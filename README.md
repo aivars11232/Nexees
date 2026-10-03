@@ -1,11 +1,28 @@
-<!-- start here -->
 # Nexees
 
 **Application-only source layout — pre-implementation, structure revision 0.4.**
 
-This archive contains the planned Nexees application folders and named files. It does
-not contain the implementation task pack, numbered task documents, task-to-path maps,
-planning documents or task evidence. Keep the existing implementation pack separate.
+This repository contains the planned Nexees application folders and named files, the
+frozen project charter and the evidence of completed implementation tasks. It does not
+contain the implementation task pack, numbered task documents or task-to-path maps.
+Keep the implementation pack separate; the charter refers to it by identity.
+
+## Authoritative requirements
+
+The single written source of truth for Nexees is the LCL implementation pack, kept
+outside this repository. [docs/charter/](docs/charter/) freezes one exact revision of
+it by identity and consolidates the agreed scope, the 75-task execution model and the
+requirement-to-task traceability. Where the charter and the pack differ, the pack
+governs.
+
+The charter is an LCL Core 0.3.0 project whose entry is `docs/charter/charter.lcl.txt`.
+Check, validate and run it with the installed `lcl` and the canonical Core packages. A
+successful run shows that the record is structurally consistent, not that any feature
+exists.
+
+The charter also records what is still open: the Desktop renderer decision, the
+Review/Supervisor amendment deferred to TASK-075, and the logo source path, which does
+not currently resolve.
 
 ## Source-file status
 
@@ -31,6 +48,8 @@ that upstream frameworks or implementation will eventually generate.
 | `integrations/` | Reusable IDE, LCL, auth, provider, external-agent, Git and syntax-index adapters. |
 | `assets/` | Existing approved visual references, future verified icon imports and shared visual resources. |
 | `config/` | Configuration slots and the existing non-secret local-path example. |
+| `docs/charter/` | Frozen project charter as an LCL project: scope, traceability, open decisions and structural checks. |
+| `docs/evidence/` | Evidence of completed implementation tasks, one folder per task. |
 | `docs/manuals/` | Nexees and integrated-LCL manual drafts, retained from the previous pack. |
 | `tests/` | Named unit, integration, conformance, security and end-to-end test slots. |
 | `scripts/` | Build, check, manual-bundling, CI and release helper slots. |
@@ -51,8 +70,9 @@ The runtime must enforce read-only access independently of what a prompt says.
 
 Existing approved logo and Desktop-layout references are unchanged. The development
 machine logo binding remains exactly `/home/aivars/Pictures/Nexees Logo/Icon.png`.
-That local file was not accessed here. The chat reference is not a silent replacement
-for the owner-bound build source. Source/derived icon folders remain empty until the
+That local file was not accessed when this layout was created, and TASK-001 found that
+the path does not resolve on the development machine (charter item BIND-B1-LOGO). The
+chat reference is not a silent replacement for the owner-bound build source. Source/derived icon folders remain empty until the
 real source is verified and the required assets are produced.
 
 ## Inventory

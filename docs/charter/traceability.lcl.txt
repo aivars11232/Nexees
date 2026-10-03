@@ -1,0 +1,137 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.charter_traceability
+    NAME: "Requirement-to-task traceability"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "Which tasks implement and verify which requirements, taken from the pack's build order, coverage tables and TASK_REQUIREMENT_MAP.json. Owning a requirement here means owning work that is still to be done; it records no completion."
+
+DATA:
+    ID: data.charter_execution_phases
+    TYPE: LIST[STRING]
+    VALUE: ["001-004 | Architecture & reuse", "005-008 | Shared core/protocol", "009-012 | Desktop shell & UI", "013-017 | Workspace system", "018-021 | IDE infrastructure", "022-026 | Security foundation", "027-030 | Accounts & settings", "031-035 | Agent runtime", "036-040 | Persistent state & context", "041-045 | LLM/provider system", "046-050 | LCL integration", "051-052 | LCL import", "053-056 | Autonomous execution", "057-060 | Android foundation", "061-065 | Android workspace/files/LCL", "066-068 | Android agent controls", "069-070 | Cross-device security & sync", "071-072 | Documentation & help", "073-075 | Final release & hardening"]
+    DESCRIPTION: "The 19 phases of the build order, each as first task, last task and phase name. Tasks run in numerical order; a phase is a grouping, not a unit of parallel work."
+
+DATA:
+    ID: data.charter_phase_task_counts
+    TYPE: LIST[INTEGER]
+    VALUE: [4, 4, 4, 5, 4, 5, 4, 5, 5, 5, 5, 2, 4, 4, 5, 3, 2, 2, 3]
+    DESCRIPTION: "Number of tasks in each phase, in the same order as data.charter_execution_phases."
+
+DATA:
+    ID: data.charter_task_id_map
+    TYPE: OBJECT
+    VALUE:
+        authoritative_document: "guidance/task_id_migration_v0.2_to_v0.3.lcl.txt"
+        tasks_carried_over_from_v0_2: 70
+        tasks_added_in_v0_3: ["TASK-045", "TASK-051", "TASK-052", "TASK-071", "TASK-072"]
+        total_tasks: 75
+        rule: "A changed task number never marks work completed. Earlier evidence stays tied to its original pack version and must be mapped explicitly before it is relied on."
+
+DATA:
+    ID: data.charter_family_import
+    TYPE: OBJECT[REF(type.charter_requirement_family)]
+    VALUE:
+        family: "LCL import acceptance"
+        identifiers: "IM-01 to IM-10"
+        count: 10
+        authoritative_document: "architecture/lcl_import_pipeline.lcl.txt (I6)"
+        primary_owner_tasks: ["TASK-051", "TASK-052"]
+        verification_tasks: ["TASK-063", "TASK-069", "TASK-073", "TASK-074", "TASK-075"]
+        note: "TASK-051 owns intake, bounded staging and validation. TASK-052 owns structure planning, preview and commit. TASK-063 adds the Android entry over the same engine."
+
+DATA:
+    ID: data.charter_family_handoff
+    TYPE: OBJECT[REF(type.charter_requirement_family)]
+    VALUE:
+        family: "Model handoff acceptance"
+        identifiers: "HO-01 to HO-10"
+        count: 10
+        authoritative_document: "architecture/model_handoff.lcl.txt (H5)"
+        primary_owner_tasks: ["TASK-044", "TASK-045"]
+        verification_tasks: ["TASK-068", "TASK-073", "TASK-074", "TASK-075"]
+        note: "TASK-044 owns the switch transaction. TASK-045 adds the default-ON read-only orientation. TASK-068 supplies the Android controls over the same state machine."
+
+DATA:
+    ID: data.charter_family_manuals
+    TYPE: OBJECT[REF(type.charter_requirement_family)]
+    VALUE:
+        family: "Manual acceptance"
+        identifiers: "MAN-01 to MAN-05"
+        count: 5
+        authoritative_document: "architecture/manuals_and_help.lcl.txt"
+        primary_owner_tasks: ["TASK-071", "TASK-072"]
+        verification_tasks: ["TASK-074", "TASK-075"]
+        note: "Every feature task updates the manual it affects. TASK-071 and TASK-072 complete integration and coverage; they do not defer the writing."
+
+DATA:
+    ID: data.charter_family_readability
+    TYPE: OBJECT[REF(type.charter_requirement_family)]
+    VALUE:
+        family: "Readability and cleanup acceptance"
+        identifiers: "RC-01 to RC-05 of policies/code_readability_and_cleanup.lcl.txt (Q5)"
+        count: 5
+        authoritative_document: "policies/code_readability_and_cleanup.lcl.txt"
+        primary_owner_tasks: ["TASK-005", "TASK-037", "TASK-053", "TASK-054"]
+        verification_tasks: ["TASK-074", "TASK-075"]
+        note: "Applies to every task at its own closure. These five share the RC prefix with the remote-control requirements, so they are always cited together with their document."
+
+DATA:
+    ID: data.charter_family_android
+    TYPE: OBJECT[REF(type.charter_requirement_family)]
+    VALUE:
+        family: "Android release scenarios"
+        identifiers: "AN-01 to AN-12"
+        count: 12
+        authoritative_document: "architecture/android_operating_model.lcl.txt (A9, A10)"
+        primary_owner_tasks: ["TASK-002", "TASK-003", "TASK-006", "TASK-007", "TASK-008", "TASK-027", "TASK-034", "TASK-041", "TASK-046", "TASK-057", "TASK-059", "TASK-060", "TASK-061", "TASK-062", "TASK-063", "TASK-064", "TASK-065", "TASK-066", "TASK-067", "TASK-068", "TASK-069", "TASK-070"]
+        verification_tasks: ["TASK-074", "TASK-075"]
+        note: "Owners are the tasks of the A9 ownership table. A PC-connected demonstration is not evidence of standalone operation."
+
+DATA:
+    ID: data.charter_family_remote_requirements
+    TYPE: OBJECT[REF(type.charter_requirement_family)]
+    VALUE:
+        family: "Remote-control requirements"
+        identifiers: "RC-01 to RC-26 of architecture/remote_device_control.lcl.txt"
+        count: 26
+        authoritative_document: "architecture/remote_device_control.lcl.txt"
+        primary_owner_tasks: []
+        verification_tasks: ["TASK-070", "TASK-074", "TASK-075"]
+        note: "Owners differ per requirement and are listed in data.charter_remote_requirement_owners."
+
+DATA:
+    ID: data.charter_family_remote_scenarios
+    TYPE: OBJECT[REF(type.charter_requirement_family)]
+    VALUE:
+        family: "Remote-control acceptance scenarios"
+        identifiers: "RC-T01 to RC-T18"
+        count: 18
+        authoritative_document: "verification/remote_control_acceptance.lcl.txt"
+        primary_owner_tasks: []
+        verification_tasks: ["TASK-070", "TASK-074", "TASK-075"]
+        note: "Owners differ per scenario and are listed in data.charter_remote_scenario_owners."
+
+DATA:
+    ID: data.charter_requirement_families
+    TYPE: LIST[OBJECT[REF(type.charter_requirement_family)]]
+    VALUE: [REF(data.charter_family_import), REF(data.charter_family_handoff), REF(data.charter_family_manuals), REF(data.charter_family_readability), REF(data.charter_family_android), REF(data.charter_family_remote_requirements), REF(data.charter_family_remote_scenarios)]
+
+DATA:
+    ID: data.charter_remote_requirement_owners
+    TYPE: LIST[STRING]
+    VALUE: ["RC-01 | TASK-001 TASK-002 TASK-007 TASK-066 TASK-068 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-02 | TASK-001 TASK-004 TASK-022 TASK-030 TASK-060 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-03 | TASK-001 TASK-002 TASK-004 TASK-007 TASK-022 TASK-025 TASK-030 TASK-055 TASK-060 TASK-068 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-04 | TASK-001 TASK-002 TASK-009 TASK-017 TASK-038 TASK-056 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-05 | TASK-001 TASK-002 TASK-003 TASK-009 TASK-024 TASK-030 TASK-056 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-06 | TASK-001 TASK-003 TASK-009 TASK-035 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-07 | TASK-001 TASK-004 TASK-008 TASK-022 TASK-030 TASK-055 TASK-056 TASK-060 TASK-067 TASK-068 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-08 | TASK-001 TASK-002 TASK-009 TASK-030 TASK-056 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-09 | TASK-001 TASK-002 TASK-004 TASK-007 TASK-015 TASK-031 TASK-033 TASK-044 TASK-045 TASK-066 TASK-068 TASK-069 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-10 | TASK-001 TASK-004 TASK-007 TASK-015 TASK-022 TASK-023 TASK-031 TASK-033 TASK-055 TASK-060 TASK-066 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-11 | TASK-001 TASK-003 TASK-024 TASK-030 TASK-031 TASK-033 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-12 | TASK-001 TASK-003 TASK-007 TASK-009 TASK-024 TASK-033 TASK-035 TASK-056 TASK-068 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-13 | TASK-001 TASK-002 TASK-023 TASK-031 TASK-033 TASK-057 TASK-061 TASK-063 TASK-065 TASK-066 TASK-070 TASK-071 TASK-072 TASK-073 TASK-074 TASK-075", "RC-14 | TASK-001 TASK-003 TASK-031 TASK-033 TASK-057 TASK-066 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-15 | TASK-001 TASK-003 TASK-030 TASK-035 TASK-038 TASK-057 TASK-066 TASK-067 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-16 | TASK-001 TASK-003 TASK-035 TASK-055 TASK-057 TASK-066 TASK-067 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-17 | TASK-001 TASK-004 TASK-007 TASK-008 TASK-026 TASK-031 TASK-033 TASK-035 TASK-038 TASK-055 TASK-066 TASK-067 TASK-069 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-18 | TASK-001 TASK-004 TASK-022 TASK-024 TASK-025 TASK-030 TASK-033 TASK-055 TASK-060 TASK-067 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-19 | TASK-001 TASK-002 TASK-003 TASK-004 TASK-025 TASK-060 TASK-069 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-20 | TASK-001 TASK-002 TASK-007 TASK-015 TASK-017 TASK-023 TASK-031 TASK-044 TASK-045 TASK-056 TASK-061 TASK-063 TASK-065 TASK-066 TASK-068 TASK-069 TASK-070 TASK-071 TASK-072 TASK-073 TASK-074 TASK-075", "RC-21 | TASK-001 TASK-003 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-22 | TASK-001 TASK-004 TASK-025 TASK-026 TASK-030 TASK-056 TASK-068 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-23 | TASK-001 TASK-002 TASK-003 TASK-004 TASK-007 TASK-009 TASK-022 TASK-024 TASK-025 TASK-056 TASK-057 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-24 | TASK-001 TASK-004 TASK-008 TASK-009 TASK-026 TASK-030 TASK-035 TASK-038 TASK-056 TASK-067 TASK-069 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075", "RC-25 | TASK-001 TASK-002 TASK-003 TASK-031 TASK-033 TASK-057 TASK-066 TASK-070 TASK-071 TASK-072 TASK-073 TASK-074 TASK-075", "RC-26 | TASK-001 TASK-003 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075"]
+    DESCRIPTION: "Every task that owns part of each remote-control requirement, from TASK_REQUIREMENT_MAP.json. TASK-001 owns only the frozen requirement text."
+
+DATA:
+    ID: data.charter_remote_scenario_owners
+    TYPE: LIST[STRING]
+    VALUE: ["RC-T01 | TASK-004 TASK-022 TASK-030 TASK-055 TASK-060 TASK-068 TASK-070 TASK-073 TASK-074 TASK-075", "RC-T02 | TASK-009 TASK-024 TASK-033 TASK-056 TASK-070 TASK-071 TASK-074 TASK-075", "RC-T03 | TASK-009 TASK-035 TASK-056 TASK-070 TASK-071 TASK-074 TASK-075", "RC-T04 | TASK-003 TASK-009 TASK-024 TASK-030 TASK-056 TASK-070 TASK-071 TASK-074 TASK-075", "RC-T05 | TASK-003 TASK-033 TASK-057 TASK-060 TASK-063 TASK-066 TASK-068 TASK-070 TASK-071 TASK-072 TASK-074 TASK-075", "RC-T06 | TASK-003 TASK-030 TASK-035 TASK-038 TASK-057 TASK-066 TASK-067 TASK-070 TASK-071 TASK-074 TASK-075", "RC-T07 | TASK-003 TASK-033 TASK-035 TASK-055 TASK-057 TASK-066 TASK-067 TASK-070 TASK-071 TASK-074 TASK-075", "RC-T08 | TASK-004 TASK-007 TASK-015 TASK-022 TASK-023 TASK-025 TASK-031 TASK-033 TASK-055 TASK-060 TASK-066 TASK-067 TASK-069 TASK-070 TASK-073 TASK-074 TASK-075", "RC-T09 | TASK-007 TASK-008 TASK-026 TASK-031 TASK-035 TASK-038 TASK-066 TASK-069 TASK-070 TASK-073 TASK-074 TASK-075", "RC-T10 | TASK-007 TASK-008 TASK-069 TASK-070 TASK-073 TASK-074 TASK-075", "RC-T11 | TASK-022 TASK-026 TASK-030 TASK-035 TASK-055 TASK-056 TASK-067 TASK-070 TASK-073 TASK-074 TASK-075", "RC-T12 | TASK-004 TASK-022 TASK-023 TASK-024 TASK-025 TASK-031 TASK-033 TASK-070 TASK-073 TASK-074 TASK-075", "RC-T13 | TASK-015 TASK-017 TASK-044 TASK-045 TASK-056 TASK-061 TASK-065 TASK-066 TASK-068 TASK-069 TASK-070 TASK-072 TASK-074 TASK-075", "RC-T14 | TASK-009 TASK-017 TASK-038 TASK-056 TASK-070 TASK-074 TASK-075", "RC-T15 | TASK-004 TASK-025 TASK-060 TASK-069 TASK-070 TASK-073 TASK-074 TASK-075", "RC-T16 | TASK-008 TASK-026 TASK-038 TASK-070 TASK-073 TASK-074 TASK-075", "RC-T17 | TASK-003 TASK-024 TASK-033 TASK-070 TASK-071 TASK-074 TASK-075", "RC-T18 | TASK-009 TASK-030 TASK-056 TASK-068 TASK-070 TASK-071 TASK-073 TASK-074 TASK-075"]
+    DESCRIPTION: "Every task that must prove each remote-control acceptance scenario, from TASK_REQUIREMENT_MAP.json. No scenario is assigned to TASK-001."
+
+DATA:
+    ID: data.charter_remote_evidence_rule
+    TYPE: STRING
+    VALUE: "TASK-001 closes the remote-control design, contracts and test plan only. Each listed task owns the part of a requirement that falls in its scope and proves its assigned scenarios in an isolated appropriate environment; TASK-070, TASK-074 and TASK-075 run the integrated suite. A design document is never counted as runtime testing."

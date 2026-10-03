@@ -1,0 +1,42 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.charter
+    NAME: "Nexees frozen project charter"
+    VERSION: "0.5.0"
+    KIND: kind.project
+    DESCRIPTION: "WORKING DIRECTORY: /mnt/F/Nexees/ | REPOSITORY: https://github.com/aivars11232/Nexees | Frozen by TASK-001. Entry of the charter project: it returns the charter record and checks its structure. No coding, process, network, remote-control or Git side effects are authorized or performed."
+
+PART:
+    ID: part.charter_baseline
+    SOURCE: PATH("baseline.lcl.txt")
+    KIND: kind.part.definitions
+
+PART:
+    ID: part.charter_scope
+    SOURCE: PATH("scope.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.charter_traceability
+    SOURCE: PATH("traceability.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.charter_open_items
+    SOURCE: PATH("decisions.lcl.txt")
+    KIND: kind.part.data
+
+PART:
+    ID: part.charter_checks
+    SOURCE: PATH("checks.lcl.txt")
+    KIND: kind.part.checks
+
+PART:
+    ID: part.charter_record
+    SOURCE: PATH("record.lcl.txt")
+    KIND: kind.part.task
+
+EXECUTE:
+    REFERENCE: REF(task.charter_record)

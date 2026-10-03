@@ -1,0 +1,16 @@
+Negative tests of the TASK-001 checks. Each test changes one thing in a scratch copy of docs/charter/
+and expects the named check to fail. The real charter is not touched.
+
+M1 one clause dropped from the catalogue
+   lcl validate: exit 1; error.validation.failed [validation]: required check `validate.charter_clause_count` asserts a condition that is FALSE  -> detected
+M2 a phase task count changed (4 -> 5)
+   lcl run: exit 2; error.verification.failed [verification_or_completion]: required VERIFY `verify.charter_phase_total` asserted FALSE  -> detected
+   cross-check: exit 1; failed checks ['phase task counts']  -> detected
+M3 an owner removed from RC-01
+   cross-check: exit 1; failed checks ['remote requirement owners']  -> detected
+M4 one digit of the pack identity changed
+   cross-check: exit 1; failed checks ['content identity recomputed from the pack files']  -> detected
+M5 a clause cites a document that does not exist
+   cross-check: exit 1; failed checks ['clause authorities exist in the pack']  -> detected
+
+ALL DEFECTS DETECTED; scratch copies removed.

@@ -1,0 +1,36 @@
+$ python3 docs/evidence/TASK-001/check_charter_against_pack.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.2
+PASS  pack files match the pack manifest  [188 files]
+PASS  content identity recomputed from the pack files  [e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672]
+PASS  manifest hash
+PASS  archive revision  [0.5.2]
+PASS  specification version
+PASS  language core
+PASS  task count  [75]
+PASS  execution phases  [19 phases]
+PASS  phase task counts
+PASS  task-ID map carried over
+PASS  task-ID map added tasks  [TASK-045 TASK-051 TASK-052 TASK-071 TASK-072]
+PASS  task-ID map covers 001-075
+PASS  family import: identifiers in architecture/lcl_import_pipeline.lcl.txt  [10/10]
+PASS  family import: owner task identifiers
+PASS  family handoff: identifiers in architecture/model_handoff.lcl.txt  [10/10]
+PASS  family handoff: owner task identifiers
+PASS  family manuals: identifiers in architecture/manuals_and_help.lcl.txt  [5/5]
+PASS  family manuals: owner task identifiers
+PASS  family readability: identifiers in policies/code_readability_and_cleanup.lcl.txt  [5/5]
+PASS  family readability: owner task identifiers
+PASS  family android: identifiers in architecture/android_operating_model.lcl.txt  [12/12]
+PASS  family android: owner task identifiers
+PASS  family remote_requirements: identifiers in architecture/remote_device_control.lcl.txt  [26/26]
+PASS  family remote_requirements: owner task identifiers
+PASS  family remote_scenarios: identifiers in verification/remote_control_acceptance.lcl.txt  [18/18]
+PASS  family remote_scenarios: owner task identifiers
+PASS  remote requirement owners  [26 requirements]
+PASS  remote scenario owners  [18 scenarios]
+PASS  TASK-001 owns all 26 remote requirements and no scenario
+PASS  clause authorities exist in the pack  [18 clauses]
+PASS  clause phases exist in the build order
+PASS  every phase is covered by a clause
+
+ALL CHECKS PASSED
+exit code: 0

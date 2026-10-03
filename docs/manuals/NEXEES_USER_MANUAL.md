@@ -1,4 +1,3 @@
-<!-- start here -->
 # Nexees User Manual
 
 **Status: pre-implementation draft.** This describes the agreed workflow, not a tested released interface. Before release, replace pending details with verified instructions/screenshots for the actual software. Nexees version, supported platforms, manual revision and review date must be filled from release metadata, not guessed here.
@@ -63,3 +62,7 @@ Use only the verified update workflow and preserve unsynced phone data. Required
 Wrong tree: check foreground workspace versus the agent's bound workspace. No remote control: check pairing, connectivity and target acknowledgement; local Android work should remain available. Quota reached: choose a supported model and inspect orientation status. Invalid import: inspect paths, roles, version and missing references. Conflicts: retain both versions until a reviewed decision. Missing test backend: choose a supported execution environment explicitly, not by switching only the model.
 
 Both manuals must be available from in-app Help with contents, search and accessible text size. Exact final labels, screenshots and installation/provider-specific steps remain pending verification; release cannot ship this draft as a finished manual.
+
+
+## Planned Devices & Remote Access (v0.5, verify against implementation)
+Remote receiving, startup/login/resume and keeping access after window close are explicit settings. Fresh devices receive no control requests until enabled and paired. Each direction has independent grants. A phone can request a permitted PC app launch with the PC window closed only while a supported receiver is available; a PC can request permitted phone-local Nexees actions. Android may require foreground/user interaction. Stop access, revoke devices, inspect normalized targets and audit outcomes. Launching HopToDesk does not itself establish an unattended screen session. The governing requirements are RC-01–RC-26 and the acceptance scenarios RC-T01–RC-T18 of the specification frozen in `docs/charter/`. This section describes required behavior, not an already delivered feature.

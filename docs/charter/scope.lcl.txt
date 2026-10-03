@@ -1,0 +1,199 @@
+LCL:
+    VERSION: "0.3.0"
+
+SPECIFICATION:
+    ID: specification.charter_scope
+    NAME: "Consolidated Nexees charter"
+    VERSION: "0.5.0"
+    KIND: kind.part.data
+    DESCRIPTION: "The agreed Nexees scope as eighteen clauses. Every clause is prose carried as data: the engine checks its structure, never its meaning. All authority references are paths inside the specification pack named in baseline.lcl.txt."
+
+DATA:
+    ID: data.charter_precedence
+    TYPE: STRING
+    VALUE: "This charter consolidates; it does not replace. Each clause summarises agreed behaviour and names its authority in the specification pack identified in baseline.lcl.txt. Where a clause and its authority differ, the authority governs and the difference is a defect in this charter. Changing a requirement means an approved change to the pack and a new charter revision bound to the new pack identity."
+
+DATA:
+    ID: data.charter_clause_01
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-01"
+        topic: "Mission, product shape and non-goals"
+        statement: "Nexees is a Desktop and Android AI development environment in which a user can work normally or hand a project to an autonomous agent that progresses from the first task to final verification with minimal interruption. It is not a reskinned IDE fork, a single-provider tool, a chat history that edits files or an unrestricted shell wrapper, and it does not depend on LCL for users who do not want it."
+        authority: ["policies/project_charter.lcl.txt (Mission, Required characteristics, Non-goals)", "architecture/system_architecture.lcl.txt"]
+        primary_phases: ["Architecture & reuse"]
+
+DATA:
+    ID: data.charter_clause_02
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-02"
+        topic: "Installed Desktop application and compact layout"
+        statement: "Desktop is an installed, locally running application with its own window, local workspaces, terminal integration and local agent runtime; a browser tab, a PWA or a hosted site in a wrapper does not satisfy it. The interface is compact, dark and VS Code-like in density, with one thin title row whose top-right sidebar toggles sit immediately before the window controls, and it uses the approved Nexees logo. The renderer choice is open item DESKTOP-RENDERER-01."
+        authority: ["policies/global_contracts.lcl.txt C20", "architecture/desktop_ui.lcl.txt", "policies/master_rules.lcl.txt R18", "policies/acceptance_criteria.lcl.txt (Desktop)", "bindings/bindings.lcl.txt B1"]
+        primary_phases: ["Desktop shell & UI"]
+
+DATA:
+    ID: data.charter_clause_03
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-03"
+        topic: "IDE infrastructure by reuse"
+        statement: "Editor, explorer, search, terminal, Git, language servers, debugging foundations and the extension host come from mature components behind adapters, not from new implementations. Extensions never inherit agent authority."
+        authority: ["policies/reuse_policy.lcl.txt (Reuse priorities)", "policies/no_unnecessary_code.lcl.txt", "reuse/reuse_matrix.lcl.txt", "bindings/bindings.lcl.txt B14", "policies/acceptance_criteria.lcl.txt (Desktop)"]
+        primary_phases: ["IDE infrastructure"]
+
+DATA:
+    ID: data.charter_clause_04
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-04"
+        topic: "Workspaces and agent binding"
+        statement: "The foreground workspace decides what the user sees; it never decides which workspace a running agent may modify. The file tree always follows the foreground workspace, each workspace keeps its own UI state, and a background agent stays bound to its own workspace, project root and security scope without stealing focus."
+        authority: ["policies/global_contracts.lcl.txt C1-C4", "policies/master_rules.lcl.txt R11-R13", "bindings/bindings.lcl.txt B2-B6", "architecture/workspace_model.lcl.txt"]
+        primary_phases: ["Workspace system"]
+
+DATA:
+    ID: data.charter_clause_05
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-05"
+        topic: "Security-first development and authority"
+        statement: "Security ships with each capability, not as a final pass. Authority runs from immutable security policy, through explicit user commands, validated LCL rules, the approved task and trusted state, down to repository content, tool output and network content; lower levels never override higher ones, and ambiguity fails closed. Model actions go through typed, permissioned, audited tools, secrets stay out of prompts, logs, state and Git, and unknown security implications are blockers."
+        authority: ["policies/security_baseline.lcl.txt", "architecture/authority_hierarchy.lcl.txt", "policies/master_rules.lcl.txt R8-R10, R16, R17", "policies/global_contracts.lcl.txt C9-C12", "verification/security_gate.lcl.txt", "checks/stop_conditions.lcl.txt"]
+        primary_phases: ["Architecture & reuse", "Security foundation"]
+
+DATA:
+    ID: data.charter_clause_06
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-06"
+        topic: "Accounts, authentication and settings"
+        statement: "Nexees supports email and GitHub sign-in, secure account creation, strong two-factor authentication with recovery codes, and step-up reauthentication for sensitive changes. Account access, local device unlock, provider credentials and device trust are separate authorities. Developer Settings are separated from normal settings and cannot silently disable immutable security boundaries."
+        authority: ["policies/global_contracts.lcl.txt C13, C14", "architecture/auth_and_settings.lcl.txt", "policies/acceptance_criteria.lcl.txt (Authentication/security)", "bindings/bindings.lcl.txt B12, B13"]
+        primary_phases: ["Accounts & settings"]
+
+DATA:
+    ID: data.charter_clause_07
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-07"
+        topic: "Agent runtime, autonomy and verification"
+        statement: "A model provides reasoning; Nexees provides agency and authoritative state. The agent loop validates every requested action, executes it through a permissioned typed tool, records a structured result and verifies before continuing. Autonomy (Supervised, Balanced, Autonomous, Custom) is independent of the specification mode, and a task never advances because a model says it is complete: required deterministic gates must pass."
+        authority: ["architecture/provider_and_agent_model.lcl.txt", "policies/project_charter.lcl.txt (Autonomy modes)", "policies/global_contracts.lcl.txt C9, C11", "policies/master_rules.lcl.txt R3, R15", "bindings/bindings.lcl.txt B8, B9"]
+        primary_phases: ["Agent runtime", "Autonomous execution"]
+
+DATA:
+    ID: data.charter_clause_08
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-08"
+        topic: "Persistent state, context and recovery"
+        statement: "Authoritative project state is independent of any provider conversation and survives a model switch, a workspace switch, an app restart, a recoverable crash and a Desktop-Android reconnect. State has stable identifiers, a schema version, migrations and crash-safe writes, holds no secret payloads, and is sufficient to rebuild model context without chat history. Substantial or risky operations need a checkpoint or an explicit reason why rollback does not apply."
+        authority: ["policies/global_contracts.lcl.txt C5, C12, C21", "policies/master_rules.lcl.txt R14", "architecture/persistent_state_model.lcl.txt", "bindings/bindings.lcl.txt B10, B16, B17, B20"]
+        primary_phases: ["Shared core/protocol", "Persistent state & context"]
+
+DATA:
+    ID: data.charter_clause_09
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-09"
+        topic: "Providers and mid-session model handoff"
+        statement: "Providers sit behind one capability model covering access, model discovery, streaming, tool use, limits, usage and errors; at least one online and one local or OpenAI-compatible provider must work. A provider or model can change mid-session, including after quota exhaustion, without asking the old model for a summary. A read-only orientation after the switch is ON by default and can be turned off; turning it off never disables identity, state, permission or security checks."
+        authority: ["policies/global_contracts.lcl.txt C8, C24", "policies/master_rules.lcl.txt R14, R24", "architecture/provider_and_agent_model.lcl.txt", "architecture/model_handoff.lcl.txt H1-H5", "bindings/bindings.lcl.txt B10, B23"]
+        primary_phases: ["LLM/provider system"]
+
+DATA:
+    ID: data.charter_clause_10
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-10"
+        topic: "Optional LCL integration and modes"
+        statement: "LCL inside Nexees is an optional native workspace layer, not the standalone LCL application embedded. The specification modes are Standard (no LCL), Full Project, Task-Decomposed and Hybrid. When LCL is enabled and valid, its rules, contracts, tasks, read order, stop conditions and verification constrain the work but can never weaken Nexees security. The existing LCL core is reused through a bridge; no second parser or validator is written."
+        authority: ["policies/project_charter.lcl.txt (Product modes)", "policies/global_contracts.lcl.txt C6, C7", "architecture/lcl_integration.lcl.txt", "bindings/bindings.lcl.txt B5, B7, B8", "policies/acceptance_criteria.lcl.txt (LCL)"]
+        primary_phases: ["LCL integration"]
+
+DATA:
+    ID: data.charter_clause_11
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-11"
+        topic: "LCL file and ZIP import"
+        statement: "Desktop and standalone Android import single or multiple LCL files and ZIP packages into an explicitly chosen workspace. Intake is bounded and staged, never extracted into a live project; structure is preserved or proposed without inventing meaning; preview, commit and adoption are separate steps; and imported instructions gain authority only after the user confirms a validated, adopted specification."
+        authority: ["policies/global_contracts.lcl.txt C23", "policies/master_rules.lcl.txt R23", "architecture/lcl_import_pipeline.lcl.txt I1-I6", "bindings/bindings.lcl.txt B22"]
+        primary_phases: ["LCL import"]
+
+DATA:
+    ID: data.charter_clause_12
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-12"
+        topic: "Android: standalone host, remote client and synchronization"
+        statement: "Android is Nexees, not a companion: a standalone host with its own workspaces, files, LCL validation and phone-hosted agent, a remote client of an explicitly selected PC, and one side of selected two-way synchronization. Losing the PC or pairing disables only the affected remote operations. The same design language, vocabulary and status model are used, with layout adapted to the phone."
+        authority: ["policies/global_contracts.lcl.txt C19", "policies/master_rules.lcl.txt R19, R21, R22", "architecture/android_operating_model.lcl.txt A1-A10", "architecture/android_ui.lcl.txt", "policies/acceptance_criteria.lcl.txt (Android, v0.2)"]
+        primary_phases: ["Android foundation", "Android workspace/files/LCL", "Android agent controls"]
+
+DATA:
+    ID: data.charter_clause_13
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-13"
+        topic: "Cross-client protocol and synchronization"
+        statement: "Desktop and Android are clients over shared, versioned domain and protocol semantics; neither invents its own interpretation of workspace, agent, task, LCL or security state. Selected content synchronizes with revision-aware conflicts and without replicating secrets or permissions. Commands and approvals are authenticated control messages, never offline sync records, and one task has one authoritative execution owner."
+        authority: ["policies/global_contracts.lcl.txt C15, C21, C22", "architecture/android_operating_model.lcl.txt A5-A7", "bindings/bindings.lcl.txt B11, B17-B21", "architecture/system_architecture.lcl.txt"]
+        primary_phases: ["Shared core/protocol", "Cross-device security & sync"]
+
+DATA:
+    ID: data.charter_clause_14
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-14"
+        topic: "Two-way remote device control"
+        statement: "Either authenticated client may request supported typed actions on a paired destination, and the destination alone authorizes and executes them. Receiving is off on a fresh device, each direction is granted separately, the Desktop receiver is independent of the window, no receiver means unavailable, Android lifecycle limits are reported honestly, and launching an allowlisted application never implies screen control. TASK-001 freezes these requirements and their owners only; nothing here is implemented or runtime-tested."
+        authority: ["architecture/remote_device_control.lcl.txt RC-01 to RC-26", "verification/remote_control_acceptance.lcl.txt RC-T01 to RC-T18", "policies/master_rules.lcl.txt R28, R29", "policies/global_contracts.lcl.txt C28-C31", "bindings/bindings.lcl.txt B21 and the remote bindings"]
+        primary_phases: ["Cross-device security & sync"]
+
+DATA:
+    ID: data.charter_clause_15
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-15"
+        topic: "Manuals and in-app help"
+        statement: "Two separate, searchable manuals, the Nexees User Manual and the LCL in Nexees User Manual, ship inside both clients and work offline. They evolve with every task that changes behaviour, contain no invented LCL syntax and no untested instructions, and stay marked as drafts until verified against the implemented release."
+        authority: ["policies/global_contracts.lcl.txt C26", "policies/master_rules.lcl.txt R26", "architecture/manuals_and_help.lcl.txt", "manuals/readme.lcl.txt", "bindings/bindings.lcl.txt B25"]
+        primary_phases: ["Documentation & help"]
+
+DATA:
+    ID: data.charter_clause_16
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-16"
+        topic: "Reuse first, licensing and no unnecessary code"
+        statement: "Before a subsystem is built, the reuse matrix is checked and a suitable existing component, protocol or library is preferred. Third-party code enters only after license, maintenance, security, architecture and benefit gates pass, and every new file, module or dependency maps to an approved requirement. The reuse matrix lists candidates only: TASK-001 selects no technology and no dependency."
+        authority: ["policies/reuse_policy.lcl.txt", "policies/no_unnecessary_code.lcl.txt", "policies/master_rules.lcl.txt R5-R7", "policies/global_contracts.lcl.txt C16, C17", "reuse/reuse_matrix.lcl.txt", "reuse/license_and_dependency_gate.lcl.txt"]
+        primary_phases: ["Architecture & reuse", "Final release & hardening"]
+
+DATA:
+    ID: data.charter_clause_17
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-17"
+        topic: "Readability, cleanup and per-task evidence"
+        statement: "Every meaningful change is human-readable, with comments that explain important behaviour and non-obvious reasons. Every task ends with scoped cleanup of task-owned material only, renewed verification of the final revision and recorded evidence; unknown or user-owned files are never deleted to make a tree look clean."
+        authority: ["policies/code_readability_and_cleanup.lcl.txt Q1-Q5", "policies/master_rules.lcl.txt R25", "policies/global_contracts.lcl.txt C25", "bindings/bindings.lcl.txt B24", "templates/task_evidence_template.lcl.txt"]
+        primary_phases: []
+
+DATA:
+    ID: data.charter_clause_18
+    TYPE: OBJECT[REF(type.charter_clause)]
+    VALUE:
+        clause_id: "CH-18"
+        topic: "The 75-task execution model, gates and release"
+        statement: "Nexees is built by exactly 75 tasks executed in numerical order by one primary coding agent; no dependency or cleanup gate is skipped. Each task starts with the checkout binding check, changes one thing at a time, verifies, cleans up, and closes only on a corroborated receipt evaluated by the pack's acceptance program; a dispatched instruction packet is never evidence of completion. No release is complete until the fresh-install Desktop and Android end-to-end gate of TASK-075 passes."
+        authority: ["guidance/build_order.lcl.txt", "guidance/task_index.lcl.txt", "guidance/task_id_migration_v0.2_to_v0.3.lcl.txt", "guidance/usage.lcl.txt", "policies/usage_and_agents.lcl.txt U01-U08", "policies/master_rules.lcl.txt R2-R4, R20, R27, R30, R31", "policies/global_contracts.lcl.txt C18, C27", "bindings/bindings.lcl.txt B26", "verification/final_release_gate.lcl.txt"]
+        primary_phases: []
+
+DATA:
+    ID: data.charter_clauses
+    TYPE: LIST[OBJECT[REF(type.charter_clause)]]
+    VALUE: [REF(data.charter_clause_01), REF(data.charter_clause_02), REF(data.charter_clause_03), REF(data.charter_clause_04), REF(data.charter_clause_05), REF(data.charter_clause_06), REF(data.charter_clause_07), REF(data.charter_clause_08), REF(data.charter_clause_09), REF(data.charter_clause_10), REF(data.charter_clause_11), REF(data.charter_clause_12), REF(data.charter_clause_13), REF(data.charter_clause_14), REF(data.charter_clause_15), REF(data.charter_clause_16), REF(data.charter_clause_17), REF(data.charter_clause_18)]
