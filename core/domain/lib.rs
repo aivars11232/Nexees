@@ -7,13 +7,17 @@
 //! - identity and values: [`ids`], [`text`], [`time`], [`revision`];
 //! - records and their travel rules: [`schema`], and the shared error and outcome vocabulary in
 //!   [`errors`];
-//! - workspaces and devices: [`workspace`], [`device`], [`client`];
-//! - work: [`session`], [`task`], [`model_capabilities`], [`lcl`], [`import`], [`handoff`];
-//! - authority: [`authority`], [`remote_request`].
+//! - workspaces and devices: [`workspace`], [`device`], [`client`], and the content changes that
+//!   synchronization applies, [`changes`];
+//! - work: [`session`], [`task`], [`model_capabilities`], [`lcl`], [`import`], [`handoff`], and
+//!   the facts a host reports about them, [`events`];
+//! - authority: [`authority`], [`remote_request`], and the records of remote requests,
+//!   [`requests`].
 //!
 //! The crate holds types, their validation and their serialization only. Behaviour, storage and
 //! transport live in other crates, so that both hosts share one definition of every domain type
-//! and neither can drift from the other. Domain events arrive with TASK-007's event protocol.
+//! and neither can drift from the other. The messages that carry these types are
+//! `nexees-protocol`'s.
 //!
 //! What the types guarantee:
 //!
@@ -33,15 +37,18 @@
 #![forbid(unsafe_code)]
 
 pub mod authority;
+pub mod changes;
 pub mod client;
 pub mod device;
 pub mod errors;
+pub mod events;
 pub mod handoff;
 pub mod ids;
 pub mod import;
 pub mod lcl;
 pub mod model_capabilities;
 pub mod remote_request;
+pub mod requests;
 pub mod revision;
 pub mod schema;
 pub mod session;

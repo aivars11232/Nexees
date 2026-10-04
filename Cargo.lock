@@ -23,6 +23,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nexees-protocol"
+version = "0.0.0"
+dependencies = [
+ "nexees-domain",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.107"
 source = "registry+https://github.com/rust-lang/crates.io-index"

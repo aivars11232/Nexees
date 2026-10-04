@@ -152,7 +152,8 @@ class Runner:
     # ------------------------------------------------------------------ layout
 
     def stage_layout(self) -> None:
-        """Placeholder markers (CONV-MARKER-01) and the architecture's file catalogue."""
+        """Placeholder markers (CONV-MARKER-01), the architecture's file catalogue, and the threat
+        model's enforcement points."""
         files = self.files()
         try:
             imported = set(self.git('ls-tree', '-r', '--name-only', IMPORT_COMMIT).split('\n'))
@@ -208,8 +209,12 @@ class Runner:
             self.find(f'{phantom} is attributed but does not exist')
         for duplicate in sorted({t for t in attributed if attributed.count(t) > 1}):
             self.find(f'{duplicate} is attributed to more than one subsystem')
+        points = enforcement_points(self.root / 'docs/security')
+        for point in unresolved_points(points, files, self.root):
+            self.find(f'docs/security names the enforcement point {point}, which is no slot of the layout')
         slots = sum(len(r['slots']) for r in subsystems.values())
-        print(f'{len(files)} files; {len(product)} product files in {slots} slots; {len(tests)} test files')
+        print(f'{len(files)} files; {len(product)} product files in {slots} slots; {len(tests)} test files; '
+              f'{len(points)} security enforcement points')
 
     # ------------------------------------------------------------------ format
 
@@ -403,6 +408,23 @@ def gradle_output(path: str, files: set[str]) -> bool:
             if any(f'{folder}/{name}' in files for name in GRADLE_BUILD_FILES):
                 return True
     return False
+
+
+def enforcement_points(security: Path) -> set[str]:
+    """Every module slot that docs/security names as an enforcement point."""
+    points: set[str] = set()
+    for path in sorted(security.glob('*.lcl.txt')):
+        for match in re.finditer(r'^ +enforcement_points: (\[.*\])$', path.read_text(encoding='utf-8'), re.M):
+            points.update(json.loads(match.group(1)))
+    return points
+
+
+def unresolved_points(points: set[str], files: list[str], root: Path) -> list[str]:
+    """The enforcement points that name no slot of the layout. A slot is a folder ending in / or a stem, so a
+    placeholder and the source that implements it under the same stem both count (TASK-004's frozen check
+    counted only placeholders)."""
+    stems = {stem(f) for f in files}
+    return sorted(p for p in points if not ((root / p).is_dir() if p.endswith('/') else p in stems))
 
 
 def stem(relative: str) -> str:

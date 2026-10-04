@@ -71,7 +71,8 @@ refine the split only within DS-01.
   - its modules are the slot stems;
   - the task adds the crate to `members` in the root `Cargo.toml`.
 
-  The first crate is `core/domain` (`nexees-domain`).
+  The crates so far are `core/domain` (`nexees-domain`) and `core/protocol`
+  (`nexees-protocol`), which builds on it.
 - **Dependencies between crates** follow the architecture: a crate depends only on crates of
   subsystems that its own subsystem's `depends_on` lists. That keeps the graph acyclic (AD-12).
 - **Platform ports.** The core defines a platform port as a trait in the crate of the subsystem
@@ -247,7 +248,7 @@ authorizes deletion. [test: `tests/tooling/test_task_cleanup.py`]
 
 | Stage | Checks |
 |---|---|
-| `layout` | Placeholder markers, and the architecture catalogue of product and test files |
+| `layout` | Placeholder markers; the architecture catalogue of product and test files; every enforcement point of the threat model names a slot, as a placeholder or as source |
 | `format` | `.editorconfig` for every text file outside `docs/evidence/`, and rustfmt |
 | `lint` | clippy with warnings denied; repository scripts parse and have a module docstring |
 | `build` | The workspace, locked |

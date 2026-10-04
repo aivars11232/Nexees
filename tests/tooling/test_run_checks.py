@@ -96,6 +96,27 @@ class GradleOutputTest(unittest.TestCase):
         self.assertFalse(run_checks.gradle_output(f'{self.PROTOTYPE}/.gradle/x', set()))
 
 
+class EnforcementPointTest(unittest.TestCase):
+    """The threat model's enforcement points must name slots, whether still placeholders or implemented."""
+
+    def test_points_are_read_from_every_security_record(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            Path(tmp, 'threats.lcl.txt').write_text(
+                '        enforcement_points: ["core/protocol/messages", "core/remote/command_dispatch"]\n')
+            Path(tmp, 'invariants.lcl.txt').write_text('        enforcement_points: ["core/tools/"]\n')
+            self.assertEqual(run_checks.enforcement_points(Path(tmp)),
+                             {'core/protocol/messages', 'core/remote/command_dispatch', 'core/tools/'})
+
+    def test_a_point_resolves_as_a_placeholder_or_as_implemented_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            Path(tmp, 'core/tools').mkdir(parents=True)
+            files = ['core/protocol/messages.rs', 'core/remote/command_dispatch.source']
+            points = {'core/protocol/messages', 'core/remote/command_dispatch', 'core/tools/', 'core/protocol/gone',
+                      'core/missing/'}
+            self.assertEqual(run_checks.unresolved_points(points, files, Path(tmp)),
+                             ['core/missing/', 'core/protocol/gone'])
+
+
 class PinTest(unittest.TestCase):
     def test_only_exact_pins_and_workspace_or_path_references_pass(self) -> None:
         manifest = {

@@ -205,6 +205,11 @@ identifier!(
     check_id
 );
 identifier!(
+    /// One content change of a replica, the unit synchronization applies once (A6).
+    ChangeId,
+    check_id
+);
+identifier!(
     /// An editor extension, which is a principal of its own (AD-10).
     ExtensionId,
     check_id

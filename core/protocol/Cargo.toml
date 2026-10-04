@@ -1,0 +1,21 @@
+[package]
+name = "nexees-protocol"
+description = "The Nexees protocol: versioned, bounded message families between a client and its host, between paired hosts, and for content synchronization."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+# The crate root sits beside the module files named by the architecture slots of core/protocol.
+[lib]
+path = "lib.rs"
+
+[dependencies]
+nexees-domain = { path = "../domain" }
+serde = { workspace = true }
+# The wire format (DEP-SERDE). raw_value lets a request be decoded strictly once its operation is
+# known, without first collapsing it into a map that would hide duplicate keys.
+serde_json = { workspace = true, features = ["raw_value"] }
+
+[lints]
+workspace = true

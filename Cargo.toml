@@ -6,7 +6,7 @@
 # slot. docs/engineering/CONVENTIONS.md describes the layout and the rules below.
 [workspace]
 resolver = "3"
-members = ["core/domain"]
+members = ["core/domain", "core/protocol"]
 # Task evidence keeps frozen prototypes with workspaces of their own; they are never members.
 exclude = ["docs/evidence"]
 

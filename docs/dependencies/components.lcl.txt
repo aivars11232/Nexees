@@ -1012,7 +1012,7 @@ DATA:
         alternatives: "The LCL crate's internal JSON writer (not a general parser)."
         reason: "The standard for typed serialisation in Rust."
         replacement: "Foundational to the message types."
-        verification: "Proven by every remote and JNI call in the prototype. TASK-006 pinned both in the Rust workspace: serde for the domain types of core/domain, serde_json for their contract tests. Cargo.lock locks the versions the prototype used, and cargo-deny passes."
+        verification: "Proven by every remote and JNI call in the prototype. TASK-006 pinned both in the Rust workspace: serde for the domain types of core/domain, serde_json for their contract tests. TASK-007 made serde_json the wire format of core/protocol, with its raw_value feature, which adds no crate. Cargo.lock locks the versions the prototype used, and cargo-deny passes."
         evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "Cargo.lock"]
         owner_tasks: ["TASK-006", "TASK-007"]
 

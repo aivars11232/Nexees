@@ -174,11 +174,13 @@ pub(crate) fn ensure_unique<T: Ord>(items: &[T], field: &'static str) -> Result<
 mod tests {
     use super::*;
     use crate::authority::{Approval, PermissionGrant, RemoteGrant};
+    use crate::changes::ContentChange;
     use crate::client::ClientState;
     use crate::device::{HostCapabilities, PeerDevice};
     use crate::handoff::Handoff;
     use crate::import::ImportTransaction;
     use crate::lcl::{Adoption, SpecRevisionRecord};
+    use crate::requests::{LedgerEntry, PendingRequest};
     use crate::session::{AgentSession, ExecutionTransfer};
     use crate::task::{Evidence, Task};
     use crate::workspace::{Conflict, Replica, WorkspaceRecord};
@@ -206,6 +208,9 @@ mod tests {
             entry::<PermissionGrant>(),
             entry::<RemoteGrant>(),
             entry::<Approval>(),
+            entry::<LedgerEntry>(),
+            entry::<PendingRequest>(),
+            entry::<ContentChange>(),
         ]
     }
 
@@ -236,12 +241,17 @@ mod tests {
             .filter(|r| r.2.travels())
             .map(|r| r.0)
             .collect();
-        // ST-WORKSPACE's portable part and ST-HISTORY are portable records; everything else of
-        // this crate stays on its device: authority, sessions, tasks, revisions, imports,
-        // handoffs, trust, capabilities, conflicts, roots and UI focus (state.lcl.txt).
+        // ST-WORKSPACE's portable part and ST-HISTORY are portable records, and content changes
+        // are the selected content itself (ST-CONTENT through IF-SYNC). Everything else of this
+        // crate stays on its device: authority, request records, sessions, tasks, revisions,
+        // imports, handoffs, trust, capabilities, conflicts, roots and UI focus (state.lcl.txt).
         assert_eq!(
             travels,
-            ["nexees.workspace.workspace", "nexees.task.evidence"]
+            [
+                "nexees.workspace.workspace",
+                "nexees.task.evidence",
+                "nexees.changes.content_change"
+            ]
         );
     }
 }

@@ -114,10 +114,11 @@ Nexees/
 │   ├── domain/
 │   │   ├── Cargo.toml
 │   │   ├── authority.rs
+│   │   ├── changes.rs
 │   │   ├── client.rs
 │   │   ├── device.rs
 │   │   ├── errors.rs
-│   │   ├── events.source
+│   │   ├── events.rs
 │   │   ├── handoff.rs
 │   │   ├── ids.rs
 │   │   ├── import.rs
@@ -125,6 +126,7 @@ Nexees/
 │   │   ├── lib.rs
 │   │   ├── model_capabilities.rs
 │   │   ├── remote_request.rs
+│   │   ├── requests.rs
 │   │   ├── revision.rs
 │   │   ├── schema.rs
 │   │   ├── session.rs
@@ -151,9 +153,13 @@ Nexees/
 │   │   ├── lcl_service.source
 │   │   └── specification_revision.source
 │   ├── protocol/
-│   │   ├── messages.source
-│   │   ├── serialization.source
-│   │   └── version_negotiation.source
+│   │   ├── Cargo.toml
+│   │   ├── admission.rs
+│   │   ├── lib.rs
+│   │   ├── messages.rs
+│   │   ├── operations.rs
+│   │   ├── serialization.rs
+│   │   └── version_negotiation.rs
 │   ├── providers/
 │   │   ├── handoff/
 │   │   │   ├── continuation_snapshot.source
@@ -437,10 +443,30 @@ Nexees/
 │   │   │   │   ├── receipt.json
 │   │   │   │   └── snapshot_files.sha256
 │   │   │   └── TASK-005_EVIDENCE.md
-│   │   └── TASK-006/
+│   │   ├── TASK-006/
+│   │   │   ├── logs/
+│   │   │   │   ├── cleanup_record.json
+│   │   │   │   ├── dispatch_task_006.record.json
+│   │   │   │   ├── ide_activity.txt
+│   │   │   │   ├── native_language_suite.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── preflight.txt
+│   │   │   │   ├── regression.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── run_checks.txt
+│   │   │   │   └── security_scan.txt
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── corroboration.txt
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   └── snapshot_files.sha256
+│   │   │   └── TASK-006_EVIDENCE.md
+│   │   └── TASK-007/
 │   │       ├── logs/
 │   │       │   ├── cleanup_record.json
-│   │       │   ├── dispatch_task_006.record.json
+│   │       │   ├── dispatch_task_007.record.json
 │   │       │   ├── ide_activity.txt
 │   │       │   ├── native_language_suite.json
 │   │       │   ├── negative_tests.txt
@@ -456,7 +482,7 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       └── TASK-006_EVIDENCE.md
+│   │       └── TASK-007_EVIDENCE.md
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
 │   │   └── NEXEES_USER_MANUAL.md

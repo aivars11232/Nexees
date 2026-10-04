@@ -154,48 +154,67 @@ impl<A: Operation> Validate for RequestEnvelopeFields<A> {
                 ErrorKind::Duplicate,
             ));
         }
-        let (workspace, agent) = match A::TARGET {
-            OperationTarget::Workspace => (true, false),
-            OperationTarget::Agent => (true, true),
-            OperationTarget::Device => (false, false),
-        };
-        expect_presence(self.workspace_id.is_some(), workspace, "workspace_id")?;
-        expect_presence(self.agent_id.is_some(), agent, "agent_id")?;
-        if A::CHANGES_STATE && self.expected_revisions.is_empty() {
-            return Err(DomainError::new("expected_revisions", ErrorKind::Empty));
-        }
-        if !A::CHANGES_STATE && !self.expected_revisions.is_empty() {
-            return Err(DomainError::new(
-                "expected_revisions",
-                ErrorKind::Unexpected,
-            ));
-        }
-        ensure_unique(&self.expected_revisions, "expected_revisions")?;
-        for expected in &self.expected_revisions {
-            match (expected, &self.workspace_id) {
-                (ExpectedRevision::Workspace(revision), Some(target)) => {
-                    revision.ensure_of(target, "expected_revisions")?;
-                }
-                (ExpectedRevision::Workspace(_) | ExpectedRevision::Specification(_), None) => {
-                    return Err(DomainError::new(
-                        "expected_revisions",
-                        ErrorKind::Unexpected,
-                    ));
-                }
-                (ExpectedRevision::Generation(_), _) if A::TARGET != OperationTarget::Agent => {
-                    return Err(DomainError::new(
-                        "expected_revisions",
-                        ErrorKind::Unexpected,
-                    ));
-                }
-                _ => {}
-            }
-        }
+        check_targets::<A>(
+            self.workspace_id.as_ref(),
+            self.agent_id.as_ref(),
+            &self.expected_revisions,
+        )?;
         if self.expires_at <= self.issued_at {
             return Err(DomainError::new("expires_at", ErrorKind::OutOfRange));
         }
         Ok(())
     }
+}
+
+/// Fails unless the explicit targets and expected revisions fit operation `A` (SI-12): a
+/// workspace operation names its workspace and no agent; an agent operation names the agent and
+/// its workspace; a device operation names neither. Revisions are expected exactly when the
+/// operation changes something, each once; workspace revisions belong to the named workspace, and
+/// a generation is expected only of an agent. Remote requests and a client's local intents share
+/// these rules.
+pub fn check_targets<A: Operation>(
+    workspace_id: Option<&WorkspaceId>,
+    agent_id: Option<&AgentSessionId>,
+    expected_revisions: &[ExpectedRevision],
+) -> Result<(), DomainError> {
+    let (workspace, agent) = match A::TARGET {
+        OperationTarget::Workspace => (true, false),
+        OperationTarget::Agent => (true, true),
+        OperationTarget::Device => (false, false),
+    };
+    expect_presence(workspace_id.is_some(), workspace, "workspace_id")?;
+    expect_presence(agent_id.is_some(), agent, "agent_id")?;
+    if A::CHANGES_STATE && expected_revisions.is_empty() {
+        return Err(DomainError::new("expected_revisions", ErrorKind::Empty));
+    }
+    if !A::CHANGES_STATE && !expected_revisions.is_empty() {
+        return Err(DomainError::new(
+            "expected_revisions",
+            ErrorKind::Unexpected,
+        ));
+    }
+    ensure_unique(expected_revisions, "expected_revisions")?;
+    for expected in expected_revisions {
+        match (expected, workspace_id) {
+            (ExpectedRevision::Workspace(revision), Some(target)) => {
+                revision.ensure_of(target, "expected_revisions")?;
+            }
+            (ExpectedRevision::Workspace(_) | ExpectedRevision::Specification(_), None) => {
+                return Err(DomainError::new(
+                    "expected_revisions",
+                    ErrorKind::Unexpected,
+                ));
+            }
+            (ExpectedRevision::Generation(_), _) if A::TARGET != OperationTarget::Agent => {
+                return Err(DomainError::new(
+                    "expected_revisions",
+                    ErrorKind::Unexpected,
+                ));
+            }
+            _ => {}
+        }
+    }
+    Ok(())
 }
 
 fn expect_presence(present: bool, required: bool, field: &'static str) -> Result<(), DomainError> {

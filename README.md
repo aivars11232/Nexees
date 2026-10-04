@@ -93,6 +93,18 @@ strictly validated types both hosts share:
 
 The crate holds no behaviour, storage or transport. Those arrive with the tasks that own them.
 
+TASK-007 defined the protocol in `core/protocol`: what travels between a window and its host,
+and between two paired hosts.
+- Every channel opens by agreeing on a protocol version, and refuses a mismatch rather than
+  downgrading.
+- Messages are bounded and strictly decoded.
+- Requests name their operation from a closed registry, and their targets explicitly.
+- Remote control and content synchronization are separate message families.
+- A request is never run twice: duplicates get the recorded outcome, and after a lost
+  acknowledgment the sender reconciles by request ID.
+
+It defines the contracts and their rules; transport, storage and execution come with later tasks.
+
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.
 This is a complete inventory of this planned layout, not a prediction of every file

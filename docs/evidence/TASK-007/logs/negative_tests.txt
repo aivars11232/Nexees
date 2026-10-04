@@ -1,0 +1,38 @@
+TASK-007 negative tests, 2026-10-04T13:42:53+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. 22 cases break one protocol
+or domain rule each, which the contract tests must catch: a test-stage case passes only when named tests fail,
+which are listed, and never through a compile error.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: a local-only operation (approval_decide) accepted from a peer is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: operations::tests::local_only_operations_are_not_remote_and_never_remote_ones_exist_nowhere)
+PASS  test: a request whose version is below the destination's secure minimum admitted is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: admission::tests::rc_t08_wrong_targets_peers_versions_replays_and_stale_requests_are_refused)
+PASS  test: a request from a device other than the authenticated channel peer admitted is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: admission::tests::rc_t08_wrong_targets_peers_versions_replays_and_stale_requests_are_refused)
+PASS  test: a request for another user or host session admitted is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: admission::tests::rc_t08_wrong_targets_peers_versions_replays_and_stale_requests_are_refused)
+PASS  test: a duplicate request admitted and run again is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: admission::tests::a_replay_gets_the_recorded_outcome_and_a_reused_id_is_refused, messages::tests::rc_t09_a_lost_acknowledgment_never_executes_the_action_twice)
+PASS  test: another request under a used ID answered as a duplicate is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: requests::tests::a_duplicate_gets_the_recorded_outcome_and_never_runs_again)
+PASS  test: an expired queued command resent after reconnecting (RC-T10) is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: requests::tests::a_request_that_expired_while_disconnected_is_never_sent, requests::tests::a_request_the_destination_never_received_is_resent_only_before_its_expiry)
+PASS  test: a restart that forgets an effect which may have started is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: requests::tests::a_restart_turns_a_possibly_started_effect_into_an_unknown_outcome)
+PASS  test: an unknown outcome allowed to run again is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: requests::tests::ledger_states_change_only_along_the_allowed_paths)
+PASS  test: a reconciliation reply read as "never received" for a request it does not mention is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: messages::tests::reconciliation_is_bounded_and_answers_for_every_request)
+PASS  test: an intent whose targets are not checked against its operation is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: messages::tests::intents_name_their_targets_and_expire)
+PASS  test: a hello negotiation that settles below the secure minimum is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: version_negotiation::tests::a_mismatch_is_refused_never_downgraded)
+PASS  test: an oversized message parsed before it is measured is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: serialization::tests::oversized_input_is_refused_before_it_is_parsed, messages::tests::channels_bound_their_messages)
+PASS  test: a decoding refusal that quotes the input is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: serialization::tests::a_refusal_says_where_it_stopped_and_never_quotes_the_input)
+PASS  test: a canonical request form that keeps the approval is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: serialization::tests::the_canonical_form_binds_every_field_except_the_approval)
+PASS  test: a non-canonical base64 encoding accepted is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: serialization::tests::base64_round_trips_and_accepts_only_the_canonical_encoding)
+PASS  test: a sync message that can carry a remote request is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: messages::tests::the_sync_family_cannot_carry_requests_approvals_or_grants)
+PASS  test: a domain event that accepts an unknown field is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: events::tests::an_event_cannot_smuggle_authority_or_be_of_an_unknown_kind)
+PASS  test: an event applied across a gap after a reconnect is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: messages::tests::events_apply_once_in_order_and_never_across_a_gap)
+PASS  test: a content change applied over content that changed on the receiving side is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: changes::tests::creations_and_deletions_are_explicit_about_what_they_meet, changes::tests::a_change_applies_only_onto_its_base_and_never_twice)
+PASS  test: an altered transfer record accepted as the next step is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: messages::tests::transfer_steps_apply_once_in_order_and_never_skip_quiescence)
+PASS  test: a destination that executes before the transfer completes is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: session::tests::an_interrupted_handoff_never_yields_two_executors)
+PASS  build: a portable record that must stay on its device is caught (exit 1: error[E0080]: evaluation panicked: assertion failed: <nexees_domain::requests::LedgerEntry as Record>::SYNC.travels())
+PASS  lint: unsafe code in the protocol crate is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+PASS  deps: a protocol dependency that is not an exact pin is caught (exit 1: FINDING: core/protocol/Cargo.toml: dependencies.serde = "1" is not an exact pin ("=x.y.z"))
+PASS  layout: a protocol module without an architecture slot is caught (exit 1: FINDING: core/protocol/extra.rs belongs to 0 subsystems instead of one: [])
+PASS  layout: a threat-model enforcement point that names no slot is caught (exit 1: FINDING: docs/security names the enforcement point core/protocol/framing, which is no slot of the layout)
+PASS  test: the runner ignoring the threat model's enforcement points is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_a_point_resolves_as_a_placeholder_or_as_implemented_source)
+
+ALL NEGATIVE TESTS PASSED

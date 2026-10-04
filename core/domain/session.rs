@@ -211,6 +211,22 @@ impl ExecutionTransfer {
             ..self.0.clone()
         })
     }
+
+    /// The one device that may execute the session at this step, if any. The previous owner
+    /// executes until it acknowledges that it stopped. From then on nobody executes until the
+    /// transfer completes, and if the transfer is interrupted, the session stays paused on that
+    /// owner. The destination executes only once the transfer is complete; a refusal returns
+    /// execution to the previous owner. So an interrupted handoff never yields two executors
+    /// (A7, C21, AN-11).
+    pub fn executor(&self) -> Option<&DeviceId> {
+        match self.0.state {
+            TransferState::Requested | TransferState::Refused(_) => Some(&self.0.from_device_id),
+            TransferState::Transferred => Some(&self.0.to_device_id),
+            TransferState::OwnerQuiesced
+            | TransferState::Reconciled
+            | TransferState::DestinationValidated => None,
+        }
+    }
 }
 
 impl Record for ExecutionTransfer {
@@ -410,6 +426,32 @@ pub(crate) mod tests {
             refused.advance(refusal).unwrap_err().kind,
             ErrorKind::InvalidTransition
         );
+    }
+
+    #[test]
+    fn an_interrupted_handoff_never_yields_two_executors() {
+        let pc = DeviceId::new("pc").unwrap();
+        let phone = DeviceId::new("phone").unwrap();
+        let mut transfer = transfer(TransferState::Requested);
+        assert_eq!(transfer.executor(), Some(&pc));
+        for step in [
+            TransferState::OwnerQuiesced,
+            TransferState::Reconciled,
+            TransferState::DestinationValidated,
+        ] {
+            transfer = transfer.advance(step).unwrap();
+            // Interrupted here: nobody executes, so neither device runs the session twice.
+            assert_eq!(transfer.executor(), None);
+        }
+        let refused = transfer
+            .advance(TransferState::Refused(Blocker {
+                kind: BlockerKind::Unreachable,
+                detail: Note::new("The phone went offline.").unwrap(),
+            }))
+            .unwrap();
+        assert_eq!(refused.executor(), Some(&pc));
+        let done = transfer.advance(TransferState::Transferred).unwrap();
+        assert_eq!(done.executor(), Some(&phone));
     }
 
     #[test]
