@@ -105,6 +105,17 @@ and between two paired hosts.
 
 It defines the contracts and their rules; transport, storage and execution come with later tasks.
 
+TASK-008 built the state store in `core/state`: each host's one transactional store, SQLite
+bundled through rusqlite.
+- Writes are durable before they are reported saved.
+- Every record is versioned and decoded strictly when it is read.
+- Migrations apply all at once or not at all, and may not change a record they do not declare.
+- The operation journal turns an interrupted effect into an unknown outcome instead of replaying
+  it.
+- The outbox keeps unsynced content changes, and nothing else, until the peer acknowledges them.
+
+Checkpoints, the project-state entities and crash-safe resume come with their own tasks.
+
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.
 This is a complete inventory of this planned layout, not a prediction of every file

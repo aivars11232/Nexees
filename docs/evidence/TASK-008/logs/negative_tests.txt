@@ -1,0 +1,30 @@
+TASK-008 negative tests, 2026-10-04T15:00:11+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. 17 cases break one rule
+of the state store each, which the contract tests must catch: a test-stage case passes only when named tests fail,
+which are listed, and never through a compile error.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: a migration allowed to change records it does not declare is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: migrations::migration_registry::tests::a_migration_that_changes_records_it_does_not_declare_is_rolled_back)
+PASS  test: a migration committed without decoding every record again is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: migrations::migration_registry::tests::a_migration_that_leaves_a_record_undecodable_is_rolled_back)
+PASS  test: a store newer than the build opened and written to is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::a_newer_store_is_refused_untouched)
+PASS  test: a record read back under another key is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::a_damaged_record_is_reported_never_returned)
+PASS  test: a record read back at another version is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::a_damaged_record_is_reported_never_returned)
+PASS  test: a field named like a secret stored is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::a_field_named_like_a_secret_is_never_stored)
+PASS  test: an old task ID reused by an insert is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::a_write_is_all_or_nothing, state_store::tests::an_old_task_id_is_never_reused_or_completed_by_the_store)
+PASS  test: another change queued under a queued change ID is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::the_outbox_keeps_each_replicas_changes_in_order_until_acknowledged)
+PASS  test: a second process allowed to open a held store is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::only_one_process_holds_a_store)
+PASS  test: commits that survive a process crash but not a power loss is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::a_new_store_is_durable_and_at_this_builds_schema)
+PASS  test: an interrupted session recorded as closed is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::a_crash_after_the_commit_keeps_the_write, state_store::tests::a_crash_before_the_commit_keeps_the_last_committed_state, state_store::tests::an_old_task_id_is_never_reused_or_completed_by_the_store)
+PASS  test: a restart that leaves started effects started is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: operation_journal::tests::a_restart_turns_started_effects_and_running_requests_outcome_unknown, state_store::tests::rc_t09_an_interrupted_effect_is_outcome_unknown_and_never_runs_again)
+PASS  test: a restart that leaves running remote requests running is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: operation_journal::tests::a_restart_turns_started_effects_and_running_requests_outcome_unknown, state_store::tests::rc_t09_an_interrupted_effect_is_outcome_unknown_and_never_runs_again)
+PASS  test: a second effect journaled for the same remote request is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: operation_journal::tests::a_remote_request_has_at_most_one_journaled_effect, state_store::tests::rc_t09_an_interrupted_effect_is_outcome_unknown_and_never_runs_again)
+PASS  test: a completed effect settled again is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: operation_journal::tests::effects_settle_only_along_the_allowed_paths)
+PASS  test: an effect settled before it started after the clock moved back is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: operation_journal::tests::effects_settle_only_along_the_allowed_paths, state_store::tests::rc_t09_an_interrupted_effect_is_outcome_unknown_and_never_runs_again)
+PASS  test: a stored record's version raised, with the domain's own pin moved along, but no migration is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::the_record_set_changes_only_with_a_migration)
+PASS  deps: rusqlite not pinned exactly is caught (exit 1: FINDING: Cargo.toml: workspace.dependencies.rusqlite = "0.40.2" is not an exact pin ("=x.y.z"))
+PASS  layout: a state module without an architecture slot is caught (exit 1: FINDING: core/state/extra.rs belongs to 0 subsystems instead of one: [])
+PASS  lint: unsafe code in the state crate is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+
+ALL NEGATIVE TESTS PASSED

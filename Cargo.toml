@@ -6,7 +6,7 @@
 # slot. docs/engineering/CONVENTIONS.md describes the layout and the rules below.
 [workspace]
 resolver = "3"
-members = ["core/domain", "core/protocol"]
+members = ["core/domain", "core/protocol", "core/state"]
 # Task evidence keeps frozen prototypes with workspaces of their own; they are never members.
 exclude = ["docs/evidence"]
 
@@ -20,9 +20,12 @@ publish = false
 # Shared third-party versions. Every entry is an exact pin ("=x.y.z", DS-05) recorded in
 # docs/dependencies before it is added; scripts/test/run_checks.py rejects any other form.
 [workspace.dependencies]
-# DEP-SERDE: typed serialization of the domain types; serde_json encodes them in tests.
+# DEP-SERDE: typed serialization of the domain types; serde_json is the protocol's wire format
+# and the state store's record encoding.
 serde = { version = "=1.0.229", features = ["derive"] }
 serde_json = "=1.0.151"
+# DEP-SQLITE: the state store's database, with SQLite's own sources built in (bundled).
+rusqlite = { version = "=0.40.2", features = ["bundled"] }
 
 [workspace.lints.rust]
 # Unsafe code is denied everywhere. Shared-core crates also forbid it in their crate root; a

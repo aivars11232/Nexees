@@ -838,13 +838,13 @@ DATA:
         advisories: "None in cargo-deny (RustSec) or OSV for these versions."
         security_impact: "Opens only the app's own database; parameters always bound, never interpolated."
         maintenance: "rusqlite 0.40.2 published 2026-08-08, repository pushed 2026-09-25; SQLite very active."
-        transitive: "bitflags, fallible-iterator, fallible-streaming-iterator, hashlink, smallvec, libsqlite3-sys (SQLite's C sources compiled with cc)."
+        transitive: "On Linux and Android: bitflags, fallible-iterator, fallible-streaming-iterator, hashlink (with hashbrown 0.17 and foldhash), smallvec and libsqlite3-sys, whose build compiles SQLite's C sources with cc (find-msvc-tools, shlex) and runs pkg-config and vcpkg only to look for a system SQLite, which the bundled build does not use. The lockfile also lists what rusqlite uses only on WebAssembly (sqlite-wasm-rs, rsqlite-vfs, wasm-bindgen with its macros, js-sys, bumpalo, cfg-if, once_cell, rustversion, thiserror and hashbrown 0.16); no Nexees target builds them, and cargo-deny checks the targets that do."
         platforms: "Proven on Linux x86_64 and Android x86_64; compiled for arm64."
         need: "Durable, transactional, migratable phone-local state with no server (PD-PERSISTENCE)."
         alternatives: "Android Room (Android only), sled or redb (no SQL migrations), a second database server (forbidden)."
         reason: "Crash-safe in WAL mode, portable, migratable and already the standard on Android."
         replacement: "Behind the state store interface (TASK-008)."
-        verification: "Proven on both hosts: a v1 database migrated to v2 kept its data; WAL with FULL sync; an uncommitted transaction rolled back; a process aborted mid-transaction left integrity_check 'ok' and the last committed revision; revisions survived app kill, force-stop and reboot on the phone."
+        verification: "Proven on both hosts: a v1 database migrated to v2 kept its data; WAL with FULL sync; an uncommitted transaction rolled back; a process aborted mid-transaction left integrity_check 'ok' and the last committed revision; revisions survived app kill, force-stop and reboot on the phone. TASK-008 pinned it in the Rust workspace for the state store of core/state, whose contract tests cover WAL with FULL sync in exclusive locking mode, all-or-nothing migrations, recovery after a process stopped dead in the middle of a write or a migration, and integrity checks; it builds for both Android targets, and cargo-deny passes."
         evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "docs/evidence/TASK-003/logs/probe_android_shell.json", "docs/evidence/TASK-003/logs/scenarios.jsonl"]
         owner_tasks: ["TASK-008", "TASK-036"]
 

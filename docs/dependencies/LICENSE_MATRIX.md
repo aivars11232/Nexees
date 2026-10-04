@@ -73,7 +73,7 @@ real phone.
 | DEP-LCL-ANDROID-APP | LCL for Android | commit fa1592b | No license file (owner's) | REFERENCE | none | PC-authority client only |
 | DEP-LCL-REMOTE | lcl-remote | commit fa1592b | No license file (owner's) | REFERENCE | none | Listens on all interfaces |
 | DEP-RUST | Rust toolchain | 1.99.0 | MIT OR Apache-2.0 | DEPENDENCY | build | Proven; arm64 compiled |
-| DEP-SQLITE | SQLite via rusqlite (bundled) | 0.40.2 / SQLite 3.53.2 | MIT; SQLite public domain | DEPENDENCY | shared core | Proven on both |
+| DEP-SQLITE | SQLite via rusqlite (bundled) | 0.40.2 / SQLite 3.53.2 | MIT; SQLite public domain | DEPENDENCY | shared core | Proven on both; pinned in the workspace by TASK-008 for the state store |
 | DEP-ZIP | zip (zip2) + flate2/zlib-rs | 8.6.0 | MIT (Zlib, MIT/Apache) | DEPENDENCY | shared core | Proven on both |
 | DEP-BOA | Boa JavaScript engine | 0.22.0 | Unlicense OR MIT | DEPENDENCY | shared core | Proven on both (fail → repair → pass) |
 | DEP-PULLDOWN-CMARK | pulldown-cmark | 0.13.4 | MIT | DEPENDENCY | shared core | Proven on both |

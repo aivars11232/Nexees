@@ -71,8 +71,8 @@ refine the split only within DS-01.
   - its modules are the slot stems;
   - the task adds the crate to `members` in the root `Cargo.toml`.
 
-  The crates so far are `core/domain` (`nexees-domain`) and `core/protocol`
-  (`nexees-protocol`), which builds on it.
+  The crates so far are `core/domain` (`nexees-domain`) and the two that build on it,
+  `core/protocol` (`nexees-protocol`) and `core/state` (`nexees-state`).
 - **Dependencies between crates** follow the architecture: a crate depends only on crates of
   subsystems that its own subsystem's `depends_on` lists. That keeps the graph acyclic (AD-12).
 - **Platform ports.** The core defines a platform port as a trait in the crate of the subsystem

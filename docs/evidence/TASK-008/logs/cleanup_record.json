@@ -1,0 +1,73 @@
+{
+  "schema": "nexees-cleanup-record",
+  "version": 1,
+  "task": "TASK-008",
+  "applied": true,
+  "removed": [],
+  "refused": [],
+  "absent": [],
+  "kept_directories": [],
+  "preserved_untracked": [
+    {
+      "path": "core/state/Cargo.toml",
+      "sha256": "5152c9564c60c53e9ab7f42ae0194df514c195a0abb5afddd3c9463766399279"
+    },
+    {
+      "path": "core/state/lib.rs",
+      "sha256": "cb0613eed1181e02a7818b383a29ca43356d6efcafc96793ae8daf03c9a3b6ba"
+    },
+    {
+      "path": "core/state/migrations/migration_registry.rs",
+      "sha256": "0c74ee4c1d0137a85f037401b9be8c47386f9c741808646e794808b49f366f3f"
+    },
+    {
+      "path": "core/state/operation_journal.rs",
+      "sha256": "e7d19cbb7ec58f988e9be2c617aab51313cddec149ee1b6b0cdde496922ef36a"
+    },
+    {
+      "path": "core/state/state_store.rs",
+      "sha256": "0da9871eea30e5e29e10524efd0ec7de1dc606a623d34515173976dd573437f0"
+    },
+    {
+      "path": "docs/evidence/TASK-008/TASK-008_EVIDENCE.md",
+      "sha256": "883a316fdc783bcb1336d1ad612b152bae40b0ec108270ebd4430606dc76ce2c"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/dispatch_task_008.record.json",
+      "sha256": "6b03e488be1b407d1276e68ba2b5dcc1b451f0491eed2a833b6ec523cb851de2"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/ide_activity.txt",
+      "sha256": "708647bfad1d250a1af967ab517cbdc89775ba11e4c5c6cce75b49220e4633f3"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/native_language_suite.json",
+      "sha256": "e7f5339880cf7a3d25d134219fc9f9ff0c3cdff0aa4be121eb62d0a588a7e80d"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/negative_tests.txt",
+      "sha256": "ad3c52733ca0748b1f12e8f9d53ea80a66ce1b2bb1168ca1b4e1453bb2f71e44"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/preflight.txt",
+      "sha256": "c3bc94be91babe069a98bd8f98fc110dede21c3ba4178d4a08103ca6538a5593"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/regression.txt",
+      "sha256": "c2bb031eb92b91955cc1dc589c2581c5a40e9fc1606d0606cf00b22731d43803"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/required_reading.txt",
+      "sha256": "f5d9de11d80166338e038b2d349aa3d33609d37e9d4536a10baaa8e154381e57"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/run_checks.txt",
+      "sha256": "3c5bd51c8cc3e18cdd745d22ba7997c84329c2895a5c4d9d3521d5cc70587aba"
+    },
+    {
+      "path": "docs/evidence/TASK-008/logs/security_scan.txt",
+      "sha256": "07c1e7a23ac7e7007022c1f283e2673a5de17ad26228b002a400f18f7add4de7"
+    }
+  ],
+  "ignored_left_in_place": 421
+}

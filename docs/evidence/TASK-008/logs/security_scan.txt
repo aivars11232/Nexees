@@ -1,0 +1,41 @@
+Secret and privacy scan for TASK-008, run 2026-10-04T15:09:45+02:00.
+
+1. The security stage of scripts/test/run_checks.py, over every file a commit of this checkout would hold
+   (credential formats, private-key file names, and evidence that Git would ignore):
+$ python3 -B scripts/test/run_checks.py --stage security
+   == security ==
+   545 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+   -- security: PASS
+   
+   security PASS
+   ALL STAGES PASSED
+   exit code: 0
+
+2. The files TASK-008 added or changed since its base 1c85864, without this report (23 files):
+   Cargo.lock
+   Cargo.toml
+   FILE_TREE.txt
+   README.md
+   core/state/Cargo.toml
+   core/state/lib.rs
+   core/state/migrations/migration_registry.rs
+   core/state/operation_journal.rs
+   core/state/state_store.rs
+   docs/architecture/subsystems.lcl.txt
+   docs/dependencies/LICENSE_MATRIX.md
+   docs/dependencies/components.lcl.txt
+   docs/engineering/CONVENTIONS.md
+   docs/evidence/TASK-008/TASK-008_EVIDENCE.md
+   docs/evidence/TASK-008/logs/cleanup_record.json
+   docs/evidence/TASK-008/logs/dispatch_task_008.record.json
+   docs/evidence/TASK-008/logs/ide_activity.txt
+   docs/evidence/TASK-008/logs/native_language_suite.json
+   docs/evidence/TASK-008/logs/negative_tests.txt
+   docs/evidence/TASK-008/logs/preflight.txt
+   docs/evidence/TASK-008/logs/regression.txt
+   docs/evidence/TASK-008/logs/required_reading.txt
+   docs/evidence/TASK-008/logs/run_checks.txt
+   E-mail-shaped strings: 0 occurrences in 0 (file, string) pairs; none is the owner's
+   Executable files among them: 0 []; TASK-008 adds no executable
+
+Result: no credential, no key material, no ignored evidence, no personal address; only the intended executables

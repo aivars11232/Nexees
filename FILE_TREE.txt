@@ -191,11 +191,13 @@ Nexees/
 │   │   └── settings_store.source
 │   ├── state/
 │   │   ├── migrations/
-│   │   │   └── migration_registry.source
+│   │   │   └── migration_registry.rs
+│   │   ├── Cargo.toml
 │   │   ├── checkpoints.source
-│   │   ├── operation_journal.source
+│   │   ├── lib.rs
+│   │   ├── operation_journal.rs
 │   │   ├── recovery.source
-│   │   └── state_store.source
+│   │   └── state_store.rs
 │   ├── sync/
 │   │   ├── change_tracking.source
 │   │   ├── conflict_resolution.source
@@ -463,11 +465,31 @@ Nexees/
 │   │   │   │   ├── receipt.json
 │   │   │   │   └── snapshot_files.sha256
 │   │   │   └── TASK-006_EVIDENCE.md
-│   │   └── TASK-007/
+│   │   ├── TASK-007/
+│   │   │   ├── logs/
+│   │   │   │   ├── cleanup_record.json
+│   │   │   │   ├── dispatch_task_007.record.json
+│   │   │   │   ├── followup_preflight.txt
+│   │   │   │   ├── ide_activity.txt
+│   │   │   │   ├── native_language_suite.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── preflight.txt
+│   │   │   │   ├── regression.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── run_checks.txt
+│   │   │   │   └── security_scan.txt
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── corroboration.txt
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   └── snapshot_files.sha256
+│   │   │   └── TASK-007_EVIDENCE.md
+│   │   └── TASK-008/
 │   │       ├── logs/
 │   │       │   ├── cleanup_record.json
-│   │       │   ├── dispatch_task_007.record.json
-│   │       │   ├── followup_preflight.txt
+│   │       │   ├── dispatch_task_008.record.json
 │   │       │   ├── ide_activity.txt
 │   │       │   ├── native_language_suite.json
 │   │       │   ├── negative_tests.txt
@@ -483,7 +505,7 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       └── TASK-007_EVIDENCE.md
+│   │       └── TASK-008_EVIDENCE.md
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
 │   │   └── NEXEES_USER_MANUAL.md

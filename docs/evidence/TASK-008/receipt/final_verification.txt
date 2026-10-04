@@ -1,0 +1,98 @@
+TASK-008 final verification after cleanup, 2026-10-04T15:10:59+02:00.
+Read-only, except this file.
+The snapshot is over the files a commit would hold (docs/engineering/CONVENTIONS.md section 10).
+
+Snapshot before: d976dbb5ae89678e18cb568d8e843d8d36987d27f3f5068104fffbd4a9fe4151
+
+== The repository checks: every stage of the check runner, and the three crates for Android ==
+$ python3 -B scripts/test/run_checks.py --target-dir /mnt/F/Nexees-toolchains/target/nexees
+  545 files; 241 product files in 183 slots; 61 test files; 102 security enforcement points
+  -- layout: PASS
+  -- format: PASS
+  -- lint: PASS
+  -- build: PASS
+  test result: ok. 91 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.02s
+  test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  Ran 26 tests in 2.145s
+  -- test: PASS
+  217 relative Markdown links checked
+  -- docs: PASS
+  545 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+  -- security: PASS
+  -- deps: PASS
+  TASK-002: closed before closure records existed
+  TASK-003: closed before closure records existed
+  TASK-004: closed before closure records existed
+  TASK-005: closure record checked
+  TASK-006: closure record checked
+  TASK-007: closure record checked
+  TASK-008: open (no receipt yet)
+  -- evidence: PASS
+  ALL STAGES PASSED
+  exit code: 0
+$ cargo build --locked --offline -p nexees-domain -p nexees-protocol -p nexees-state --target aarch64-linux-android --target-dir /mnt/F/Nexees-toolchains/target/nexees
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+  exit code: 0
+$ cargo build --locked --offline -p nexees-domain -p nexees-protocol -p nexees-state --target x86_64-linux-android --target-dir /mnt/F/Nexees-toolchains/target/nexees
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+  exit code: 0
+
+== The predecessors' cross-checks ==
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-003/check_dependencies.py
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-004/check_threat_model.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  PASS  every threat test names threats, a slot or gap, pack scenarios, later owners and platforms
+  55 threats, 30 invariants, 39 threat tests, 11 remote contracts
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-001/check_charter_against_pack.py <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2
+  ALL CHECKS PASSED
+  exit code: 0
+
+== Pack, LCL repository, LCL SDK, home caches, processes ==
+Pack files newer than MANIFEST.json: 0
+MANIFEST.json SHA-256 is 8d9d0080…07e4
+LCL repository: HEAD fa1592b955639c4839f50861f9e89c5110064144, porcelain status lines: 0
+LCL SDK files written since TASK-008 began (2026-10-04 14:12:44): 0
+Files in the home caches written since TASK-008 began: 52, all of the owner's IDE (rust-analyzer's use of ~/.cargo, and VS Code's Gradle daemons with the clean-up of the one that stopped; logs/ide_activity.txt); unexplained: []
+Test stores left in /tmp (nexees-state-*): 0
+Task processes running (isolated-toolchain cargo or rustc, lcl): 0 []
+
+== Git and worktree ==
+$ git diff --stat
+   Cargo.lock                                      | 249 ++++++++++++++++++++++++
+   Cargo.toml                                      |   7 +-
+   FILE_TREE.txt                                   |  36 +++-
+   README.md                                       |  11 ++
+   core/state/migrations/migration_registry.source |   1 -
+   core/state/operation_journal.source             |   1 -
+   core/state/state_store.source                   |   1 -
+   docs/architecture/subsystems.lcl.txt            |   2 +-
+   docs/dependencies/LICENSE_MATRIX.md             |   2 +-
+   docs/dependencies/components.lcl.txt            |   4 +-
+   docs/engineering/CONVENTIONS.md                 |   4 +-
+   11 files changed, 300 insertions(+), 18 deletions(-)
+Modified tracked files: 8, exactly the expected ones
+Deleted tracked files: 3, the three implemented placeholders
+Staged: 0; untracked files: 16
+Untracked files outside the 5 new source files and docs/evidence/TASK-008/: 0 []
+Ignored files: 421, all the owner's IDE output, kept in place and outside the snapshot: {'target/': 404, 'docs/evidence/TASK-003/prototypes/android-app/.gradle/': 17}; others: []
+The snapshot listing agrees with sha256sum over the same 545 files
+HEAD: 1c85864, unchanged during the task
+
+== Layout ==
+Files still carrying their marker line: 261 (264 before, less the 3 implemented placeholders)
+PNG files unchanged against HEAD: True
+Temporary files or build output among the files a commit would hold: 0
+
+Snapshot after: d976dbb5ae89678e18cb568d8e843d8d36987d27f3f5068104fffbd4a9fe4151; unchanged by this verification: True
+
+Result: every exit 0 and every inspection as expected

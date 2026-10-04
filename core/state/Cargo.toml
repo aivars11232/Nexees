@@ -1,0 +1,26 @@
+[package]
+name = "nexees-state"
+description = "The Nexees state store: each host's one transactional store, with versioned records, migrations, integrity checks, the operation journal and recovery metadata."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+# The crate root sits beside the module files named by the architecture slots of core/state.
+[lib]
+path = "lib.rs"
+
+[dependencies]
+nexees-domain = { path = "../domain" }
+serde = { workspace = true }
+# Records are stored as their strict JSON (DEP-SERDE).
+serde_json = { workspace = true }
+# DEP-SQLITE: SQLite bundled through rusqlite, so both hosts run the same SQLite (PD-PERSISTENCE).
+rusqlite = { workspace = true }
+
+[dev-dependencies]
+# A test checks that a peer's stored protocol versions still let negotiation refuse it (RC-T16).
+nexees-protocol = { path = "../protocol" }
+
+[lints]
+workspace = true
