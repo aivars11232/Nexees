@@ -37,17 +37,31 @@
 //     ELECTRON_RUN_AS_NODE, NODE_OPTIONS and an inspector argument, it is still the application,
 //     loads nothing NODE_OPTIONS names and opens no inspector; the backend refuses to start
 //     without the window's token, and no process it starts inherits that token; the page runs in
-//     a sandboxed renderer without Node.
+//     a sandboxed renderer without Node;
+// 12. the Nexees look (R18, B1): the window wears the Nexees dark theme, whose every colour Theia
+//     knows and applies and whose surfaces, text and sizes are the shared design tokens'; a
+//     reopened window wears it again; each icon of the icon mapping exists; the About dialog
+//     shows the logo, as a file of the installation that is the icon derived from the bound
+//     source, with the name and version and no link; and the installation carries that icon in
+//     every derived size, named by its desktop entry.
 //
 // It exits 0 when every check passes and prints one line per check.
 
 import { spawn, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 const DEFINITION = JSON.parse(fs.readFileSync(new URL('../../../packaging/desktop/package_definition.json', import.meta.url), 'utf8'));
+const METADATA = JSON.parse(fs.readFileSync(new URL('../../../apps/desktop/resources/application_metadata.json', import.meta.url), 'utf8'));
+// The shared visual system the window must show: the design tokens, the icon mapping and the logo's manifest.
+const TOKENS = JSON.parse(fs.readFileSync(new URL('../../../assets/theme/design_tokens.json', import.meta.url), 'utf8'));
+const ICONS = JSON.parse(fs.readFileSync(new URL('../../../assets/theme/icon_mapping.json', import.meta.url), 'utf8')).icons;
+const BRANDING = new URL('../../../assets/branding/', import.meta.url);
+const LOGO = JSON.parse(fs.readFileSync(new URL('manifest.json', BRANDING), 'utf8'));
+const THEME = 'nexees-dark'; // the theme's ID (apps/desktop/src/shell/theme)
 const GRACE_MS = 5_000; // the host's grace period after its last window (application_host.rs)
 const DEBUG_PORT = 9334; // DevTools, on 127.0.0.1 only, for this test
 const INSPECT_PORT = 9335; // where a Node inspector would listen if the application honoured --inspect
@@ -307,7 +321,28 @@ async function send(target, method, params) {
 }
 
 async function evaluate(target, expression) {
-    return (await send(target, 'Runtime.evaluate', { expression, returnByValue: true }))?.result?.value;
+    return (await send(target, 'Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true }))?.result?.value;
+}
+
+/** Presses and releases one key in the page, as a user's keyboard would. */
+async function press(target, key, code, virtualKey) {
+    for (const type of ['keyDown', 'keyUp']) {
+        await send(target, 'Input.dispatchKeyEvent', { type, key, code, windowsVirtualKeyCode: virtualKey, nativeVirtualKeyCode: virtualKey });
+    }
+}
+
+function sha256(file) {
+    return createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+}
+
+/** A colour as the page reports or a theme names it, `#rrggbb[aa]` or `rgb[a](...)`, in one comparable form. */
+function colour(value) {
+    const hex = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i.exec(value ?? '');
+    if (hex) {
+        return [1, 2, 3].map(i => parseInt(hex[i], 16)).concat((hex[4] ? parseInt(hex[4], 16) / 255 : 1).toFixed(2)).join(',');
+    }
+    const rgb = /^rgba?\((\d+), (\d+), (\d+)(?:, ([\d.]+))?\)$/.exec(value ?? '');
+    return rgb ? [rgb[1], rgb[2], rgb[3], Number(rgb[4] ?? 1).toFixed(2)].join(',') : `unreadable: ${value}`;
 }
 
 /** The centre of the first visible element `selector` finds, or null. */
@@ -352,13 +387,67 @@ const PROBE = `JSON.stringify((() => {
         host: entry ? {
             visible: box.width > 0 && box.height > 0,
             label: entry.getAttribute('aria-label') ?? '',
-            attached: !!entry.querySelector('.codicon-plug'),
+            attached: !!entry.querySelector('.codicon-${ICONS.host_attached}'),
         } : null,
         node: [typeof require, typeof process, typeof module, typeof Buffer].filter(kind => kind !== 'undefined').length,
     };
 })())`;
 
+// What the window looks like: the theme Theia holds for the Nexees ID, each of its colours beside
+// the value the page applies, and the colours and sizes of the regions a user sees.
+const LOOK = `(async () => {
+    const style = (selector, property) => { const e = document.querySelector(selector); return e ? getComputedStyle(e)[property] : null; };
+    const box = selector => document.querySelector(selector)?.getBoundingClientRect();
+    const themes = await new Promise((resolve, reject) => {
+        const open = indexedDB.open('theia-monaco');
+        open.onerror = () => reject(open.error);
+        open.onsuccess = () => {
+            const all = open.result.transaction('themes').objectStore('themes').getAll();
+            all.onerror = () => reject(all.error);
+            all.onsuccess = () => resolve(all.result);
+        };
+    });
+    const theme = themes.find(t => t.id === '${THEME}');
+    const root = getComputedStyle(document.documentElement);
+    const rules = [...document.styleSheets].flatMap(sheet => { try { return [...sheet.cssRules]; } catch { return []; } });
+    return JSON.stringify({
+        classes: [...document.body.classList],
+        prefersDark: matchMedia('(prefers-color-scheme: dark)').matches,
+        colours: Object.entries(theme?.data.colors ?? {}).map(([id, value]) => [id, value, root.getPropertyValue('--theia-' + id.replaceAll('.', '-')).trim()]),
+        syntax: (theme?.data.rules ?? []).map(rule => rule.token + '=' + rule.foreground),
+        page: style('body', 'backgroundColor'),
+        statusBar: { background: style('#theia-statusBar', 'backgroundColor'), text: style('#status-bar-nexees-host', 'color'),
+            height: box('#theia-statusBar')?.height, font: style('#theia-statusBar .element', 'fontSize') },
+        sideBar: style('#theia-left-content-panel .theia-side-panel', 'backgroundColor'),
+        row: { height: box('.theia-TreeNode')?.height, font: style('.theia-TreeNode', 'fontSize'), text: style('.theia-TreeNode', 'color') },
+        activityBar: box('.theia-app-left .lm-TabBar-tab')?.width,
+        tabHeight: root.getPropertyValue('--theia-private-horizontal-tab-height').trim(),
+        tab: [...document.querySelectorAll('#theia-bottom-content-panel .lm-TabBar-tab, #theia-main-content-panel .lm-TabBar-tab')]
+            .map(tab => tab.getBoundingClientRect().height).find(height => height > 0) ?? null,
+        codicons: ${JSON.stringify(Object.values(ICONS))}.filter(name => rules.some(rule => rule.selectorText?.includes('.codicon-' + name + ':'))),
+    });
+})()`;
+
+// The About dialog as the user sees it.
+const ABOUT = `JSON.stringify((() => {
+    const about = document.querySelector('.nexees-about');
+    const dialog = about?.closest('.dialogBlock');
+    const logo = about?.querySelector('img');
+    const ok = dialog?.querySelector('.dialogControl .theia-button');
+    return about ? {
+        title: dialog?.querySelector('.dialogTitle')?.innerText.trim(),
+        text: about.innerText,
+        links: dialog?.querySelectorAll('a').length,
+        logo: logo ? { complete: logo.complete, natural: [logo.naturalWidth, logo.naturalHeight], shown: [logo.width, logo.height],
+            file: decodeURIComponent(new URL(logo.src).pathname) } : null,
+        corner: ok ? getComputedStyle(ok).borderRadius : null,
+    } : null;
+})())`;
+
 async function shown(target) {
+    // Asking for one pixel of the page makes it draw a frame. Theia's start waits for a frame, and
+    // a compositor that draws into memory does not always ask for one on its own.
+    await send(target, 'Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1, height: 1, scale: 1 } });
     return JSON.parse((await evaluate(target, PROBE)) ?? 'null');
 }
 
@@ -377,7 +466,9 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
     const target = await until('the workbench', async () => {
         const found = await page();
         const seen = found ? await shown(found) : null;
-        return seen?.shell && seen.host ? found : undefined;
+        // The shell alone: Theia may ask the trust question before it starts the Nexees part of
+        // the window, and the host's entry then comes only after the answer.
+        return seen?.shell ? found : undefined;
     }, 120_000);
     let lastClick = 0;
     const seen = await until('the workspace files in the Explorer', async () => {
@@ -434,6 +525,19 @@ try {
     fs.mkdirSync(path.join(workspace, 'src'), { recursive: true });
     fs.writeFileSync(path.join(workspace, 'hello.txt'), 'Hello from a local workspace.\n');
     fs.writeFileSync(path.join(workspace, 'src/main.rs'), 'fn main() {}\n');
+
+    // 12, before any window: the application's icon in the installation.
+    const entryLines = fs.readFileSync(path.join(prefix, DEFINITION.layout.desktop_entry), 'utf8').split('\n');
+    const installedIcons = LOGO.derived.map(icon => [icon, path.join(prefix,
+        DEFINITION.layout.icons.replaceAll('{size}', icon.size).replace('{icon}', METADATA.icon))]);
+    const wrongIcons = installedIcons.filter(([icon, file]) => !fs.existsSync(file) || sha256(file) !== icon.sha256
+        || sha256(file) !== sha256(new URL(icon.file, BRANDING))).map(([icon]) => icon.size);
+    const validator = spawnSync('desktop-file-validate', [path.join(prefix, DEFINITION.layout.desktop_entry)], { encoding: 'utf8' });
+    check('the installation carries the application icon in every size derived from the logo, and its desktop entry names it (B1)',
+        installedIcons.length > 0 && wrongIcons.length === 0 && entryLines.includes(`Icon=${METADATA.icon}`)
+        && (validator.error?.code === 'ENOENT' || validator.status === 0),
+        `${installedIcons.length} sizes; wrong: ${wrongIcons.join(', ') || 'none'}; desktop-file-validate: `
+        + (validator.error ? 'not installed' : `exit ${validator.status} ${validator.stdout.trim()}`));
 
     // 11, before any window: the fuses, and the backend alone.
     const fuses = fusesOf(electron);
@@ -528,6 +632,56 @@ try {
         environOf(backend).some(entry => entry.startsWith('THEIA_ELECTRON_TOKEN=')) && inheritors.length === 0,
         `${started.map(pid => path.basename(exeOf(pid) ?? '?')).join(', ')} and the host`);
 
+    // 12: the Nexees look, on the running window.
+    const look = JSON.parse(await evaluate(first.target, LOOK));
+    const { surface, text } = TOKENS.color;
+    check('the window wears the Nexees dark theme, and is dark to the desktop too (R18)',
+        look.classes.includes(THEME) && look.classes.includes('theia-dark') && look.prefersDark, look.classes.join(' '));
+    const unapplied = look.colours.filter(([, named, applied]) => colour(named) !== colour(applied)).map(([id]) => id);
+    check('every colour the theme names is one Theia knows and applies',
+        look.colours.length > 100 && unapplied.length === 0, `${look.colours.length} colours; not applied: ${unapplied.join(', ') || 'none'}`);
+    const surfaces = {
+        'page': [look.page, surface.editor], 'side bar': [look.sideBar, surface.window], 'status bar': [look.statusBar.background, surface.raised],
+        'status bar text': [look.statusBar.text, text.secondary], 'tree text': [look.row.text, text.primary],
+    };
+    const offColour = Object.entries(surfaces).filter(([, [seen, token]]) => colour(seen) !== colour(token)).map(([name, [seen]]) => `${name} ${seen}`);
+    check('the surfaces and text a user sees have the colours of the shared design tokens (R19)',
+        offColour.length === 0, offColour.join('; ') || Object.keys(surfaces).join(', '));
+    const { desktop, font } = TOKENS;
+    const sizes = {
+        'status bar height': [look.statusBar.height, desktop.status_bar_height], 'status bar text': [look.statusBar.font, `${font.small}px`],
+        'tree row height': [look.row.height, desktop.row_height], 'tree text': [look.row.font, `${font.base}px`],
+        'activity bar width': [look.activityBar, desktop.activity_bar_width], 'tab height': [look.tabHeight, `${desktop.tab_height}px`],
+        'a tab in the window': [look.tab ?? desktop.tab_height, desktop.tab_height],
+    };
+    const offSize = Object.entries(sizes).filter(([, [seen, token]]) => seen !== token).map(([name, [seen, token]]) => `${name} ${seen}, not ${token}`);
+    check('the compact sizes are the tokens\': rows, tabs, status bar and activity bar',
+        offSize.length === 0, offSize.join('; ') || Object.entries(sizes).map(([name, [seen]]) => `${name} ${seen}`).join(', '));
+    const syntax = Object.values(TOKENS.color.syntax).filter(value => !look.syntax.some(rule => rule.endsWith(`=${value}`)));
+    check('the theme carries the syntax colours of the tokens', look.syntax.length > 0 && syntax.length === 0, `${look.syntax.length} rules`);
+    check('every icon of the icon mapping exists in the window\'s icon set',
+        look.codicons.length === Object.keys(ICONS).length, look.codicons.join(', '));
+
+    await press(first.target, 'F1', 'F1', 112);
+    await until('the command palette', async () => (await evaluate(first.target, `!!document.querySelector('.quick-input-widget input')`)) || undefined, 15_000);
+    await send(first.target, 'Input.insertText', { text: 'About' });
+    await until('the About command in the palette', async () => (await evaluate(first.target,
+        `[...document.querySelectorAll('.quick-input-list .monaco-list-row')].some(row => row.innerText.trim() === 'About')`)) || undefined, 15_000);
+    await press(first.target, 'Enter', 'Enter', 13);
+    const about = await until('the About dialog with its logo', async () => {
+        const seen = JSON.parse((await evaluate(first.target, ABOUT)) ?? 'null');
+        return seen?.logo?.complete ? seen : undefined;
+    }, 15_000);
+    const windowIcon = LOGO.derived.find(icon => icon.size === 128);
+    check('the About dialog shows the logo: a file of the installation, the icon derived from the bound source (B1)',
+        about.logo.file === path.join(app, 'resources/branding/nexees-128.png') && sha256(about.logo.file) === windowIcon.sha256
+        && about.logo.natural.join() === '128,128' && about.logo.shown.join() === '64,64', about.logo.file);
+    check('the About dialog names Nexees, its version and its foundation, and links to nothing',
+        about.title === METADATA.name && about.text.includes(METADATA.name) && /Version \d+\.\d+\.\d+/.test(about.text)
+        && about.text.includes('Built on Eclipse Theia') && about.links === 0, about.text.replace(/\s+/g, ' '));
+    check('buttons have the corner radius of the tokens', about.corner === `${TOKENS.radius.control}px`, about.corner);
+    await press(first.target, 'Escape', 'Escape', 27);
+
     // 5: closing the window stops a host that was not asked to keep running.
     await closeWindow(first);
     check('closing the window leaves the host running for its grace period', hostPids().includes(hostPid));
@@ -540,16 +694,19 @@ try {
     children.push(kept);
     await until('the kept host', async () => host('status') === 0, 15_000);
     const seenHosts = new Set();
+    const themed = [];
     for (let round = 1; round <= 3; round += 1) {
         const window = await openWindow(workspace);
         await attached(window);
         hostPids().forEach(pid => seenHosts.add(pid));
+        themed.push(await evaluate(window.target, `document.body.classList.contains('${THEME}')`));
         await closeWindow(window);
     }
     await sleep(GRACE_MS + 2_000);
     check('three reopened windows found one and the same host (RC-T14)',
         seenHosts.size === 1 && seenHosts.has(kept.pid), [...seenHosts].join(', '));
     check('the kept host outlives its windows (RC-04)', hostPids().includes(kept.pid));
+    check('each reopened window wears the Nexees theme again', themed.length === 3 && themed.every(Boolean), themed.join(', '));
     kept.kill('SIGTERM');
     await until('the kept host to stop', async () => hostPids().length === 0, 10_000);
 

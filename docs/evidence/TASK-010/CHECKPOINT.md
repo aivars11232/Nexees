@@ -24,13 +24,23 @@ task's evidence record replaces it when the task is closed.
   (`scripts/build/build_desktop.py`).
 - **Tests.** `tests/tooling/test_brand_assets.py` and `tests/tooling/test_design_tokens.py`.
 
-At this commit `scripts/test/run_checks.py` passes all nine stages, and the application builds,
-installs and shows the theme and the About dialog in a private test session.
+At this commit `scripts/test/run_checks.py` passes all nine stages, and
+`tests/e2e/desktop/local_application.test.mjs` passes its 41 checks against the installed
+application: the theme and its colours and sizes against the tokens, the About dialog with the
+logo, the installed icons, and the 30 earlier checks.
 
 ## What is still to do before TASK-010 can close
 
-- The end-to-end test of the installed application does not yet check the theme, the About
-  dialog or the installed icons, and has not been run against this build.
+- **An open question, to examine first.** During this session the window's start began to stall
+  in the private test session: Theia waits for one drawn frame before it shows the workbench,
+  and the compositor that draws into memory no longer asked for one on its own. The test now
+  asks for one pixel of the page at each probe, which draws a frame, and passes. Whether the
+  stall comes from a change of this task or from the test machine's state was not established,
+  and whether a real screen is affected was not tested.
+- With the "preferences" object in the application's configuration, Theia asks its workspace
+  trust question before the Nexees part of the window starts, so the host's status entry appears
+  only after the answer. The test was adapted; the behaviour needs a decision and a line in the
+  manual.
 - A test of the build's refusal of an icon the manifest does not record.
 - Manual, conventions, README and the dependency and security records.
 - Negative tests, regression run, cleanup, final verification, the evidence record and the
