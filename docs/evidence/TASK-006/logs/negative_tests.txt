@@ -1,0 +1,31 @@
+TASK-006 negative tests, 2026-10-04T12:46:27+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. Fifteen cases break one domain
+rule each, which the contract tests of core/domain must catch: a test-stage case passes only when named
+tests fail, which are listed, and never through a compile error.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: a session bound to a checkout of another workspace is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: session::tests::a_checkout_of_another_workspace_is_an_invalid_combination)
+PASS  test: a replica handing its root to another device is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: workspace::tests::one_workspace_maps_to_a_different_root_on_each_device)
+PASS  test: a root mapping that accepts a smuggled authority field is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: workspace::tests::mapping_a_root_cannot_carry_authority_in_the_record)
+PASS  test: orientation off by default is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: handoff::tests::orientation_is_on_by_default_and_in_fresh_records, session::tests::orientation_is_on_by_default_and_a_session_override_wins)
+PASS  test: a task completed by evidence copied from another device is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: task::tests::claims_copies_failures_and_stale_evidence_never_complete_a_task)
+PASS  test: an import committed into a changed destination is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: import::tests::a_previewed_import_commits_only_into_the_reviewed_destination)
+PASS  test: a handoff ready before its required reads is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: handoff::tests::with_orientation_on_every_required_read_is_observed_before_ready)
+PASS  test: an approval used twice is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: authority::tests::an_approval_executes_exactly_its_request_once_within_its_epoch_and_time)
+PASS  test: a request with an ambient or missing workspace is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: remote_request::tests::a_workspace_request_names_its_workspace_and_revisions_of_it, remote_request::tests::a_device_request_never_carries_an_ambient_workspace, remote_request::tests::an_agent_request_names_the_agent_and_its_workspace)
+PASS  test: a request still run at its expiry is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: remote_request::tests::requests_expire_at_the_earlier_of_their_expiry_and_the_ceiling)
+PASS  test: a model switch that keeps the old generation is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: handoff::tests::a_handoff_is_fenced_to_the_current_binding_and_generation, handoff::tests::a_blocked_handoff_stays_blocked_and_round_trips, handoff::tests::a_handoff_belongs_to_a_switch_and_to_its_workspace, handoff::tests::reads_are_only_of_required_files_once_each_and_only_while_reading, handoff::tests::with_orientation_off)
+PASS  test: an identifier that accepts a path separator is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: ids::tests::opaque_identifiers_accept_their_alphabet_only)
+PASS  test: a workspace path that can climb out of its root is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: import::tests::imports_round_trip_and_reject_escaping_paths_on_decode, workspace::tests::relative_paths_cannot_leave_the_root_or_hide_a_prefix)
+PASS  test: two records sharing one schema is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: schema::tests::every_record_has_its_own_schema_so_no_state_is_stored_twice)
+PASS  test: a remote grant allowed to travel by synchronization is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: authority::tests::authority_records_round_trip_and_never_travel, schema::tests::sync_policies_follow_the_architecture_state_catalogue)
+PASS  deps: a domain dependency that is not an exact pin is caught (exit 1: FINDING: Cargo.toml: workspace.dependencies.serde = "1.0.229" is not an exact pin ("=x.y.z"))
+PASS  layout: a domain module without an architecture slot is caught (exit 1: FINDING: core/domain/extra.rs belongs to 0 subsystems instead of one: [])
+PASS  lint: unsafe code in the shared domain crate is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+PASS  security: an evidence log hidden in a build folder without a Gradle project is caught (exit 1: FINDING: docs/evidence/TASK-006/logs/build/out.txt is evidence but Git ignores it, so a commit would miss it)
+PASS  security: an evidence log Git would ignore, as TASK-005 guards is caught (exit 1: FINDING: docs/evidence/TASK-006/logs/extra.log is evidence but Git ignores it, so a commit would miss it)
+PASS  test: the runner excusing every ignored evidence file is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_anything_else_ignored_under_evidence_stays_a_finding)
+
+ALL NEGATIVE TESTS PASSED

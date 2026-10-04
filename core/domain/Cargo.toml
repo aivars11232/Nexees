@@ -10,5 +10,12 @@ publish.workspace = true
 [lib]
 path = "lib.rs"
 
+[dependencies]
+serde = { workspace = true }
+
+# The contract tests encode and decode through a real format; the hosts choose their own.
+[dev-dependencies]
+serde_json = { workspace = true }
+
 [lints]
 workspace = true

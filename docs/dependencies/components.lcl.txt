@@ -1006,14 +1006,14 @@ DATA:
         advisories: "None in cargo-deny or OSV."
         security_impact: "Typed envelopes reject unknown fields; frames are capped at 64 KiB before parsing."
         maintenance: "Very active."
-        transitive: "serde_derive, proc-macro2, quote, syn (build time)."
+        transitive: "serde_core and serde_derive, with proc-macro2, quote, syn 3 and unicode-ident at build time; itoa, memchr and zmij through serde_json."
         platforms: "Proven on Linux and Android."
         need: "Shared request types for the dispatcher (RC-25) and the JNI surface."
         alternatives: "The LCL crate's internal JSON writer (not a general parser)."
         reason: "The standard for typed serialisation in Rust."
         replacement: "Foundational to the message types."
-        verification: "Proven by every remote and JNI call in the prototype."
-        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json"]
+        verification: "Proven by every remote and JNI call in the prototype. TASK-006 pinned both in the Rust workspace: serde for the domain types of core/domain, serde_json for their contract tests. Cargo.lock locks the versions the prototype used, and cargo-deny passes."
+        evidence: ["docs/evidence/TASK-003/logs/probe_desktop.json", "Cargo.lock"]
         owner_tasks: ["TASK-006", "TASK-007"]
 
 DATA:

@@ -66,6 +66,10 @@ FIRST_CLOSURE_TASK = 5  # tasks from TASK-005 on carry a closure record in their
 BINARY_SUFFIXES = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.zip', '.jar', '.so', '.apk', '.aab')
 KEY_SUFFIXES = ('.pem', '.key', '.p12', '.pfx', '.jks', '.keystore', '.der')
 GATED_LOCKFILES = {'Cargo.lock'}  # lockfile names the deps stage has a gate for
+# Folders Gradle and IDEs generate beside a Gradle build file. Under docs/evidence they are output next to a
+# prototype kept as evidence, never evidence, and .gitignore ignores them there (CONVENTIONS.md section 7).
+GRADLE_OUTPUT = ('.gradle', '.kotlin', 'build')
+GRADLE_BUILD_FILES = ('build.gradle.kts', 'build.gradle', 'settings.gradle.kts', 'settings.gradle')
 LOCKFILE = re.compile(r'(\.lock|\.lockfile|-lock\.json|-lock\.yaml|lock\.json)$')
 CREDENTIALS = {
     'private key block': r'-----BEGIN [A-Z ]*PRIVATE KEY-----',
@@ -334,9 +338,13 @@ class Runner:
                     self.find(f'{path}:{line}: {name}')
         ignored = [p for p in self.git('ls-files', '-z', '--others', '--ignored', '--exclude-standard', '--',
                                        'docs/evidence').split('\0') if p]
+        committed = set(files)
+        generated = [p for p in ignored if gradle_output(p, committed)]
         for path in ignored:
-            self.find(f'{path} is evidence but Git ignores it, so a commit would miss it')
-        print(f'{len(files)} files scanned for credentials and keys; ignored evidence files: {len(ignored)}')
+            if path not in generated:
+                self.find(f'{path} is evidence but Git ignores it, so a commit would miss it')
+        print(f'{len(files)} files scanned for credentials and keys; ignored evidence files: '
+              f'{len(ignored) - len(generated)}; ignored Gradle output beside evidence prototypes: {len(generated)}')
 
     # ------------------------------------------------------------------ deps
 
@@ -384,6 +392,18 @@ class Runner:
 
 
 # ---------------------------------------------------------------------- helpers without state
+
+def gradle_output(path: str, files: set[str]) -> bool:
+    """Whether `path` lies in a folder Gradle or an IDE generated beside a Gradle build file in `files`, such as the
+    .gradle/ cache an IDE writes when it imports a prototype kept as evidence. Nothing else ignored is excused."""
+    parts = path.split('/')
+    for depth, part in enumerate(parts[:-1]):
+        if part in GRADLE_OUTPUT:
+            folder = '/'.join(parts[:depth])
+            if any(f'{folder}/{name}' in files for name in GRADLE_BUILD_FILES):
+                return True
+    return False
+
 
 def stem(relative: str) -> str:
     """Path without its extension, so a slot survives the real extension a task gives its file."""

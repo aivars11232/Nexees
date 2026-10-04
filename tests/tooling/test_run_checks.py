@@ -77,6 +77,25 @@ class BrokenLinkTest(unittest.TestCase):
             self.assertEqual(checked, 3)  # the fixture's link is not even counted
 
 
+class GradleOutputTest(unittest.TestCase):
+    """Ignored files under docs/evidence are excused only as Gradle or IDE output beside a Gradle build file."""
+
+    PROTOTYPE = 'docs/evidence/TASK-003/prototypes/android-app'
+    FILES = {f'{PROTOTYPE}/settings.gradle.kts', f'{PROTOTYPE}/app/build.gradle.kts'}
+
+    def test_output_beside_a_gradle_build_file_is_excused(self) -> None:
+        for path in (f'{self.PROTOTYPE}/.gradle/8.9/checksums/checksums.lock', f'{self.PROTOTYPE}/.kotlin/errors/x',
+                     f'{self.PROTOTYPE}/app/build/outputs/app.apk'):
+            self.assertTrue(run_checks.gradle_output(path, self.FILES), path)
+
+    def test_anything_else_ignored_under_evidence_stays_a_finding(self) -> None:
+        for path in ('docs/evidence/TASK-006/logs/run.log', 'docs/evidence/TASK-006/logs/build/out.txt',
+                     f'{self.PROTOTYPE}/app/src/build.log', f'{self.PROTOTYPE}/.gradle'):
+            self.assertFalse(run_checks.gradle_output(path, self.FILES), path)
+        # A Gradle folder only counts beside a build file that the repository itself holds.
+        self.assertFalse(run_checks.gradle_output(f'{self.PROTOTYPE}/.gradle/x', set()))
+
+
 class PinTest(unittest.TestCase):
     def test_only_exact_pins_and_workspace_or_path_references_pass(self) -> None:
         manifest = {

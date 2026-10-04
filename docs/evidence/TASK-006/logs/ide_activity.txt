@@ -1,0 +1,80 @@
+TASK-006: what the owner's IDE did during the task, recorded 2026-10-04T12:50:40+02:00 with read-only commands.
+TASK-006 began at 2026-10-04T11:57:55+02:00, when the owner's instruction arrived. Every command of the task
+runs with the isolated toolchain (env.sh): CARGO_HOME and RUSTUP_HOME under /mnt/F/Nexees-toolchains, never ~/.cargo.
+
+== 1. The owner's IDE processes ==
+  4525  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java
+  4598  /home/aivars/.vscode/extensions/rust-lang.rust-analyzer-0.3.3065-linux-x64/server/rust-analyzer
+  4693  /usr/lib/rust-analyzer-proc-macro-srv
+  4694  /usr/lib/rust-analyzer-proc-macro-srv
+  5078  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java
+  5968  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java
+  6324  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java
+  7 processes: VS Code's rust-analyzer (with its proc-macro servers) and the Red Hat Java language server.
+  The task's toolchain environment (env.sh):
+    export RUSTUP_HOME=$T/rustup CARGO_HOME=$T/cargo CARGO_TARGET_DIR=$T/target
+
+== 2. Output the IDE keeps in the checkout: ignored, never committed, outside the snapshot ==
+  docs/evidence/TASK-003/prototypes/android-app/.gradle/: 17 files, written 2026-10-04T11:52:52.963+02:00 .. 2026-10-04T11:54:41.937+02:00
+  target/: 198 files, written 2026-10-04T11:52:23.102+02:00 .. 2026-10-04T12:30:21.014+02:00
+  target/ is rust-analyzer's cargo check output; the .gradle/ folder is the Java extension's import of TASK-003's
+  Gradle prototype. Both appeared at 11:52, before TASK-006 began (logs/preflight.txt).
+
+== 3. Cargo.lock: written by rust-analyzer, identical to the task's own offline resolution ==
+  2026-10-04T12:14:55.316+02:00  Cargo.toml
+  2026-10-04T12:14:56.371+02:00  core/domain/Cargo.toml
+  2026-10-04T12:14:57.824+02:00  Cargo.lock
+  TASK-006 added serde and serde_json to the two manifests at 12:14:55-56. At 12:14:57, before any cargo command
+  of the task had run, Cargo.lock was rewritten: rust-analyzer reloaded the workspace with the system cargo and
+  ~/.cargo. The task's next command, cargo metadata --offline --locked with the isolated toolchain, found it
+  complete. The lock is now regenerated independently, offline, with the isolated toolchain, from the manifests:
+  $ cargo generate-lockfile --offline   (exit 0; Locking 11 packages to highest Rust 1.99 compatible versions)
+  Result: the regenerated lock is byte-identical to the checkout's Cargo.lock.
+  Locked packages:
+    itoa 1.0.18
+    memchr 2.8.3
+    nexees-domain 0.0.0
+    proc-macro2 1.0.107
+    quote 1.0.47
+    serde 1.0.229
+    serde_core 1.0.229
+    serde_derive 1.0.229
+    serde_json 1.0.151
+    syn 3.0.6
+    unicode-ident 1.0.26
+    zmij 1.0.23
+
+== 4. Writes in the home caches since TASK-006 began ==
+  ~/.cargo: 18 files
+    2026-10-04T12:27:04.423+02:00  ~/.cargo/.global-cache
+    2026-10-04T12:14:57.452+02:00  ~/.cargo/registry/cache/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151.crate
+    2026-10-04T12:14:57.486+02:00  ~/.cargo/registry/cache/index.crates.io-1949cf8c6b5b557f/syn-3.0.6.crate
+    2026-10-04T12:14:57.459+02:00  ~/.cargo/registry/cache/index.crates.io-1949cf8c6b5b557f/unicode-ident-1.0.26.crate
+    2026-10-04T12:14:57.218+02:00  ~/.cargo/registry/index/index.crates.io-1949cf8c6b5b557f/.cache/3/s/syn
+    2026-10-04T12:14:57.237+02:00  ~/.cargo/registry/index/index.crates.io-1949cf8c6b5b557f/.cache/un/ic/unicode-ident
+    2026-10-04T12:14:57.763+02:00  ~/.cargo/registry/index/index.crates.io-1949cf8c6b5b557f/config.json
+    2026-10-04T12:14:57.264+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/itoa-1.0.18/.cargo-ok
+    2026-10-04T12:14:57.272+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memchr-2.8.3/.cargo-ok
+    2026-10-04T12:14:57.274+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.107/.cargo-ok
+    2026-10-04T12:14:57.277+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quote-1.0.47/.cargo-ok
+    2026-10-04T12:14:57.279+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/.cargo-ok
+    2026-10-04T12:14:57.282+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/.cargo-ok
+    2026-10-04T12:14:57.284+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_derive-1.0.229/.cargo-ok
+    2026-10-04T12:14:57.458+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/.cargo-ok
+    2026-10-04T12:14:57.497+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.6/.cargo-ok
+    2026-10-04T12:14:57.461+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/unicode-ident-1.0.26/.cargo-ok
+    2026-10-04T12:14:57.286+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.23/.cargo-ok
+  ~/.gradle: 2 files
+    2026-10-04T12:50:40.198+02:00  ~/.gradle/daemon/8.9/daemon-6324.out.log
+    2026-10-04T12:50:36.976+02:00  ~/.gradle/daemon/9.2.0/daemon-5968.out.log
+  ~/.rustup: 0 files
+  ~/.android: 0 files
+  ~/.npm: 0 files
+  Total: 20. No task command uses these folders: the task runs with the isolated CARGO_HOME and RUSTUP_HOME
+  above (env.sh sets GRADLE_USER_HOME too: 1 line), and TASK-006 runs no Gradle at all.
+  - ~/.cargo: rust-analyzer resolving the changed manifests at 12:14:57. It downloaded serde_json 1.0.151, syn 3.0.6
+    and unicode-ident 1.0.26, which ~/.cargo did not hold, and unpacked the other locked crates. .global-cache is
+    cargo's record of when the registry was last used, updated by rust-analyzer's later checks.
+  - ~/.gradle: the logs of the two Gradle daemons that the Java extension runs (the java processes 5968 and 6324
+    of section 1), which keep writing while VS Code is open.
+

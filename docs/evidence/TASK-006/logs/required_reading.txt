@@ -1,0 +1,66 @@
+TASK-006 required reading, recorded 2026-10-04T12:38:36+02:00.
+Pack: /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3, content identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1, the same pack TASK-002 to TASK-005 read.
+"same as TASK-NNN" means the file's SHA-256 equals the hash in that task's logs/required_reading.txt (newest first).
+
+== Read for TASK-006 ==
+01 4accccce98cecdefffb91efe4c6b32d4740e6b1190c44287dfecdf0fd4c9865e  tasks/task_006.lcl.txt  [not in the earlier lists; read in full: objective, v0.2 and v0.3 scope, reuse and security requirements, verification and the 20 check IDs]
+02 7dcf4e8a1765d5d6404e0594d10933aa315337b9b43e9f0d5152192dedb23d20  architecture/android_operating_model.lcl.txt  [same as TASK-004; required by TASK-006; read in full: A1 to A10, with A9 assigning TASK-006 and A3, A5, A6, A7 defining the semantics]
+03 e0a2c21d22a13037f7188f3131050e99b02a44880ffa8b947a8c9cbfeae605c2  architecture/workspace_model.lcl.txt  [same as TASK-004; read in full: foreground versus agent workspace, per-device replicas, v0.3 focus rules]
+04 d50fc3a3e4f6487861289b7088d7b0289c7543bda253566584ee0484733917e6  architecture/persistent_state_model.lcl.txt  [same as TASK-004; read in full: entities, schema requirements, v0.2 and v0.3 extensions]
+05 669cdee9c343924d2299b88c022a9444fca9ff690b5b1e5686671db78c6f912c  architecture/provider_and_agent_model.lcl.txt  [same as TASK-004; read in full: provider categories and capabilities, model location versus execution location]
+06 87850325a2d613c93c716dd2dfb931316d10f53528252f84dce101b8eb17f64d  architecture/authority_hierarchy.lcl.txt  [same as TASK-005; read in full: the eight levels and their rules]
+07 4a83ecfaac2c63bfbfe03f9893d0d79f8211aaf021800e47823c0e05d9459e3a  architecture/lcl_integration.lcl.txt  [same as TASK-004; read in full: modes, Android-local LCL, draft revisions and adoption]
+08 a6cde8759da83eacca4adbd50abd63d42412425fe82743a84ca4591723b80b72  architecture/lcl_import_pipeline.lcl.txt  [same as TASK-004; read in full: I1 to I6, the import transaction and mapping]
+09 bd178ec68c0615e525c4804239266b08b2755a0bcda1278597723bfae21391c5  architecture/model_handoff.lcl.txt  [same as TASK-004; read in full: H1 to H5, generation, checkpoint, read receipts and orientation]
+10 1aa74791017abf30495994755d8f30e5534fb59bf509e35f2cac1f0a4c6bf244  architecture/auth_and_settings.lcl.txt  [same as TASK-004; read in full: the v0.3 orientation preference and separated access kinds]
+11 7d91532203589febd37811a0e28adb4e81e87a70951da50f80bfd542a5eba145  architecture/remote_device_control.lcl.txt  [same as TASK-004; read in full: RC-01 to RC-26; RC-09, RC-12, RC-17 and RC-20 shape the domain types]
+12 638e4d6d8f433f3996dd349eca02479de4cf06c8b95ef8b5a4d728a327182875  architecture/manuals_and_help.lcl.txt  [same as TASK-005; required by TASK-006; read in full for the manual-impact decision]
+13 2f65ff575dbfade3fde459efd125c62e5f7d0a47874b2dbf6d5c22b289443956  architecture/system_architecture.lcl.txt  [same as TASK-005; read in full: separation rules and v0.2 local hosts]
+14 666b655bb987f453d3c577e3922c8915b055244c002f9d9ec186ca8358f336cf  reuse/reuse_matrix.lcl.txt  [same as TASK-005; reuse-first check before adding serde to the workspace]
+15 f807af93abd67ac0715c3f93c3fb1af056549d08edb95fb9110d568286a6ae0a  reuse/import_handoff_sources.lcl.txt  [same as TASK-003; read in full: the reuse decisions for import and handoff]
+16 50c2098dc26caa2e6943e597dedefe32e613f1025ee802aea57322f6f19d49dd  verification/v0.3_requirement_coverage.lcl.txt  [same as TASK-005; read in full: no row assigns TASK-006 a v0.3 feature beyond its domain types]
+17 8f8cec1cbe7e615e9f14a608cbfce6fed40b8d7d2b8af9792d898ee55b42ec5e  policies/project_charter.lcl.txt  [same as TASK-005; the autonomy modes and specification modes the session types name]
+18 51677c6af1cb4f045fa2a9672acd3536198bb75d1482f145cf0860eea4950c6e  bindings/bindings.lcl.txt  [same as TASK-005; required by TASK-006; B7, B9, B11, B17, B18, B20, B22 and B23 read again; B26 for the preflight]
+19 ad16c8b61cd9c84d5dc60884e2900e858594d3f2ccaf5c912b40401a388c180f  policies/global_contracts.lcl.txt  [same as TASK-005; required by TASK-006; C2, C11, C15, C21 and C22 read again]
+20 2307183519d203e547a031a11dde634a5222588febfd6bd706e429d8ca8473a5  policies/master_rules.lcl.txt  [same as TASK-005; required by TASK-006; R11, R14 and R17 read again]
+21 3529983147c2af3a3d0767f7698f72f094017feed4f06df9eb0b0e1565a477ac  checks/runtime_gates.lcl.txt  [same as TASK-005; verify.snapshot_shape for the snapshot definition]
+
+== The rest of the mandatory read order, reused ==
+Read in full for an earlier task and byte-identical now, so reused as the continuation profile allows. The
+readability, cleanup and no-unnecessary-code rules are applied through docs/engineering/CONVENTIONS.md.
+01 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9  policies/task_002_075_continuation.lcl.txt  [same as TASK-005; reused]
+02 aec37d86e486f2d403797d6a61c0cd199aaf2a3173938706a1310d770a16540a  guidance/usage.lcl.txt  [same as TASK-005; reused]
+03 cd49629e16e714a0dc40bceaca81470330d9868ff1eed9451f06dbb35d7f3f97  policies/code_readability_and_cleanup.lcl.txt  [same as TASK-005; reused]
+04 8b8cc8813dc12b6b7237bb5a952b6dc5e2847631919a4ca4ed6357fd8f5fae85  policies/no_unnecessary_code.lcl.txt  [same as TASK-005; reused]
+05 afa9b2dcb9b3df808097c8e4fa1b350403b054a08956fa14cfbe99417847bfed  checks/stop_conditions.lcl.txt  [same as TASK-005; reused]
+06 b8382ec17bcaa75317b26ce8238305d8d004f2a9aaf1ed9d6038b56ee4bd8a02  policies/reuse_policy.lcl.txt  [same as TASK-005; reused]
+07 ae0d3943cf66ce8afe131eadd66f35eab9077bb04c60a838a5404636cef053f0  policies/security_baseline.lcl.txt  [same as TASK-005; reused]
+08 2fc8668acfe23069eb4a9fe378729a55e2a65e7ac409c70bfc4cd0263ff98473  policies/acceptance_criteria.lcl.txt  [same as TASK-005; reused]
+09 5b68c8feaa79dc6c43782f6a0a0c4949367ec34af6c4e2f5321fd40e387ab547  policies/usage_and_agents.lcl.txt  [same as TASK-005; reused]
+10 ce1115d1e1db3da02dda7484959a11d5e7e028d6fea1143224759e204fa6510f  bindings/read_order.lcl.txt  [same as TASK-005; reused]
+11 c8c1e700d0ff0ab17ff26e1a093d0461e601aaab496900035b0c051ebaae1729  verification/security_gate.lcl.txt  [same as TASK-005; reused]
+12 c2e67f60229a5a5d106a82ef4b8caf33ad24b0b0f624af5bcb297b22754c0e65  verification/test_strategy.lcl.txt  [same as TASK-005; reused]
+13 6ec13fb02cec78d937eb6e29a73a3d95432d4ad2436fd4365916d038a4bc7612  data/invocation_inputs.lcl.txt  [same as TASK-005; reused]
+14 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836  accept_task.lcl.txt  [same as TASK-005; reused]
+15 5166634ebfdab4e67a9876b68c7b9d085f309f479f4e41756adff7939b4d4f9d  main.lcl.txt  [same as TASK-005; reused]
+16 960dedd6f7c1bc90bed915f75455ba770b38f3b4dc37c519e765bb7e98ae10e3  README_FIRST.txt  [same as TASK-005; reused]
+
+== Pack data files used ==
+   9f257d67c28d79718dead07137774b9f59208e4190395e53e2300b8493c03af2  TASK_REQUIREMENT_MAP.json  [same as TASK-005; TASK-006's entry: dependency TASK-005, 20 check IDs, no remote IDs]
+   7dc96677324c2e5ad40520d4072c690f6c5d4c69c72cb654b632a2a3bf56bed8  PROCEDURAL_CHANGES.json  [same as TASK-005; TASK-006's entry: dependency TASK-005, 20 check IDs, no remote IDs]
+
+Repository records read for TASK-006:
+- docs/architecture: SS-DOMAIN-PROTOCOL and its slots; the state catalogue (the ten states naming TASK-006 as a
+  schema task, and the others for their sync policies); IF-REMOTE and the other interfaces; RC-09; AD-01 to AD-12
+  and the platform decisions;
+- docs/security: SI-12, TH-47, type.sec_request_envelope, type.sec_grant, type.sec_approval and the other
+  contract types, and the security bindings (outcomes, lifetimes, lock categories);
+- docs/dependencies: DEP-SERDE, and the TASK-003 prototype lockfile it was proven with;
+- docs/charter: the Android family that names TASK-006 (read only; the charter is frozen);
+- docs/engineering/CONVENTIONS.md: sections 2, 3, 5, 6, 7, 9 and 10, which this task is the first to apply to
+  product code.
+
+Unverified reuse: none
+
+External sources consulted: none. No download by any task command: serde and serde_json were already in the
+isolated cargo registry from TASK-003.

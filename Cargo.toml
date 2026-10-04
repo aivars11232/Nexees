@@ -20,6 +20,9 @@ publish = false
 # Shared third-party versions. Every entry is an exact pin ("=x.y.z", DS-05) recorded in
 # docs/dependencies before it is added; scripts/test/run_checks.py rejects any other form.
 [workspace.dependencies]
+# DEP-SERDE: typed serialization of the domain types; serde_json encodes them in tests.
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.151"
 
 [workspace.lints.rust]
 # Unsafe code is denied everywhere. Shared-core crates also forbid it in their crate root; a

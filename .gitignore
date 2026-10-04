@@ -60,3 +60,9 @@ Thumbs.db
 # Task evidence is never ignored, whatever the rules above match: a log or a prototype file under
 # docs/evidence/ is part of a task's record and must reach its commit.
 !docs/evidence/**
+# Except what Gradle and IDEs generate beside a Gradle prototype kept as evidence, such as the .gradle/ cache an
+# IDE writes when it imports one: never evidence. The security stage of scripts/test/run_checks.py accepts these
+# folders only next to a Gradle build file, and fails on any other ignored evidence.
+docs/evidence/**/.gradle/
+docs/evidence/**/.kotlin/
+docs/evidence/**/build/

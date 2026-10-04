@@ -152,8 +152,15 @@ never committed. `.gitignore` lists them by the stack's real output names.
 **An ignore rule is never permission to delete.** Cleanup removes only what a task recorded
 (section 11).
 
-Task evidence is never ignored: the last rule of `.gitignore` re-includes `docs/evidence/`,
-and the security stage fails if any evidence file is ignored. [security]
+Task evidence is never ignored. The last rules of `.gitignore` re-include `docs/evidence/`, except
+the folders Gradle and IDEs generate beside a Gradle prototype kept there: `.gradle/`, `.kotlin/` and
+`build/`. An IDE writes such a cache when it imports the prototype. The security stage fails on any
+other ignored evidence file, and on those folders unless a Gradle build file of the repository sits
+beside them. [security]
+
+An IDE may keep its own build output in the checkout, such as rust-analyzer's `target/`. It is
+ignored, never committed and outside every task's snapshot (section 10); the task's final
+verification lists it.
 
 ## 8. Secrets
 
@@ -187,6 +194,10 @@ Each task keeps one folder, `docs/evidence/TASK-NNN/`:
 
 `FILE_TREE.txt` lists the receipt files before they exist. `run_checks.py --write-file-tree`
 regenerates it. [docs]
+
+A receipt's **snapshot** is what a commit of the task holds. It is the SHA-256 of one `sha256sum`
+line per file Git would commit, tracked or untracked but not ignored, outside the task's
+`receipt/`, sorted by path under `LC_ALL=C`. Ignored local output is not part of it.
 
 From TASK-005 on, `receipt.json` carries a **closure record**, the object `closure`. It
 records the four things every closure must record (Q5 RC-05). The evidence stage validates it

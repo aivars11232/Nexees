@@ -79,7 +79,7 @@ real phone.
 | DEP-PULLDOWN-CMARK | pulldown-cmark | 0.13.4 | MIT | DEPENDENCY | shared core | Proven on both |
 | DEP-RUSTLS | rustls + ring + webpki | 0.23.45 / 0.17.14 | Apache-2.0 OR ISC OR MIT; ring Apache-2.0 AND ISC | DEPENDENCY | shared core | Proven on both and PC↔emulator |
 | DEP-RCGEN | rcgen | 0.14.10 | MIT OR Apache-2.0 | DEPENDENCY | shared core | Proven on both |
-| DEP-SERDE | serde / serde_json | 1.0.229 / 1.0.151 | MIT OR Apache-2.0 | DEPENDENCY | shared core | Proven on both |
+| DEP-SERDE | serde / serde_json | 1.0.229 / 1.0.151 | MIT OR Apache-2.0 | DEPENDENCY | shared core | Proven on both; pinned in the workspace by TASK-006 |
 | DEP-NIX | nix | 0.31.3 | MIT | DEPENDENCY | desktop | Proven (peer uid checks) |
 | DEP-JNI | jni | 0.22.4 | MIT OR Apache-2.0 | DEPENDENCY | android | Proven in the app |
 | DEP-UNIFFI | UniFFI | 0.32.2 | MPL-2.0 | REJECTED | none | One JSON entry point suffices |

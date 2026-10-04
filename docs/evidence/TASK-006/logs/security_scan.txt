@@ -1,0 +1,58 @@
+Secret and privacy scan for TASK-006, run 2026-10-04T12:50:41+02:00.
+
+1. The security stage of scripts/test/run_checks.py, over every file a commit of this checkout would hold
+   (credential formats, private-key file names, and evidence that Git would ignore):
+$ python3 -B scripts/test/run_checks.py --stage security
+   == security ==
+   502 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+   -- security: PASS
+   
+   security PASS
+   ALL STAGES PASSED
+   exit code: 0
+
+2. The files TASK-006 added or changed (git status, without this report; 40 files):
+   .gitignore
+   Cargo.lock
+   Cargo.toml
+   FILE_TREE.txt
+   README.md
+   core/domain/Cargo.toml
+   core/domain/authority.rs
+   core/domain/client.rs
+   core/domain/device.rs
+   core/domain/errors.rs
+   core/domain/handoff.rs
+   core/domain/ids.rs
+   core/domain/import.rs
+   core/domain/lcl.rs
+   core/domain/lib.rs
+   core/domain/model_capabilities.rs
+   core/domain/remote_request.rs
+   core/domain/revision.rs
+   core/domain/schema.rs
+   core/domain/session.rs
+   core/domain/task.rs
+   core/domain/text.rs
+   core/domain/time.rs
+   core/domain/workspace.rs
+   docs/architecture/subsystems.lcl.txt
+   docs/dependencies/LICENSE_MATRIX.md
+   docs/dependencies/components.lcl.txt
+   docs/engineering/CONVENTIONS.md
+   docs/evidence/TASK-006/TASK-006_EVIDENCE.md
+   docs/evidence/TASK-006/logs/cleanup_record.json
+   docs/evidence/TASK-006/logs/dispatch_task_006.record.json
+   docs/evidence/TASK-006/logs/ide_activity.txt
+   docs/evidence/TASK-006/logs/native_language_suite.json
+   docs/evidence/TASK-006/logs/negative_tests.txt
+   docs/evidence/TASK-006/logs/preflight.txt
+   docs/evidence/TASK-006/logs/regression.txt
+   docs/evidence/TASK-006/logs/required_reading.txt
+   docs/evidence/TASK-006/logs/run_checks.txt
+   scripts/test/run_checks.py
+   tests/tooling/test_run_checks.py
+   E-mail-shaped strings: 0 occurrences in 0 (file, string) pairs; none is the owner's
+   Executable files among them: 1 ['scripts/test/run_checks.py']; TASK-006 adds no executable
+
+Result: no credential, no key material, no ignored evidence, no personal address; only the intended executables

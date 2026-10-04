@@ -79,8 +79,19 @@ platform layer) and Eclipse Theia on Electron for the Desktop client.
 
 TASK-005 created the scaffold:
 - the Rust workspace and its pinned toolchain;
-- the first crate shell, `core/domain`, with no types yet;
+- the first crate, `core/domain`;
 - the repository checks and their tests.
+
+TASK-006 implemented the shared domain model in `core/domain`. It defines the versioned,
+strictly validated types both hosts share:
+- workspaces and their device-local replicas;
+- devices and their trust;
+- agent sessions and their bindings;
+- tasks and evidence;
+- LCL revisions, imports and model handoffs;
+- grants, approvals and the remote request envelope.
+
+The crate holds no behaviour, storage or transport. Those arrive with the tasks that own them.
 
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.

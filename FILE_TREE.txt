@@ -113,13 +113,25 @@ Nexees/
 │   │   └── repository_map.source
 │   ├── domain/
 │   │   ├── Cargo.toml
-│   │   ├── errors.source
+│   │   ├── authority.rs
+│   │   ├── client.rs
+│   │   ├── device.rs
+│   │   ├── errors.rs
 │   │   ├── events.source
+│   │   ├── handoff.rs
+│   │   ├── ids.rs
+│   │   ├── import.rs
+│   │   ├── lcl.rs
 │   │   ├── lib.rs
-│   │   ├── model_capabilities.source
-│   │   ├── session.source
-│   │   ├── task.source
-│   │   └── workspace.source
+│   │   ├── model_capabilities.rs
+│   │   ├── remote_request.rs
+│   │   ├── revision.rs
+│   │   ├── schema.rs
+│   │   ├── session.rs
+│   │   ├── task.rs
+│   │   ├── text.rs
+│   │   ├── time.rs
+│   │   └── workspace.rs
 │   ├── help/
 │   │   ├── help_navigation.source
 │   │   ├── manual_catalog.source
@@ -405,18 +417,38 @@ Nexees/
 │   │   │   │   └── snapshot_files.sha256
 │   │   │   ├── TASK-004_EVIDENCE.md
 │   │   │   └── check_threat_model.py
-│   │   └── TASK-005/
+│   │   ├── TASK-005/
+│   │   │   ├── logs/
+│   │   │   │   ├── cleanup_record.json
+│   │   │   │   ├── dispatch_task_005.record.json
+│   │   │   │   ├── native_language_suite.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── preflight.txt
+│   │   │   │   ├── regression.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── run_checks.txt
+│   │   │   │   ├── security_scan.txt
+│   │   │   │   └── toolchain.txt
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── corroboration.txt
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   └── snapshot_files.sha256
+│   │   │   └── TASK-005_EVIDENCE.md
+│   │   └── TASK-006/
 │   │       ├── logs/
 │   │       │   ├── cleanup_record.json
-│   │       │   ├── dispatch_task_005.record.json
+│   │       │   ├── dispatch_task_006.record.json
+│   │       │   ├── ide_activity.txt
 │   │       │   ├── native_language_suite.json
 │   │       │   ├── negative_tests.txt
 │   │       │   ├── preflight.txt
 │   │       │   ├── regression.txt
 │   │       │   ├── required_reading.txt
 │   │       │   ├── run_checks.txt
-│   │       │   ├── security_scan.txt
-│   │       │   └── toolchain.txt
+│   │       │   └── security_scan.txt
 │   │       ├── receipt/
 │   │       │   ├── RECEIPT_RESULT.md
 │   │       │   ├── corroboration.txt
@@ -424,7 +456,7 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       └── TASK-005_EVIDENCE.md
+│   │       └── TASK-006_EVIDENCE.md
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
 │   │   └── NEXEES_USER_MANUAL.md
