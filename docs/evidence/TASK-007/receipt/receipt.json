@@ -8,7 +8,7 @@
   "manifest_sha256": "8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4"
  },
  "snapshot_algorithm": "sha256 of the listing in snapshot_files.sha256: one sha256sum line per file a commit would hold (tracked, or untracked and not ignored, as git ls-files --cached --others --exclude-standard lists them) outside docs/evidence/TASK-007/receipt/, paths sorted with LC_ALL=C; ignored local output is not part of it (docs/engineering/CONVENTIONS.md section 10)",
- "predecessors": "TASK-001 (284f97a), TASK-002 (d1a673f), TASK-003 (2eaa199; receipt corrected in a590eab and decided by the owner in bccc9b1, engine record 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0), TASK-004 (0337be0, engine record 2b7406b82bf63a524943a87c60cf322ec17291bfaf800efd23676e0097bbc83f), TASK-005 (e83dcd7, engine record 9554641f1fb2383d936a58cedfdc345d896a21ac28e7208e135c3dc8aead7b9b) and TASK-006 (fc42a93, engine record b10ab5d95cfbb2a7553c90665ae670abe4cd7921204e1859644ed6e77d899f36) accepted; TASK-007_EVIDENCE.md section 3.",
+ "predecessors": "TASK-001 (284f97a), TASK-002 (d1a673f), TASK-003 (2eaa199; receipt corrected in a590eab and decided by the owner in bccc9b1, engine record 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0), TASK-004 (0337be0, engine record 2b7406b82bf63a524943a87c60cf322ec17291bfaf800efd23676e0097bbc83f; its cross-check repaired by TASK-007's follow-up), TASK-005 (e83dcd7, engine record 9554641f1fb2383d936a58cedfdc345d896a21ac28e7208e135c3dc8aead7b9b) and TASK-006 (fc42a93, engine record b10ab5d95cfbb2a7553c90665ae670abe4cd7921204e1859644ed6e77d899f36) accepted; TASK-007_EVIDENCE.md section 3. TASK-007's first close (commit 9f28c37, engine record 3b1ed6075afa85715198b7002a0ba4724162d3397b8aaf5d4d059038added23b) left TASK-004's cross-check failing as an expected result; this receipt supersedes it after the follow-up repaired that check (TASK-007_EVIDENCE.md section 11).",
  "renderer_decision_source": "The owner's answer 'Electron permitted' to DESKTOP-RENDERER-01 on 2026-10-03, recorded by TASK-003 in docs/dependencies",
  "remote_observations": "The eight remote-observation inputs describe the shipped product and are required only for tasks 70 and 73 to 75; the product does not exist yet, so they stay unverified. TASK-007 is assigned RC-01, RC-03, RC-09, RC-10, RC-12, RC-17, RC-20 and RC-23 and the scenarios RC-T08 to RC-T10 for their protocol contracts, types and test plan only, as its remote_evidence_scope states; nothing remote is implemented or runtime-tested, and the runtime owners are recorded in TASK-007_EVIDENCE.md section 8.",
  "inputs": {
@@ -197,13 +197,14 @@
   "branch": "main",
   "receipt_task_id": "TASK-007",
   "receipt_content_identity": "bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1",
-  "current_snapshot_sha256": "048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07",
-  "receipt_snapshot_sha256": "048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07",
-  "post_cleanup_snapshot_sha256": "048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07",
+  "current_snapshot_sha256": "d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273",
+  "receipt_snapshot_sha256": "d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273",
+  "post_cleanup_snapshot_sha256": "d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273",
   "evidence_files": [
    "docs/evidence/TASK-007/TASK-007_EVIDENCE.md",
    "docs/evidence/TASK-007/logs/cleanup_record.json",
    "docs/evidence/TASK-007/logs/dispatch_task_007.record.json",
+   "docs/evidence/TASK-007/logs/followup_preflight.txt",
    "docs/evidence/TASK-007/logs/ide_activity.txt",
    "docs/evidence/TASK-007/logs/native_language_suite.json",
    "docs/evidence/TASK-007/logs/negative_tests.txt",
@@ -245,13 +246,13 @@
   "task": "TASK-007",
   "readability": {
    "reviewer": "Coding agent (Claude Code), the primary session; no independent human or model review",
-   "summary": "Every module of core/protocol, and each new module of core/domain, opens with its purpose, boundaries and sources; every public item is documented, as the lints require; comments say why a rule exists and cite it; tests name the behaviour they prove. Review against the final code made a decoding refusal state only the kind of fault and its position, because serde_json's own messages can quote the input, which the comment had denied; made the sync family's compile-time travel rule cover every portable record; pinned the canonical request bytes in place of a test that could not fail; let a deletion ignore the rename-only argument; removed a test request that changed nothing; and made two crate comments name their owner tasks completely (TASK-007_EVIDENCE.md section 9)."
+   "summary": "Every module of core/protocol, and each new module of core/domain, opens with its purpose, boundaries and sources; every public item is documented, as the lints require; comments say why a rule exists and cite it; tests name the behaviour they prove. Review against the final code made a decoding refusal state only the kind of fault and its position, because serde_json's own messages can quote the input, which the comment had denied; made the sync family's compile-time travel rule cover every portable record; pinned the canonical request bytes in place of a test that could not fail; let a deletion ignore the rename-only argument; removed a test request that changed nothing; and made two crate comments name their owner tasks completely. The follow-up's repair of TASK-004's cross-check carries a docstring that says what the check now accepts and why (TASK-007_EVIDENCE.md sections 9 and 11)."
   },
   "cleanup": {
-   "summary": "TASK-007 created no temporary artifact inside the checkout: Cargo built into /mnt/F/Nexees-toolchains/target/, the negative-test copies, the regression's copy and the lockfile regeneration used the session scratch folder, and every Python run used -B. At close, scripts/test/task_cleanup.py ran on the checkout with an empty TASK-007 manifest, first as a plan and then with --apply and its record: it removed nothing, refused nothing, and left in place 20 untracked files, all TASK-007 deliverables and evidence, each with its hash. The ignored files are the owner's IDE output (rust-analyzer's target/ and the Java extension's .gradle/ beside TASK-003's prototype); they are not task-owned and were left exactly as they are. The session scratch folder outside the checkout is removed once this receipt is committed and pushed. No pre-existing or user-owned file was deleted, reset or stashed.",
+   "summary": "TASK-007 created no temporary artifact inside the checkout: Cargo built into /mnt/F/Nexees-toolchains/target/, the negative-test copies, the regression's copies and the lockfile regeneration used the session scratch folder, and every Python run used -B. At the close of the follow-up, scripts/test/task_cleanup.py ran on the checkout with an empty TASK-007 manifest, first as a plan and then with --apply and its record: it removed nothing, refused nothing, and left in place 1 untracked file, TASK-007 evidence, with its hash. Every other TASK-007 file is tracked since the task's first commit, 9f28c37. The ignored files are the owner's IDE output (rust-analyzer's target/ and the Java extension's .gradle/ beside TASK-003's prototype); they are not task-owned and were left exactly as they are. The session scratch folder outside the checkout is removed once this receipt is committed and pushed. No pre-existing or user-owned file was deleted, reset or stashed.",
    "record": "logs/cleanup_record.json",
    "removed": [],
-   "preserved_untracked": 20
+   "preserved_untracked": 1
   },
   "manual_impact": {
    "status": "not_applicable",
@@ -259,7 +260,7 @@
   },
   "final_verification": {
    "log": "receipt/final_verification.txt",
-   "snapshot": "048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07",
+   "snapshot": "d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273",
    "result": "passed"
   }
  },
@@ -267,7 +268,7 @@
   "by": "The primary session's local tools, under CA-05 of the continuation profile the owner adopted",
   "on": "2026-10-04",
   "record": "docs/evidence/TASK-007/receipt/corroboration.txt",
-  "result": "ALL CORROBORATED, 39 of 39 observations",
+  "result": "ALL CORROBORATED, 41 of 41 observations",
   "effect": "evidence_verified_by_host was set to true and the UNVERIFIED_RECEIPT blocker cleared on that record; corroboration.txt was added to evidence_files. Every other value is unchanged.",
   "limit": "Agent self-corroboration with deterministic local tools. It is not an independent human or model review, and the owner has not reviewed this task."
  }

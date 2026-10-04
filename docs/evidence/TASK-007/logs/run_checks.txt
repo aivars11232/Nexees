@@ -1,4 +1,4 @@
-TASK-007: every stage of scripts/test/run_checks.py on the final tree, run 2026-10-04T13:47:56+02:00 with the isolated toolchain (env.sh),
+TASK-007: every stage of scripts/test/run_checks.py on the final tree, run 2026-10-04T14:05:42+02:00 with the isolated toolchain (env.sh),
 cargo-deny on PATH from ~/.cargo/bin, NEXEES_LCL_CORE_01/03 set to the canonical Core packages, and the Cargo target folder
 /mnt/F/Nexees-toolchains/target/nexees outside the checkout; then nexees-domain and nexees-protocol built for the two Android targets that rust-toolchain.toml
 pins.
@@ -6,7 +6,7 @@ pins.
 $ python3 -B scripts/test/run_checks.py --target-dir /mnt/F/Nexees-toolchains/target/nexees
 
 == layout ==
-525 files; 239 product files in 181 slots; 61 test files; 102 security enforcement points
+526 files; 239 product files in 181 slots; 61 test files; 102 security enforcement points
 -- layout: PASS
 
 == format ==
@@ -17,16 +17,14 @@ exit code: 0
 
 == lint ==
 $ cargo clippy --workspace --all-targets --locked --offline -- -D warnings
-    Checking nexees-protocol v0.0.0 (/mnt/F/Nexees/core/protocol)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.04s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
 exit code: 0
 4 repository scripts parsed
 -- lint: PASS
 
 == build ==
 $ cargo build --workspace --all-targets --locked --offline
-   Compiling nexees-protocol v0.0.0 (/mnt/F/Nexees/core/protocol)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.18s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s
 exit code: 0
 -- build: PASS
 
@@ -35,133 +33,133 @@ $ cargo test --workspace --locked --offline
 
 running 91 tests
 test authority::tests::an_approval_executes_exactly_its_request_once_within_its_epoch_and_time ... ok
-test changes::tests::a_change_applies_only_onto_its_base_and_never_twice ... ok
 test authority::tests::local_grants_need_a_scope_too ... ok
 test authority::tests::grants_name_their_narrow_targets_and_never_their_own_device_as_peer ... ok
-test changes::tests::creations_and_deletions_are_explicit_about_what_they_meet ... ok
-test changes::tests::changes_say_what_they_were_made_against ... ok
+test changes::tests::a_change_applies_only_onto_its_base_and_never_twice ... ok
+test authority::tests::authority_records_round_trip_and_never_travel ... ok
 test changes::tests::a_rename_never_overwrites_what_is_at_its_target ... ok
+test authority::tests::authority_records_reject_unknown_and_malformed_authority_fields ... ok
+test changes::tests::a_change_is_selected_content_and_cannot_carry_authority ... ok
+test changes::tests::changes_say_what_they_were_made_against ... ok
+test changes::tests::creations_and_deletions_are_explicit_about_what_they_meet ... ok
+test device::tests::host_capabilities_list_each_capability_once ... ok
+test client::tests::client_focus_round_trips_and_rejects_smuggled_targets ... ok
 test device::tests::protocol_ranges_must_be_ordered_and_start_at_one ... ok
 test device::tests::pairing_records_cannot_carry_grants ... ok
 test device::tests::revocation_is_recorded_with_its_time ... ok
-test device::tests::host_capabilities_list_each_capability_once ... ok
-test changes::tests::a_change_is_selected_content_and_cannot_carry_authority ... ok
+test device::tests::two_peers_may_share_a_name_but_never_an_identity ... ok
+test errors::tests::an_unknown_outcome_is_rejected_rather_than_guessed ... ok
 test errors::tests::errors_name_the_field_and_the_problem ... ok
 test errors::tests::outcomes_serialize_with_the_exact_names_of_the_security_binding ... ok
-test device::tests::two_peers_may_share_a_name_but_never_an_identity ... ok
-test authority::tests::authority_records_reject_unknown_and_malformed_authority_fields ... ok
-test errors::tests::an_unknown_outcome_is_rejected_rather_than_guessed ... ok
-test events::tests::log_lines_are_bounded_text_without_control_sequences ... ok
-test authority::tests::authority_records_round_trip_and_never_travel ... ok
 test events::tests::an_event_cannot_smuggle_authority_or_be_of_an_unknown_kind ... ok
+test events::tests::log_lines_are_bounded_text_without_control_sequences ... ok
 test events::tests::events_round_trip_with_their_kind_as_the_tag ... ok
-test client::tests::client_focus_round_trips_and_rejects_smuggled_targets ... ok
 test handoff::tests::a_handoff_belongs_to_a_switch_and_to_its_workspace ... ok
-test handoff::tests::a_blocked_handoff_stays_blocked_and_round_trips ... ok
-test handoff::tests::orientation_is_on_by_default_and_in_fresh_records ... ok
 test handoff::tests::a_handoff_is_fenced_to_the_current_binding_and_generation ... ok
-test ids::tests::decoding_rejects_what_construction_rejects ... ok
-test ids::tests::identifiers_compare_byte_for_byte_without_case_folding ... ok
+test handoff::tests::orientation_is_on_by_default_and_in_fresh_records ... ok
 test handoff::tests::with_orientation_off_only_the_extra_reading_phase_is_skipped ... ok
+test handoff::tests::a_blocked_handoff_stays_blocked_and_round_trips ... ok
 test handoff::tests::reads_are_only_of_required_files_once_each_and_only_while_reading ... ok
+test handoff::tests::with_orientation_on_every_required_read_is_observed_before_ready ... ok
 test ids::tests::model_identifiers_allow_provider_naming ... ok
 test ids::tests::opaque_identifiers_accept_their_alphabet_only ... ok
+test ids::tests::decoding_rejects_what_construction_rejects ... ok
+test ids::tests::identifiers_compare_byte_for_byte_without_case_folding ... ok
 test ids::tests::registry_keys_are_lowercase_snake_case ... ok
-test handoff::tests::with_orientation_on_every_required_read_is_observed_before_ready ... ok
 test import::tests::a_previewed_import_commits_only_into_the_reviewed_destination ... ok
-test import::tests::nothing_commits_without_a_preview ... ok
 test lcl::tests::decoded_records_must_agree_with_their_state ... ok
 test lcl::tests::every_new_revision_is_a_draft_whatever_its_origin ... ok
 test import::tests::an_unfinished_import_can_stop_safely_in_every_final_state ... ok
 test import::tests::mappings_cannot_collide_invent_sources_or_target_another_workspace ... ok
-test import::tests::imports_round_trip_and_reject_escaping_paths_on_decode ... ok
+test import::tests::nothing_commits_without_a_preview ... ok
 test lcl::tests::only_a_passing_validation_makes_a_revision_adoptable ... ok
+test import::tests::imports_round_trip_and_reject_escaping_paths_on_decode ... ok
 test lcl::tests::standard_mode_is_the_only_mode_without_a_specification ... ok
 test model_capabilities::tests::provider_kinds_are_a_closed_set ... ok
 test model_capabilities::tests::capabilities_round_trip_and_reject_unknown_claims ... ok
 test remote_request::tests::a_device_request_never_carries_an_ambient_workspace ... ok
+test remote_request::tests::a_read_only_request_expects_no_revisions ... ok
 test remote_request::tests::a_workspace_request_names_its_workspace_and_revisions_of_it ... ok
 test remote_request::tests::an_agent_request_names_the_agent_and_its_workspace ... ok
 test remote_request::tests::envelopes_reject_self_targets_mislabelled_operations_and_backwards_expiry ... ok
-test requests::tests::a_duplicate_gets_the_recorded_outcome_and_never_runs_again ... ok
-test requests::tests::a_request_the_destination_never_received_is_resent_only_before_its_expiry ... ok
-test requests::tests::a_request_that_expired_while_disconnected_is_never_sent ... ok
-test remote_request::tests::a_read_only_request_expects_no_revisions ... ok
-test requests::tests::ledger_states_change_only_along_the_allowed_paths ... ok
-test requests::tests::a_lost_acknowledgment_is_reconciled_by_request_id_without_a_second_execution ... ok
-test requests::tests::a_restart_turns_a_possibly_started_effect_into_an_unknown_outcome ... ok
-test revision::tests::a_revision_belongs_to_exactly_one_workspace ... ok
-test remote_request::tests::envelopes_round_trip_and_reject_unknown_or_malformed_fields ... ok
-test revision::tests::content_hashes_are_lowercase_sha256_hex ... ok
 test remote_request::tests::requests_expire_at_the_earlier_of_their_expiry_and_the_ceiling ... ok
-test revision::tests::generations_start_at_one_and_never_wrap ... ok
+test requests::tests::a_duplicate_gets_the_recorded_outcome_and_never_runs_again ... ok
+test requests::tests::a_lost_acknowledgment_is_reconciled_by_request_id_without_a_second_execution ... ok
+test requests::tests::a_request_that_expired_while_disconnected_is_never_sent ... ok
+test requests::tests::a_request_the_destination_never_received_is_resent_only_before_its_expiry ... ok
+test requests::tests::a_restart_turns_a_possibly_started_effect_into_an_unknown_outcome ... ok
+test requests::tests::ledger_states_change_only_along_the_allowed_paths ... ok
+test revision::tests::a_revision_belongs_to_exactly_one_workspace ... ok
 test requests::tests::request_records_never_travel_and_reject_unknown_fields ... ok
+test revision::tests::content_hashes_are_lowercase_sha256_hex ... ok
+test revision::tests::generations_start_at_one_and_never_wrap ... ok
 test revision::tests::permission_epochs_never_wrap ... ok
-test schema::tests::every_record_has_its_own_schema_so_no_state_is_stored_twice ... ok
-test session::tests::a_checkout_of_another_workspace_is_an_invalid_combination ... ok
-test schema::tests::sync_policies_follow_the_architecture_state_catalogue ... ok
-test session::tests::an_interrupted_handoff_never_yields_two_executors ... ok
+test remote_request::tests::envelopes_round_trip_and_reject_unknown_or_malformed_fields ... ok
 test revision::tests::revisions_reject_unknown_fields ... ok
-test session::tests::orientation_is_on_by_default_and_a_session_override_wins ... ok
+test schema::tests::every_record_has_its_own_schema_so_no_state_is_stored_twice ... ok
+test schema::tests::sync_policies_follow_the_architecture_state_catalogue ... ok
+test session::tests::a_checkout_of_another_workspace_is_an_invalid_combination ... ok
 test session::tests::a_transfer_needs_two_devices_and_a_checkpoint_of_its_workspace ... ok
+test session::tests::an_interrupted_handoff_never_yields_two_executors ... ok
+test session::tests::an_unfinished_transfer_can_be_refused_and_then_stays_refused ... ok
 test session::tests::execution_moves_only_after_the_owner_acknowledged_the_checkpoint ... ok
+test session::tests::orientation_is_on_by_default_and_a_session_override_wins ... ok
 test session::tests::switching_the_model_keeps_every_binding_and_fences_the_old_generation ... ok
 test session::tests::the_specification_is_bound_exactly_when_the_mode_uses_one ... ok
-test session::tests::an_unfinished_transfer_can_be_refused_and_then_stays_refused ... ok
 test task::tests::a_passing_verification_on_the_execution_host_completes_the_task ... ok
-test task::tests::required_checks_are_never_not_applicable_but_inspected_no_ops_may_be ... ok
 test session::tests::sessions_round_trip_and_refuse_smuggled_fields ... ok
-test task::tests::evidence_round_trips_as_a_portable_record ... ok
 test task::tests::claims_copies_failures_and_stale_evidence_never_complete_a_task ... ok
+test task::tests::required_checks_are_never_not_applicable_but_inspected_no_ops_may_be ... ok
 test text::tests::decoding_applies_the_same_checks_as_construction ... ok
 test task::tests::task_records_keep_their_status_consistent ... ok
 test text::tests::labels_are_one_line_bounded_and_not_blank ... ok
-test time::tests::adding_saturates_instead_of_wrapping ... ok
-test workspace::tests::a_remote_only_listing_has_no_root_and_is_not_editable ... ok
 test text::tests::notes_allow_lines_and_tabs_but_no_other_control_characters ... ok
-test workspace::tests::conflicts_keep_both_versions_including_a_deletion ... ok
+test task::tests::evidence_round_trips_as_a_portable_record ... ok
+test time::tests::adding_saturates_instead_of_wrapping ... ok
 test time::tests::timestamps_serialize_as_plain_milliseconds ... ok
-test workspace::tests::relative_paths_cannot_leave_the_root_or_hide_a_prefix ... ok
-test workspace::tests::mapping_a_root_cannot_carry_authority_in_the_record ... ok
+test workspace::tests::a_remote_only_listing_has_no_root_and_is_not_editable ... ok
 test workspace::tests::one_workspace_maps_to_a_different_root_on_each_device ... ok
+test workspace::tests::conflicts_keep_both_versions_including_a_deletion ... ok
+test workspace::tests::mapping_a_root_cannot_carry_authority_in_the_record ... ok
+test workspace::tests::relative_paths_cannot_leave_the_root_or_hide_a_prefix ... ok
 test workspace::tests::replicas_and_workspaces_round_trip_as_versioned_records ... ok
 
-test result: ok. 91 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+test result: ok. 91 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
 running 30 tests
 test admission::tests::a_request_for_a_stale_generation_or_revision_is_stale ... ok
-test admission::tests::a_replay_gets_the_recorded_outcome_and_a_reused_id_is_refused ... ok
-test admission::tests::agent_requests_must_name_the_bound_session_and_its_workspace ... ok
 test admission::tests::a_valid_request_is_admitted_and_claimed_before_it_runs ... ok
+test admission::tests::a_replay_gets_the_recorded_outcome_and_a_reused_id_is_refused ... ok
 test messages::tests::events_apply_once_in_order_and_never_across_a_gap ... ok
 test messages::tests::intents_name_their_targets_and_expire ... ok
-test messages::tests::local_only_operations_are_refused_from_peers ... ok
-test messages::tests::rc_t09_a_lost_acknowledgment_never_executes_the_action_twice ... ok
 test admission::tests::rc_t08_wrong_targets_peers_versions_replays_and_stale_requests_are_refused ... ok
+test admission::tests::agent_requests_must_name_the_bound_session_and_its_workspace ... ok
+test messages::tests::rc_t09_a_lost_acknowledgment_never_executes_the_action_twice ... ok
+test messages::tests::local_only_operations_are_refused_from_peers ... ok
 test messages::tests::rc_t10_an_expired_queued_command_is_not_replayed_while_content_still_syncs ... ok
-test messages::tests::peer_messages_round_trip_one_family_at_a_time ... ok
 test messages::tests::reconciliation_is_bounded_and_answers_for_every_request ... ok
 test messages::tests::status_is_live_only_while_its_session_confirms_it ... ok
+test messages::tests::peer_messages_round_trip_one_family_at_a_time ... ok
 test messages::tests::transfer_steps_apply_once_in_order_and_never_skip_quiescence ... ok
+test operations::tests::local_only_operations_are_not_remote_and_never_remote_ones_exist_nowhere ... ok
 test operations::tests::every_registry_key_is_valid_and_unique ... ok
 test messages::tests::requests_decode_strictly_and_only_for_registered_operations ... ok
-test operations::tests::file_text_is_bounded ... ok
-test operations::tests::local_only_operations_are_not_remote_and_never_remote_ones_exist_nowhere ... ok
+test operations::tests::operation_arguments_reject_unknown_fields ... ok
 test messages::tests::the_sync_family_cannot_carry_requests_approvals_or_grants ... ok
 test serialization::tests::a_refusal_says_where_it_stopped_and_never_quotes_the_input ... ok
-test operations::tests::operation_arguments_reject_unknown_fields ... ok
+test serialization::tests::base64_round_trips_and_accepts_only_the_canonical_encoding ... ok
 test serialization::tests::decoding_accepts_exactly_one_valid_message ... ok
 test version_negotiation::tests::a_mismatch_is_refused_never_downgraded ... ok
 test version_negotiation::tests::both_ends_agree_on_the_newest_common_version ... ok
 test version_negotiation::tests::hellos_are_validated_and_strict ... ok
 test serialization::tests::requests_of_another_operation_cannot_pass_as_this_one ... ok
-test serialization::tests::base64_round_trips_and_accepts_only_the_canonical_encoding ... ok
-test serialization::tests::the_canonical_form_binds_every_field_except_the_approval ... ok
+test operations::tests::file_text_is_bounded ... ok
 test serialization::tests::oversized_input_is_refused_before_it_is_parsed ... ok
+test serialization::tests::the_canonical_form_binds_every_field_except_the_approval ... ok
 test messages::tests::channels_bound_their_messages ... ok
 
-test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 
 running 0 tests
@@ -182,7 +180,7 @@ exit code: 0
 $ /usr/bin/python3 -B -m unittest discover -s tests/tooling -p test_*.py
 ..........................
 ----------------------------------------------------------------------
-Ran 26 tests in 2.943s
+Ran 26 tests in 2.804s
 
 OK
 exit code: 0
@@ -193,7 +191,7 @@ $ cargo doc --workspace --no-deps --locked --offline
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
    Generated /mnt/F/Nexees-toolchains/target/nexees/doc/nexees_domain/index.html and 1 other file
 exit code: 0
-187 relative Markdown links checked
+188 relative Markdown links checked
 $ lcl check --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 --project-spec /mnt/F/LCL/canonical/LCL_Core_0.3.0 docs/charter/charter.lcl.txt
 charter.lcl.txt passed every stage through static_checking.
 This is a statement about canonical steps 1 to 5, and not about execution.
@@ -287,7 +285,7 @@ exit code: 0
 -- docs: PASS
 
 == security ==
-525 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+526 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
 -- security: PASS
 
 == deps ==
@@ -311,11 +309,9 @@ ALL STAGES PASSED
 exit code: 0
 
 $ cargo build --locked --offline -p nexees-domain -p nexees-protocol --target aarch64-linux-android --target-dir /mnt/F/Nexees-toolchains/target/nexees
-   Compiling nexees-protocol v0.0.0 (/mnt/F/Nexees/core/protocol)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.12s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
 exit code: 0
 
 $ cargo build --locked --offline -p nexees-domain -p nexees-protocol --target x86_64-linux-android --target-dir /mnt/F/Nexees-toolchains/target/nexees
-   Compiling nexees-protocol v0.0.0 (/mnt/F/Nexees/core/protocol)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.13s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
 exit code: 0

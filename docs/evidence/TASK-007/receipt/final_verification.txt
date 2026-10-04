@@ -1,25 +1,25 @@
-TASK-007 final verification after cleanup, 2026-10-04T13:50:24+02:00.
+TASK-007 final verification after cleanup, 2026-10-04T14:07:36+02:00.
 Read-only, except this file.
 The snapshot is over the files a commit would hold (docs/engineering/CONVENTIONS.md section 10).
 
-Snapshot before: 048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07
+Snapshot before: d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273
 
 == The repository checks: every stage of the check runner, and both crates for Android ==
 $ python3 -B scripts/test/run_checks.py --target-dir /mnt/F/Nexees-toolchains/target/nexees
-  525 files; 239 product files in 181 slots; 61 test files; 102 security enforcement points
+  526 files; 239 product files in 181 slots; 61 test files; 102 security enforcement points
   -- layout: PASS
   -- format: PASS
   -- lint: PASS
   -- build: PASS
   test result: ok. 91 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-  test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+  test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
   test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
   test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-  Ran 26 tests in 2.675s
+  Ran 26 tests in 2.548s
   -- test: PASS
-  187 relative Markdown links checked
+  188 relative Markdown links checked
   -- docs: PASS
-  525 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+  526 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
   -- security: PASS
   -- deps: PASS
   TASK-002: closed before closure records existed
@@ -35,7 +35,7 @@ $ cargo build --locked --offline -p nexees-domain -p nexees-protocol --target aa
       Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
   exit code: 0
 $ cargo build --locked --offline -p nexees-domain -p nexees-protocol --target x86_64-linux-android --target-dir /mnt/F/Nexees-toolchains/target/nexees
-      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
   exit code: 0
 
 == The predecessors' cross-checks ==
@@ -46,12 +46,6 @@ $ python3 -B docs/evidence/TASK-003/check_dependencies.py
   ALL CHECKS PASSED
   exit code: 0
 $ python3 -B docs/evidence/TASK-004/check_threat_model.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
-  FAIL  every enforcement point exists in the source layout  [core/protocol/messages, core/protocol/serialization, core/protocol/version_negotiation]
-  PASS  every threat test names threats, a slot or gap, pack scenarios, later owners and platforms
-  55 threats, 30 invariants, 39 threat tests, 11 remote contracts
-  FAILED: every enforcement point exists in the source layout
-  exit code: 1, as expected: 37 checks pass and only the known one fails, because three of its enforcement points are now source
-$ python3 -B <copy>/docs/evidence/TASK-004/check_threat_model.py, on a copy of the files a commit would hold with empty stand-ins for those three placeholders
   PASS  every threat test names threats, a slot or gap, pack scenarios, later owners and platforms
   55 threats, 30 invariants, 39 threat tests, 11 remote contracts
   ALL CHECKS PASSED
@@ -69,40 +63,48 @@ Files in the home caches written since TASK-007 began: 11, all of the owner's ID
 Task processes running (isolated-toolchain cargo or rustc, lcl): 0 []
 
 == Git and worktree ==
-$ git diff --stat
-   Cargo.lock                               |  9 ++++
-   Cargo.toml                               |  2 +-
-   FILE_TREE.txt                            | 40 +++++++++++---
-   README.md                                | 12 +++++
-   core/domain/events.source                |  1 -
-   core/domain/ids.rs                       |  5 ++
-   core/domain/lib.rs                       | 15 ++++--
-   core/domain/remote_request.rs            | 93 +++++++++++++++++++-------------
-   core/domain/schema.rs                    | 18 +++++--
-   core/domain/session.rs                   | 42 +++++++++++++++
-   core/protocol/messages.source            |  1 -
-   core/protocol/serialization.source       |  1 -
-   core/protocol/version_negotiation.source |  1 -
-   docs/architecture/subsystems.lcl.txt     |  2 +-
-   docs/dependencies/LICENSE_MATRIX.md      |  2 +-
-   docs/dependencies/components.lcl.txt     |  2 +-
-   docs/engineering/CONVENTIONS.md          |  5 +-
-   scripts/test/run_checks.py               | 26 ++++++++-
-   tests/tooling/test_run_checks.py         | 21 ++++++++
-   19 files changed, 234 insertions(+), 64 deletions(-)
-Modified tracked files: 15, exactly the expected ones
-Deleted tracked files: 4, the four implemented placeholders
-Staged: 0; untracked files: 21
-Untracked files outside the 10 new source files and docs/evidence/TASK-007/: 0 []
+$ git diff --name-status fc42a93 -- . ':!docs/evidence/TASK-007'
+  M  Cargo.lock
+  M  Cargo.toml
+  M  FILE_TREE.txt
+  M  README.md
+  A  core/domain/changes.rs
+  A  core/domain/events.rs
+  D  core/domain/events.source
+  M  core/domain/ids.rs
+  M  core/domain/lib.rs
+  M  core/domain/remote_request.rs
+  A  core/domain/requests.rs
+  M  core/domain/schema.rs
+  M  core/domain/session.rs
+  A  core/protocol/Cargo.toml
+  A  core/protocol/admission.rs
+  A  core/protocol/lib.rs
+  A  core/protocol/messages.rs
+  D  core/protocol/messages.source
+  A  core/protocol/operations.rs
+  A  core/protocol/serialization.rs
+  D  core/protocol/serialization.source
+  A  core/protocol/version_negotiation.rs
+  D  core/protocol/version_negotiation.source
+  M  docs/architecture/subsystems.lcl.txt
+  M  docs/dependencies/LICENSE_MATRIX.md
+  M  docs/dependencies/components.lcl.txt
+  M  docs/engineering/CONVENTIONS.md
+  M  docs/evidence/TASK-004/check_threat_model.py
+  M  scripts/test/run_checks.py
+  M  tests/tooling/test_run_checks.py
+Against the task base fc42a93: 16 modified files, exactly the expected ones with TASK-004's repaired check; 4 deleted, the four implemented placeholders; 10 added, the 10 new source files
+Against HEAD, the follow-up changes 15 paths, all TASK-004's repaired check, FILE_TREE.txt or TASK-007's evidence; staged: 0; others: []
 Ignored files: 279, all the owner's IDE output, kept in place and outside the snapshot: {'target/': 262, 'docs/evidence/TASK-003/prototypes/android-app/.gradle/': 17}; others: []
-The snapshot listing agrees with sha256sum over the same 525 files
-HEAD: fc42a93, unchanged during the task
+The snapshot listing agrees with sha256sum over the same 526 files
+HEAD: 9f28c37, TASK-007's first commit on fc42a93, unchanged during the follow-up
 
 == Layout ==
 Files still carrying their marker line: 264 (268 before, less the 4 implemented placeholders)
-PNG files unchanged against HEAD: True
+PNG files unchanged against the task base: True
 Temporary files or build output among the files a commit would hold: 0
 
-Snapshot after: 048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07; unchanged by this verification: True
+Snapshot after: d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273; unchanged by this verification: True
 
-Result: every exit code and every inspection as expected
+Result: every exit 0 and every inspection as expected

@@ -1,0 +1,26 @@
+TASK-007 follow-up preflight, recorded 2026-10-04T14:00:59+02:00 with read-only commands, before any follow-up change.
+The owner's instruction after the first close (commit 9f28c37), verbatim:
+  if task 7 is not finished, don't stop, fin workarounds or fix it.
+The first close left one predecessor check failing as an expected result: TASK-004's cross-check. CA-03 does not
+let a failed required check be relabelled, so the follow-up repairs it and refreshes TASK-007's evidence and receipt.
+
+== B26 checkout identity ==
+git toplevel: /mnt/F/Nexees
+remotes (credentials redacted):
+  origin	https://github.com/aivars11232/Nexees.git (fetch)
+  origin	https://github.com/aivars11232/Nexees.git (push)
+branch: main
+HEAD: 9f28c37b93c06c6627122816914a418529fc2bc4
+fetch of main only, without tags:  * branch            main       -> FETCH_HEAD
+origin/main: 9f28c37b93c06c6627122816914a418529fc2bc4
+staged files: 0; stash entries: 0; status (porcelain, untracked per file): ?? docs/evidence/TASK-007/logs/followup_preflight.txt
+
+== The first close ==
+docs/evidence/TASK-007/receipt/evaluation.record.json sha256 3b1ed6075afa85715198b7002a0ba4724162d3397b8aaf5d4d059038added23b: outcome accepted, status.succeeded
+
+== TASK-004's cross-check on the committed tree, before the repair ==
+$ python3 -B docs/evidence/TASK-004/check_threat_model.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  FAIL  every enforcement point exists in the source layout  [core/protocol/messages, core/protocol/serialization, core/protocol/version_negotiation]
+  55 threats, 30 invariants, 39 threat tests, 11 remote contracts
+  FAILED: every enforcement point exists in the source layout
+  37 checks pass; exit code: 1

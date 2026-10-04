@@ -84,6 +84,16 @@ def sequential(ids: list[str], prefix: str, width: int = 2) -> bool:
     return ids == [f'{prefix}{n:0{width}d}' for n in range(1, len(ids) + 1)]
 
 
+def slot_exists(point: str) -> bool:
+    """A folder slot exists as a directory. A module slot exists as its placeholder or, once a task has
+    implemented it, as source under the same stem (docs/engineering/CONVENTIONS.md section 2). TASK-007, which
+    implemented the first enforcement points, repaired this check, which had counted only the placeholder."""
+    path = REPO / point
+    if point.endswith('/'):
+        return path.is_dir()
+    return any(f.is_file() and f.name.split('.')[0] == path.name for f in path.parent.glob(f'{path.name}.*'))
+
+
 def main(pack: Path) -> int:
     failures: list[str] = []
 
@@ -290,8 +300,7 @@ def main(pack: Path) -> int:
     bad += [f'{a}: {o}' for a, r in authorities.items() for o in r['owner_tasks'] if not FIRST_OWNER <= task_number(o) <= 75]
     check('assets and authorities name existing state categories, invariants and later tasks', not bad, '; '.join(bad))
     missing_slots = sorted({p for r in list(threats.values()) + list(invariants.values()) + list(boundaries.values())
-                            for p in r['enforcement_points']
-                            if not ((REPO / p).is_dir() if p.endswith('/') else (REPO / f'{p}.source').is_file())})
+                            for p in r['enforcement_points'] if not slot_exists(p)})
     check('every enforcement point exists in the source layout', not missing_slots, ', '.join(missing_slots))
 
     # 5. Threat tests, gaps and text references.

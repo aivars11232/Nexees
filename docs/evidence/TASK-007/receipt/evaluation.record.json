@@ -1904,29 +1904,29 @@
     },
     {
       "id": "input.current_snapshot_sha256",
-      "expression": "\"048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07\"",
-      "value": "\"048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07\"",
+      "expression": "\"d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273\"",
+      "value": "\"d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273\"",
       "reason": null,
       "accepted": true
     },
     {
       "id": "input.receipt_snapshot_sha256",
-      "expression": "\"048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07\"",
-      "value": "\"048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07\"",
+      "expression": "\"d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273\"",
+      "value": "\"d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273\"",
       "reason": null,
       "accepted": true
     },
     {
       "id": "input.post_cleanup_snapshot_sha256",
-      "expression": "\"048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07\"",
-      "value": "\"048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07\"",
+      "expression": "\"d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273\"",
+      "value": "\"d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273\"",
       "reason": null,
       "accepted": true
     },
     {
       "id": "input.evidence_files",
-      "expression": "[\"docs/evidence/TASK-007/TASK-007_EVIDENCE.md\", \"docs/evidence/TASK-007/logs/cleanup_record.json\", \"docs/evidence/TASK-007/logs/dispatch_task_007.record.json\", \"docs/evidence/TASK-007/logs/ide_activity.txt\", \"docs/evidence/TASK-007/logs/native_language_suite.json\", \"docs/evidence/TASK-007/logs/negative_tests.txt\", \"docs/evidence/TASK-007/logs/preflight.txt\", \"docs/evidence/TASK-007/logs/regression.txt\", \"docs/evidence/TASK-007/logs/required_reading.txt\", \"docs/evidence/TASK-007/logs/run_checks.txt\", \"docs/evidence/TASK-007/logs/security_scan.txt\", \"docs/evidence/TASK-007/receipt/final_verification.txt\", \"docs/evidence/TASK-007/receipt/snapshot_files.sha256\", \"docs/evidence/TASK-007/receipt/corroboration.txt\"]",
-      "value": "[\"docs/evidence/TASK-007/TASK-007_EVIDENCE.md\", \"docs/evidence/TASK-007/logs/cleanup_record.json\", \"docs/evidence/TASK-007/logs/dispatch_task_007.record.json\", \"docs/evidence/TASK-007/logs/ide_activity.txt\", \"docs/evidence/TASK-007/logs/native_language_suite.json\", \"docs/evidence/TASK-007/logs/negative_tests.txt\", \"docs/evidence/TASK-007/logs/preflight.txt\", \"docs/evidence/TASK-007/logs/regression.txt\", \"docs/evidence/TASK-007/logs/required_reading.txt\", \"docs/evidence/TASK-007/logs/run_checks.txt\", \"docs/evidence/TASK-007/logs/security_scan.txt\", \"docs/evidence/TASK-007/receipt/final_verification.txt\", \"docs/evidence/TASK-007/receipt/snapshot_files.sha256\", \"docs/evidence/TASK-007/receipt/corroboration.txt\"]",
+      "expression": "[\"docs/evidence/TASK-007/TASK-007_EVIDENCE.md\", \"docs/evidence/TASK-007/logs/cleanup_record.json\", \"docs/evidence/TASK-007/logs/dispatch_task_007.record.json\", \"docs/evidence/TASK-007/logs/followup_preflight.txt\", \"docs/evidence/TASK-007/logs/ide_activity.txt\", \"docs/evidence/TASK-007/logs/native_language_suite.json\", \"docs/evidence/TASK-007/logs/negative_tests.txt\", \"docs/evidence/TASK-007/logs/preflight.txt\", \"docs/evidence/TASK-007/logs/regression.txt\", \"docs/evidence/TASK-007/logs/required_reading.txt\", \"docs/evidence/TASK-007/logs/run_checks.txt\", \"docs/evidence/TASK-007/logs/security_scan.txt\", \"docs/evidence/TASK-007/receipt/final_verification.txt\", \"docs/evidence/TASK-007/receipt/snapshot_files.sha256\", \"docs/evidence/TASK-007/receipt/corroboration.txt\"]",
+      "value": "[\"docs/evidence/TASK-007/TASK-007_EVIDENCE.md\", \"docs/evidence/TASK-007/logs/cleanup_record.json\", \"docs/evidence/TASK-007/logs/dispatch_task_007.record.json\", \"docs/evidence/TASK-007/logs/followup_preflight.txt\", \"docs/evidence/TASK-007/logs/ide_activity.txt\", \"docs/evidence/TASK-007/logs/native_language_suite.json\", \"docs/evidence/TASK-007/logs/negative_tests.txt\", \"docs/evidence/TASK-007/logs/preflight.txt\", \"docs/evidence/TASK-007/logs/regression.txt\", \"docs/evidence/TASK-007/logs/required_reading.txt\", \"docs/evidence/TASK-007/logs/run_checks.txt\", \"docs/evidence/TASK-007/logs/security_scan.txt\", \"docs/evidence/TASK-007/receipt/final_verification.txt\", \"docs/evidence/TASK-007/receipt/snapshot_files.sha256\", \"docs/evidence/TASK-007/receipt/corroboration.txt\"]",
       "reason": null,
       "accepted": true
     },
@@ -2206,7 +2206,7 @@
         "declared_type": "OBJECT",
         "required": true,
         "publication": "published",
-        "value": "{actual_code_proof: \"Not produced by this program. An authorized host/owner must verify evidence files, code revision, policy applicability and actual test outcomes before project closure. language_test results must never update production task state.\", content_identity: \"bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1\", decision: \"Declared evidence is accepted only when this run ends with status.succeeded (exit code 0). Any other terminal status is a rejection, even though this object is published.\", result_kind: \"nexees_declared_evidence_evaluation\", run_purpose: \"implementation_review\", snapshot_sha256: \"048eff4032f7f91bc50d4f0bc607bd69fc186328dea419e51db004f44d8b2c07\", task_id: \"TASK-007\"}",
+        "value": "{actual_code_proof: \"Not produced by this program. An authorized host/owner must verify evidence files, code revision, policy applicability and actual test outcomes before project closure. language_test results must never update production task state.\", content_identity: \"bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1\", decision: \"Declared evidence is accepted only when this run ends with status.succeeded (exit code 0). Any other terminal status is a rejection, even though this object is published.\", result_kind: \"nexees_declared_evidence_evaluation\", run_purpose: \"implementation_review\", snapshot_sha256: \"d346ae6b1a4296e51b66a47444e82c014333645a7462ef325593efe2f5024273\", task_id: \"TASK-007\"}",
         "instances": null
       }
     ],

@@ -1,17 +1,17 @@
-Secret and privacy scan for TASK-007, run 2026-10-04T13:47:47+02:00.
+Secret and privacy scan for TASK-007, run 2026-10-04T14:05:41+02:00.
 
 1. The security stage of scripts/test/run_checks.py, over every file a commit of this checkout would hold
    (credential formats, private-key file names, and evidence that Git would ignore):
 $ python3 -B scripts/test/run_checks.py --stage security
    == security ==
-   525 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+   526 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
    -- security: PASS
    
    security PASS
    ALL STAGES PASSED
    exit code: 0
 
-2. The files TASK-007 added or changed (git status, without this report; 35 files):
+2. The files TASK-007 added or changed since its base fc42a93, without this report (37 files):
    Cargo.lock
    Cargo.toml
    FILE_TREE.txt
@@ -35,9 +35,11 @@ $ python3 -B scripts/test/run_checks.py --stage security
    docs/dependencies/LICENSE_MATRIX.md
    docs/dependencies/components.lcl.txt
    docs/engineering/CONVENTIONS.md
+   docs/evidence/TASK-004/check_threat_model.py
    docs/evidence/TASK-007/TASK-007_EVIDENCE.md
    docs/evidence/TASK-007/logs/cleanup_record.json
    docs/evidence/TASK-007/logs/dispatch_task_007.record.json
+   docs/evidence/TASK-007/logs/followup_preflight.txt
    docs/evidence/TASK-007/logs/ide_activity.txt
    docs/evidence/TASK-007/logs/native_language_suite.json
    docs/evidence/TASK-007/logs/negative_tests.txt

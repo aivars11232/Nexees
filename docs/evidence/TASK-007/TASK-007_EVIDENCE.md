@@ -12,12 +12,13 @@
 | Pack manifest SHA-256 | `8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4` |
 | Procedure | Continuation profile 0.5.3 (CA-01 to CA-12), as adopted for TASK-002 and continued for this task |
 | Predecessors | TASK-001 (`284f97a`), TASK-002 (`d1a673f`), TASK-003 (`2eaa199`, receipt decided in `bccc9b1`), TASK-004 (`0337be0`), TASK-005 (`e83dcd7`) and TASK-006 (`fc42a93`), all accepted |
-| Commit of this work | Made after acceptance, as CA-06 permits; it is recorded by Git, not in this file |
+| Commits of this work | Made after acceptance, as CA-06 permits: the first close as `9f28c37`, and the follow-up of section 11 in the commit after it. Git records them, not this file |
 
 ## Status
 
-The deliverables are complete, and every check passed on its final run except one: TASK-004's
-frozen cross-check fails one assertion, as expected (section 11). Acceptance is recorded in
+The deliverables are complete, and every check passed on its final run. A follow-up after the
+first close repaired TASK-004's cross-check, which had failed one assertion on the final tree
+(section 11). Acceptance is recorded in
 [receipt/RECEIPT_RESULT.md](receipt/RECEIPT_RESULT.md), which is written after this file because
 the receipt contains a snapshot of everything else.
 
@@ -65,6 +66,15 @@ This continues the procedure the owner adopted with pack 0.5.3 (CA-01): one name
 evidence, receipt acceptance, commit and push, then stop. TASK-008 is not covered. No owner
 question was needed during the task.
 
+After the first close (`fc42a93..9f28c37` on `origin/main`), the owner wrote, verbatim:
+
+```
+if task 7 is not finished, don't stop, fin workarounds or fix it.
+```
+
+The first close had left one predecessor check failing as an expected result. CA-03 does not
+allow a failed required check to be relabelled, so the follow-up repaired it (section 11).
+
 ## 2. Checkout preflight (binding B26)
 
 | Item | Observed |
@@ -78,6 +88,12 @@ question was needed during the task.
 
 TASK-007 began at 2026-10-04T12:55:58+02:00, when the owner's instruction arrived. That time is
 the baseline of every "nothing written since" check.
+
+The follow-up began at 2026-10-04T14:00:59+02:00 with the same checks: `main` at `9f28c37`,
+equal to `origin/main`, with nothing staged or modified. The only untracked file was the log
+itself, from a first run of the same read-only script nine seconds earlier. TASK-004's
+cross-check then failed its one assertion on the committed tree
+([logs/followup_preflight.txt](logs/followup_preflight.txt)).
 
 ## 3. Pack, native verification, dispatch and predecessors
 
@@ -225,6 +241,9 @@ TASK-006's 75 contract tests all still pass.
 of the layout, as a placeholder or as source under the same stem (section 11). Two tooling
 tests prove it, and CONVENTIONS.md section 12 lists it.
 
+**TASK-004's cross-check** counts the same: an enforcement point exists as its placeholder or
+as source under its stem. The follow-up repaired it (section 11).
+
 **Dependencies.** No new crate. `nexees-protocol` uses serde and serde_json from the workspace's
 exact pins. serde_json's `raw_value` feature adds no crate. `Cargo.lock` gains only the
 `nexees-protocol` entry; section 11 says who wrote it.
@@ -255,6 +274,7 @@ exact pins. serde_json's `raw_value` feature adds no crate. `Cargo.lock` gains o
 | `docs/architecture/subsystems.lcl.txt` | The six new slots of SS-DOMAIN-PROTOCOL |
 | `docs/dependencies/components.lcl.txt`, `docs/dependencies/LICENSE_MATRIX.md` | DEP-SERDE: serde_json is the protocol's wire format |
 | `scripts/test/run_checks.py`, `tests/tooling/test_run_checks.py` | The enforcement-point check and its tests |
+| `docs/evidence/TASK-004/check_threat_model.py` | The repair of its enforcement-point check (section 11) |
 | `docs/engineering/CONVENTIONS.md` | Section 3 names both crates; section 12 lists the new check |
 | `README.md` | The protocol |
 | `FILE_TREE.txt` | Regenerated with the runner |
@@ -266,8 +286,8 @@ exact pins. serde_json's `raw_value` feature adds no crate. `Cargo.lock` gains o
 | `python3 -B scripts/test/run_checks.py`, all nine stages, and `cargo build -p nexees-domain -p nexees-protocol` for both Android targets | All pass, exit 0 | [run_checks.txt](logs/run_checks.txt) |
 | `cargo test --workspace` (inside the test stage) | 91 domain tests (TASK-006's 75 and 16 new) and 30 protocol tests pass | [run_checks.txt](logs/run_checks.txt) |
 | Tooling tests (inside the test stage) | 26 of 26 pass | [run_checks.txt](logs/run_checks.txt) |
-| Negative tests: 28 seeded defects in scratch copies of the checkout, plus 2 controls | All 28 caught by the intended stage; the controls pass | [negative_tests.txt](logs/negative_tests.txt) |
-| Regression: the charter, architecture, dependency and security projects, the TASK-001 to TASK-004 cross-checks, TASK-006's contract tests and the tooling tests | 24 commands. All exit 0 except TASK-004's frozen check on the final tree, which fails only its known assertion (section 11) and passes in full with stand-ins for the three placeholders | [regression.txt](logs/regression.txt) |
+| Negative tests: 28 seeded defects in scratch copies of the checkout, plus 2 controls | All 28 caught by the intended stage; the controls pass. The run is on the final code, runner and tests, which the follow-up did not change | [negative_tests.txt](logs/negative_tests.txt) |
+| Regression: the charter, architecture, dependency and security projects, the TASK-001 to TASK-004 cross-checks, TASK-006's contract tests and the tooling tests | 25 commands, all exit 0. TASK-004's repaired check passes on the final tree and on TASK-004's own accepted tree, and fails as it must on a copy where one enforcement point has no file | [regression.txt](logs/regression.txt) |
 | Native language suite | 51/51 | [native_language_suite.json](logs/native_language_suite.json) |
 | What the owner's IDE did during the task | Recorded; the lockfile it wrote is byte-identical to the task's own offline resolution | [ide_activity.txt](logs/ide_activity.txt) |
 | Secret and privacy scan | No finding | [security_scan.txt](logs/security_scan.txt) |
@@ -310,7 +330,7 @@ The other six cover the repository rules:
 | T007.VERIFY.01 v0.3 gate: unknown versions, stale generations and lost acknowledgements without side-effect replay | **Unknown versions:** two hellos with no common version, or none at the secure minimum, are refused, and a hello with an unknown field is refused (`version_negotiation`). A destination refuses a request below its minimum secure version as unsupported (`admission`). **Stale generations:** after a model switch advances the generation, a request that expects the old one is stale (`admission`), and events carry the generation they belong to (`events`). **Lost acknowledgements:** RC-T09's test (`messages`): the destination runs a file write once, the acknowledgment is lost, the sender reconciles by request ID and settles, and a blind resend is answered from the ledger. The action runs exactly once. |
 | T007.VERIFY.02 build the affected targets | The workspace builds, lints with warnings denied, tests and documents on Rust 1.99.0. `nexees-domain` and `nexees-protocol` also build for `aarch64-linux-android` and `x86_64-linux-android` ([run_checks.txt](logs/run_checks.txt)). |
 | T007.VERIFY.03 task-specific tests | 30 protocol tests, 16 new domain tests, 2 new tooling tests and 28 negative cases (section 7). |
-| T007.VERIFY.04 regressions of the changed subsystem | TASK-006's 75 contract tests pass on the changed crate. The changed architecture and dependency records pass their LCL projects and the TASK-002 and TASK-003 cross-checks. The unchanged security project and charter pass theirs. TASK-005's changed runner passes its tooling tests. TASK-004's frozen cross-check fails only its known assertion (section 11) ([regression.txt](logs/regression.txt)). |
+| T007.VERIFY.04 regressions of the changed subsystem | TASK-006's 75 contract tests pass on the changed crate. The changed architecture and dependency records pass their LCL projects and the TASK-002 and TASK-003 cross-checks. The unchanged security project and charter pass theirs. TASK-005's changed runner passes its tooling tests. TASK-004's cross-check, repaired by the follow-up, passes (section 11) ([regression.txt](logs/regression.txt)). |
 | T007.VERIFY.05 final diff inspected | Section 6 lists every new, changed and removed file; the receipt's final verification repeats the inspection. |
 | T007.VERIFY.06 v0.2 gate: duplicate messages, lost acknowledgments, mismatched versions, wrong targets, stale approvals and interrupted handoff | **Duplicates:** a repeated request gets its recorded outcome, a reused ID is refused, a repeated event, transfer step or content change changes nothing. **Lost acknowledgments:** as T007.VERIFY.01. **Mismatched versions:** as T007.VERIFY.01. **Wrong targets:** wrong device, user or host session, a sender that is not the channel peer, an agent request whose workspace or session is not the bound one, and an intent without its target are all refused (`admission`, `messages`). **Stale approvals:** an approval binds to the canonical form, which any other change alters (`serialization`). It is single-use within its epoch and time (TASK-006's `authority` test). A request waiting for the user returns to accepted only after revalidation (`requests`), and deciding an approval is local-only (`operations`). **Interrupted handoff:** while a transfer is in flight no device executes, and a skipped, altered or repeated step never moves ownership (`session`, `messages`). None of these duplicates execution or transfers ownership silently. |
 
@@ -319,7 +339,7 @@ The other six cover the repository rules:
 | Check | How it was met |
 |---|---|
 | T007.CLOSE.01 dependencies closed | TASK-006 accepted and its lineage verified (section 3). |
-| T007.CLOSE.02 objective without unrelated scope | **Objective:** typed messages and events for workspace state (`WorkspaceChanged`, `ReplicaChanged`, status), agent state (`SessionBound`, `AgentStateChanged`, the agent operations), tasks (`TaskChanged`, `EvidenceRecorded`, task status), LCL (`LclRevisionChanged`, `lcl_validate`, `lcl_adopt`), approvals (`ApprovalRequested`, `ApprovalDecided`, `approval_decide`), logs (`Log`) and reconnect semantics (section 5). **v0.3:** import, orientation and cleanup-evidence messages use the same envelopes, with acknowledgments and expiry: `import_commit`, `import_cancel`, `agent_set_orientation`, `agent_switch_model` with its orientation, and the import, orientation and evidence events. **v0.2:** content synchronization and remote command/acknowledgment are separate families. They carry revision expectations; the authorization scope a grant must cover (operation, explicit targets and permission epoch; the grant check itself is EC-07's); expiry; idempotency; and explicit transfer and handoff states. No transport, store, UI or runtime was started. The changes to TASK-005's runner and TASK-006's crate serve this objective and are recorded in sections 5 and 11. |
+| T007.CLOSE.02 objective without unrelated scope | **Objective:** typed messages and events for workspace state (`WorkspaceChanged`, `ReplicaChanged`, status), agent state (`SessionBound`, `AgentStateChanged`, the agent operations), tasks (`TaskChanged`, `EvidenceRecorded`, task status), LCL (`LclRevisionChanged`, `lcl_validate`, `lcl_adopt`), approvals (`ApprovalRequested`, `ApprovalDecided`, `approval_decide`), logs (`Log`) and reconnect semantics (section 5). **v0.3:** import, orientation and cleanup-evidence messages use the same envelopes, with acknowledgments and expiry: `import_commit`, `import_cancel`, `agent_set_orientation`, `agent_switch_model` with its orientation, and the import, orientation and evidence events. **v0.2:** content synchronization and remote command/acknowledgment are separate families. They carry revision expectations; the authorization scope a grant must cover (operation, explicit targets and permission epoch; the grant check itself is EC-07's); expiry; idempotency; and explicit transfer and handoff states. No transport, store, UI or runtime was started. The changes to TASK-005's runner, TASK-006's crate and TASK-004's cross-check serve this objective and are recorded in sections 5 and 11. |
 | T007.CLOSE.03 build passes | As T007.VERIFY.02. |
 | T007.CLOSE.04 required tests pass | As T007.VERIFY.03. |
 | T007.CLOSE.05 security checks pass | The security stage and the scan are clean, and cargo-deny passes. Every serialized input is size-checked and strictly decoded; schemas and the protocol are versioned; unknown and malformed authority-changing fields are refused, as the negative cases show. Errors never quote the input. Test fixtures hold no secrets or personal data. |
@@ -373,16 +393,19 @@ the behaviour they prove. Review against the final code made these changes:
   test imports were tidied.
 - **Comments.** Two crate comments named their owner tasks incompletely and now follow the
   architecture's schema tasks.
+- **TASK-004's cross-check.** The follow-up's repair carries a docstring that says what the check
+  now accepts and why.
 
 **Cleanup.** TASK-007 created no temporary artifact inside the checkout:
 - Cargo wrote to `/mnt/F/Nexees-toolchains/target/`;
-- the negative-test copies, the regression's copy and the lockfile regeneration used the
+- the negative-test copies, the regression's copies and the lockfile regeneration used the
   session's scratch folder;
 - every Python run used `-B`.
 
-The cleanup tool ran on the real checkout with an empty manifest. It removed nothing and
-recorded every untracked file it left in place, all of them TASK-007 deliverables and evidence
-([logs/cleanup_record.json](logs/cleanup_record.json)). The owner's IDE output (`target/` and
+The cleanup tool ran on the real checkout with an empty manifest, at the close of the
+follow-up. It removed nothing and recorded the one untracked file it left in place, the
+follow-up's preflight log ([logs/cleanup_record.json](logs/cleanup_record.json)). Every other
+TASK-007 file is tracked since the task's first commit. The owner's IDE output (`target/` and
 the `.gradle/` cache) is ignored, not task-owned, and was left exactly as it is. The session
 scratch folder outside the checkout is removed after the receipt. No pre-existing or
 user-owned file was deleted, reset or stashed.
@@ -418,22 +441,31 @@ Disclosures:
   `lcl-remote` service and the owner's VS Code settings were not touched.
 - **Scripts.** The evidence scripts of TASK-006 lived in the session's scratch folder, which
   was removed when TASK-006 closed. They were rebuilt from this session's own transcript and
-  adapted for TASK-007; they are tools, not deliverables.
+  adapted for TASK-007; they are tools, not deliverables. The first close removed TASK-007's
+  scratch folder too, so for the follow-up they were rebuilt the same way, by replaying the
+  commands that made them.
 
 ## 11. Deviations and findings
 
-- **TASK-004's frozen cross-check now fails one assertion, as expected.**
-  `check_threat_model.py` counts an enforcement point as existing only while it is a `.source`
-  placeholder. Three of the threat model's points became source in this task:
-  `core/protocol/messages`, `serialization` and `version_negotiation`.
-  - On the final tree, that one assertion fails and the other 37 pass.
-  - On a copy of the final tree with empty stand-ins for those three placeholders, the check
-    passes in full ([regression.txt](logs/regression.txt)). So nothing else in the threat model
-    changed, and `docs/security` is unchanged.
-  - The check and its evidence are frozen with TASK-004 and were not edited. TASK-006 left the
-    decision to the first task that implements such a point, which is this one. TASK-005's
-    living runner now checks the same rule by stem, so a placeholder and the source under its
-    stem both count. A negative case and two tooling tests prove it.
+- **TASK-004's cross-check, repaired.** `check_threat_model.py` counted an enforcement point as
+  existing only while it was a `.source` placeholder. TASK-007 implemented three of the threat
+  model's points: `core/protocol/messages`, `serialization` and `version_negotiation`.
+  - The first close (commit `9f28c37`, engine record `3b1ed607…d23b`) left that one assertion
+    failing on the final tree. It recorded the failure as expected, with a full pass on a copy
+    that had stand-ins for the three placeholders.
+  - The owner then asked to finish rather than stop (section 1). CA-03 does not allow a failed
+    required check to be relabelled. It does let a task repair a predecessor defect its own work
+    exposed.
+  - So the follow-up repaired the check: a module slot exists as its placeholder or as source
+    under the same stem, as CONVENTIONS.md section 2 defines it. It adds 11 lines and removes 2.
+    `docs/security` and the rest of TASK-004's evidence are unchanged.
+  - **The check is not weakened** ([regression.txt](logs/regression.txt)). It passes on the final
+    tree, and on TASK-004's own accepted tree, where every point was still a placeholder. On a
+    copy where `core/protocol/messages` has no file at all, it fails and names exactly that
+    point.
+  - TASK-005's runner applies the same rule to every later task, in its layout stage.
+  - The follow-up refreshed this record and its logs and replaced the receipt. The first
+    receipt stays in Git history at `9f28c37`.
 - **The owner's IDE wrote into the checkout and the home caches**
   ([logs/ide_activity.txt](logs/ide_activity.txt)).
   - **`Cargo.lock`:** one command of the task wrote `core/protocol/Cargo.toml` and added the
@@ -450,7 +482,8 @@ Disclosures:
     extension asked one daemon for two builds of its own, which touched the cache locks,
     journals and daemon registry, and the prototype's `.gradle/` above. TASK-007 ran no Gradle.
 - **The negative tests ran twice.** The first run, before two crate comments were corrected
-  (section 9), passed every case. The recorded run is on the final code.
+  (section 9), passed every case. The recorded run is on the final code. The follow-up changed
+  no code, runner or test, so that run stands for the final tree.
 
 ## 12. Open items and limits
 
@@ -467,9 +500,12 @@ Disclosures:
 - **The request hash.** The canonical form is fixed; the SHA-256 over it is computed by the
   security component that brings a hashing library, TASK-055 and TASK-070.
 - **SI-12 and TH-47** still do not list `core/domain/remote_request` and `core/domain/ids` as
-  enforcement points. TASK-006 withdrew those additions because of TASK-004's frozen check. The
-  runner's new check would accept them; adding them changes `docs/security` and is left to its
-  next owner.
+  enforcement points. TASK-006 withdrew those additions because TASK-004's cross-check rejected
+  them. Both that check and the runner would now accept them; adding them changes
+  `docs/security` and is left to its next owner.
+- **Threat-test slots.** TASK-004's cross-check still counts a threat test's slot only while it
+  is a `.test.source` placeholder. The first task that implements one must repair that line the
+  same way; TASK-007 implemented none.
 - **The owner's IDE.** Each Cargo manifest change makes rust-analyzer rewrite `Cargo.lock` with
   the system toolchain. To prevent it, point rust-analyzer at the isolated toolchain, or have it
   ignore this folder; that is the owner's choice.
