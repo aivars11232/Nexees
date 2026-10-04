@@ -61,7 +61,7 @@ DATA:
         surfaces: ["SF-04"]
         scenario: "ELECTRON_RUN_AS_NODE, NODE_OPTIONS or an --inspect argument makes the Nexees binary run arbitrary code or expose a debugger under Nexees's identity, for example to read the backend token or bypass application checks. The TASK-003 prototype's Electron 42.11.10 has exactly these fuses on, and TASK-003 met the variable in practice."
         invariants: ["SI-28"]
-        mitigations: "Packaging flips the fuses: RunAsNode, EnableNodeOptionsEnvironmentVariable and EnableNodeCliInspectArguments off; EnableEmbeddedAsarIntegrityValidation and OnlyLoadAppFromAsar on; GrantFileProtocolExtraPrivileges off where Theia permits. A release check reads the fuse wire of the packaged binary."
+        mitigations: "Packaging flips the fuses: RunAsNode, EnableNodeOptionsEnvironmentVariable and EnableNodeCliInspectArguments off; EnableEmbeddedAsarIntegrityValidation and OnlyLoadAppFromAsar on; GrantFileProtocolExtraPrivileges off where Theia permits. A release check reads the fuse wire of the packaged binary. TASK-009: the installation already sets the NODE_OPTIONS and inspector fuses off, and its test reads the fuse wire. RunAsNode stays on until the backend starts another way, and the archive fuses wait for a packed application (R-09). Theia 1.76.0 does not permit GrantFileProtocolExtraPrivileges off: its window, loaded from files, then fails to start (docs/evidence/TASK-009/logs/hardening_trials.txt)."
         enforced_by: ["SS-BUILD-RELEASE", "SS-DESKTOP-CLIENT"]
         enforcement_points: ["packaging/desktop/", "scripts/release/", "apps/desktop/src/main"]
         owner_tasks: ["TASK-009", "TASK-073", "TASK-075"]
@@ -79,14 +79,14 @@ DATA:
         actor: "Malicious repository content, extension output or model output shown in the workbench"
         assets: ["AS-01", "AS-02", "AS-13"]
         surfaces: ["SF-03"]
-        scenario: "Script injection in a preview, notebook output, webview or notification. Theia 1.76.0 runs the window with context isolation and without Node integration, but without the Chromium sandbox and with a Node-capable preload, so a renderer compromise is close to the backend."
+        scenario: "Script injection in a preview, notebook output, webview or notification. Theia 1.76.0 runs the window with context isolation and without Node integration, but by default without the Chromium sandbox and with a Node-capable preload, which would put a renderer compromise close to the backend. The Nexees window turns the sandbox on (TASK-009)."
         invariants: ["SI-01", "SI-23", "SI-28"]
-        mitigations: "Untrusted HTML is shown only in sandboxed webviews with a restrictive content security policy; Nexees panels render text, not HTML. The main frame loads no remote content, in-page navigation stays blocked, and external links open in the system browser after confirmation. TASK-009 and TASK-021 enable the renderer sandbox if Theia allows it, or record why not."
+        mitigations: "Untrusted HTML is shown only in sandboxed webviews with a restrictive content security policy; Nexees panels render text, not HTML. The main frame loads no remote content: the window's network stack resolves no name but this machine's (TASK-009). In-page navigation stays blocked, and external links open in the system browser after confirmation. TASK-009 enabled the renderer sandbox for the window, whose page runs under it without Node (tests/e2e/desktop/local_application); TASK-021 keeps it on for extension webviews."
         enforced_by: ["SS-IDE", "SS-DESKTOP-CLIENT", "SS-BUILD-RELEASE"]
         enforcement_points: ["integrations/ide/editor_adapter", "apps/desktop/src/panels/", "apps/desktop/src/shell/"]
         owner_tasks: ["TASK-009", "TASK-018", "TASK-021", "TASK-073"]
         tests: ["SG-05", "tests/security/permissions/untrusted_instructions"]
-        residual: "With the sandbox off, a Chromium renderer exploit is contained only by context isolation (R-03)."
+        residual: "A Chromium renderer exploit must also escape the sandbox. Windows other than the main one are checked when they arrive (R-03)."
 
 DATA:
     ID: data.sec_th_05

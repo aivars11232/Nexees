@@ -1,0 +1,76 @@
+TASK-009 hardening trials, 2026-10-04T18:46:02+02:00.
+Each trial is made on a second disposable installation, /mnt/F/Nexees-toolchains/target/nexees/desktop-trial, laid out by the committed
+install step (scripts/build/build_desktop.py install) and then changed as the trial says. Trials 1 and 2 are judged
+by the committed end-to-end test; trials 3 and 4 open one window in the same kind of private session and record what
+it shows and writes. The installation TASK-009 delivers is not changed by any of them.
+
+== Trial 1. Electron's default fuses: are the hardening checks of the end-to-end test real? ==
+  install: fuses: 101100011 -> 100000011 (EnableNodeOptionsEnvironmentVariable off, EnableNodeCliInspectArguments off)
+  fuse wire changed back to Electron's defaults: 100000011 -> 101100011
+  $ node tests/e2e/desktop/local_application.test.mjs /mnt/F/Nexees-toolchains/target/nexees/desktop-trial
+    FAIL  the installed Electron binary has the fuses the package definition names (SI-28, TH-03)  [RunAsNode=1 EnableCookieEncryption=0 EnableNodeOptionsEnvironmentVariable=1 EnableNodeCliInspectArguments=1 EnableEmbeddedAsarIntegrityValidation=0 OnlyLoadAppFromAsar=0 LoadBrowserProcessSpecificV8Snapshot=0 GrantFileProtocolExtraPri
+    FAIL  nothing of the application listens beyond this machine: its backend and this test's DevTools port, on the loopback interface  [tcp 0100007F:82A9>00000000:0000 tcp 0100007F:2476>00000000:0000 tcp 0100007F:2477>00000000:0000]
+    FAIL  told to run as Node, to load a script through NODE_OPTIONS and to open an inspector, it is still the application and does none of it (TH-03)
+    3 CHECK(S) FAILED
+    exit code: 1
+  Result: with the default fuses the test fails on exactly the three checks that depend on them: the fuse wire, the Node inspector
+  listening on its port (a third listener), and NODE_OPTIONS or the inspector taking effect.
+
+== Trial 2. Theia's single-process mode (--no-cluster): can the RunAsNode fuse be switched off? ==
+  Theia starts its backend as a child process through ELECTRON_RUN_AS_NODE, which needs the RunAsNode fuse. With
+  --no-cluster it runs the backend inside the window's main process instead, and nothing needs that fuse. The
+  question is what the processes the backend starts then inherit. In this trial a script stands in for the host
+  program, which the backend starts in the same way; it records the descriptors it was started with and exits.
+  In the delivered configuration, with the backend as a separate process, a process the backend starts inherits 5 descriptors:
+      1  the event loop's eventfd
+      2  the event loop's eventpoll
+      1  the file <electron>/resources/default_app.asar
+      1  the file <electron>/v8_context_snapshot.bin
+  In single-process mode, a process the backend starts inherits 29 descriptors:
+      4  Chromium shared memory
+      4  a pipe
+      4  a socket
+      3  the event loop's eventfd
+      4  the event loop's eventpoll
+      2  the event loop's inotify
+      1  the file <electron>/chrome_100_percent.pak
+      1  the file <electron>/chrome_200_percent.pak
+      1  the file <electron>/icudtl.dat
+      1  the file <electron>/locales/en-US.pak
+      1  the file <electron>/resources.pak
+      1  the file <electron>/resources/default_app.asar
+      1  the file <electron>/v8_context_snapshot.bin
+      1  the graphics device /dev/dri/renderD128
+  Result: rejected. In single-process mode a process started by the backend inherits descriptors of the window's
+  main process: its sockets, Chromium's shared memory and the graphics device. The backend therefore stays a
+  separate process, and the RunAsNode fuse stays on until the backend can start another way (docs/security, R-09,
+  OSD-09). Even a separate backend passes on its event loop and two of Electron's files, which is why the host
+  closes whatever it inherits before it opens anything (platform/desktop/lifecycle/application_lifecycle).
+
+== Trial 3. The GrantFileProtocolExtraPrivileges fuse off: does Theia permit it (TH-03)? ==
+  install: fuses: 101100011 -> 100000011 (EnableNodeOptionsEnvironmentVariable off, EnableNodeCliInspectArguments off)
+  fuse wire changed: 100000011 -> 100000001
+  One window, started with --enable-logging=stderr, observed for 15 seconds:
+    the page shows: {"workbench":false,"statusBar":""}
+    the page logged: "Failed to run preload scripts.", source: file:///mnt/F/Nexees-toolchains/target/nexees/desktop-trial/lib/nexees/app/lib/frontend/bundle.js (2088)
+    the page logged: "Uncaught (in promise) SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.", source: file:///mnt/F/Nexees-toolchains/target/nexees/desktop-trial/lib/nexees/app/lib/frontend/bundle.js (492)
+  Result: Theia 1.76.0 does not permit it. Its window is loaded from files, and without the extra privileges of file pages
+  the page cannot read its local storage and the workbench never appears. The fuse stays on (docs/security, R-09).
+
+== Trial 4. What the window asks of the network ==
+  install: fuses: 101100011 -> 100000011 (EnableNodeOptionsEnvironmentVariable off, EnableNodeCliInspectArguments off)
+  The installation as TASK-009 delivers it. One window, started with --log-net-log, observed for 15 seconds;
+  then Chromium's own network log is read:
+    the page shows: {"workbench":true,"statusBar":"Nexees host | 0 | 0"}
+    2269 events; requests started, by address without its query:
+        5  http://localhost:<port>/socket.io/
+        1  https://redirector.gvt1.com/edgedl/chrome/dict/en-us-10-1.bdic
+        1  ws://localhost:<port>/socket.io/
+    requests that failed to start, by Chromium error code: {-105: 1}  (-105 is "name not resolved")
+  Result: the only address beyond this machine that the window asks for is Electron's spell-checking dictionary on
+  Google's servers, and the request fails because the window resolves no name but this machine's. Before that rule
+  existed, each start of a new profile fetched that dictionary (TASK-009_EVIDENCE.md, section 11).
+
+The trial installation was removed afterwards. Test profiles left in /tmp: 0.
+
+ALL TRIALS AS RECORDED

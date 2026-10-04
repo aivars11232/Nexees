@@ -10,7 +10,7 @@ SPECIFICATION:
 
 VALIDATE:
     ID: validate.sec_counts
-    ASSERT: COUNT(REF(data.sec_trust_levels)) == 8 AND COUNT(REF(data.sec_trust_rules)) == 6 AND COUNT(REF(data.sec_authorities)) == 8 AND COUNT(REF(data.sec_boundaries)) == 12 AND COUNT(REF(data.sec_assets)) == 15 AND COUNT(REF(data.sec_surfaces)) == 34 AND COUNT(REF(data.sec_invariants)) == 30 AND COUNT(REF(data.sec_threats)) == 55 AND COUNT(REF(data.sec_threat_tests)) == 39 AND COUNT(REF(data.sec_test_gaps)) == 9 AND COUNT(REF(data.sec_assumptions)) == 8 AND COUNT(REF(data.sec_residual_risks)) == 8 AND COUNT(REF(data.sec_open_decisions)) == 8 AND COUNT(REF(data.sec_remote_contracts)) == 11 AND COUNT(REF(data.sec_control_coverage)) == 18 AND COUNT(REF(data.sec_stop_coverage)) == 8 AND COUNT(REF(data.sec_execution_checks)) == 14
+    ASSERT: COUNT(REF(data.sec_trust_levels)) == 8 AND COUNT(REF(data.sec_trust_rules)) == 6 AND COUNT(REF(data.sec_authorities)) == 8 AND COUNT(REF(data.sec_boundaries)) == 12 AND COUNT(REF(data.sec_assets)) == 15 AND COUNT(REF(data.sec_surfaces)) == 34 AND COUNT(REF(data.sec_invariants)) == 30 AND COUNT(REF(data.sec_threats)) == 55 AND COUNT(REF(data.sec_threat_tests)) == 39 AND COUNT(REF(data.sec_test_gaps)) == 9 AND COUNT(REF(data.sec_assumptions)) == 8 AND COUNT(REF(data.sec_residual_risks)) == 9 AND COUNT(REF(data.sec_open_decisions)) == 9 AND COUNT(REF(data.sec_remote_contracts)) == 11 AND COUNT(REF(data.sec_control_coverage)) == 18 AND COUNT(REF(data.sec_stop_coverage)) == 8 AND COUNT(REF(data.sec_execution_checks)) == 14
     DESCRIPTION: "Every part of the threat model is complete: the eight trust levels and every list at its recorded size."
 
 VALIDATE:

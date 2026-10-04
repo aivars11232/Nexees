@@ -1,0 +1,22 @@
+[package]
+name = "nexees-desktop-host"
+description = "The Nexees Desktop local host: one process per user, separate from the window, that holds the device's state and serves its windows."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+# The host is the Rust binary of apps/desktop; the window beside it is the TypeScript application
+# in package.json (docs/engineering/CONVENTIONS.md section 2).
+[[bin]]
+name = "nexees-host"
+path = "src/application_host.rs"
+
+[dependencies]
+nexees-domain = { path = "../../core/domain" }
+nexees-protocol = { path = "../../core/protocol" }
+nexees-state = { path = "../../core/state" }
+nexees-platform-desktop = { path = "../../platform/desktop" }
+
+[lints]
+workspace = true

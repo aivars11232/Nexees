@@ -73,6 +73,11 @@ refine the split only within DS-01.
 
   The crates so far are `core/domain` (`nexees-domain`) and the two that build on it,
   `core/protocol` (`nexees-protocol`) and `core/state` (`nexees-state`).
+- **Platform and host crates** follow the same pattern outside `core/`. `platform/desktop` is
+  the library crate `nexees-platform-desktop`, with its root at `platform/desktop/lib.rs` and
+  one module per slot in its subfolders. The Desktop host is the binary `nexees-host` of the
+  crate `nexees-desktop-host`, whose manifest `apps/desktop/Cargo.toml` names its slot file
+  `apps/desktop/src/application_host.rs` as the binary's root (TASK-009).
 - **Dependencies between crates** follow the architecture: a crate depends only on crates of
   subsystems that its own subsystem's `depends_on` lists. That keeps the graph acyclic (AD-12).
 - **Platform ports.** The core defines a platform port as a trait in the crate of the subsystem
@@ -98,11 +103,21 @@ refine the split only within DS-01.
 - **Kotlin** follows the official Kotlin coding conventions with 4-space indentation. TASK-057
   chooses its formatter and lint (Android Lint at least) under the dependency gate and adds
   them to the runner.
-- **TypeScript** uses strict mode and Theia's style with 4-space indentation. TASK-009 chooses
-  its lint and formatter under the dependency gate and adds them to the runner. npm
-  dependencies follow DS-05 and DS-06 (section 6).
-- Until those builds exist, the runner has no Kotlin or TypeScript stage. The task that adds a
-  build adds its stage in the same change.
+- **TypeScript** uses strict mode and Theia's style with 4-space indentation. TASK-009 chose no
+  further package for it. The lint is the TypeScript compiler of the reviewed Theia tree with
+  every strict check on (`apps/desktop/src/tsconfig.json`), which the lint stage runs through
+  `scripts/build/build_desktop.py check`. The formatting rules are `.editorconfig`'s, which the
+  format stage enforces. A formatter or ESLint may be added later, under the dependency gate.
+  npm dependencies follow DS-05 and DS-06 (section 6).
+- **The Desktop window is built outside the checkout** by `scripts/build/build_desktop.py`
+  (`check`, `build`, `install`), from copies of its sources, with npm offline on the committed
+  lockfile. `install` also sets, in the installed copy of the Electron binary, the fuses that
+  `packaging/desktop/package_definition.json` names (SI-28). Kotlin has no stage until
+  TASK-057 adds its build, in the same change.
+- **An editor finds the window's packages through an optional link**, `apps/desktop/node_modules`,
+  to `check/node_modules` in the Desktop build folder. Git ignores the link and no build reads
+  it. Without it an editor reports the window's imports as unresolved, while the lint stage
+  still checks them.
 
 ## 5. Readable code and comments
 
@@ -138,12 +153,15 @@ every change.
   with duties is allowed per crate, after its duties are recorded in `docs/dependencies`.
   [deps: cargo-deny]
 - **Advisories (DS-08).** cargo-deny checks RustSec. Each kind of lockfile needs its own gate:
-  the deps stage fails on a lockfile no gate covers, so the task that introduces npm or Gradle
-  locking adds its gate first. [deps]
+  the deps stage fails on a lockfile no gate covers, so the task that introduces Gradle locking
+  adds its gate first. The npm gate (TASK-009) checks each `package-lock.json`: exact versions,
+  packages only from the npm registry with an sha512 hash, an `allowScripts` decision for every
+  install script, and the locked package set against its OSV review recorded in
+  `docs/dependencies/npm_review.json`. A changed lockfile needs a new review there. [deps]
 - **Before adding a dependency,** record it in `docs/dependencies` with every gate item; then
   add it. A dependency is also code: no package for a trivial function.
 - **Repository tools are inventoried as build dependencies:** the Rust toolchain, cargo-deny,
-  Python 3 and the LCL engine.
+  Python 3, the LCL engine, and Node.js with npm (TOOL-04).
 
 ## 7. Generated artifacts and local state
 
@@ -161,7 +179,8 @@ beside them. [security]
 
 An IDE may keep its own build output in the checkout, such as rust-analyzer's `target/`. It is
 ignored, never committed and outside every task's snapshot (section 10); the task's final
-verification lists it.
+verification lists it. The Desktop window's packages and build live in a folder outside the
+checkout too: the check runner uses `desktop/` beside its Cargo target folder.
 
 ## 8. Secrets
 
@@ -181,6 +200,12 @@ a credential-shaped string assembles it at runtime, so the source itself holds n
   reason why that is impossible.
 - **Repository tooling** has its tests in `tests/tooling/`, run by the test stage. They include
   the fixtures that protect pre-existing untracked user work. [test]
+- **End-to-end tests** of an installed application run outside the runner, because they need
+  the built application and a display. `tests/e2e/desktop/local_application.test.mjs` takes a
+  prefix made by `scripts/build/build_desktop.py install` and runs the application in a private
+  nested session of its own; the task that changes the Desktop records its run. It is also the
+  test of the Desktop runtime's hardening (SG-05), and it checks what the user sees: an entry
+  counts only where it is visible.
 
 ## 10. Task evidence and closure
 
@@ -250,12 +275,12 @@ authorizes deletion. [test: `tests/tooling/test_task_cleanup.py`]
 |---|---|
 | `layout` | Placeholder markers; the architecture catalogue of product and test files; every enforcement point of the threat model names a slot, as a placeholder or as source |
 | `format` | `.editorconfig` for every text file outside `docs/evidence/`, and rustfmt |
-| `lint` | clippy with warnings denied; repository scripts parse and have a module docstring |
+| `lint` | clippy with warnings denied; repository scripts parse and have a module docstring; JavaScript parses; the Desktop TypeScript compiles with every strict check |
 | `build` | The workspace, locked |
 | `test` | The Rust tests and `tests/tooling/` |
 | `docs` | rustdoc with warnings denied; relative Markdown links outside fixtures; `lcl check`, `validate` and `run` of the charter, architecture, dependency and security projects; `FILE_TREE.txt`; the manual sources |
 | `security` | Credentials and private keys, and ignored evidence |
-| `deps` | Exact pins, gated lockfiles and cargo-deny |
+| `deps` | Exact pins, gated lockfiles (cargo-deny, and the npm gate with its recorded review) |
 | `evidence` | Complete receipts, and closure records from TASK-005 on |
 
 Name one or more stages with `--stage`. The runner fails closed: a missing tool or setting
@@ -267,7 +292,9 @@ It needs:
 - rustup for the pinned toolchain;
 - cargo-deny on `PATH`;
 - the LCL engine `lcl`, with `NEXEES_LCL_CORE_01` and `NEXEES_LCL_CORE_03` naming the canonical
-  Core 0.1.0 and 0.3.0 packages.
+  Core 0.1.0 and 0.3.0 packages;
+- Node.js with npm, with `NEXEES_NPM_CACHE` naming an npm cache that holds the Desktop
+  window's locked packages and `NEXEES_BUILD_HOME` the home folder npm runs with.
 
 On the development machine:
 
@@ -275,11 +302,13 @@ On the development machine:
 source /mnt/F/Nexees-toolchains/env.sh
 export PATH="$PATH:$HOME/.cargo/bin"
 export NEXEES_LCL_CORE_01=/mnt/F/LCL/canonical/LCL_Core_0.1.0 NEXEES_LCL_CORE_03=/mnt/F/LCL/canonical/LCL_Core_0.3.0
+export NEXEES_NPM_CACHE=/mnt/F/Nexees-toolchains/npm-cache NEXEES_BUILD_HOME=/mnt/F/Nexees-toolchains/home
 python3 -B scripts/test/run_checks.py
 ```
 
 `scripts/ci/continuous_integration.sh` is the entry point a CI service runs. It fetches the
-locked dependencies, then runs every stage, with cargo-deny refreshing its advisory database.
+locked dependencies, the Rust crates and the Desktop window's npm packages, then runs every
+stage, with cargo-deny refreshing its advisory database.
 The CI machine needs the full Git history, because the layout stage compares placeholders
 with the commit that imported them.
 

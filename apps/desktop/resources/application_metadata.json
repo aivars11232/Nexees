@@ -1,0 +1,11 @@
+{
+  "id": "nexees",
+  "name": "Nexees",
+  "summary": "The Nexees Desktop application",
+  "version": "0.0.0",
+  "categories": [
+    "Development",
+    "IDE"
+  ],
+  "window_class": "nexees"
+}

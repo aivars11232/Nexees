@@ -1,0 +1,66 @@
+{
+  "private": true,
+  "name": "nexees-desktop",
+  "productName": "Nexees",
+  "version": "0.0.0",
+  "description": "The Nexees Desktop window: an Eclipse Theia application on Electron, with the Nexees extension in src/.",
+  "license": "UNLICENSED",
+  "main": "lib/backend/electron-main.js",
+  "desktopName": "nexees.desktop",
+  "theia": {
+    "target": "electron",
+    "frontend": {
+      "config": {
+        "applicationName": "Nexees",
+        "electron": {
+          "windowOptions": {
+            "webPreferences": {
+              "contextIsolation": true,
+              "sandbox": true,
+              "nodeIntegration": false,
+              "nodeIntegrationInWorker": false,
+              "backgroundThrottling": false,
+              "enableDeprecatedPaste": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@theia/core": "1.76.0",
+    "@theia/editor": "1.76.0",
+    "@theia/electron": "1.76.0",
+    "@theia/filesystem": "1.76.0",
+    "@theia/messages": "1.76.0",
+    "@theia/monaco": "1.76.0",
+    "@theia/navigator": "1.76.0",
+    "@theia/preferences": "1.76.0",
+    "@theia/terminal": "1.76.0",
+    "@theia/workspace": "1.76.0",
+    "nexees-desktop-shell": "file:src"
+  },
+  "devDependencies": {
+    "@theia/cli": "1.76.0",
+    "electron": "42.11.10"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.6.0": true,
+    "@theia/ffmpeg@1.76.0": true,
+    "drivelist@12.0.2": true,
+    "esbuild@0.28.2": true,
+    "fsevents": false,
+    "keytar@7.9.0": true,
+    "msgpackr-extract@3.0.4": true,
+    "native-keymap@2.5.0": true,
+    "node-pty@1.2.0-beta.12": true,
+    "puppeteer": false
+  },
+  "overrides": {
+    "electron": "42.11.10",
+    "dompurify": "3.4.16",
+    "uuid": "11.1.1",
+    "@tootallnate/once": "2.0.1",
+    "unzipper": "0.12.5"
+  }
+}

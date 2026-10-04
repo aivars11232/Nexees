@@ -7,14 +7,16 @@ Stages, in this order (all of them by default, or the ones named with --stage):
   layout    placeholder markers follow CONV-MARKER-01, and every product and test file has its
             place in the architecture catalogue (docs/architecture/subsystems.lcl.txt)
   format    the .editorconfig rules for every text file outside docs/evidence/, and rustfmt
-  lint      clippy with warnings denied; every repository script parses and states its purpose
+  lint      clippy with warnings denied; every repository script parses and states its purpose; the
+            Desktop window's TypeScript compiles with every strict check (scripts/build/build_desktop.py)
   build     the Rust workspace, locked to Cargo.lock
   test      the Rust tests and the repository tooling tests in tests/tooling/
   docs      rustdoc with warnings denied, relative Markdown links, the four LCL documentation
             projects, FILE_TREE.txt and the manual sources
   security  no credential or private key in any file a commit would hold, and no evidence ignored
-  deps      exact version pins, cargo-deny's license, ban, source and advisory gate, and no
-            lockfile that no gate covers
+  deps      exact version pins, cargo-deny's license, ban, source and advisory gate, the npm lockfile's
+            gate (pins, sources, integrity, reviewed install scripts and its recorded advisory review),
+            and no lockfile that no gate covers
   evidence  every closed task's receipt is complete, and from TASK-005 on carries a valid
             closure record
 
@@ -26,8 +28,11 @@ listing the receipt files of an open task in advance.
 
 The docs stage needs the LCL engine `lcl` and the canonical Core packages, named by the
 environment variables NEXEES_LCL_CORE_01 and NEXEES_LCL_CORE_03. The deps stage needs
-cargo-deny; it uses the advisory database already in CARGO_HOME unless --online is given.
-docs/engineering/CONVENTIONS.md explains every rule.
+cargo-deny; it uses the advisory database already in CARGO_HOME unless --online is given. The
+lint stage's TypeScript check installs the Desktop window's locked npm packages, without install
+scripts, into a folder beside the Cargo target folder; it needs NEXEES_NPM_CACHE and
+NEXEES_BUILD_HOME (scripts/build/build_desktop.py). docs/engineering/CONVENTIONS.md explains every
+rule.
 """
 from __future__ import annotations
 
@@ -65,7 +70,11 @@ FIRST_PROFILE_TASK = 2  # receipts corroborated under the continuation profile h
 FIRST_CLOSURE_TASK = 5  # tasks from TASK-005 on carry a closure record in their receipt
 BINARY_SUFFIXES = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.zip', '.jar', '.so', '.apk', '.aab')
 KEY_SUFFIXES = ('.pem', '.key', '.p12', '.pfx', '.jks', '.keystore', '.der')
-GATED_LOCKFILES = {'Cargo.lock'}  # lockfile names the deps stage has a gate for
+GATED_LOCKFILES = {'Cargo.lock', 'package-lock.json'}  # lockfile names the deps stage has a gate for
+# The advisory review of every npm lockfile (DS-08), and the dispositions of the advisories it found.
+NPM_REVIEW = 'docs/dependencies/npm_review.json'
+DISPOSITIONS = 'docs/dependencies/strategy.lcl.txt'
+NPM_REGISTRY = 'https://registry.npmjs.org/'
 # Folders Gradle and IDEs generate beside a Gradle build file. Under docs/evidence they are output next to a
 # prototype kept as evidence, never evidence, and .gitignore ignores them there (CONVENTIONS.md section 7).
 GRADLE_OUTPUT = ('.gradle', '.kotlin', 'build')
@@ -251,6 +260,17 @@ class Runner:
             if not ast.get_docstring(tree):
                 self.find(f'{path} has no module docstring stating its purpose')
         print(f'{len(scripts)} repository scripts parsed')
+        javascript = [p for p in self.files() if p.endswith(('.js', '.mjs')) and p.startswith(('scripts/', 'tests/'))]
+        if javascript and not shutil.which('node'):
+            raise Unavailable('node is not installed')
+        for path in javascript:
+            self.run(['node', '--check', path])
+        if any(p.startswith('apps/desktop/src/') and p.endswith('.ts') for p in self.files()):
+            for name in ('NEXEES_NPM_CACHE', 'NEXEES_BUILD_HOME'):
+                if not os.environ.get(name):
+                    raise Unavailable(f'set {name} for the TypeScript check (scripts/build/build_desktop.py)')
+            self.run([sys.executable, '-B', 'scripts/build/build_desktop.py', 'check', '--build-dir',
+                      str(self.target_dir / 'desktop')])
 
     # ------------------------------------------------------------------ build and test
 
@@ -362,6 +382,17 @@ class Runner:
         for lockfile in (p for p in files if LOCKFILE.search(p) and not p.startswith('docs/evidence/')):
             if lockfile.rsplit('/', 1)[-1] not in GATED_LOCKFILES:
                 self.find(f'{lockfile} has no advisory and license gate yet; add it to the deps stage (DS-08)')
+        npm_locks = [p for p in files if p.endswith('package-lock.json') and not p.startswith('docs/evidence/')]
+        reviews = json.loads((self.root / NPM_REVIEW).read_text(encoding='utf-8')) if npm_locks else {}
+        dispositions = (self.root / DISPOSITIONS).read_text(encoding='utf-8') if npm_locks else ''
+        for lockfile in npm_locks:
+            manifest = json.loads((self.root / lockfile).with_name('package.json').read_text(encoding='utf-8'))
+            lock = json.loads((self.root / lockfile).read_text(encoding='utf-8'))
+            review = next((r for r in reviews.get('reviews', []) if r.get('lockfile') == lockfile), None)
+            for problem in npm_problems(manifest, lock, review, dispositions):
+                self.find(f'{lockfile}: {problem}')
+        if npm_locks:
+            print(f'{len(npm_locks)} npm lockfile(s) checked against their advisory review')
         if not shutil.which('cargo-deny'):
             raise Unavailable('cargo-deny is not installed')
         self.run(['cargo', 'deny', *([] if self.online else ['--offline']), '--locked', 'check'])
@@ -561,6 +592,66 @@ def pin_problems(manifest: dict) -> list[str]:
         for section in ('dependencies', 'dev-dependencies', 'build-dependencies'):
             check(tables.get(section, {}), f'target.{target}.{section}')
     check(manifest.get('workspace', {}).get('dependencies', {}), 'workspace.dependencies')
+    return problems
+
+
+def npm_package_set(lock: dict) -> list[str]:
+    """The registry packages of an npm lockfile as sorted, distinct name@version strings."""
+    found = set()
+    for path, meta in lock.get('packages', {}).items():
+        if path and not meta.get('link') and 'resolved' in meta:
+            found.add(f'{path.rsplit("node_modules/", 1)[-1]}@{meta.get("version")}')
+    return sorted(found)
+
+
+def npm_problems(manifest: dict, lock: dict, review: dict | None, dispositions: str) -> list[str]:
+    """Problems of an npm package and its lockfile under DS-05, DS-06 and DS-08.
+
+    Every dependency is an exact version or a local folder of the package; every locked package
+    comes from the npm registry with an sha512 integrity hash, or is a link to a folder inside the
+    package; every package with an install script has an allowScripts decision (DS-06); and the
+    lockfile's registry packages are exactly the set its advisory review recorded, each advisory
+    with a recorded disposition (DS-08). A changed lockfile therefore needs a new review."""
+    problems = []
+    exact = re.compile(r'\d+\.\d+\.\d+(-[\w.]+)?')
+    for section in ('dependencies', 'devDependencies', 'optionalDependencies', 'overrides'):
+        for name, spec in manifest.get(section, {}).items():
+            local = (isinstance(spec, str) and spec.startswith('file:') and '..' not in spec
+                     and not spec[5:].startswith('/'))
+            if not (isinstance(spec, str) and (exact.fullmatch(spec) or (local and section != 'overrides'))):
+                problems.append(f'{section}.{name} = {spec!r} is neither an exact version nor a folder of the package '
+                                '(DS-05)')
+    if lock.get('lockfileVersion') != 3:
+        problems.append('the lockfile is not lockfileVersion 3')
+    allowed = manifest.get('allowScripts', {})
+    for path, meta in lock.get('packages', {}).items():
+        if not path:
+            continue
+        name = path.rsplit('node_modules/', 1)[-1]
+        if meta.get('link'):
+            target = str(meta.get('resolved', ''))
+            if target.startswith('/') or '..' in target.split('/'):
+                problems.append(f'{path} links outside the package')
+        elif 'resolved' in meta:
+            if not str(meta['resolved']).startswith(NPM_REGISTRY):
+                problems.append(f'{path} comes from {meta["resolved"]}, not the npm registry')
+            if not str(meta.get('integrity', '')).startswith('sha512-'):
+                problems.append(f'{path} has no sha512 integrity hash')
+        if meta.get('hasInstallScript') and f'{name}@{meta.get("version")}' not in allowed and name not in allowed:
+            problems.append(f'{name}@{meta.get("version")} has an install script without an allowScripts decision '
+                            '(DS-06)')
+    if review is None:
+        return problems + [f'no advisory review is recorded in {NPM_REVIEW} (DS-08)']
+    digest = hashlib.sha256(''.join(f'{p}\n' for p in npm_package_set(lock)).encode()).hexdigest()
+    if review.get('package_set_sha256') != digest:
+        problems.append(f'the locked packages differ from the reviewed set ({digest[:12]}...); review them and record '
+                        f'it in {NPM_REVIEW} (DS-08)')
+    for advisory in review.get('advisories', []):
+        package = str(advisory.get('package', '')).removeprefix('npm:')
+        name, _, version = package.rpartition('@')
+        lines = [d for d in re.findall(r'"([^"]*)"', dispositions) if d.startswith(f'{name} {version} |')]
+        if not any(str(advisory.get('id')) in d for d in lines):
+            problems.append(f'{package} {advisory.get("id")} has no recorded disposition in {DISPOSITIONS}')
     return problems
 
 

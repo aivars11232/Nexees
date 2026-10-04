@@ -1,0 +1,34 @@
+TASK-009 negative tests, 2026-10-04T18:56:50+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. 14 cases break one rule
+of the Desktop host, its channel, its lifecycle, the store or the fuse setting each: a test-stage case
+passes only when the named test fails, and never through a compile error. The others seed defects the
+lint, deps, layout and format stages must catch.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: a peer of another user admitted on the local channel is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: transport::local_ipc::tests::a_peer_of_another_user_is_refused_before_anything_is_read)
+PASS  test: a frame longer than the channel allows read anyway is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: transport::local_ipc::tests::a_frame_longer_than_the_channel_allows_is_refused_unread)
+PASS  test: a runtime folder open to other users accepted is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: transport::local_ipc::tests::the_channel_lives_in_folders_private_to_the_user)
+PASS  test: a second host allowed to take the host lock is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_second_host_does_not_start_while_one_runs)
+PASS  test: another program's autostart entry removed on disable is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: lifecycle::application_lifecycle::tests::another_programs_entry_of_the_same_name_is_never_touched)
+PASS  test: a shell-like command written into the autostart entry is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: lifecycle::application_lifecycle::tests::a_relative_or_shell_like_command_is_refused)
+PASS  test: a kept host stopping after its windows close is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::the_host_stops_after_its_last_window_detaches_unless_it_keeps_running)
+PASS  test: a host that never stops after its last window is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::the_device_identity_is_created_once_and_kept_across_restarts, tests::a_window_says_hello_and_resyncs_to_the_hosts_status, tests::a_reloading_window_reattaches_to_the_same_host, tests::the_host_stops_after_its_last_window_detaches_unless_it_keeps_running)
+PASS  test: a window of another protocol version kept attached is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_of_another_protocol_version_or_without_a_hello_is_refused)
+PASS  test: more windows than the bound attached is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::more_windows_than_the_bound_are_refused)
+PASS  test: an intent reported as carried out is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::an_intent_is_answered_as_unsupported_rather_than_left_open)
+PASS  test: the device identity replaced by another is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: state_store::tests::the_devices_own_identity_is_recorded_once_and_kept)
+PASS  test: fuses set in a binary whose fuse wire is not the known one is caught (exit 1: $ /usr/bin/python3 -B -m unittest discover -s tests/tooling -p test_*.py; failing tests: test_a_binary_without_exactly_one_known_fuse_wire_is_refused_unchanged)
+PASS  test: a fuse that Electron removed overwritten is caught (exit 1: $ /usr/bin/python3 -B -m unittest discover -s tests/tooling -p test_*.py; failing tests: test_an_unknown_fuse_a_state_that_is_not_a_boolean_or_a_removed_fuse_is_refused)
+PASS  lint: a strictness error in the window's TypeScript is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: a syntax error in the end-to-end test is caught (exit 1: FINDING: node --check tests/e2e/desktop/local_application.test.mjs exited with 1)
+PASS  lint: unsafe code in the platform crate is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+PASS  deps: a version range in the window's npm package is caught (exit 1: FINDING: apps/desktop/package-lock.json: dependencies.@theia/core = '^1.76.0' is neither an exact version nor a folder of the package (DS-05))
+PASS  deps: a locked npm package changed without a new review is caught (exit 1: FINDING: apps/desktop/package-lock.json: the locked packages differ from the reviewed set (3d68e606de63...); review them and record it in docs/dependencies/npm_review.json (DS-08))
+PASS  deps: an npm install script without an allowScripts decision is caught (exit 1: FINDING: apps/desktop/package-lock.json: keytar@7.9.0 has an install script without an allowScripts decision (DS-06))
+PASS  deps: nix not pinned exactly is caught (exit 1: FINDING: Cargo.toml: workspace.dependencies.nix = "0.31.3" is not an exact pin ("=x.y.z"))
+PASS  layout: a window source without an architecture slot is caught (exit 1: FINDING: apps/desktop/src/extra.ts belongs to 0 subsystems instead of one: [])
+PASS  format: a TypeScript line indented with a tab is caught (exit 1: FINDING: apps/desktop/src/shell/main_window.ts: line 45 indents with a tab)
+
+ALL NEGATIVE TESTS PASSED

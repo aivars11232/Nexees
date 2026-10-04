@@ -1,0 +1,61 @@
+{
+  "description": "The advisory review of each npm lockfile (DS-08). The deps stage of scripts/test/run_checks.py recomputes the SHA-256 of the lockfile's registry packages, one name@version per line in sorted order, and fails when it differs from the reviewed set; every advisory found must have a disposition in docs/dependencies/strategy.lcl.txt (data.dep_advisory_dispositions).",
+  "reviews": [
+    {
+      "lockfile": "apps/desktop/package-lock.json",
+      "reviewed": "2026-10-04",
+      "by": "TASK-009",
+      "source": "OSV (api.osv.dev querybatch and vulns), queried with public package coordinates only",
+      "packages": 807,
+      "package_set_sha256": "32dd67b421505478db723621a414041a833102eb5e1950e6b6d1dd9348a9a942",
+      "advisories": [
+        {
+          "package": "npm:braces@3.0.3",
+          "id": "GHSA-vfj7-8cjw-p6xm",
+          "severity": "HIGH"
+        },
+        {
+          "package": "npm:decompress@4.2.1",
+          "id": "GHSA-h39j-r5qq-r9mm",
+          "severity": "MODERATE"
+        },
+        {
+          "package": "npm:decompress@4.2.1",
+          "id": "GHSA-hrh2-vp3x-79xf",
+          "severity": "CRITICAL"
+        },
+        {
+          "package": "npm:decompress@4.2.1",
+          "id": "GHSA-jwp9-9v96-94mx",
+          "severity": "MODERATE"
+        },
+        {
+          "package": "npm:decompress@4.2.1",
+          "id": "GHSA-mp2f-45pm-3cg9",
+          "severity": "CRITICAL"
+        },
+        {
+          "package": "npm:diff@7.0.0",
+          "id": "GHSA-73rr-hh4g-fpgx",
+          "severity": "LOW"
+        },
+        {
+          "package": "npm:http-cache-semantics@4.2.0",
+          "id": "GHSA-ch52-4w7c-c8xp",
+          "severity": "HIGH"
+        },
+        {
+          "package": "npm:serialize-javascript@6.0.2",
+          "id": "GHSA-5c6j-r48x-rmvq",
+          "severity": "HIGH"
+        },
+        {
+          "package": "npm:serialize-javascript@6.0.2",
+          "id": "GHSA-qj8w-gfj5-8c6v",
+          "severity": "MODERATE"
+        }
+      ],
+      "scope": "All five advised packages are dev-only in the lockfile, reached only through the build and test tooling of @theia/cli, and never loaded by the running window. The shell leaves out @theia/plugin-ext-vscode and @theia/vsx-registry, so nothing unpacks extension archives at runtime (SA-08)."
+    }
+  ]
+}

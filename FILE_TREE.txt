@@ -36,41 +36,48 @@ Nexees/
 │   │       └── main.source
 │   └── desktop/
 │       ├── resources/
-│       │   └── application_metadata.source
-│       └── src/
-│           ├── panels/
-│           │   ├── agent_panel.source
-│           │   ├── chat_panel.source
-│           │   ├── devices_panel.source
-│           │   ├── extensions_panel.source
-│           │   ├── git_panel.source
-│           │   ├── help_panel.source
-│           │   ├── import_preview.source
-│           │   ├── logs_panel.source
-│           │   ├── problems_panel.source
-│           │   ├── task_panel.source
-│           │   └── terminal_panel.source
-│           ├── settings/
-│           │   ├── account_view.source
-│           │   ├── developer_settings_view.source
-│           │   ├── model_selector.source
-│           │   ├── security_approvals.source
-│           │   └── settings_view.source
-│           ├── shell/
-│           │   ├── activity_bar.source
-│           │   ├── main_window.source
-│           │   ├── panel_controls.source
-│           │   ├── panel_layout.source
-│           │   ├── status_bar.source
-│           │   └── title_bar.source
-│           ├── workspaces/
-│           │   ├── editor_tabs.source
-│           │   ├── file_tree.source
-│           │   ├── lcl_workspace.source
-│           │   ├── workspace_switcher.source
-│           │   └── workspace_view.source
-│           ├── application_host.source
-│           └── main.source
+│       │   └── application_metadata.json
+│       ├── src/
+│       │   ├── panels/
+│       │   │   ├── agent_panel.source
+│       │   │   ├── chat_panel.source
+│       │   │   ├── devices_panel.source
+│       │   │   ├── extensions_panel.source
+│       │   │   ├── git_panel.source
+│       │   │   ├── help_panel.source
+│       │   │   ├── import_preview.source
+│       │   │   ├── logs_panel.source
+│       │   │   ├── problems_panel.source
+│       │   │   ├── task_panel.source
+│       │   │   └── terminal_panel.source
+│       │   ├── settings/
+│       │   │   ├── account_view.source
+│       │   │   ├── developer_settings_view.source
+│       │   │   ├── model_selector.source
+│       │   │   ├── security_approvals.source
+│       │   │   └── settings_view.source
+│       │   ├── shell/
+│       │   │   ├── activity_bar.source
+│       │   │   ├── main_window.ts
+│       │   │   ├── panel_controls.source
+│       │   │   ├── panel_layout.source
+│       │   │   ├── status_bar.source
+│       │   │   └── title_bar.source
+│       │   ├── workspaces/
+│       │   │   ├── editor_tabs.source
+│       │   │   ├── file_tree.source
+│       │   │   ├── lcl_workspace.source
+│       │   │   ├── workspace_switcher.source
+│       │   │   └── workspace_view.source
+│       │   ├── application_host.rs
+│       │   ├── main.electron.ts
+│       │   ├── main.protocol.ts
+│       │   ├── main.ts
+│       │   ├── package.json
+│       │   └── tsconfig.json
+│       ├── Cargo.toml
+│       ├── package-lock.json
+│       └── package.json
 ├── assets/
 │   ├── branding/
 │   │   ├── derived/
@@ -255,6 +262,7 @@ Nexees/
 │   │   ├── checks.lcl.txt
 │   │   ├── components.lcl.txt
 │   │   ├── dependencies.lcl.txt
+│   │   ├── npm_review.json
 │   │   ├── record.lcl.txt
 │   │   └── strategy.lcl.txt
 │   ├── engineering/
@@ -486,13 +494,39 @@ Nexees/
 │   │   │   │   ├── receipt.json
 │   │   │   │   └── snapshot_files.sha256
 │   │   │   └── TASK-007_EVIDENCE.md
-│   │   └── TASK-008/
+│   │   ├── TASK-008/
+│   │   │   ├── logs/
+│   │   │   │   ├── cleanup_record.json
+│   │   │   │   ├── dispatch_task_008.record.json
+│   │   │   │   ├── ide_activity.txt
+│   │   │   │   ├── native_language_suite.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── preflight.txt
+│   │   │   │   ├── regression.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── run_checks.txt
+│   │   │   │   └── security_scan.txt
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── corroboration.txt
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   └── snapshot_files.sha256
+│   │   │   └── TASK-008_EVIDENCE.md
+│   │   └── TASK-009/
 │   │       ├── logs/
+│   │       │   ├── cleanup_first_close.json
 │   │       │   ├── cleanup_record.json
-│   │       │   ├── dispatch_task_008.record.json
+│   │       │   ├── correction_seeded_defects.txt
+│   │       │   ├── desktop_build.txt
+│   │       │   ├── dispatch_task_009.record.json
+│   │       │   ├── e2e_local_application.txt
+│   │       │   ├── hardening_trials.txt
 │   │       │   ├── ide_activity.txt
 │   │       │   ├── native_language_suite.json
 │   │       │   ├── negative_tests.txt
+│   │       │   ├── osv_npm.json
 │   │       │   ├── preflight.txt
 │   │       │   ├── regression.txt
 │   │       │   ├── required_reading.txt
@@ -505,7 +539,7 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       └── TASK-008_EVIDENCE.md
+│   │       └── TASK-009_EVIDENCE.md
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
 │   │   └── NEXEES_USER_MANUAL.md
@@ -561,7 +595,7 @@ Nexees/
 │   ├── android/
 │   │   └── package_definition.source
 │   ├── desktop/
-│   │   └── package_definition.source
+│   │   └── package_definition.json
 │   └── updates/
 │       ├── release_manifest.source
 │       └── signing_configuration.source
@@ -589,7 +623,7 @@ Nexees/
 │       │   ├── sandbox_backend.source
 │       │   └── tool_capabilities.source
 │       ├── lifecycle/
-│       │   ├── application_lifecycle.source
+│       │   ├── application_lifecycle.rs
 │       │   └── notification_backend.source
 │       ├── secrets/
 │       │   └── credential_store.source
@@ -597,14 +631,16 @@ Nexees/
 │       │   ├── atomic_file_writer.source
 │       │   ├── file_picker.source
 │       │   └── scoped_filesystem.source
-│       └── transport/
-│           ├── local_ipc.source
-│           ├── secure_channel.source
-│           └── transport_discovery.source
+│       ├── transport/
+│       │   ├── local_ipc.rs
+│       │   ├── secure_channel.source
+│       │   └── transport_discovery.source
+│       ├── Cargo.toml
+│       └── lib.rs
 ├── scripts/
 │   ├── build/
 │   │   ├── build_android.source
-│   │   ├── build_desktop.source
+│   │   ├── build_desktop.py
 │   │   └── bundle_manuals.source
 │   ├── ci/
 │   │   └── continuous_integration.sh
@@ -632,7 +668,7 @@ Nexees/
 │   │   │   └── remote_agent_control.test.source
 │   │   ├── desktop/
 │   │   │   ├── autonomous_run.test.source
-│   │   │   ├── local_application.test.source
+│   │   │   ├── local_application.test.mjs
 │   │   │   └── workspace_switching.test.source
 │   │   ├── help/
 │   │   │   ├── offline_manuals.test.source
@@ -682,6 +718,7 @@ Nexees/
 │   │       ├── pairing_revocation.test.source
 │   │       └── stale_approval_rejection.test.source
 │   ├── tooling/
+│   │   ├── test_build_desktop.py
 │   │   ├── test_run_checks.py
 │   │   └── test_task_cleanup.py
 │   └── unit/

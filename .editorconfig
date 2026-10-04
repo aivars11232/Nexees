@@ -1,6 +1,7 @@
 # Formatting every editor applies, and the format stage of scripts/test/run_checks.py enforces.
-# The language formatters own the details inside each language: rustfmt for Rust, and for
-# Kotlin and TypeScript the formatter their first task chooses (docs/engineering/CONVENTIONS.md).
+# The language formatters own the details inside each language: rustfmt for Rust. TypeScript has
+# no formatter beyond these rules (TASK-009); Kotlin's first task chooses its own
+# (docs/engineering/CONVENTIONS.md).
 root = true
 
 [*]

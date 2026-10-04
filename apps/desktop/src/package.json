@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "nexees-desktop-shell",
+  "version": "0.0.0",
+  "description": "The Nexees extension of the Desktop window: its part in Electron's main process, attaching to the Nexees host, and the main window.",
+  "license": "UNLICENSED",
+  "theiaExtensions": [
+    {
+      "electronMain": "lib/main.electron",
+      "backend": "lib/main",
+      "frontend": "lib/shell/main_window"
+    }
+  ]
+}

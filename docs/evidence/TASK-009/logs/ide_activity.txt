@@ -1,0 +1,165 @@
+TASK-009: what the owner's IDE did during the task, recorded 2026-10-04T19:03:39+02:00 with read-only commands.
+TASK-009 began at 2026-10-04T15:39:41+02:00. Every command of the task runs with the isolated toolchain
+(env.sh): CARGO_HOME and RUSTUP_HOME under /mnt/F/Nexees-toolchains, never ~/.cargo; npm, Electron and the native
+builds use the home folder /mnt/F/Nexees-toolchains/home and its caches, never the user's.
+
+== 1. The owner's IDE processes ==
+  4525  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [the Gradle extension's server]
+  4598  /home/aivars/.vscode/extensions/rust-lang.rust-analyzer-0.3.3065-linux-x64/server/rust-analyzer  [VS Code's rust-analyzer]
+  4693  /usr/lib/rust-analyzer-proc-macro-srv  [a proc-macro server of rust-analyzer]
+  4694  /usr/lib/rust-analyzer-proc-macro-srv  [a proc-macro server of rust-analyzer]
+  5078  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [the Java language server]
+  716123  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [a Gradle daemon of the Gradle extension]
+  6 processes, all of the owner's VS Code. The Gradle daemon the preflight recorded, 5968, stopped by
+  itself during the task; the Gradle daemon running now, 716123, was started by the extension during it (section 4).
+  The task's toolchain environment (env.sh):
+    export RUSTUP_HOME=$T/rustup CARGO_HOME=$T/cargo CARGO_TARGET_DIR=$T/target
+
+== 2. Ignored files in the checkout: never committed, outside the snapshot ==
+  apps/desktop/node_modules: 1 files, written 2026-10-04T17:56:20.609+02:00 .. 2026-10-04T17:56:20.609+02:00
+  docs/evidence/TASK-003/prototypes/android-app/.gradle/: 17 files, written 2026-10-04T11:52:54.427+02:00 .. 2026-10-04T18:18:55.013+02:00
+  target/: 554 files, written 2026-10-04T11:52:23.102+02:00 .. 2026-10-04T16:02:42.605+02:00
+  target/ is rust-analyzer's cargo check output; 202 of its files were written since TASK-009 began.
+  Other ignored entries: ['apps/desktop/node_modules'].
+  apps/desktop/node_modules is a link to /mnt/F/Nexees-toolchains/target/nexees/desktop/check/node_modules, made by the task at 17:56 after the owner
+  reported an error of the editor: VS Code could not find the window's packages, which are installed in the
+  Desktop build folder. Git ignores the link, no build reads it, and it stays for the owner's editor
+  (docs/engineering/CONVENTIONS.md section 4).
+  At the first close this list also held scripts/test/__pycache__/run_checks.cpython-314.pyc: the task's own,
+  written at 16:34:39 by a command that imported the check runner without -B. The scoped cleanup of that close
+  removed it and its folder (logs/cleanup_first_close.json).
+  Nothing of the Desktop build is in the checkout: it is built in /mnt/F/Nexees-toolchains/target/nexees/desktop.
+
+== 3. Cargo.lock: written by rust-analyzer, identical to the task's own offline resolution ==
+  2026-10-04T16:02:41.921+02:00  platform/desktop/Cargo.toml
+  2026-10-04T15:57:41.347+02:00  Cargo.toml
+  2026-10-04T15:59:00.223+02:00  apps/desktop/Cargo.toml
+  2026-10-04T16:02:36.028+02:00  Cargo.lock
+  TASK-009 wrote the two new crate manifests and added the crates, with nix, to the workspace:
+  platform/desktop/Cargo.toml at 15:55:46, Cargo.toml at 15:57:41 and apps/desktop/Cargo.toml at 15:59:00. At
+  15:59:08 Cargo.lock was rewritten with the new crates and nix's dependencies, 1 minute 43 seconds before the
+  task's first cargo command after those edits (16:00:51). At 16:02:34 the task removed a development
+  dependency from platform/desktop/Cargo.toml, and at 16:02:36 Cargo.lock was rewritten again, with no cargo
+  command of the task between them. Both are rust-analyzer reloading the workspace with the system cargo. The
+  lock is regenerated now, independently, offline, with the isolated toolchain, from the manifests:
+  $ cargo generate-lockfile --offline   (exit 0; Locking 44 packages to highest Rust 1.99 compatible versions)
+  Result: the regenerated lock is byte-identical to the checkout's Cargo.lock.
+  Locked packages:
+    autocfg 1.5.1
+    bitflags 2.13.2
+    bumpalo 3.20.3
+    cc 1.6.0
+    cfg-if 1.0.5
+    cfg_aliases 0.2.2
+    fallible-iterator 0.3.0
+    fallible-streaming-iterator 0.1.9
+    find-msvc-tools 0.1.14
+    foldhash 0.2.0
+    hashbrown 0.16.1
+    hashbrown 0.17.1
+    hashlink 0.12.2
+    itoa 1.0.18
+    js-sys 0.3.106
+    libc 0.2.190
+    libsqlite3-sys 0.38.2
+    memchr 2.8.3
+    memoffset 0.9.1
+    nexees-desktop-host 0.0.0
+    nexees-domain 0.0.0
+    nexees-platform-desktop 0.0.0
+    nexees-protocol 0.0.0
+    nexees-state 0.0.0
+    nix 0.31.3
+    once_cell 1.21.4
+    pkg-config 0.3.34
+    proc-macro2 1.0.107
+    quote 1.0.47
+    rsqlite-vfs 0.1.1
+    rusqlite 0.40.2
+    rustversion 1.0.23
+    serde 1.0.229
+    serde_core 1.0.229
+    serde_derive 1.0.229
+    serde_json 1.0.151
+    shlex 2.0.1
+    smallvec 1.16.2
+    sqlite-wasm-rs 0.5.5
+    syn 3.0.6
+    thiserror 2.0.21
+    thiserror-impl 2.0.21
+    unicode-ident 1.0.26
+    vcpkg 0.2.15
+    wasm-bindgen 0.2.129
+    wasm-bindgen-macro 0.2.129
+    wasm-bindgen-macro-support 0.2.129
+    wasm-bindgen-shared 0.2.129
+    zmij 1.0.23
+
+== 4. Writes in the home caches since TASK-009 began ==
+  ~/.cargo: 9 files
+    2026-10-04T15:59:07.620+02:00  ~/.cargo/.global-cache
+    2026-10-04T15:59:07.534+02:00  ~/.cargo/registry/cache/index.crates.io-1949cf8c6b5b557f/libc-0.2.190.crate
+    2026-10-04T15:59:07.216+02:00  ~/.cargo/registry/index/index.crates.io-1949cf8c6b5b557f/.cache/li/bc/libc
+    2026-10-04T15:59:07.988+02:00  ~/.cargo/registry/index/index.crates.io-1949cf8c6b5b557f/config.json
+    2026-10-04T15:59:07.317+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/autocfg-1.5.1/.cargo-ok
+    2026-10-04T15:59:07.321+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cfg_aliases-0.2.2/.cargo-ok
+    2026-10-04T15:59:07.590+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.190/.cargo-ok
+    2026-10-04T15:59:07.329+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memoffset-0.9.1/.cargo-ok
+    2026-10-04T15:59:07.339+02:00  ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.31.3/.cargo-ok
+  ~/.gradle: 19 files
+    2026-10-04T18:18:54.981+02:00  ~/.gradle/caches/9.2.0/file-changes/last-build.bin
+    2026-10-04T17:20:48.257+02:00  ~/.gradle/caches/9.2.0/fileContent/fileContent.lock
+    2026-10-04T17:20:52.709+02:00  ~/.gradle/caches/9.2.0/fileHashes/fileHashes.bin
+    2026-10-04T17:20:52.709+02:00  ~/.gradle/caches/9.2.0/fileHashes/fileHashes.lock
+    2026-10-04T16:13:27.073+02:00  ~/.gradle/caches/9.2.0/gc.properties
+    2026-10-04T17:20:50.105+02:00  ~/.gradle/caches/9.2.0/generated-gradle-jars/generated-gradle-jars.lock
+    2026-10-04T16:13:27.051+02:00  ~/.gradle/caches/9.2.0/groovy-dsl/gc.properties
+    2026-10-04T16:13:27.052+02:00  ~/.gradle/caches/9.2.0/kotlin-dsl/gc.properties
+    2026-10-04T18:18:54.983+02:00  ~/.gradle/caches/9.2.0/md-rule/md-rule.lock
+    2026-10-04T18:18:54.982+02:00  ~/.gradle/caches/9.2.0/md-supplier/md-supplier.lock
+    2026-10-04T16:13:27.052+02:00  ~/.gradle/caches/9.2.0/transforms/gc.properties
+    2026-10-04T17:20:47.975+02:00  ~/.gradle/caches/jars-9/jars-9.lock
+    2026-10-04T18:18:54.949+02:00  ~/.gradle/caches/journal-1/file-access.bin
+    2026-10-04T18:18:54.949+02:00  ~/.gradle/caches/journal-1/journal-1.lock
+    2026-10-04T17:20:51.176+02:00  ~/.gradle/caches/modules-2/modules-2.lock
+    2026-10-04T16:13:27.144+02:00  ~/.gradle/daemon/9.2.0/daemon-5968.out.log
+    2026-10-04T19:03:35.856+02:00  ~/.gradle/daemon/9.2.0/daemon-716123.out.log
+    2026-10-04T18:18:55.037+02:00  ~/.gradle/daemon/9.2.0/registry.bin
+    2026-10-04T18:18:55.038+02:00  ~/.gradle/daemon/9.2.0/registry.bin.lock
+  ~/.rustup: 0 files
+  ~/.android: 0 files
+  ~/.npm: 6 files
+    2026-10-04T17:22:28.039+02:00  ~/.npm/_cacache/content-v2/sha512/a6/7e/f95ee295c7306813cd3506d0bfdd69fd82facabd32679418c1ec7689434267f3bd2154fa959675bf5d0c46bf36d044b3b86f7694422a8b74aa5cc4d9a2c9
+    2026-10-04T17:22:28.371+02:00  ~/.npm/_cacache/content-v2/sha512/db/ba/ae2834d1b19d1b3f69800e1cf3fdf0b756f79acc3178a6c5673cbb30bdc448f319cdcf9ae126d5576c63ac2239f27a138fe91913389cb77a1e25963f2098
+    2026-10-04T17:22:28.193+02:00  ~/.npm/_cacache/content-v2/sha512/fa/6c/d5d35610a60420763b952858c72b07f876cc4a571b9825489c0cfad6df1a851bb3ba9de0e8355ccbd1e401e3f4f4acad9e5d346bc6e0db257f03347b10a3
+    2026-10-04T17:22:28.194+02:00  ~/.npm/_cacache/index-v5/05/f2/5efeceaf581d5b606bdafad32623ddd75352cb1942290a9cd93d48923be6
+    2026-10-04T17:22:28.375+02:00  ~/.npm/_cacache/index-v5/77/d8/d78a1f31cab4d583e7dba3f8342f143b6be006b8a9e8862d9a5f254cc377
+    2026-10-04T17:22:28.411+02:00  ~/.npm/_logs/2026-10-04T15_22_27_536Z-debug-0.log
+  ~/.cache/typescript: 6 files
+    2026-10-04T17:22:28.388+02:00  ~/.cache/typescript/6.0/node_modules/.package-lock.json
+    2026-10-04T17:22:28.325+02:00  ~/.cache/typescript/6.0/node_modules/types-registry/README.md
+    2026-10-04T17:22:28.373+02:00  ~/.cache/typescript/6.0/node_modules/types-registry/index.json
+    2026-10-04T17:22:28.373+02:00  ~/.cache/typescript/6.0/node_modules/types-registry/package.json
+    2026-10-04T17:22:28.387+02:00  ~/.cache/typescript/6.0/package-lock.json
+    2026-10-04T17:22:28.382+02:00  ~/.cache/typescript/6.0/package.json
+  Total: 40. No task command uses these folders: the task runs with the isolated CARGO_HOME and RUSTUP_HOME
+  above, and npm, Electron, node-gyp and @electron/rebuild run with the build home /mnt/F/Nexees-toolchains/home.
+  - ~/.cargo: rust-analyzer resolving the changed manifests. It refreshed its copy of the crates.io index, downloaded
+    libc 0.2.190, which ~/.cargo did not hold, and unpacked nix, libc, memoffset, cfg_aliases and autocfg. The
+    task's own builds used the isolated cargo home, where TASK-003 had cached every one of these crates.
+  - ~/.gradle: the Gradle daemons of VS Code's Gradle extension. Process 5968 stopped itself after 180 idle
+    minutes: it released its cache locks, wrote the caches' gc.properties and its registry, and ended its log,
+    which records why:
+    2026-10-04T16:13:26.989+0200 [LIFECYCLE] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] Daemon will be stopped at the end of the build aft
+    The extension then started a new daemon, which ran its builds of TASK-003's Gradle prototype at:
+      2026-10-04T17:20:45.915  daemon-716123.out.log
+      2026-10-04T18:18:54.512  daemon-716123.out.log
+    Those builds wrote the daemon's caches here and the ignored .gradle/ folder beside the prototype (section 2).
+  - ~/.npm and ~/.cache/typescript: VS Code's TypeScript service, which fetches type definitions for the
+    projects it opens into its own cache with the system's npm and the user's home. It ran when the owner
+    opened the window's TypeScript; npm's own log of that run names the command and its folder:
+      2026-10-04T15_22_27_536Z-debug-0.log:
+        4 silly config load:file:/home/aivars/.cache/typescript/6.0/.npmrc
+        7 verbose title npm install types-registry@latest
+        8 verbose argv "install" "--ignore-scripts" "types-registry@latest"
+

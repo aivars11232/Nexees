@@ -116,6 +116,22 @@ bundled through rusqlite.
 
 Checkpoints, the project-state entities and crash-safe resume come with their own tasks.
 
+TASK-009 built the first Desktop shell: an installed application with its own window, on
+Eclipse Theia and Electron.
+- The window runs no executor. It attaches to the Nexees host (`nexees-host`), a separate
+  process that runs once per user and holds the device's state.
+- Window and host talk over a Unix socket private to the user, with the peer's user checked
+  by the kernel and every message bounded.
+- The host stops after its last window closes, unless the user enables start at login, which
+  keeps it running.
+- Extensions stay disabled until their confinement is decided.
+- The window's backend serves only the window that started it, its page runs in a sandboxed
+  renderer without Node, and the window connects to nothing beyond this machine.
+
+`scripts/build/build_desktop.py` checks, builds and installs it outside the checkout;
+`tests/e2e/desktop/local_application.test.mjs` tests the installed application. The approved
+branding, layout and panels come with TASK-010 to TASK-012.
+
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.
 This is a complete inventory of this planned layout, not a prediction of every file

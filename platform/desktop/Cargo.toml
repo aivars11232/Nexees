@@ -1,0 +1,20 @@
+[package]
+name = "nexees-platform-desktop"
+description = "The Linux Desktop adapters of Nexees: the window-to-host local IPC channel and the Desktop host's lifecycle."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+# The crate root sits beside the folders named by the architecture slots of platform/desktop.
+[lib]
+path = "lib.rs"
+
+[dependencies]
+nexees-protocol = { path = "../../core/protocol" }
+serde = { workspace = true }
+# DEP-NIX: the peer process's user on the local channel (SO_PEERCRED, PD-LOCAL-IPC).
+nix = { workspace = true }
+
+[lints]
+workspace = true

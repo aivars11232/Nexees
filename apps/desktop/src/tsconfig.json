@@ -1,0 +1,24 @@
+{
+  // The Nexees extension's TypeScript, compiled into lib/ inside the Desktop build folder, never in
+  // the checkout. Every strict check is on: the compiler is the TypeScript lint
+  // (docs/engineering/CONVENTIONS.md section 4).
+  "compilerOptions": {
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "experimentalDecorators": true,
+    "target": "ES2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "skipLibCheck": true,
+    "rootDir": ".",
+    "outDir": "lib"
+  },
+  "include": ["*.ts", "shell/*.ts"]
+}

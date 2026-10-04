@@ -6,7 +6,7 @@
 # slot. docs/engineering/CONVENTIONS.md describes the layout and the rules below.
 [workspace]
 resolver = "3"
-members = ["core/domain", "core/protocol", "core/state"]
+members = ["core/domain", "core/protocol", "core/state", "platform/desktop", "apps/desktop"]
 # Task evidence keeps frozen prototypes with workspaces of their own; they are never members.
 exclude = ["docs/evidence"]
 
@@ -26,6 +26,8 @@ serde = { version = "=1.0.229", features = ["derive"] }
 serde_json = "=1.0.151"
 # DEP-SQLITE: the state store's database, with SQLite's own sources built in (bundled).
 rusqlite = { version = "=0.40.2", features = ["bundled"] }
+# DEP-NIX: the peer process's user on the Desktop's local IPC channel (SO_PEERCRED).
+nix = { version = "=0.31.3", default-features = false, features = ["socket", "user"] }
 
 [workspace.lints.rust]
 # Unsafe code is denied everywhere. Shared-core crates also forbid it in their crate root; a

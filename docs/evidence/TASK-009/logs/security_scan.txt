@@ -1,0 +1,80 @@
+Secret and privacy scan for TASK-009, run 2026-10-04T19:03:52+02:00.
+
+1. The security stage of scripts/test/run_checks.py, over every file a commit of this checkout would hold
+   (credential formats, private-key file names, and evidence that Git would ignore):
+$ python3 -B scripts/test/run_checks.py --stage security
+   == security ==
+   579 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+   -- security: PASS
+   
+   security PASS
+   ALL STAGES PASSED
+   exit code: 0
+
+2. The files TASK-009 added or changed since its base d00bb83, without this report (58 files):
+   .editorconfig
+   .gitignore
+   Cargo.lock
+   Cargo.toml
+   FILE_TREE.txt
+   README.md
+   apps/desktop/Cargo.toml
+   apps/desktop/package-lock.json
+   apps/desktop/package.json
+   apps/desktop/resources/application_metadata.json
+   apps/desktop/src/application_host.rs
+   apps/desktop/src/main.electron.ts
+   apps/desktop/src/main.protocol.ts
+   apps/desktop/src/main.ts
+   apps/desktop/src/package.json
+   apps/desktop/src/shell/main_window.ts
+   apps/desktop/src/tsconfig.json
+   core/state/state_store.rs
+   docs/architecture/decisions.lcl.txt
+   docs/architecture/subsystems.lcl.txt
+   docs/dependencies/LICENSE_MATRIX.md
+   docs/dependencies/checks.lcl.txt
+   docs/dependencies/components.lcl.txt
+   docs/dependencies/npm_review.json
+   docs/dependencies/strategy.lcl.txt
+   docs/engineering/CONVENTIONS.md
+   docs/evidence/TASK-009/TASK-009_EVIDENCE.md
+   docs/evidence/TASK-009/logs/cleanup_first_close.json
+   docs/evidence/TASK-009/logs/cleanup_record.json
+   docs/evidence/TASK-009/logs/correction_seeded_defects.txt
+   docs/evidence/TASK-009/logs/desktop_build.txt
+   docs/evidence/TASK-009/logs/dispatch_task_009.record.json
+   docs/evidence/TASK-009/logs/e2e_local_application.txt
+   docs/evidence/TASK-009/logs/hardening_trials.txt
+   docs/evidence/TASK-009/logs/ide_activity.txt
+   docs/evidence/TASK-009/logs/native_language_suite.json
+   docs/evidence/TASK-009/logs/negative_tests.txt
+   docs/evidence/TASK-009/logs/osv_npm.json
+   docs/evidence/TASK-009/logs/preflight.txt
+   docs/evidence/TASK-009/logs/regression.txt
+   docs/evidence/TASK-009/logs/required_reading.txt
+   docs/evidence/TASK-009/logs/run_checks.txt
+   docs/manuals/NEXEES_USER_MANUAL.md
+   docs/security/checks.lcl.txt
+   docs/security/tests.lcl.txt
+   docs/security/threats.lcl.txt
+   docs/security/trust.lcl.txt
+   packaging/desktop/package_definition.json
+   platform/desktop/Cargo.toml
+   platform/desktop/lib.rs
+   platform/desktop/lifecycle/application_lifecycle.rs
+   platform/desktop/transport/local_ipc.rs
+   scripts/build/build_desktop.py
+   scripts/ci/continuous_integration.sh
+   scripts/test/run_checks.py
+   tests/e2e/desktop/local_application.test.mjs
+   tests/tooling/test_build_desktop.py
+   tests/tooling/test_run_checks.py
+   E-mail-shaped strings: 12 occurrences in 2 (file, string) pairs; none is the owner's
+     apps/desktop/package-lock.json: i@izs.me x6
+     docs/evidence/TASK-009/logs/desktop_build.txt: i@izs.me x6
+     i@izs.me is the public contact in the deprecation notice of the glob package, as the npm registry publishes it; TASK-003's committed lockfile carries it too
+   Executable files among them: 3. Executable at the base d00bb83 already, mode unchanged: ['scripts/ci/continuous_integration.sh', 'scripts/test/run_checks.py'].
+   Made executable by TASK-009: ['scripts/build/build_desktop.py']; intended: ['scripts/build/build_desktop.py'].
+
+Result: no credential, no key material, no ignored evidence, no personal address; only the intended executables

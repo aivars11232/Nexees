@@ -1,0 +1,20 @@
+{
+  "description": "How the Nexees Desktop application is laid out when installed under a prefix: a locally installed application with its own window and host, never a website (C20). scripts/build/build_desktop.py install follows it.",
+  "layout": {
+    "app": "lib/nexees/app",
+    "host_program": "lib/nexees/app/bin/nexees-host",
+    "launcher": "bin/nexees",
+    "desktop_entry": "share/applications/nexees.desktop"
+  },
+  "window": {
+    "electron": "node_modules/electron/dist/electron",
+    "arguments": [
+      "--ozone-platform-hint=auto"
+    ],
+    "fuses_description": "The fuses the installation sets in its copy of the Electron binary (SI-28, TH-03): the installed application honours neither NODE_OPTIONS nor the Node inspector arguments. The other fuses keep Electron's defaults in this layout, each recorded as a residual risk in docs/security (R-09): RunAsNode, because Theia starts its backend with it; the two archive fuses, because this layout installs the application as files, not as an archive; and GrantFileProtocolExtraPrivileges, because Theia loads its window from files.",
+    "fuses": {
+      "EnableNodeOptionsEnvironmentVariable": false,
+      "EnableNodeCliInspectArguments": false
+    }
+  }
+}

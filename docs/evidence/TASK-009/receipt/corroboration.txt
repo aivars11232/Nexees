@@ -1,0 +1,88 @@
+TASK-009 receipt corroboration under CA-05, by the primary session's local tools.
+Run 2026-10-04T19:06:40+02:00. Agent self-corroboration: not an independent human or model review.
+
+1. Active pack
+OK    every pack file matches MANIFEST.json  [201 files]
+OK    MANIFEST.json hash  [8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4]
+OK    content identity recomputed equals the receipt and the binding  [bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1]
+
+2. Checkout, task and predecessors
+OK    observed root is the worktree root  [/mnt/F/Nexees/]
+OK    origin fetch and push identify the bound repository  [https://github.com/aivars11232/Nexees.git]
+OK    branch and HEAD  [main at d00bb83, the owner-directed correction after the TASK-008 commit, unchanged during the task]
+OK    the owner-directed correction d00bb83 changed core/domain/task.rs only, no evidence  [core/domain/task.rs]
+OK    nothing staged
+OK    the dispatch ran task 9 only and the receipt names TASK-009  [task.dispatch task.task_009]
+OK    predecessor TASK-001 accepted and its evidence unchanged since 284f97a  [record bbda5d83]
+OK    predecessor TASK-002 accepted and its evidence unchanged since d1a673f  [record c5fadc83]
+OK    predecessor TASK-003 accepted and its evidence unchanged since bccc9b1  [record 5e4a83c1]
+OK    predecessor TASK-004 accepted and its evidence unchanged since 1c85864  [record 2b7406b8]
+OK    predecessor TASK-005 accepted and its evidence unchanged since e83dcd7  [record 9554641f]
+OK    predecessor TASK-006 accepted and its evidence unchanged since fc42a93  [record b10ab5d9]
+OK    predecessor TASK-007 accepted and its evidence unchanged since 1c85864  [record 3e0ce66c]
+OK    predecessor TASK-008 accepted and its evidence unchanged since 2bf47a2  [record a8c8b44d]
+OK    completed prefix is TASK-001 to TASK-008
+OK    the charter is unchanged since TASK-001
+OK    in docs/security the task changed the threats, the test gaps, the risks and decisions and their counts, and no invariant; the user manual is the one manual source it changed  [checks.lcl.txt, tests.lcl.txt, threats.lcl.txt, trust.lcl.txt]
+OK    the files the task added, changed and removed are exactly those the evidence record lists in section 6  [20 new, 22 changed, 9 removed placeholders; unlisted: []]
+
+3. Evidence files
+    1efbb582afe51ca226076c4557c69e3646f5e3da2c5fac5f4acc6f762cbc5bf7  docs/evidence/TASK-009/TASK-009_EVIDENCE.md  [in snapshot, hash matches]
+    fc2325b53e6bb2e319ce6ed80b5e4086a7864735f9b9ed35480d700b3f4b0627  docs/evidence/TASK-009/logs/cleanup_first_close.json  [in snapshot, hash matches]
+    6bcde8c23b7ba497ef9431c7f8dad5c832117749f4786f0604e7eac8f6d17941  docs/evidence/TASK-009/logs/cleanup_record.json  [in snapshot, hash matches]
+    e6215ef89907823e9e7b64bfcfc6275f52e40099428af0355fc6aa9327e17f66  docs/evidence/TASK-009/logs/correction_seeded_defects.txt  [in snapshot, hash matches]
+    c5f0eab0236f67e4e4d046e4dbf2f925d2d43609a629ac15147247971eea0bf7  docs/evidence/TASK-009/logs/desktop_build.txt  [in snapshot, hash matches]
+    4342b3fbe8b1eca20bea479690199f9139b374557bc5326fe8ea2da72d5458f7  docs/evidence/TASK-009/logs/dispatch_task_009.record.json  [in snapshot, hash matches]
+    442ee983ebb6769443a2ce7fc94e90dfcc5273c3cf91e9d4ca37b9a050a7bbb6  docs/evidence/TASK-009/logs/e2e_local_application.txt  [in snapshot, hash matches]
+    6078d37f13490d5d58bf53e9d9bf45f054f234a4caffaedebda855bb093b148b  docs/evidence/TASK-009/logs/hardening_trials.txt  [in snapshot, hash matches]
+    5b4e720f693bbdb9918609cd66c7501a16d5e26191ef6665de90224cee3fb8bb  docs/evidence/TASK-009/logs/ide_activity.txt  [in snapshot, hash matches]
+    e7f5339880cf7a3d25d134219fc9f9ff0c3cdff0aa4be121eb62d0a588a7e80d  docs/evidence/TASK-009/logs/native_language_suite.json  [in snapshot, hash matches]
+    d9526c1cb72462136ba58237fc1bea478593ee88bab31fd0488d87a6d6f8b073  docs/evidence/TASK-009/logs/negative_tests.txt  [in snapshot, hash matches]
+    a72b5082fcfca4dcebccb137da3dba7ceee8b2f7b8ca284fa5e039affbf5fa0d  docs/evidence/TASK-009/logs/osv_npm.json  [in snapshot, hash matches]
+    499e900b2abbfcfdc5c16cd397f31412b63e669a286b2054cf51c24294e21482  docs/evidence/TASK-009/logs/preflight.txt  [in snapshot, hash matches]
+    293bb4c66bf9427b5ae0cbb8c505fc49d430ff607f7bf858830db45714efaa2e  docs/evidence/TASK-009/logs/regression.txt  [in snapshot, hash matches]
+    22f9bdd6c53f571bd4f32876e13512693396add699b3ac975f088dd2f1d60f74  docs/evidence/TASK-009/logs/required_reading.txt  [in snapshot, hash matches]
+    e852ee04156231f736dd091ca536b345641c51ba43a3bbc6890b474ced21a330  docs/evidence/TASK-009/logs/run_checks.txt  [in snapshot, hash matches]
+    2a97923043f75dcaaf1f5bda73184f204d39bc7ba59530d9f8282128f84478a0  docs/evidence/TASK-009/logs/security_scan.txt  [in snapshot, hash matches]
+    b3181a9ced3cc79f8f140b9a11413acf5eb21638139399c6876e16a2eed1a4cd  docs/evidence/TASK-009/receipt/final_verification.txt  [receipt file, outside the snapshot by design]
+    9876495b3aed4ad9949e7c20a6bc8abb119e95f0346346b79d4b1dccf3e58e4e  docs/evidence/TASK-009/receipt/snapshot_files.sha256  [receipt file, outside the snapshot by design]
+OK    every evidence file is present with the hash in the snapshot listing, and every file of the folder is listed  [19 files]
+OK    the only ignored files are the owner's IDE output and the editor's link, so a commit carries every evidence file  [572 ignored: target/ 554, docs/evidence/TASK-003/prototypes/android-app/.gradle/ 17, apps/desktop/node_modules 1]
+
+4. Logs, checks and decisions
+OK    run_checks.txt: all nine stages pass with 93 domain, 30 protocol, 29 state, 12 platform, 9 host and 35 tooling tests; the three core crates build for both Android targets
+OK    negative_tests.txt: 2 controls pass and 23 seeded defects are caught, the 14 test-stage cases by named failing tests
+OK    correction_seeded_defects.txt: the five defects seeded against d00bb83 are each caught by the named domain test
+OK    regression.txt: 24 commands exit 0; the TASK-001 to TASK-004 cross-checks, the domain, protocol and state contract tests and the tooling tests pass
+OK    desktop_build.txt: the TypeScript check, the offline build from scratch and the installation exit 0; two fuses set; the rebuilt native modules load in the installed Electron  [792 packages, 3 bundles with 0 errors, native modules rebuilt, the host built]
+OK    hardening_trials.txt: the four trials came out as the security and architecture records state them
+OK    e2e_local_application.txt: 30 of 30 checks of the installed application pass
+OK    osv_npm.json: the OSV query covers the locked package set the npm review records, with the same 9 advisories  [32dd67b421505478db723621a414041a833102eb5e1950e6b6d1dd9348a9a942]
+OK    native_language_suite.json: 51 of 51 with lcl 0.9.1
+OK    security_scan.txt: no finding
+OK    ide_activity.txt: the lockfile the IDE wrote equals the task's own offline resolution; its home-cache writes are listed
+OK    preflight.txt: start at d00bb83, an intact pack, the IDE state recorded
+OK    required_reading.txt: every reused read is byte-identical
+OK    final_verification.txt: every exit 0 and every inspection as expected, the installed application's checks included
+OK    the receipt's check IDs equal the task's, each accounted for in the evidence record  [30 IDs]
+OK    the reviewed policy IDs equal the catalog  [135 IDs]
+OK    the renderer decision equals the owner's answer recorded by TASK-003  [electron_permitted]
+OK    every assigned remote requirement and scenario has a row in the evidence record, with what TASK-009 closed and its runtime owners; the eight remote observations stay unverified  [missing rows: []]
+
+5. Closure record
+OK    the closure record passes the runner's own validator (schema nexees-task-closure version 1)  [no problem]
+OK    cleanup_first_close.json: at the first close the cleanup removed exactly the task's stray bytecode file and its folder
+OK    the final cleanup was applied, found those two artifacts gone already, removed and refused nothing, and agrees with the closure  [36 untracked files and 572 ignored IDE files left in place]
+OK    the cleanup record lists every untracked file except itself and the receipt, each with its hash in the snapshot listing  [36 files]
+OK    the final verification ran after the cleanup on the receipt's snapshot, unchanged before and after it  [9876495b3aed4ad9949e7c20a6bc8abb119e95f0346346b79d4b1dccf3e58e4e]
+OK    manual impact updated: the user manual describes the window, the host and start at login, as the closure says  [docs/manuals/NEXEES_USER_MANUAL.md]
+
+6. Snapshot
+OK    the snapshot recomputed now equals the receipt's three snapshot values  [9876495b3aed4ad9949e7c20a6bc8abb119e95f0346346b79d4b1dccf3e58e4e, 579 files]
+
+7. Before corroboration
+    The receipt with evidence_verified_by_host false and the blocker UNVERIFIED_RECEIPT was refused (exit 1, outcome
+    rejected) with exactly two diagnostics: validate.host_verified and validate.no_blocker. That record was not kept;
+    the evaluation is reproducible from receipt.json with those two values restored.
+
+Result: ALL CORROBORATED (48 of 48 observations)

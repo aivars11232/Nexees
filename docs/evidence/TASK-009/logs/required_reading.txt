@@ -1,0 +1,76 @@
+TASK-009 required reading, recorded 2026-10-04T16:41:22+02:00.
+Pack: /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3, content identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1, the same pack TASK-002 to TASK-008 read.
+"same as TASK-008" means the file's SHA-256 equals the hash in TASK-008's logs/required_reading.txt.
+
+== Read for TASK-009 ==
+01 3f07ec06511660d79e968561ebedef9e5e4edda29d9cfc481703443dd178d104  tasks/task_009.lcl.txt  [not in the earlier lists; read in full: objective, the v0.2 Desktop requirement (C20, DESKTOP-RENDERER-01), reuse-first requirement, security requirements, verification, the 30 check IDs and the assigned RC-04, RC-05, RC-06, RC-08, RC-12, RC-23 and RC-24 with RC-T02, RC-T03, RC-T04, RC-T14 and RC-T18]
+02 319c19c730973b831dec5ef648b0e9548a0e80eb0a9731286da0b48f52270466  architecture/desktop_ui.lcl.txt  [not in the earlier lists; required by TASK-009; read in full: the compact layout, the logo source, C20 and the v0.2 and v0.3 additions; layout, branding and panels belong to TASK-010 to TASK-012]
+03 666b655bb987f453d3c577e3922c8915b055244c002f9d9ec186ca8358f336cf  reuse/reuse_matrix.lcl.txt  [same as TASK-008; required by TASK-009's reuse-first requirement; read again: Theia as the foundation, components inherited from it preferred, no new substantial dependency without a recorded decision]
+04 7d91532203589febd37811a0e28adb4e81e87a70951da50f80bfd542a5eba145  architecture/remote_device_control.lcl.txt  [same as TASK-008; RC-04, RC-05, RC-06, RC-08, RC-12, RC-23 and RC-24 read again for the Desktop shell's part]
+05 544ac6195525b0d6019aae1ee326e6bfeddb4c55907346744201f0fad29fafd5  verification/remote_control_acceptance.lcl.txt  [same as TASK-008; RC-T02, RC-T03, RC-T04, RC-T14 and RC-T18 read again]
+06 ad16c8b61cd9c84d5dc60884e2900e858594d3f2ccaf5c912b40401a388c180f  policies/global_contracts.lcl.txt  [same as TASK-008; required by TASK-009; C20 (an installed, locally running application with its own window, not a hosted website) and C21 (execution stays bound to its host; no duplicate authoritative executors) read again]
+07 2307183519d203e547a031a11dde634a5222588febfd6bd706e429d8ca8473a5  policies/master_rules.lcl.txt  [same as TASK-008; required by TASK-009; R17 (secrets are never normal context) and R26 (manuals evolve with the product) read again]
+08 51677c6af1cb4f045fa2a9672acd3536198bb75d1482f145cf0860eea4950c6e  bindings/bindings.lcl.txt  [same as TASK-008; required by TASK-009; B26 and the Desktop bindings read again]
+09 afa9b2dcb9b3df808097c8e4fa1b350403b054a08956fa14cfbe99417847bfed  checks/stop_conditions.lcl.txt  [same as TASK-008; required by TASK-009; read again]
+10 638e4d6d8f433f3996dd349eca02479de4cf06c8b95ef8b5a4d728a327182875  architecture/manuals_and_help.lcl.txt  [same as TASK-008; required by TASK-009; read again for the manual update]
+11 cd49629e16e714a0dc40bceaca81470330d9868ff1eed9451f06dbb35d7f3f97  policies/code_readability_and_cleanup.lcl.txt  [same as TASK-008; required by TASK-009; read again]
+12 8b8cc8813dc12b6b7237bb5a952b6dc5e2847631919a4ca4ed6357fd8f5fae85  policies/no_unnecessary_code.lcl.txt  [same as TASK-008; required by TASK-009; read again]
+
+== The rest of the mandatory read order, reused ==
+Read in full for an earlier task and byte-identical now, so reused as the continuation profile allows.
+01 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9  policies/task_002_075_continuation.lcl.txt  [same as TASK-008; reused]
+02 aec37d86e486f2d403797d6a61c0cd199aaf2a3173938706a1310d770a16540a  guidance/usage.lcl.txt  [same as TASK-008; reused]
+03 b8382ec17bcaa75317b26ce8238305d8d004f2a9aaf1ed9d6038b56ee4bd8a02  policies/reuse_policy.lcl.txt  [same as TASK-008; reused]
+04 ae0d3943cf66ce8afe131eadd66f35eab9077bb04c60a838a5404636cef053f0  policies/security_baseline.lcl.txt  [same as TASK-008; reused]
+05 2fc8668acfe23069eb4a9fe378729a55e2a65e7ac409c70bfc4cd0263ff98473  policies/acceptance_criteria.lcl.txt  [same as TASK-008; reused]
+06 5b68c8feaa79dc6c43782f6a0a0c4949367ec34af6c4e2f5321fd40e387ab547  policies/usage_and_agents.lcl.txt  [same as TASK-008; reused]
+07 ce1115d1e1db3da02dda7484959a11d5e7e028d6fea1143224759e204fa6510f  bindings/read_order.lcl.txt  [same as TASK-008; reused]
+08 e0a2c21d22a13037f7188f3131050e99b02a44880ffa8b947a8c9cbfeae605c2  architecture/workspace_model.lcl.txt  [same as TASK-008; reused]
+09 2f65ff575dbfade3fde459efd125c62e5f7d0a47874b2dbf6d5c22b289443956  architecture/system_architecture.lcl.txt  [same as TASK-008; reused]
+10 d50fc3a3e4f6487861289b7088d7b0289c7543bda253566584ee0484733917e6  architecture/persistent_state_model.lcl.txt  [same as TASK-008; reused]
+11 7dcf4e8a1765d5d6404e0594d10933aa315337b9b43e9f0d5152192dedb23d20  architecture/android_operating_model.lcl.txt  [same as TASK-008; reused]
+12 c8c1e700d0ff0ab17ff26e1a093d0461e601aaab496900035b0c051ebaae1729  verification/security_gate.lcl.txt  [same as TASK-008; reused]
+13 c2e67f60229a5a5d106a82ef4b8caf33ad24b0b0f624af5bcb297b22754c0e65  verification/test_strategy.lcl.txt  [same as TASK-008; reused]
+14 3529983147c2af3a3d0767f7698f72f094017feed4f06df9eb0b0e1565a477ac  checks/runtime_gates.lcl.txt  [same as TASK-008; reused]
+15 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836  accept_task.lcl.txt  [same as TASK-008; reused]
+16 5166634ebfdab4e67a9876b68c7b9d085f309f479f4e41756adff7939b4d4f9d  main.lcl.txt  [same as TASK-008; reused]
+17 960dedd6f7c1bc90bed915f75455ba770b38f3b4dc37c519e765bb7e98ae10e3  README_FIRST.txt  [same as TASK-008; reused]
+   9f257d67c28d79718dead07137774b9f59208e4190395e53e2300b8493c03af2  TASK_REQUIREMENT_MAP.json  [same as TASK-008; TASK-009's entry: dependency TASK-008, 30 check IDs, 7 remote requirements, 5 scenarios]
+   7dc96677324c2e5ad40520d4072c690f6c5d4c69c72cb654b632a2a3bf56bed8  PROCEDURAL_CHANGES.json  [same as TASK-008; TASK-009's entry: dependency TASK-008, 30 check IDs, 7 remote requirements, 5 scenarios]
+
+Repository records read for TASK-009:
+- docs/architecture: SS-DESKTOP-CLIENT, SS-LOCAL-HOST, SS-PLATFORM-DESKTOP and SS-BUILD-RELEASE with their slots and owners; AD-02,
+  PD-LOCAL-IPC and GAP-01 to GAP-03; HOST-DESKTOP; FL-TASK-CLOSURE; data.arch_rc_04, data.arch_rc_05, data.arch_rc_08 and
+  data.arch_rc_23; ST-TASK;
+- docs/security: the remote contracts of RC-23 and RC-24; SA-08 (with data in docs/architecture), SI-22 and R-02 on extensions;
+- docs/dependencies: DEP-THEIA, DEP-ELECTRON, DEP-NIX, DEP-XDG-AUTOSTART, DEP-GIO, DEP-OPEN-VSX, the npm overrides, the advisory
+  dispositions, the repository tools and the renderer decision DESKTOP-RENDERER-01 (electron_permitted);
+- docs/evidence/TASK-003: the Theia prototype (package.json, package-lock.json, run_nested.sh, check_workbench.mjs), its build
+  log and its OSV records, and the local IPC proof in prototypes/feasibility-core/src/bin/host.rs, as references, not reused code;
+- docs/engineering/CONVENTIONS.md: sections 2 to 7, 9 and 12; scripts/test/run_checks.py and scripts/ci/continuous_integration.sh;
+- core/protocol: the window-host message family, version negotiation and the local IPC message bound; core/state: the store.
+
+Read in the recheck, 2026-10-04 between 17:30 and 18:30, which found that the reading above had missed records that
+assign work to TASK-009 (TASK-009_EVIDENCE.md section 11):
+- docs/security: SI-15, SI-17 and SI-28; TH-01 to TH-04 and TH-06; TT-26 and the test gap SG-05; R-03 and OSD-06;
+  binding.sec_immutability; data.sec_test_gaps, data.sec_residual_risks and data.sec_open_decisions in full;
+- docs/evidence/TASK-004: logs/foundation_security_facts.txt and the findings of TASK-004_EVIDENCE.md that name TASK-009;
+- docs/architecture: PD-IDE-PLACEMENT, PD-LOCAL-IPC and PD-STARTUP in full, with type.arch_open_decision; data.arch_open_gaps
+  in full (GAP-01 to GAP-07); HOST-DESKTOP's process model; the test plans of data.arch_rc_04 to data.arch_rc_23;
+- docs/dependencies: DEP-THEIA and DEP-XDG-AUTOSTART in full;
+- docs/evidence/TASK-003: the owner's answer on start at login (TASK-003_EVIDENCE.md, T003.RC.05) and
+  prototypes/harness/scenarios.py, for how it ran systemd's autostart generator;
+- the pack: policies/no_unnecessary_code.lcl.txt and checks/stop_conditions.lcl.txt again;
+- Theia 1.76.0's own code in the build folder, for how it starts its backend, checks its token, builds its window and
+  shows its status bar: @theia/core lib/electron-main/electron-main-application.js, lib/electron-node/token/, lib/node/
+  env-variables/env-variables-server.js, lib/browser/status-bar/status-bar.js and @theia/terminal lib/browser/
+  terminal-frontend-contribution.js.
+
+Documents changed since their last recorded read: none
+Unverified reuse: none
+
+External sources consulted: the OSV API (api.osv.dev), queried twice with the public coordinates of the npm packages only (logs/osv_npm.json
+holds the second query, of the final lockfile).
+No download by any build command: npm, Electron and the native builds ran offline from the isolated caches. The application
+under test did download: until the recheck stopped it, each start of a fresh test profile fetched Electron's spell-checking
+dictionary from Google's servers (TASK-009_EVIDENCE.md section 10).

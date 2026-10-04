@@ -444,6 +444,18 @@ impl StateStore {
         verify(&self.conn)
     }
 
+    /// This device's own identity, as its host recorded it when it first ran; absent before
+    /// that. It never changes ([`Write::set_device_id`]), so whatever names the device stays
+    /// valid. A stored value that is not a valid identity is an integrity error.
+    pub fn device_id(&self) -> Result<Option<DeviceId>, StateError> {
+        meta(&self.conn, DEVICE_ID)?
+            .map(|text| {
+                DeviceId::new(text)
+                    .map_err(|_| integrity("store_meta", DEVICE_ID, "not a device identity".into()))
+            })
+            .transpose()
+    }
+
     /// The files the store owns: the database and the files SQLite keeps beside it. Uninstalling
     /// removes these and nothing else; workspace content lives under the workspace roots.
     pub fn owned_files(&self) -> Vec<PathBuf> {
@@ -543,10 +555,27 @@ impl<'s> Write<'s> {
         Ok(removed > 0)
     }
 
+    /// Records `id` as this device's own identity. Only the first one is kept: recording the
+    /// same one again changes nothing, and a different one is refused as a duplicate, because
+    /// statuses and pairings name the device by it.
+    pub fn set_device_id(&mut self, id: &DeviceId) -> Result<(), StateError> {
+        match meta(&self.tx, DEVICE_ID)? {
+            None => set_meta(&self.tx, DEVICE_ID, id.as_str()),
+            Some(recorded) if recorded == id.as_str() => Ok(()),
+            Some(_) => Err(StateError::Duplicate {
+                schema: "store_meta".into(),
+                id: DEVICE_ID.into(),
+            }),
+        }
+    }
+
     pub(crate) fn tx(&self) -> &Transaction<'s> {
         &self.tx
     }
 }
+
+/// The store metadata key of this device's own identity.
+const DEVICE_ID: &str = "device_id";
 
 /// A timestamp as SQLite's integer.
 pub(crate) fn millis(at: Timestamp) -> Result<i64, StateError> {
@@ -1590,6 +1619,36 @@ pub(crate) mod tests {
             std::fs::read_to_string(&user_file).unwrap(),
             "fn main() {}\n"
         );
+    }
+
+    #[test]
+    fn the_devices_own_identity_is_recorded_once_and_kept() {
+        let scratch = Scratch::new("device");
+        let (mut store, _) = StateStore::open(&scratch.db(), at(1)).unwrap();
+        assert_eq!(store.device_id().unwrap(), None);
+        let pc = DeviceId::new("desktop-1").unwrap();
+        store.write(at(2), |w| w.set_device_id(&pc)).unwrap();
+        // The same identity again changes nothing; another one is refused.
+        store.write(at(3), |w| w.set_device_id(&pc)).unwrap();
+        let other = DeviceId::new("desktop-2").unwrap();
+        assert!(matches!(
+            store.write(at(4), |w| w.set_device_id(&other)),
+            Err(StateError::Duplicate { .. })
+        ));
+        store.close(at(5)).unwrap();
+        let (mut store, _) = StateStore::open(&scratch.db(), at(6)).unwrap();
+        assert_eq!(store.device_id().unwrap(), Some(pc));
+        // A damaged value is reported, never returned.
+        store
+            .write(at(7), |w| {
+                let damage = "UPDATE store_meta SET value = 'not valid!' WHERE key = 'device_id'";
+                Ok(w.tx().execute(damage, [])?)
+            })
+            .unwrap();
+        assert!(matches!(
+            store.device_id(),
+            Err(StateError::Integrity { .. })
+        ));
     }
 
     #[test]

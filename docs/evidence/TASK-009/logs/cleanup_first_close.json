@@ -1,0 +1,144 @@
+{
+  "schema": "nexees-cleanup-record",
+  "version": 1,
+  "task": "TASK-009",
+  "applied": true,
+  "removed": [
+    "scripts/test/__pycache__/run_checks.cpython-314.pyc",
+    "scripts/test/__pycache__/"
+  ],
+  "refused": [],
+  "absent": [],
+  "kept_directories": [],
+  "preserved_untracked": [
+    {
+      "path": "apps/desktop/Cargo.toml",
+      "sha256": "c7ec57b5ee2a2bfa75b4afbf9bb18d41718a886609dfb1a93d6d2dc456d6acb8"
+    },
+    {
+      "path": "apps/desktop/package-lock.json",
+      "sha256": "6e8a9d99ac9adcedb110e1ab77e09a88331aad12de21dc7d54dbaec59116083a"
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "sha256": "a6698570b82fb8e400776fda207956904e0f486bbbc9e6ed8de4743dce3da06e"
+    },
+    {
+      "path": "apps/desktop/resources/application_metadata.json",
+      "sha256": "2e3ec1a083b46184fefbd288eb3ccb5b1bc1585758c062a814310adb9ef6aeff"
+    },
+    {
+      "path": "apps/desktop/src/application_host.rs",
+      "sha256": "5976204857b333605603071deaf4662cc606c0501eb860baaccb3bb999949450"
+    },
+    {
+      "path": "apps/desktop/src/main.protocol.ts",
+      "sha256": "38f43e046b9b09cfee80cbc15a81e73841282a599747cd17a35687c06a178091"
+    },
+    {
+      "path": "apps/desktop/src/main.ts",
+      "sha256": "d3b6525d340f2b95255738afec9e95756e3f3dbd3a4a6489ad3b5bc857fbdc31"
+    },
+    {
+      "path": "apps/desktop/src/package.json",
+      "sha256": "3f755cafca07f18aa4cf4ec1f2fdaba3cad501f1873d4a2a681b7b4e19d56158"
+    },
+    {
+      "path": "apps/desktop/src/shell/main_window.ts",
+      "sha256": "e749a8829209cf2c917cab08f55e17258a667ad7550d786318c680f472bb2f75"
+    },
+    {
+      "path": "apps/desktop/src/tsconfig.json",
+      "sha256": "0863ed9be73e650b1ef6cb45fc9c3d3c8200978c54201822d329394fdbe31163"
+    },
+    {
+      "path": "docs/dependencies/npm_review.json",
+      "sha256": "3249580d62f35d626caf3126904b548c7b63a91f29e414e7eaed360c79efa089"
+    },
+    {
+      "path": "docs/evidence/TASK-009/TASK-009_EVIDENCE.md",
+      "sha256": "6284f00899ea572f25c779d756dffa4d8af1514f163794febd31eaa982fd4588"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/correction_seeded_defects.txt",
+      "sha256": "e6215ef89907823e9e7b64bfcfc6275f52e40099428af0355fc6aa9327e17f66"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/desktop_build.txt",
+      "sha256": "7088536c57bc5fd906e17a1bcb42e91f0c07ff75beee99cfd1a85dcd8e4d245f"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/dispatch_task_009.record.json",
+      "sha256": "4342b3fbe8b1eca20bea479690199f9139b374557bc5326fe8ea2da72d5458f7"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/e2e_local_application.txt",
+      "sha256": "e611010d54c8c7fad4e1bc6e5c7b5a9a7acb647891a5dce1a50457be7c31e402"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/ide_activity.txt",
+      "sha256": "5b120401018631e21d4abcd44c21bc1846f7f524ec66fa5d831201de356d5e26"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/native_language_suite.json",
+      "sha256": "e7f5339880cf7a3d25d134219fc9f9ff0c3cdff0aa4be121eb62d0a588a7e80d"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/negative_tests.txt",
+      "sha256": "00466ceee651a320129dad899426cbc7ab8f0754dd722a97fb8dffb231fb327d"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/osv_npm.json",
+      "sha256": "230c5f7ade76d06ad5976eebc255e16c53a6923de905207da56acec5324a4ef1"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/preflight.txt",
+      "sha256": "499e900b2abbfcfdc5c16cd397f31412b63e669a286b2054cf51c24294e21482"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/regression.txt",
+      "sha256": "1dc4d88ccdde383404acba3101684d5bac6b2cc44a4ff4fba6ad2ca457257519"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/required_reading.txt",
+      "sha256": "fc99e758c66c7d26ba33e8077623931cc483cd31c8587725bcc838ff541a8572"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/run_checks.txt",
+      "sha256": "446035ab31133e65d3ba3e997f6c5b7128c6eaf5b7d8828e6b826b7a4ff37187"
+    },
+    {
+      "path": "docs/evidence/TASK-009/logs/security_scan.txt",
+      "sha256": "8eaf25533badef1e4e9a151b604977c570be723c89b85fa7e34253b577b07faa"
+    },
+    {
+      "path": "packaging/desktop/package_definition.json",
+      "sha256": "4b04eb33d11afa7f7bf014985dcbc0248d9990fa1e0953f17bb53e4dc3f5ece1"
+    },
+    {
+      "path": "platform/desktop/Cargo.toml",
+      "sha256": "19d188bbbba22e6ab5600d1ea99f84939f3582fe3f27f1b14c98312d259bf4c0"
+    },
+    {
+      "path": "platform/desktop/lib.rs",
+      "sha256": "7f8481966f16de2695e4b54cbb2b6a1601e794d8b859163b8b82d1a73a5fe209"
+    },
+    {
+      "path": "platform/desktop/lifecycle/application_lifecycle.rs",
+      "sha256": "4ef32b16aaf0e467212d1102d12969ff27ca8b026760dd67c8deb1dbedd67716"
+    },
+    {
+      "path": "platform/desktop/transport/local_ipc.rs",
+      "sha256": "2696f6d34e883803881ecff238cfb517d5280189b28a4a2d2c4dbd8bad8b916b"
+    },
+    {
+      "path": "scripts/build/build_desktop.py",
+      "sha256": "3dc114ec88b4fac9daeaa2b50778e69b3d656c83c43115664f5a435feddcbf1d"
+    },
+    {
+      "path": "tests/e2e/desktop/local_application.test.mjs",
+      "sha256": "43ff35b5d3c7e41235a4561837125bad485a9886ff9689e59cefa81966d4aabb"
+    }
+  ],
+  "ignored_left_in_place": 571
+}

@@ -135,6 +135,72 @@ class PinTest(unittest.TestCase):
         ])
 
 
+class NpmGateTest(unittest.TestCase):
+    """The npm lockfile gate (DS-05, DS-06, DS-08) on a small package and its lockfile."""
+
+    def setUp(self) -> None:
+        self.manifest = {
+            'dependencies': {'left-pad': '1.3.0', 'shell': 'file:src'},
+            'devDependencies': {'builder': '2.0.0'},
+            'overrides': {'left-pad': '1.3.0'},
+            'allowScripts': {'builder@2.0.0': True},
+        }
+        registry = run_checks.NPM_REGISTRY
+        self.lock = {'lockfileVersion': 3, 'packages': {
+            '': {'name': 'app'},
+            'node_modules/left-pad': {'version': '1.3.0', 'resolved': f'{registry}left-pad/-/left-pad-1.3.0.tgz',
+                                      'integrity': 'sha512-AAAA'},
+            'node_modules/builder': {'version': '2.0.0', 'resolved': f'{registry}builder/-/builder-2.0.0.tgz',
+                                     'integrity': 'sha512-BBBB', 'hasInstallScript': True, 'dev': True},
+            'node_modules/shell': {'resolved': 'src', 'link': True},
+            'src': {'name': 'shell', 'version': '0.0.0'},
+        }}
+        packages = run_checks.npm_package_set(self.lock)
+        self.review = {'package_set_sha256': hashlib.sha256(''.join(f'{p}\n' for p in packages).encode()).hexdigest(),
+                       'advisories': [{'package': 'npm:builder@2.0.0', 'id': 'GHSA-1111'}]}
+        self.dispositions = 'VALUE: ["builder 2.0.0 | GHSA-1111 (low) | build only | accepted"]'
+
+    def problems(self) -> list:
+        return run_checks.npm_problems(self.manifest, self.lock, self.review, self.dispositions)
+
+    def test_a_reviewed_lockfile_of_exact_registry_packages_passes(self) -> None:
+        self.assertEqual(run_checks.npm_package_set(self.lock), ['builder@2.0.0', 'left-pad@1.3.0'])
+        self.assertEqual(self.problems(), [])
+
+    def test_ranges_and_outside_folders_are_not_pins(self) -> None:
+        self.manifest['dependencies'].update({'caret': '^1.0.0', 'up': 'file:../other', 'git': 'github:a/b'})
+        self.manifest['overrides']['shell'] = 'file:src'
+        self.assertEqual(len([p for p in self.problems() if 'neither an exact version' in p]), 4)
+
+    def test_another_source_a_missing_hash_or_a_link_outside_is_refused(self) -> None:
+        self.lock['packages']['node_modules/left-pad'].update(resolved='https://example.org/left-pad.tgz')
+        del self.lock['packages']['node_modules/builder']['integrity']
+        self.lock['packages']['node_modules/shell']['resolved'] = '../elsewhere'
+        problems = self.problems()
+        self.assertIn('node_modules/left-pad comes from https://example.org/left-pad.tgz, not the npm registry',
+                      problems)
+        self.assertIn('node_modules/builder has no sha512 integrity hash', problems)
+        self.assertIn('node_modules/shell links outside the package', problems)
+
+    def test_an_install_script_needs_an_allowscripts_decision(self) -> None:
+        self.manifest['allowScripts'] = {}
+        self.assertEqual(self.problems(),
+                         ['builder@2.0.0 has an install script without an allowScripts decision (DS-06)'])
+        self.manifest['allowScripts'] = {'builder': False}
+        self.assertEqual(self.problems(), [], 'a denial is a decision too')
+
+    def test_a_changed_lockfile_needs_a_new_review(self) -> None:
+        self.lock['packages']['node_modules/left-pad']['version'] = '1.3.1'
+        self.assertTrue(any('differ from the reviewed set' in p for p in self.problems()))
+        self.assertIn('no advisory review is recorded in docs/dependencies/npm_review.json (DS-08)',
+                      run_checks.npm_problems(self.manifest, self.lock, None, self.dispositions))
+
+    def test_every_reviewed_advisory_needs_a_disposition(self) -> None:
+        self.review['advisories'].append({'package': 'npm:left-pad@1.3.0', 'id': 'GHSA-2222'})
+        self.assertEqual(self.problems(),
+                         ['left-pad@1.3.0 GHSA-2222 has no recorded disposition in docs/dependencies/strategy.lcl.txt'])
+
+
 class ClosureTest(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()

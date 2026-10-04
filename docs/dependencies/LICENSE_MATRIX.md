@@ -37,14 +37,16 @@ real phone.
    OFL-1.1 pass only with their recorded duties; no license blocks shipping.
 6. **Advisory gate.** Every change runs cargo-deny (RustSec) and an OSV lookup. A runtime
    high or critical advisory blocks the change unless it is fixed by a pin or its path is
-   disabled with a recorded disposition.
+   disabled with a recorded disposition. The npm lockfile's OSV review is recorded in
+   `npm_review.json`, and the deps stage fails when the locked packages differ from the
+   reviewed set (TASK-009).
 7. **Capabilities, not promises.** A component unproven on a host is a reported gap there.
 
 ## Matrix
 
 | ID | Component | Version | License | Class | Scope | Status |
 |---|---|---|---|---|---|---|
-| DEP-THEIA | Eclipse Theia | 1.76.0 + 5 overrides | EPL-2.0 OR GPL-2.0 w/ Classpath exc. | DEPENDENCY | desktop | Proven on Desktop |
+| DEP-THEIA | Eclipse Theia | 1.76.0 + 5 overrides | EPL-2.0 OR GPL-2.0 w/ Classpath exc. | DEPENDENCY | desktop | Proven on Desktop; the TASK-009 shell, without the extension packages (SA-08) |
 | DEP-ELECTRON | Electron | 42.11.10 (Theia pins 42.8.1) | MIT (+ Chromium notices) | DEPENDENCY | desktop | Proven on Desktop |
 | DEP-CODE-OSS | Code - OSS | reference | MIT | REFERENCE | none | Fallback foundation |
 | DEP-VSCODIUM | VSCodium | reference | MIT | REFERENCE | none | Branding/marketplace patterns |
@@ -80,7 +82,7 @@ real phone.
 | DEP-RUSTLS | rustls + ring + webpki | 0.23.45 / 0.17.14 | Apache-2.0 OR ISC OR MIT; ring Apache-2.0 AND ISC | DEPENDENCY | shared core | Proven on both and PC↔emulator |
 | DEP-RCGEN | rcgen | 0.14.10 | MIT OR Apache-2.0 | DEPENDENCY | shared core | Proven on both |
 | DEP-SERDE | serde / serde_json | 1.0.229 / 1.0.151 | MIT OR Apache-2.0 | DEPENDENCY | shared core | Proven on both; pinned in the workspace by TASK-006; the protocol's wire format since TASK-007 |
-| DEP-NIX | nix | 0.31.3 | MIT | DEPENDENCY | desktop | Proven (peer uid checks) |
+| DEP-NIX | nix | 0.31.3 | MIT | DEPENDENCY | desktop | Proven (peer uid checks); pinned in the workspace by TASK-009 |
 | DEP-JNI | jni | 0.22.4 | MIT OR Apache-2.0 | DEPENDENCY | android | Proven in the app |
 | DEP-UNIFFI | UniFFI | 0.32.2 | MPL-2.0 | REJECTED | none | One JSON entry point suffices |
 | DEP-AMMONIA | ammonia | 4.2.1 | MIT OR Apache-2.0 | REJECTED | none | Parse-time filtering suffices |
@@ -91,7 +93,7 @@ real phone.
 | DEP-CARGO-NDK | cargo-ndk | 4.1.2 | Apache-2.0 OR MIT | REJECTED | none | Plain cargo + NDK clang suffices |
 | DEP-ANDROID-BUILD | Gradle / AGP / SDK / NDK | 9.8.0 / 9.4.1 / 36 / r30 | Apache-2.0; Android SDK License | DEPENDENCY | build | Proven (APK built) |
 | DEP-GIO | GIO `gio launch` | installed GLib | LGPL-2.1-or-later (separate program) | ADAPTER | desktop | Proven (one HopToDesk launch) |
-| DEP-XDG-AUTOSTART | XDG autostart + systemd generator | spec / installed systemd | spec; LGPL-2.1-or-later | ADAPTER | desktop | Proven in an isolated profile |
+| DEP-XDG-AUTOSTART | XDG autostart + systemd generator | spec / installed systemd | spec; LGPL-2.1-or-later | ADAPTER | desktop | Proven in an isolated profile; implemented by TASK-009 |
 | DEP-OFF-LAN-ROUTE | WireGuard / Tailscale / Headscale | not selected | GPL-2.0, MIT, BSD-3-Clause | REFERENCE | none | Owner decision (TASK-060/070) |
 
 Totals: 49 components; 19 DEPENDENCY, 10 ADAPTER, 10 REFERENCE, 10 REJECTED.
@@ -172,6 +174,7 @@ carry no redistribution duty. The machine-readable list is `data.dep_repository_
 | TOOL-01 | cargo-deny 0.20.2 | MIT OR Apache-2.0 | The license, ban, source and advisory gate (DS-07, DS-08), run by the checks' deps stage |
 | TOOL-02 | Python 3.11 or later, standard library only | PSF-2.0 | The check runner, the scoped cleanup tool and their tests |
 | TOOL-03 | The LCL engine `lcl` 0.9.1 with the canonical Core packages | The owner's terms (OI-01) | Checks the LCL documentation projects |
+| TOOL-04 | Node.js 26.10.0 with npm 12.2.0 | MIT; Artistic-2.0 | Builds the Desktop window and runs the TypeScript and JavaScript checks; never shipped |
 
 The Rust toolchain, rustfmt included, is DEP-RUST above.
 

@@ -1,0 +1,12 @@
+The owner-directed correction d00bb83 (core/domain/task.rs), verified again during TASK-009: each defect is seeded into a
+fresh scratch copy of the checkout and must be caught by the named domain test, run with cargo test -p nexees-domain.
+Recorded 2026-10-04T16:49:49+02:00.
+
+PASS  control: the unmutated copy passes (exit 0)
+PASS  a record that is not the host's own accepted: caught by ['task::tests::a_record_that_claims_the_host_and_revision_never_completes_a_task']
+PASS  another host's run accepted: caught by ['task::tests::only_the_hosts_passing_final_verification_of_the_current_revision_completes_a_task']
+PASS  an ordinary, pre-cleanup verification accepted: caught by ['task::tests::only_the_hosts_passing_final_verification_of_the_current_revision_completes_a_task']
+PASS  a host verification made for another device: caught by ['task::tests::a_host_verification_is_a_verification_run_that_names_its_host']
+PASS  a host verification that decodes from text: caught by ['core/domain/task.rs - task::HostVerification (line 291) - compile fail']
+ALL SEEDED DEFECTS CAUGHT
+exit 0

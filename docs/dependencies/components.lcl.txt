@@ -32,7 +32,7 @@ DATA:
         alternatives: "Code-OSS (DEP-CODE-OSS), a native toolkit (excluded only if the owner had chosen native_only), Monaco alone with a hand-built workbench."
         reason: "The owner permitted Electron (PD-RENDERER). Theia is a framework designed for embedding, with dependency injection, a VS Code extension host and Open VSX built in, under a license that allows a separately branded product. The prototype installed, built and ran it."
         replacement: "Theia stays inside SS-IDE. Nexees logic lives in the shared core and the host behind IF contracts, so replacing Theia with Code-OSS or another shell rewrites SS-IDE and SS-DESKTOP-CLIENT only."
-        verification: "Proven on Desktop: npm install, approved native rebuilds for Electron's ABI, theia build (0 errors), and a start in a nested private session where the workbench rendered Explorer, Search, Source Control, Debug, Extensions, Testing, Problems, Outline and a live bash terminal, then quit cleanly; repeated with the overrides. Not yet proven: Nexees's own extensions, the extension host with real extensions, packaging."
+        verification: "Proven on Desktop: npm install, approved native rebuilds for Electron's ABI, theia build (0 errors), and a start in a nested private session where the workbench rendered Explorer, Search, Source Control, Debug, Extensions, Testing, Problems, Outline and a live bash terminal, then quit cleanly; repeated with the overrides. Not yet proven: Nexees's own extensions, the extension host with real extensions, packaging. TASK-009 built the Nexees Desktop shell on it from the same reviewed lockfile, less @theia/plugin-ext-vscode and @theia/vsx-registry and the 56 packages only they pulled in, so the shell has no extension host or installer until TASK-021 (SA-08, SI-22). It names @theia/preferences and @theia/messages itself, which the prototype had only through those two: without the first, Theia's preference service never becomes ready and the status bar stays hidden; without the second, Theia writes its messages to the log instead of showing them. Built offline, installed in a disposable prefix and started in a private nested session, it showed a local workspace and attached to the Nexees host (tests/e2e/desktop/local_application). The shell keeps Theia's settings in its own configuration folder, not in the .theia folder all Theia applications share. Packaging for distribution remains with release packaging (TASK-073 to TASK-075)."
         evidence: ["docs/evidence/TASK-003/prototypes/theia/package.json", "docs/evidence/TASK-003/prototypes/theia/package-lock.json", "docs/evidence/TASK-003/logs/theia_build.txt", "docs/evidence/TASK-003/logs/theia_workbench.json", "docs/evidence/TASK-003/logs/osv_before_overrides.json", "docs/evidence/TASK-003/logs/osv_after_overrides.json"]
         owner_tasks: ["TASK-005", "TASK-009", "TASK-018", "TASK-019", "TASK-020", "TASK-021", "TASK-073"]
 
@@ -60,7 +60,7 @@ DATA:
         alternatives: "Theia browser target served to a system browser; a native-only Desktop, which the owner did not require."
         reason: "Inherited with Theia once the owner permitted Electron. The patched 42.11.10 keeps Theia's supported major."
         replacement: "Follows Theia: each Theia upgrade re-pins Electron; the override is removed once Theia's own pin is fixed."
-        verification: "Proven: the app built and rendered on 42.8.1 and again on 42.11.10. Chromium's headless Ozone platform hung before any renderer started, so the run used a nested KWin with a virtual framebuffer on a private D-Bus session."
+        verification: "Proven: the app built and rendered on 42.8.1 and again on 42.11.10. Chromium's headless Ozone platform hung before any renderer started, so the run used a nested KWin with a virtual framebuffer on a private D-Bus session. TASK-009's window runs on 42.11.10; its native modules were rebuilt offline against the cached 42.8.1 headers, which share the native module ABI of Electron 42 (146). The installation sets the NODE_OPTIONS and inspector fuses off in its copy of the binary and runs the page in a sandboxed renderer; the other fuses of SI-28 wait for release packaging (R-09). Electron's spell checker would fetch its dictionaries from Google's servers each time a profile starts, so the window's network stack resolves no name but this machine's."
         evidence: ["docs/evidence/TASK-003/logs/theia_build.txt", "docs/evidence/TASK-003/logs/theia_workbench.json", "docs/evidence/TASK-003/logs/osv_after_overrides.json"]
         owner_tasks: ["TASK-009", "TASK-073"]
 
@@ -172,7 +172,7 @@ DATA:
         alternatives: "VS Code Marketplace (DEP-VS-MARKETPLACE, rejected); a private extension mirror later."
         reason: "The pack requires Open VSX compatibility and forbids assuming Marketplace access."
         replacement: "Registry URL is configuration; a private mirror can replace it."
-        verification: "The Extensions view rendered; no extension was downloaded or installed in TASK-003."
+        verification: "The Extensions view rendered; no extension was downloaded or installed in TASK-003. TASK-009's shell leaves the Open VSX client out until TASK-021 (SA-08)."
         evidence: ["docs/evidence/TASK-003/logs/theia_workbench.json"]
         owner_tasks: ["TASK-021"]
 
@@ -1040,7 +1040,7 @@ DATA:
         alternatives: "Raw libc calls (more unsafe code)."
         reason: "Safe wrappers over the needed socket options."
         replacement: "Behind the Desktop transport adapter."
-        verification: "Proven: a peer whose uid is not the allowed uid was denied; the socket folder was 0700 and the socket 0600; messages over 4096 bytes were refused."
+        verification: "Proven: a peer whose uid is not the allowed uid was denied; the socket folder was 0700 and the socket 0600; messages over 4096 bytes were refused. TASK-009 pinned it in the Rust workspace for platform/desktop/transport/local_ipc, whose tests refuse a peer of another user before reading anything, refuse frames over 4096 bytes unread and refuse a channel folder open to others."
         evidence: ["docs/evidence/TASK-003/logs/scenarios.jsonl"]
         owner_tasks: ["TASK-009"]
 
@@ -1348,7 +1348,7 @@ DATA:
         alternatives: "A systemd user unit with linger (runs outside the graphical session; rejected), a system service (forbidden)."
         reason: "The desktop's own mechanism, with a lifetime tied to the graphical session."
         replacement: "Behind the Desktop startup adapter."
-        verification: "Proven in an isolated profile only (the owner's choice): off by default, enabled entry valid, the generator produced the session-bound unit, disabling removed it, relative or shell commands refused, and the real autostart folder, user units and linger unchanged. Real login and logout tests remain TASK-009."
+        verification: "Proven in an isolated profile only (the owner's choice): off by default, enabled entry valid, the generator produced the session-bound unit, disabling removed it, relative or shell commands refused, and the real autostart folder, user units and linger unchanged. Real login and logout tests remain TASK-009. TASK-009 implemented it in platform/desktop/lifecycle/application_lifecycle: one user-level entry while enabled that runs the host with --keep-running, removed on disable, another program's entry of the same name left alone, unsafe commands refused. Proven in tests and in an isolated profile, where systemd's generator turns the entry the installed host writes into one unit PartOf and After graphical-session.target (tests/e2e/desktop/local_application). Real login, logout and lock runs were not made in TASK-009: they need the owner to log out of the desktop session in which the work itself runs, and stay open (PD-STARTUP)."
         evidence: ["docs/evidence/TASK-003/logs/scenarios.jsonl"]
         owner_tasks: ["TASK-009"]
 

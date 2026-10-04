@@ -1,0 +1,178 @@
+TASK-009 final verification after cleanup, 2026-10-04T19:04:45+02:00.
+Read-only for the checkout, except this file.
+The snapshot is over the files a commit would hold (docs/engineering/CONVENTIONS.md section 10).
+
+Snapshot before: 9876495b3aed4ad9949e7c20a6bc8abb119e95f0346346b79d4b1dccf3e58e4e
+
+== The repository checks: every stage of the check runner, and the core crates for Android ==
+$ python3 -B scripts/test/run_checks.py --target-dir /mnt/F/Nexees-toolchains/target/nexees
+  579 files; 250 product files in 190 slots; 62 test files; 102 security enforcement points
+  -- layout: PASS
+  -- format: PASS
+  -- lint: PASS
+  -- build: PASS
+  test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.42s
+  test result: ok. 93 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+  test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.02s
+  test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+  test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  Ran 35 tests in 2.350s
+  -- test: PASS
+  259 relative Markdown links checked
+  -- docs: PASS
+  579 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+  -- security: PASS
+  1 npm lockfile(s) checked against their advisory review
+  -- deps: PASS
+  TASK-002: closed before closure records existed
+  TASK-003: closed before closure records existed
+  TASK-004: closed before closure records existed
+  TASK-005: closure record checked
+  TASK-006: closure record checked
+  TASK-007: closure record checked
+  TASK-008: closure record checked
+  TASK-009: open (no receipt yet)
+  -- evidence: PASS
+  ALL STAGES PASSED
+  exit code: 0
+$ cargo build --locked --offline -p nexees-domain -p nexees-protocol -p nexees-state --target aarch64-linux-android --target-dir /mnt/F/Nexees-toolchains/target/nexees
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+  exit code: 0
+$ cargo build --locked --offline -p nexees-domain -p nexees-protocol -p nexees-state --target x86_64-linux-android --target-dir /mnt/F/Nexees-toolchains/target/nexees
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+  exit code: 0
+
+== The Desktop application: built from the final sources, installed in a disposable prefix, tested ==
+$ python3 -B scripts/build/build_desktop.py build --build-dir /mnt/F/Nexees-toolchains/target/nexees/desktop --electron-headers 42.8.1
+  packages: unchanged since the last install
+  $ node_modules/.bin/tsc -p src/tsconfig.json
+  $ node_modules/.bin/theia build --mode production
+  [build/browser] Finished with 0 errors in 969ms.
+  [build/node] Finished with 0 errors in 458ms.
+  [build/electron] Finished with 0 errors in 7ms.
+  $ node_modules/.bin/electron-rebuild --version 42.8.1 --force --which-module drivelist,keytar,native-keymap --only drivelist,keytar,native-keymap
+  $ cargo build --release --locked --offline -p nexees-desktop-host
+  ✔ Rebuild Complete
+      Finished `release` profile [optimized] target(s) in 0.02s
+  exit code: 0
+$ python3 -B scripts/build/build_desktop.py install --build-dir /mnt/F/Nexees-toolchains/target/nexees/desktop --prefix /mnt/F/Nexees-toolchains/target/nexees/desktop-install
+  fuses: 101100011 -> 100000011 (EnableNodeOptionsEnvironmentVariable off, EnableNodeCliInspectArguments off)
+  installed under /mnt/F/Nexees-toolchains/target/nexees/desktop-install
+  exit code: 0
+$ node tests/e2e/desktop/local_application.test.mjs /mnt/F/Nexees-toolchains/target/nexees/desktop-install
+  PASS  the installed Electron binary has the fuses the package definition names (SI-28, TH-03)  [RunAsNode=1 EnableCookieEncryption=0 EnableNodeOptionsEnvironmentVariable=0 EnableNodeCliInspectArguments=0 EnableEmbeddedAsarIntegrityValidation=0 OnlyLoadAppFromAsar=0 LoadBrowserProcessSpecificV8Snapshot=0 GrantFileProtocolExtraPrivileges=1 WasmTrapHandlers=1]
+  PASS  the backend refuses to start without the window's token (TH-02)  [exit 1]
+  PASS  no host runs before the window starts
+  PASS  the window is a local application: its page is a file of the installed application, not a website (C20)  [/mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/lib/frontend/index.html]
+  PASS  the workbench shows the local workspace's files  [, src, hello.txt]
+  PASS  extensions stay disabled: no Extensions view and no extension host process (SA-08, SI-22)  [0 extension hosts]
+  PASS  the status bar shows the host as attached, where the user sees it  [$(plug) Nexees host, Attached to the Nexees host on desktop-322861d0907ef82b9bf26aff613542f4]
+  PASS  exactly one host process runs, separate from the window  [1 host(s)]
+  PASS  the host runs at the user's privilege, in its own process group
+  PASS  the host keeps nothing of the window that started it: it holds only the null device, its lock, its store and its channel (RC-04)  [8 descriptors]
+  PASS  the channel folder and the socket are private to the user (0700, 0600)
+  PASS  nexees-host status finds the running host
+  PASS  the idle host uses no processor time and holds no network socket (RC-08)  [0 ticks in 5 s; 0 network sockets]
+  PASS  nothing of the application listens beyond this machine: its backend and this test's DevTools port, on the loopback interface  [tcp 0100007F:90F7>00000000:0000 tcp 0100007F:2476>00000000:0000]
+  PASS  the application connects to no other machine, and has fetched nothing  [4 connections, 0 beyond the loopback interface; 0 fetched dictionaries]
+  PASS  the application keeps its settings in its own folder, not in one shared with other Electron or Theia applications  [/tmp/nexees-e2e-rcPN4A/config/Nexees]
+  PASS  told to run as Node, to load a script through NODE_OPTIONS and to open an inspector, it is still the application and does none of it (TH-03)
+  PASS  the page runs in a sandboxed renderer, without Node (TH-04)  [1 renderer(s) under seccomp; 0 Node globals in the page]
+  PASS  no process the backend starts inherits the window's token: not its terminals, its file watcher or the host (SI-28)  [electron, bash and the host]
+  PASS  closing the window leaves the host running for its grace period
+  PASS  without the opt-in, the host stops after its last window closed (RC-04)
+  PASS  three reopened windows found one and the same host (RC-T14)  [906789]
+  PASS  the kept host outlives its windows (RC-04)
+  PASS  start at login is off by default
+  PASS  enabling it writes one user-level entry that runs the installed host to keep running (RC-05)
+  PASS  systemd's generator turns the entry into one unit that runs the host in the graphical session and stops it with the session (RC-05)  [1 unit(s)]
+  PASS  disabling it removes exactly that entry (RC-24)
+  PASS  outside a login session, without a runtime folder, the host reports unsupported and starts nothing (RC-05)  [exit codes 4, 4, 4]
+  PASS  a host that cannot run leaves the window unavailable, with the reason on pointing at the entry, and nothing else starts (RC-06, RC-T03)  [The Nexees host is unavailable: this session gives the host no channel folder private to you; the host runs only inside a login session. Click to try again.]
+  PASS  once the cause is gone, clicking the entry attaches the window to a host (RC-06)
+  ALL CHECKS PASSED
+  exit code: 0
+
+== The predecessors' cross-checks ==
+$ python3 -B docs/evidence/TASK-002/check_architecture.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-003/check_dependencies.py
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-004/check_threat_model.py /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3
+  PASS  every threat test names threats, a slot or gap, pack scenarios, later owners and platforms
+  55 threats, 30 invariants, 39 threat tests, 11 remote contracts
+  ALL CHECKS PASSED
+  exit code: 0
+$ python3 -B docs/evidence/TASK-001/check_charter_against_pack.py <scratch>/Nexees_LCL_Implementation_Pack_v0.5.2
+  ALL CHECKS PASSED
+  exit code: 0
+
+== Pack, LCL repository, LCL SDK, home caches, leftovers, processes ==
+Pack files newer than MANIFEST.json: 0
+MANIFEST.json SHA-256 is 8d9d0080…07e4
+LCL repository: HEAD fa1592b955639c4839f50861f9e89c5110064144, porcelain status lines: 0
+LCL SDK files written since TASK-009 began (2026-10-04 15:39:41): 0
+Files in the home caches written since TASK-009 began: 40, all of the owner's IDE (rust-analyzer's use of ~/.cargo, VS Code's Gradle daemons, and its TypeScript service's type cache; logs/ide_activity.txt); unexplained: []
+The application never ran against the owner's home: written folders of its own there: []
+Test folders left in /tmp: 0 []
+Task processes running (isolated-toolchain cargo or rustc, lcl, or anything of the disposable installations): 0 []
+The trial installation of logs/hardening_trials.txt is gone: True
+
+== Git and worktree ==
+$ git diff --stat
+   .editorconfig                                      |   5 +-
+   .gitignore                                         |   3 +
+   Cargo.lock                                         |  59 ++++++++++
+   Cargo.toml                                         |   4 +-
+   FILE_TREE.txt                                      | 129 +++++++++++++--------
+   README.md                                          |  16 +++
+   apps/desktop/resources/application_metadata.source |   1 -
+   apps/desktop/src/application_host.source           |   1 -
+   apps/desktop/src/main.source                       |   1 -
+   apps/desktop/src/shell/main_window.source          |   1 -
+   core/state/state_store.rs                          |  59 ++++++++++
+   docs/architecture/decisions.lcl.txt                |  10 +-
+   docs/architecture/subsystems.lcl.txt               |   8 +-
+   docs/dependencies/LICENSE_MATRIX.md                |  11 +-
+   docs/dependencies/checks.lcl.txt                   |   2 +-
+   docs/dependencies/components.lcl.txt               |  10 +-
+   docs/dependencies/strategy.lcl.txt                 |   2 +-
+   docs/engineering/CONVENTIONS.md                    |  55 ++++++---
+   docs/manuals/NEXEES_USER_MANUAL.md                 |   2 +
+   docs/security/checks.lcl.txt                       |   2 +-
+   docs/security/tests.lcl.txt                        |   2 +-
+   docs/security/threats.lcl.txt                      |   8 +-
+   docs/security/trust.lcl.txt                        |   4 +-
+   packaging/desktop/package_definition.source        |   1 -
+   .../desktop/lifecycle/application_lifecycle.source |   1 -
+   platform/desktop/transport/local_ipc.source        |   1 -
+   scripts/build/build_desktop.source                 |   1 -
+   scripts/ci/continuous_integration.sh               |  16 ++-
+   scripts/test/run_checks.py                         | 103 +++++++++++++++-
+   tests/e2e/desktop/local_application.test.source    |   1 -
+   tests/tooling/test_run_checks.py                   |  66 +++++++++++
+   31 files changed, 479 insertions(+), 106 deletions(-)
+Modified tracked files: 22, exactly the expected ones
+Deleted tracked files: 9, the nine implemented placeholders
+The editor's link apps/desktop/node_modules points at the Desktop build folder: /mnt/F/Nexees-toolchains/target/nexees/desktop/check/node_modules
+Staged: 0; untracked files: 37
+Untracked files outside the 20 new files and docs/evidence/TASK-009/: 0 []
+Ignored files: 572, the owner's IDE output and the editor's link, kept in place and outside the snapshot: {'target/': 554, 'docs/evidence/TASK-003/prototypes/android-app/.gradle/': 17}, apps/desktop/node_modules 1; others: []
+The snapshot listing agrees with sha256sum over the same 579 files
+HEAD: d00bb83, unchanged during the task
+
+== Layout ==
+Files still carrying their marker line: 252 (261 before, less the 9 implemented placeholders)
+PNG files unchanged against HEAD: True
+Temporary files or build output among the files a commit would hold: 0 []
+
+Snapshot after: 9876495b3aed4ad9949e7c20a6bc8abb119e95f0346346b79d4b1dccf3e58e4e; unchanged by this verification: True
+
+Result: every exit 0 and every inspection as expected

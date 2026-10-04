@@ -1,0 +1,98 @@
+{
+  "queried_at": "2026-10-04T18:00:04+02:00",
+  "source": "https://api.osv.dev/v1/querybatch and /v1/vulns, public package coordinates only",
+  "lockfile": "apps/desktop/package-lock.json",
+  "packages": 807,
+  "package_set_sha256": "32dd67b421505478db723621a414041a833102eb5e1950e6b6d1dd9348a9a942",
+  "advisories": [
+    {
+      "package": "npm:braces@3.0.3",
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "aliases": [
+        "CVE-2026-93687"
+      ],
+      "summary": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+      "severity": "HIGH",
+      "withdrawn": null
+    },
+    {
+      "package": "npm:decompress@4.2.1",
+      "id": "GHSA-h39j-r5qq-r9mm",
+      "aliases": [
+        "CVE-2026-10732"
+      ],
+      "summary": "decompress: Arbitrary File Write via Archive Extraction (Zip Slip)",
+      "severity": "MODERATE",
+      "withdrawn": null
+    },
+    {
+      "package": "npm:decompress@4.2.1",
+      "id": "GHSA-hrh2-vp3x-79xf",
+      "aliases": [
+        "CVE-2026-101894"
+      ],
+      "summary": "@xhmikosr/decompress: Path traversal via symlink chain",
+      "severity": "CRITICAL",
+      "withdrawn": null
+    },
+    {
+      "package": "npm:decompress@4.2.1",
+      "id": "GHSA-jwp9-9v96-94mx",
+      "aliases": [
+        "CVE-2026-39243"
+      ],
+      "summary": "decompress allows arbitrary hardlink creation during archive extraction",
+      "severity": "MODERATE",
+      "withdrawn": null
+    },
+    {
+      "package": "npm:decompress@4.2.1",
+      "id": "GHSA-mp2f-45pm-3cg9",
+      "aliases": [
+        "CVE-2026-53486"
+      ],
+      "summary": "Decompress: Archive extraction can create files and links outside of the target directory",
+      "severity": "CRITICAL",
+      "withdrawn": null
+    },
+    {
+      "package": "npm:diff@7.0.0",
+      "id": "GHSA-73rr-hh4g-fpgx",
+      "aliases": [
+        "CVE-2026-24001"
+      ],
+      "summary": "jsdiff has a Denial of Service vulnerability in parsePatch and applyPatch",
+      "severity": "LOW",
+      "withdrawn": null
+    },
+    {
+      "package": "npm:http-cache-semantics@4.2.0",
+      "id": "GHSA-ch52-4w7c-c8xp",
+      "aliases": [
+        "CVE-2026-93748"
+      ],
+      "summary": "http-cache-semantics max-stale handling can disclose cross-user cached responses",
+      "severity": "HIGH",
+      "withdrawn": null
+    },
+    {
+      "package": "npm:serialize-javascript@6.0.2",
+      "id": "GHSA-5c6j-r48x-rmvq",
+      "aliases": [],
+      "summary": "Serialize JavaScript is Vulnerable to RCE via RegExp.flags and Date.prototype.toISOString()",
+      "severity": "HIGH",
+      "withdrawn": null
+    },
+    {
+      "package": "npm:serialize-javascript@6.0.2",
+      "id": "GHSA-qj8w-gfj5-8c6v",
+      "aliases": [
+        "CVE-2026-34043"
+      ],
+      "summary": "Serialize JavaScript has CPU Exhaustion Denial of Service via crafted array-like objects",
+      "severity": "MODERATE",
+      "withdrawn": null
+    }
+  ],
+  "package_set": "sorted name@version lines of the lockfile's registry packages, as scripts/test/run_checks.py computes them"
+}
