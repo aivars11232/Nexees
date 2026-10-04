@@ -25,11 +25,16 @@ by default for the installed Electron's version. --electron-headers names anothe
 same major, whose native module ABI Electron keeps the same.
 
 `install` lays the built application out under PREFIX as packaging/desktop/package_definition.json
-describes: the window and its host in one folder, a launcher, and a desktop entry. In the
-installed copy of the Electron binary it sets the fuses the definition names, the switches
-Electron reads from its own file before any setting or command line (SI-28, TH-03), and reads
-them back. PREFIX must be an absolute folder outside the checkout. Nothing is installed anywhere
-else.
+describes: the window and its host in one folder, a launcher, a desktop entry, and the
+application's icon in each size derived from the logo. In the installed copy of the Electron
+binary it sets the fuses the definition names, the switches Electron reads from its own file
+before any setting or command line (SI-28, TH-03), and reads them back. PREFIX must be an
+absolute folder outside the checkout. Nothing is installed anywhere else.
+
+The logo reaches an application only as the icons scripts/build/brand_assets.py derived from the
+bound source (B1): `build` copies the one the window shows into the application's resources, and
+`install` copies them all. Both refuse an icon that is not the one assets/branding/manifest.json
+records.
 
 Exit codes: 0 done, 1 a step failed, 2 a missing setting or a refused folder.
 """
@@ -49,6 +54,11 @@ ROOT = Path(__file__).resolve().parents[2]
 APP = ROOT / 'apps/desktop'
 DEFINITION = ROOT / 'packaging/desktop/package_definition.json'
 METADATA = APP / 'resources/application_metadata.json'
+BRANDING = ROOT / 'assets/branding'
+# The icon the window itself shows, in its About dialog (apps/desktop/src/shell/about_dialog), and
+# where a build places it in the application.
+WINDOW_ICON_SIZE = 128
+WINDOW_ICON = 'resources/branding/nexees-128.png'
 # The native modules the window needs for Electron, as TASK-003 rebuilt them.
 NATIVE_MODULES = 'drivelist,keytar,native-keymap'
 # The files of the window's sources that a build needs: the manifests and the TypeScript.
@@ -110,11 +120,27 @@ def sources() -> list[str]:
     return MANIFESTS + typescript
 
 
+def logo_icons() -> dict[int, bytes]:
+    """The icons derived from the logo, by size, each with the SHA-256 the logo manifest records."""
+    manifest = json.loads((BRANDING / 'manifest.json').read_text(encoding='utf-8'))
+    icons = {}
+    for entry in manifest['derived']:
+        data = (BRANDING / entry['file']).read_bytes()
+        if hashlib.sha256(data).hexdigest() != entry['sha256']:
+            raise Refused(f'{entry["file"]} is not the icon the logo manifest records '
+                          '(scripts/build/brand_assets.py check)')
+        icons[entry['size']] = data
+    return icons
+
+
 def stage(folder: Path, env: dict[str, str], scripts: bool) -> None:
-    """Copies the sources into `folder` and installs the lockfile's packages there, unless the
-    manifests are unchanged since the last install. Files a build made there (lib/, src-gen/) stay
-    until they are rebuilt; sources that no longer exist are removed."""
+    """Copies the sources and the window's icon into `folder` and installs the lockfile's packages
+    there, unless the manifests are unchanged since the last install. Files a build made there
+    (lib/, src-gen/) stay until they are rebuilt; sources that no longer exist are removed."""
     folder.mkdir(parents=True, exist_ok=True)
+    icon = folder / WINDOW_ICON
+    icon.parent.mkdir(parents=True, exist_ok=True)
+    icon.write_bytes(logo_icons()[WINDOW_ICON_SIZE])
     wanted = set(sources())
     for old in (folder / 'src').rglob('*.ts') if (folder / 'src').is_dir() else []:
         if str(old.relative_to(folder)) not in wanted:
@@ -206,6 +232,10 @@ def install(build_dir: Path, prefix: Path) -> None:
     before, after = set_fuses(target / window['electron'], window['fuses'])
     changed = ', '.join(f'{name} {"on" if on else "off"}' for name, on in window['fuses'].items())
     print(f'fuses: {before} -> {after} ({changed})', flush=True)
+    for size, data in logo_icons().items():
+        icon = prefix / layout['icons'].format(size=size, icon=metadata['icon'])
+        icon.parent.mkdir(parents=True, exist_ok=True)
+        icon.write_bytes(data)
     launcher = prefix / layout['launcher']
     launcher.parent.mkdir(parents=True, exist_ok=True)
     arguments = ' '.join(window['arguments'])
@@ -235,6 +265,7 @@ def install(build_dir: Path, prefix: Path) -> None:
         f'Name={metadata["name"]}\n'
         f'Comment={metadata["summary"]}\n'
         f'Exec="{launcher}" %F\n'
+        f'Icon={metadata["icon"]}\n'
         'Terminal=false\n'
         f'Categories={";".join(metadata["categories"])};\n'
         f'StartupWMClass={metadata["window_class"]}\n')

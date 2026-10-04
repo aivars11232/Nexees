@@ -57,11 +57,14 @@ Nexees/
 │       │   │   ├── security_approvals.source
 │       │   │   └── settings_view.source
 │       │   ├── shell/
+│       │   │   ├── about_dialog.ts
 │       │   │   ├── activity_bar.source
+│       │   │   ├── design_tokens.ts
 │       │   │   ├── main_window.ts
 │       │   │   ├── panel_controls.source
 │       │   │   ├── panel_layout.source
 │       │   │   ├── status_bar.source
+│       │   │   ├── theme.ts
 │       │   │   └── title_bar.source
 │       │   ├── workspaces/
 │       │   │   ├── editor_tabs.source
@@ -81,11 +84,18 @@ Nexees/
 ├── assets/
 │   ├── branding/
 │   │   ├── derived/
-│   │   │   └── .gitkeep
+│   │   │   ├── nexees-128.png
+│   │   │   ├── nexees-16.png
+│   │   │   ├── nexees-24.png
+│   │   │   ├── nexees-256.png
+│   │   │   ├── nexees-32.png
+│   │   │   ├── nexees-48.png
+│   │   │   └── nexees-64.png
 │   │   ├── reference/
 │   │   │   └── nexees-logo-approved-chat.png
-│   │   └── source/
-│   │       └── .gitkeep
+│   │   ├── source/
+│   │   │   └── nexees-logo.png
+│   │   └── manifest.json
 │   ├── design/
 │   │   └── desktop/
 │   │       ├── approved-compact-layout.png
@@ -93,8 +103,8 @@ Nexees/
 │   ├── strings/
 │   │   └── english.source
 │   └── theme/
-│       ├── design_tokens.source
-│       └── icon_mapping.source
+│       ├── design_tokens.json
+│       └── icon_mapping.json
 ├── config/
 │   ├── application_defaults.source
 │   ├── local-paths.example.json
@@ -514,24 +524,37 @@ Nexees/
 │   │   │   │   ├── receipt.json
 │   │   │   │   └── snapshot_files.sha256
 │   │   │   └── TASK-008_EVIDENCE.md
-│   │   └── TASK-009/
+│   │   ├── TASK-009/
+│   │   │   ├── logs/
+│   │   │   │   ├── cleanup_first_close.json
+│   │   │   │   ├── cleanup_record.json
+│   │   │   │   ├── correction_seeded_defects.txt
+│   │   │   │   ├── desktop_build.txt
+│   │   │   │   ├── dispatch_task_009.record.json
+│   │   │   │   ├── e2e_local_application.txt
+│   │   │   │   ├── hardening_trials.txt
+│   │   │   │   ├── ide_activity.txt
+│   │   │   │   ├── native_language_suite.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── osv_npm.json
+│   │   │   │   ├── preflight.txt
+│   │   │   │   ├── regression.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── run_checks.txt
+│   │   │   │   └── security_scan.txt
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── corroboration.txt
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   └── snapshot_files.sha256
+│   │   │   └── TASK-009_EVIDENCE.md
+│   │   └── TASK-010/
 │   │       ├── logs/
-│   │       │   ├── cleanup_first_close.json
-│   │       │   ├── cleanup_record.json
-│   │       │   ├── correction_seeded_defects.txt
-│   │       │   ├── desktop_build.txt
-│   │       │   ├── dispatch_task_009.record.json
-│   │       │   ├── e2e_local_application.txt
-│   │       │   ├── hardening_trials.txt
-│   │       │   ├── ide_activity.txt
+│   │       │   ├── dispatch_task_010.record.json
 │   │       │   ├── native_language_suite.json
-│   │       │   ├── negative_tests.txt
-│   │       │   ├── osv_npm.json
-│   │       │   ├── preflight.txt
-│   │       │   ├── regression.txt
-│   │       │   ├── required_reading.txt
-│   │       │   ├── run_checks.txt
-│   │       │   └── security_scan.txt
+│   │       │   └── preflight.txt
 │   │       ├── receipt/
 │   │       │   ├── RECEIPT_RESULT.md
 │   │       │   ├── corroboration.txt
@@ -539,7 +562,7 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       └── TASK-009_EVIDENCE.md
+│   │       └── CHECKPOINT.md
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
 │   │   └── NEXEES_USER_MANUAL.md
@@ -639,9 +662,11 @@ Nexees/
 │       └── lib.rs
 ├── scripts/
 │   ├── build/
+│   │   ├── brand_assets.py
 │   │   ├── build_android.source
 │   │   ├── build_desktop.py
-│   │   └── bundle_manuals.source
+│   │   ├── bundle_manuals.source
+│   │   └── design_tokens.py
 │   ├── ci/
 │   │   └── continuous_integration.sh
 │   ├── release/
@@ -718,7 +743,9 @@ Nexees/
 │   │       ├── pairing_revocation.test.source
 │   │       └── stale_approval_rejection.test.source
 │   ├── tooling/
+│   │   ├── test_brand_assets.py
 │   │   ├── test_build_desktop.py
+│   │   ├── test_design_tokens.py
 │   │   ├── test_run_checks.py
 │   │   └── test_task_cleanup.py
 │   └── unit/

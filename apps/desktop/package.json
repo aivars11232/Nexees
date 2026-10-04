@@ -12,6 +12,8 @@
     "frontend": {
       "config": {
         "applicationName": "Nexees",
+        "defaultTheme": "nexees-dark",
+        "preferences": {},
         "electron": {
           "windowOptions": {
             "webPreferences": {

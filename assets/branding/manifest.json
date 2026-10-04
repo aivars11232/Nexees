@@ -1,0 +1,47 @@
+{
+  "description": "The Nexees logo in the repository: the byte-identical copy of the source the owner bound (B1) and the icons derived from it. Written by scripts/build/brand_assets.py import, which reads only the bound source; brand_assets.py check verifies every file named here.",
+  "source": {
+    "bound_path": "/home/aivars/Pictures/Nexees Logo⁄Icon.png",
+    "copy": "source/nexees-logo.png",
+    "sha256": "334506456a00f0d3eabe7a2f01cca9c90548e9c52caee3f40e00cc2751b59bdd",
+    "width": 500,
+    "height": 500
+  },
+  "derived": [
+    {
+      "file": "derived/nexees-16.png",
+      "size": 16,
+      "sha256": "1d77a9c0f3a13f765e90d4628c5559bb21a9e9051623db6811a205580301ffac"
+    },
+    {
+      "file": "derived/nexees-24.png",
+      "size": 24,
+      "sha256": "4d056179eeb5f7cef8bc13c8038065b98bcd0fd1b57ba7f701eda285f27efa8a"
+    },
+    {
+      "file": "derived/nexees-32.png",
+      "size": 32,
+      "sha256": "82b3ac28ebaca194241abca5b2f75b8f6208a243d59d54a0c32de81bac35d191"
+    },
+    {
+      "file": "derived/nexees-48.png",
+      "size": 48,
+      "sha256": "9db251dabf5db3ea77d2597a766df832cad8e6fce39e6224ca8de66acc529766"
+    },
+    {
+      "file": "derived/nexees-64.png",
+      "size": 64,
+      "sha256": "2350041c4103cfc3f6c1dbfa7fab2817bce3d298d06556e544248ace366b3a6a"
+    },
+    {
+      "file": "derived/nexees-128.png",
+      "size": 128,
+      "sha256": "3e438bd596930a93e6b4ea7ffd94f6b3404eb924b4cb087e80158c6a3517aacd"
+    },
+    {
+      "file": "derived/nexees-256.png",
+      "size": 256,
+      "sha256": "76a184f478bf69ec4844bb4ba6033e2e9535c24332ec8e3f1981655832e87c3a"
+    }
+  ]
+}

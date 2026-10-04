@@ -2,6 +2,7 @@
   "id": "nexees",
   "name": "Nexees",
   "summary": "The Nexees Desktop application",
+  "icon": "nexees",
   "version": "0.0.0",
   "categories": [
     "Development",

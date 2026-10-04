@@ -1,0 +1,56 @@
+{
+  "description": "The Nexees design tokens: the one source of the colours, text sizes, spacing and control sizes of both clients (R18, R19). Colours are #rrggbb and come from the approved compact layout, assets/design/desktop/approved-compact-layout.png. Every other value is a whole number of density-independent pixels: CSS pixels on Desktop, dp on Android (sp for text). scripts/build/design_tokens.py checks this file, with the contrast every text colour must keep, and writes each client's copy.",
+  "color": {
+    "surface": {
+      "window": "#0b1017",
+      "editor": "#0e131b",
+      "raised": "#161d29",
+      "hover": "#121923",
+      "selected": "#182030"
+    },
+    "border": {
+      "subtle": "#232c3b"
+    },
+    "text": {
+      "primary": "#e2e8f0",
+      "secondary": "#a9b6cb",
+      "muted": "#7c8aa0",
+      "on_accent": "#ffffff"
+    },
+    "accent": {
+      "primary": "#3d9df7",
+      "secondary": "#c26bf2",
+      "fill": "#2468d8",
+      "fill_hover": "#2a72e0"
+    },
+    "status": {
+      "success": "#2ecc5f",
+      "warning": "#e5b93c",
+      "error": "#f2555a"
+    },
+    "syntax": {
+      "keyword": "#c97fd6",
+      "string": "#e58a5c",
+      "number": "#e3b566",
+      "function": "#3cb4ee",
+      "type": "#56c8d8",
+      "variable": "#7fb0f8"
+    }
+  },
+  "font": {
+    "base": 13,
+    "small": 12
+  },
+  "space": {
+    "unit": 6
+  },
+  "radius": {
+    "control": 4
+  },
+  "desktop": {
+    "row_height": 22,
+    "tab_height": 35,
+    "status_bar_height": 22,
+    "activity_bar_width": 48
+  }
+}

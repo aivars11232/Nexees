@@ -4,7 +4,8 @@
     "app": "lib/nexees/app",
     "host_program": "lib/nexees/app/bin/nexees-host",
     "launcher": "bin/nexees",
-    "desktop_entry": "share/applications/nexees.desktop"
+    "desktop_entry": "share/applications/nexees.desktop",
+    "icons": "share/icons/hicolor/{size}x{size}/apps/{icon}.png"
   },
   "window": {
     "electron": "node_modules/electron/dist/electron",
