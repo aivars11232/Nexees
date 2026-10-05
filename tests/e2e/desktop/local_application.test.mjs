@@ -44,7 +44,17 @@
 //     exists; the About dialog shows the logo, as a file of the installation that is the icon
 //     derived from the bound source, with the name and version and no link; the user can choose
 //     another colour theme and return, the choice kept in the user's settings; and the
-//     installation carries the icon in every derived size, named by its desktop entry.
+//     installation carries the icon in every derived size, named by its desktop entry;
+// 13. the approved layout (Desktop UI contract, R18): the window has no system frame but one thin
+//     title row, with the logo and name, the menu, the title, the two sidebar toggles and,
+//     immediately after them, the window controls; under it the activity bar and the left sidebar
+//     over the whole height, the editor and the right sidebar over the bottom panel, and the
+//     status bar; a new profile shows them in the shares of the design tokens; the right sidebar
+//     has the five areas as one row of text tabs, each saying that it is not available and
+//     holding no control; each toggle hides and shows its sidebar and follows it; in a window
+//     too narrow for the row the toggles and the window controls stay in view; the window
+//     controls work, the one that closes the window among them; and a reopened window comes
+//     back as it was closed.
 //
 // It exits 0 when every check passes and prints one line per check.
 
@@ -63,6 +73,10 @@ const ICONS = JSON.parse(fs.readFileSync(new URL('../../../assets/theme/icon_map
 const BRANDING = new URL('../../../assets/branding/', import.meta.url);
 const LOGO = JSON.parse(fs.readFileSync(new URL('manifest.json', BRANDING), 'utf8'));
 const THEME = 'nexees-dark'; // the theme's ID (apps/desktop/src/shell/theme)
+// The functional areas of the right sidebar, in the order of the Desktop UI contract.
+const AREAS = ['AI Agent', 'LCL', 'Tasks', 'Chat', 'Logs'];
+// The nested screen. A new window takes two thirds of it each way, which leaves every panel more than its smallest size.
+const SCREEN = { width: 1600, height: 1000 };
 const GRACE_MS = 5_000; // the host's grace period after its last window (application_host.rs)
 const DEBUG_PORT = 9334; // DevTools, on 127.0.0.1 only, for this test
 const INSPECT_PORT = 9335; // where a Node inspector would listen if the application honoured --inspect
@@ -298,26 +312,44 @@ async function page() {
     }
 }
 
-/** Sends one DevTools command to the page and returns its result. */
-async function send(target, method, params) {
+/**
+ * Opens a DevTools session with the page. What a command sets up for the page, such as an emulated
+ * window size, lasts as long as the session.
+ */
+async function session(target) {
     const socket = new WebSocket(target.webSocketDebuggerUrl);
     await new Promise((resolve, reject) => {
         socket.onopen = resolve;
         socket.onerror = reject;
     });
+    let sent = 0;
+    return {
+        /** Sends one command and returns its result. */
+        send(method, params) {
+            const id = sent += 1;
+            socket.send(JSON.stringify({ id, method, params }));
+            return new Promise(resolve => {
+                const listener = event => {
+                    const message = JSON.parse(event.data);
+                    if (message.id === id) {
+                        socket.removeEventListener('message', listener);
+                        resolve(message.result);
+                    }
+                };
+                socket.addEventListener('message', listener);
+            });
+        },
+        close: () => socket.close(),
+    };
+}
+
+/** Sends one DevTools command to the page, in a session of its own, and returns its result. */
+async function send(target, method, params) {
+    const devtools = await session(target);
     try {
-        socket.send(JSON.stringify({ id: 1, method, params }));
-        const reply = await new Promise(resolve => {
-            socket.onmessage = event => {
-                const message = JSON.parse(event.data);
-                if (message.id === 1) {
-                    resolve(message);
-                }
-            };
-        });
-        return reply.result;
+        return await devtools.send(method, params);
     } finally {
-        socket.close();
+        devtools.close();
     }
 }
 
@@ -420,13 +452,18 @@ async function pointAt(target, selector) {
     return where !== null;
 }
 
+/** Clicks at a point of the page, as a user's mouse would. */
+async function clickAt(target, where) {
+    for (const type of ['mousePressed', 'mouseReleased']) {
+        await send(target, 'Input.dispatchMouseEvent', { type, x: where.x, y: where.y, button: 'left', clickCount: 1 });
+    }
+}
+
 /** Clicks the centre of the first visible element `selector` finds, as a user's mouse would. */
 async function click(target, selector) {
     const where = await centreOf(target, selector);
     if (where) {
-        for (const type of ['mousePressed', 'mouseReleased']) {
-            await send(target, 'Input.dispatchMouseEvent', { type, ...where, button: 'left', clickCount: 1 });
-        }
+        await clickAt(target, where);
     }
     return where !== null;
 }
@@ -440,6 +477,7 @@ const PROBE = `JSON.stringify((() => {
         origin: location.protocol + '//' + location.hostname,
         page: decodeURIComponent(location.pathname),
         shell: !!document.querySelector('#theia-app-shell'),
+        loading: !!document.querySelector('.theia-preload'),
         restricted: !!document.getElementById('status-bar-workspace-trust-status'),
         files: [...document.querySelectorAll('.theia-TreeNodeSegment')].map(n => n.textContent),
         host: entry ? {
@@ -502,6 +540,73 @@ const ABOUT = `JSON.stringify((() => {
     } : null;
 })())`;
 
+// The window's layout as the user sees it: the title row's items in their order, each region's
+// place, and the right sidebar's tabs with the area they show. A place is that of a visible element.
+const LAYOUT = `(async () => {
+    const box = element => {
+        const r = element?.getBoundingClientRect();
+        return r && r.width > 0 && r.height > 0 ? { x: r.x, y: r.y, w: r.width, h: r.height, r: r.right, b: r.bottom } : null;
+    };
+    const one = selector => box(document.querySelector(selector));
+    const logo = document.querySelector('#nexees-title-brand img');
+    const area = [...document.querySelectorAll('#theia-right-side-panel > .lm-DockPanel-widget')].find(view => box(view));
+    return JSON.stringify({
+        window: { w: innerWidth, h: innerHeight, maximized: document.body.classList.contains('maximized') },
+        frame: await window.electronTheiaCore.getTitleBarStyleAtStartup(),
+        top: one('#theia-top-panel'),
+        row: [...document.querySelector('#theia-top-panel')?.children ?? []]
+            .filter(item => getComputedStyle(item).position !== 'absolute' && box(item)).map(item => ({ id: item.id, ...box(item) })),
+        moves: ['#theia-drag-panel', '#nexees-title-brand', '#theia-custom-title', '#nexees-sidebar-toggles', '#window-controls']
+            .map(selector => { const item = document.querySelector(selector); return item ? getComputedStyle(item).webkitAppRegion : 'missing'; }),
+        name: document.querySelector('#nexees-title-brand span')?.textContent,
+        logo: logo ? { complete: logo.complete, natural: [logo.naturalWidth, logo.naturalHeight], shown: [logo.width, logo.height],
+            file: decodeURIComponent(new URL(logo.src).pathname) } : null,
+        menus: [...document.querySelectorAll('#theia-top-panel .lm-MenuBar-itemLabel')].map(label => label.textContent),
+        title: document.querySelector('#theia-custom-title')?.textContent, documentTitle: document.title,
+        toggles: [...document.querySelectorAll('#nexees-sidebar-toggles button')].map(toggle => ({
+            ...box(toggle), pressed: toggle.getAttribute('aria-pressed'), label: toggle.getAttribute('aria-label'), tip: toggle.title,
+            icon: [...toggle.classList].find(name => name.startsWith('codicon-')), disabled: toggle.disabled })),
+        controls: Object.fromEntries(['minimize', 'maximize', 'restore', 'close'].map(name => [name, one('#' + name + '-button')])),
+        activity: one('#theia-left-content-panel .theia-app-sidebar-container'), left: one('#theia-left-content-panel'),
+        explorer: one('#explorer-view-container'), editor: one('#theia-main-content-panel'), right: one('#theia-right-content-panel'),
+        rightIcons: one('#theia-right-content-panel .theia-app-sidebar-container'),
+        bottom: one('#theia-bottom-content-panel'), status: one('#theia-statusBar'),
+        tabs: [...document.querySelectorAll('#theia-right-content-panel .lm-TabBar-tab')].filter(tab => box(tab)).map(tab => ({
+            ...box(tab), label: tab.textContent.trim(), current: tab.classList.contains('lm-mod-current') })),
+        area: area ? { text: area.innerText.trim(),
+            controls: area.querySelectorAll('button, input, select, textarea, a, [role="button"], [tabindex="0"]').length } : null,
+        bottomTab: document.querySelector('#theia-bottom-content-panel .lm-TabBar-tab.lm-mod-current')?.id ?? null,
+    });
+})()`;
+
+/** The window's layout, read after the page has drawn a frame. */
+async function layoutOf(target) {
+    await send(target, 'Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1, height: 1, scale: 1 } });
+    return JSON.parse(await evaluate(target, LAYOUT));
+}
+
+/** Waits until the window's layout is as `wanted` says, and returns it. */
+async function layoutWhen(target, what, wanted) {
+    return until(what, async () => {
+        const layout = await layoutOf(target);
+        return wanted(layout) ? layout : undefined;
+    }, 20_000);
+}
+
+/** Whether two places or sizes of the page are the same, to within a pixel's rounding. */
+function near(one, other, by = 0.6) {
+    return typeof one === 'number' && typeof other === 'number' && Math.abs(one - other) <= by;
+}
+
+/** Clicks the right sidebar's tab named `label`, as a user's mouse would. */
+async function clickTab(target, label) {
+    const tab = (await layoutOf(target)).tabs.find(candidate => candidate.label === label);
+    if (tab) {
+        await clickAt(target, { x: tab.x + tab.w / 2, y: tab.y + tab.h / 2 });
+    }
+    return !!tab;
+}
+
 async function shown(target) {
     // Asking for one pixel of the page makes it draw a frame. Theia's start waits for a frame, and
     // the nested compositor draws none while the user's real session is locked: it then locks its
@@ -513,9 +618,9 @@ async function shown(target) {
 /**
  * Opens a window from the installed launcher on `workspace`, as a user would: it waits for the
  * workbench, answers Theia's question whether to trust a folder it has not seen with no (the
- * folder then opens in Restricted Mode), and opens the Explorer, which a fresh profile shows
- * closed. Returns once the question is answered and the Explorer lists the workspace's files. `extra` adds to the launcher's
- * environment and arguments.
+ * folder then opens in Restricted Mode), and opens the Explorer where a stored layout has it
+ * closed; a new profile shows it open. Returns once the question is answered and the Explorer
+ * lists the workspace's files. `extra` adds to the launcher's environment and arguments.
  */
 async function openWindow(workspace, extra = { env: {}, args: [] }) {
     const child = spawn(path.join(prefix, 'bin/nexees'),
@@ -544,9 +649,10 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
             return undefined;
         }
         // Answering no puts the folder in Restricted Mode, which the status bar then shows. Until
-        // then the question may still come and cover the window, so the window is not ready.
+        // then the question may still come and cover the window, so the window is not ready. Nor is
+        // it while its loading screen, though fading, still lies over the workbench and takes the clicks.
         const now = await shown(target);
-        if (now?.files.includes('hello.txt') && now.restricted) {
+        if (now?.files.includes('hello.txt') && now.restricted && !now.loading) {
             return now;
         }
         // Open the Explorer only while it is closed: a click on an open one would close it.
@@ -583,7 +689,8 @@ async function closeWindow(window) {
 let kwin;
 try {
     const display = `wayland-nexees-e2e-${process.pid}`;
-    kwin = spawn('kwin_wayland', ['--virtual', '--socket', display, '--width', '1280', '--height', '800'], { stdio: 'ignore' });
+    kwin = spawn('kwin_wayland', ['--virtual', '--socket', display, '--width', String(SCREEN.width), '--height', String(SCREEN.height)],
+        { stdio: 'ignore' });
     await until('the nested compositor', async () => fs.existsSync(path.join(runtime, display)), 20_000);
     process.env.WAYLAND_DISPLAY = display;
     process.env.XDG_SESSION_TYPE = 'wayland';
@@ -744,10 +851,161 @@ try {
         about.title === METADATA.name && about.text.includes(METADATA.name) && /Version \d+\.\d+\.\d+/.test(about.text)
         && about.text.includes('Built on Eclipse Theia') && about.links === 0, about.text.replace(/\s+/g, ' '));
     check('buttons have the corner radius of the tokens', about.corner === `${TOKENS.radius.control}px`, about.corner);
-    await press(first.target, 'Escape', 'Escape', 27);
+    // Escape closes the dialog once it holds the keyboard, which the closing command palette may still have.
+    await until('the About dialog to close', async () => {
+        if (await evaluate(first.target, `!document.querySelector('.nexees-about')`)) {
+            return true;
+        }
+        await press(first.target, 'Escape', 'Escape', 27);
+        await sleep(500);
+        return undefined;
+    }, 15_000);
+
+    // 13: the approved layout, on the same window: the first layout of a new profile.
+    const fresh = await layoutWhen(first.target, 'every region of the layout',
+        l => !!(l.top && l.activity && l.left && l.explorer && l.editor && l.right && l.bottom && l.status && l.area));
+    const { top, activity, left, explorer, editor, right, bottom, status: statusBar } = fresh;
+    const rowItems = fresh.row.map(item => item.id);
+    const inOneLine = fresh.row.every((item, index) => near(item.x, index === 0 ? 0 : fresh.row[index - 1].r) && item.y >= top.y && item.b <= top.b);
+    check('the window has no system frame but one thin title row: logo and name, menu, title, sidebar toggles and window controls, in that order (R18)',
+        fresh.frame === 'custom' && top.y === 0 && near(top.h, desktop.title_bar_height) && near(top.w, fresh.window.w)
+        && rowItems.join() === 'nexees-title-brand,theia:menubar,theia-custom-title,nexees-sidebar-toggles,window-controls' && inOneLine
+        && near(fresh.row.at(-1)?.r, fresh.window.w) && near(activity.y, top.b) && fresh.menus.includes('File') && fresh.menus.includes('Help')
+        && fresh.title === fresh.documentTitle && fresh.title.includes(path.basename(workspace)),
+        `${fresh.frame} title bar, ${top.h} px high: ${rowItems.join(', ')}; menu ${fresh.menus.join(' ')}; title "${fresh.title}"`);
+    check('the title row moves the window by its free part, its logo and its title, and leaves the toggles and the window controls to the mouse',
+        fresh.moves.join() === 'drag,drag,drag,no-drag,no-drag', fresh.moves.join(' '));
+    check('the title row shows the logo, the icon derived from the bound source as a file of the installation, beside the application\'s name (B1)',
+        fresh.logo?.complete === true && fresh.logo.file === about.logo.file && fresh.logo.natural.join() === '128,128'
+        && fresh.logo.shown.join() === `${desktop.title_logo_size},${desktop.title_logo_size}` && fresh.name === METADATA.name,
+        `${fresh.name}; ${fresh.logo?.shown.join('x')} px of ${fresh.logo?.file}`);
+    const [leftToggle, rightToggle] = fresh.toggles;
+    const controls = ['minimize', 'maximize', 'close'].map(name => fresh.controls[name]);
+    check('both sidebar toggles stand in the title row immediately before the window controls, all in the widths of the tokens',
+        fresh.toggles.length === 2 && near(leftToggle.r, rightToggle.x) && near(rightToggle.r, controls[0]?.x)
+        && fresh.toggles.every(toggle => near(toggle.w, desktop.sidebar_toggle_width) && toggle.y >= top.y && toggle.b <= top.b && !toggle.disabled)
+        && controls.every((control, index) => !!control && near(control.w, desktop.window_control_width)
+            && near(control.r, fresh.window.w - (2 - index) * desktop.window_control_width) && control.b <= top.b)
+        && !fresh.controls.restore,
+        `toggles at ${fresh.toggles.map(toggle => `${toggle.x}-${toggle.r}`).join(', ')}; controls at ${controls.map(control => `${control?.x}-${control?.r}`).join(', ')}`);
+    check('the regions are arranged as approved: the activity bar and the left sidebar over the whole height, the editor and the right sidebar over the bottom panel, the status bar below',
+        activity.x === 0 && near(activity.w, desktop.activity_bar_width) && near(activity.b, statusBar.y) && near(left.y, top.b) && near(left.b, statusBar.y)
+        && explorer.x >= activity.r - 0.6 && explorer.r <= left.r + 0.6
+        && near(editor.x, left.r) && near(editor.y, top.b) && near(right.x, editor.r) && near(right.y, top.b) && near(right.r, fresh.window.w)
+        && near(bottom.x, left.r) && near(bottom.r, fresh.window.w) && near(bottom.y, editor.b) && near(bottom.y, right.b) && near(bottom.b, statusBar.y)
+        && statusBar.x === 0 && near(statusBar.w, fresh.window.w) && near(statusBar.b, fresh.window.h),
+        Object.entries({ activity, left, editor, right, bottom, 'status bar': statusBar })
+            .map(([name, at]) => `${name} ${Math.round(at.x)},${Math.round(at.y)} ${Math.round(at.w)}x${Math.round(at.h)}`).join('; '));
+    const share = TOKENS.desktop_percent;
+    const shares = {
+        'left sidebar': [left.w, fresh.window.w * share.left_sidebar_width / 100],
+        'right sidebar': [right.w, (fresh.window.w - left.w) * share.right_sidebar_width / 100],
+        'bottom panel': [bottom.h, (statusBar.y - top.b) * share.bottom_panel_height / 100],
+    };
+    const offShare = Object.entries(shares).filter(([, [seen, wanted]]) => !near(seen, wanted, 1.5));
+    check('a new profile shows the panels in the shares of the tokens: the left sidebar of the window\'s width, the right one of the width beside it, the bottom panel of the height',
+        offShare.length === 0, Object.entries(shares).map(([name, [seen, wanted]]) => `${name} ${seen.toFixed(1)} px for ${wanted.toFixed(1)}`).join('; '));
+    check('the bottom panel of a new profile shows the terminal', fresh.bottomTab?.startsWith('shell-tab-terminal') === true, `${fresh.bottomTab}`);
+    check('the right sidebar shows its five areas as one row of text tabs across its top, the first selected, and no bar of icons at the window\'s edge',
+        fresh.tabs.map(tab => tab.label).join() === AREAS.join() && fresh.tabs.every(tab => near(tab.y, right.y) && near(tab.h, desktop.tab_height))
+        && fresh.tabs.filter(tab => tab.current).length === 1 && fresh.tabs[0].current && !fresh.rightIcons,
+        fresh.tabs.map(tab => tab.label + (tab.current ? ' (selected)' : '')).join(', '));
+    const unfilled = [];
+    for (const label of AREAS) {
+        if (!(await clickTab(first.target, label))) {
+            unfilled.push(`${label}: no tab`);
+            continue;
+        }
+        const seen = await layoutWhen(first.target, `the ${label} area`, l => l.tabs.find(tab => tab.current)?.label === label && !!l.area);
+        unfilled.push(seen.area.text === `The ${label} area is not available in this version of Nexees.` && seen.area.controls === 0
+            ? label : `${label}: ${seen.area.text}, ${seen.area.controls} controls`);
+    }
+    check('each area says that it is not available, and holds no control that could be taken for a working one',
+        unfilled.join() === AREAS.join(), unfilled.join(', '));
+
+    // Each toggle hides its sidebar and shows it again as it was: in its width, and with the area that was selected, the last one.
+    const selected = (await layoutOf(first.target)).tabs.find(tab => tab.current)?.label;
+    await click(first.target, '#nexees-toggle-right-sidebar');
+    const noRight = await layoutWhen(first.target, 'the right sidebar to hide', l => !l.right);
+    await click(first.target, '#nexees-toggle-right-sidebar');
+    const rightAgain = await layoutWhen(first.target, 'the right sidebar to show', l => !!l.right && near(l.right.w, right.w));
+    check('the right toggle hides the right sidebar whole, the editor taking its place, and shows it again in its width and with its area',
+        near(noRight.editor.r, noRight.window.w) && noRight.tabs.length === 0 && !noRight.area
+        && rightToggle.pressed === 'true' && rightToggle.icon === `codicon-${ICONS.sidebar_right_shown}` && rightToggle.label === 'Hide the right sidebar'
+        && noRight.toggles[1].pressed === 'false' && noRight.toggles[1].icon === `codicon-${ICONS.sidebar_right_hidden}`
+        && noRight.toggles[1].label === 'Show the right sidebar' && noRight.toggles[1].tip === noRight.toggles[1].label
+        && rightAgain.toggles[1].pressed === 'true' && rightAgain.tabs.find(tab => tab.current)?.label === selected && selected !== AREAS[0]
+        && near(rightAgain.right.x, rightAgain.editor.r),
+        `hidden: ${noRight.toggles[1].label} (${noRight.toggles[1].icon}), editor to ${Math.round(noRight.editor.r)} of ${noRight.window.w}; `
+        + `shown: ${Math.round(rightAgain.right.w)} px with ${selected}`);
+    await click(first.target, '#nexees-toggle-left-sidebar');
+    const noLeft = await layoutWhen(first.target, 'the left sidebar to hide', l => !l.explorer);
+    await click(first.target, '#nexees-toggle-left-sidebar');
+    const leftAgain = await layoutWhen(first.target, 'the left sidebar to show', l => !!l.explorer && near(l.left.w, left.w));
+    check('the left toggle hides the left sidebar, leaving the activity bar, and shows it again in its width',
+        !!noLeft.activity && near(noLeft.activity.w, desktop.activity_bar_width) && noLeft.left.w < desktop.activity_bar_width + 2 && near(noLeft.editor.x, noLeft.left.r)
+        && leftToggle.pressed === 'true' && leftToggle.icon === `codicon-${ICONS.sidebar_left_shown}` && leftToggle.label === 'Hide the left sidebar'
+        && noLeft.toggles[0].pressed === 'false' && noLeft.toggles[0].icon === `codicon-${ICONS.sidebar_left_hidden}`
+        && noLeft.toggles[0].label === 'Show the left sidebar' && leftAgain.toggles[0].pressed === 'true',
+        `hidden: ${noLeft.toggles[0].label}, ${Math.round(noLeft.left.w)} px left; shown: ${Math.round(leftAgain.left.w)} px`);
+    // A toggle shows what its sidebar did, whoever did it: here the activity bar's Explorer icon.
+    await click(first.target, '#shell-tab-explorer-view-container');
+    const byIcon = await layoutWhen(first.target, 'the Explorer to hide', l => !l.explorer);
+    await click(first.target, '#shell-tab-explorer-view-container');
+    const byIconAgain = await layoutWhen(first.target, 'the Explorer to show', l => !!l.explorer);
+    check('a toggle follows its sidebar: hidden and shown from the activity bar, the left sidebar is shown so by its toggle',
+        byIcon.toggles[0].pressed === 'false' && byIcon.toggles[0].icon === `codicon-${ICONS.sidebar_left_hidden}`
+        && byIconAgain.toggles[0].pressed === 'true' && byIconAgain.toggles[0].icon === `codicon-${ICONS.sidebar_left_shown}`,
+        `${byIcon.toggles[0].label}, then ${byIconAgain.toggles[0].label}`);
+
+    // The window controls of the row.
+    await click(first.target, '#maximize-button');
+    const maximized = await layoutWhen(first.target, 'the window to fill the screen', l => l.window.maximized && l.window.w > fresh.window.w)
+        .catch(() => undefined);
+    if (maximized) {
+        await click(first.target, '#restore-button');
+    }
+    const restored = await layoutWhen(first.target, 'the window to have its size again', l => !l.window.maximized && l.window.w === fresh.window.w);
+    check('the window controls work: maximised, the window fills the screen and offers to restore it; restored, it has its size again',
+        maximized?.window.w === SCREEN.width && maximized.window.h === SCREEN.height && !!maximized.controls.restore && !maximized.controls.maximize
+        && near(maximized.controls.close.r, SCREEN.width) && restored.window.h === fresh.window.h && !!restored.controls.maximize && !restored.controls.restore,
+        `${fresh.window.w}x${fresh.window.h}, maximised ${maximized?.window.w}x${maximized?.window.h}, restored ${restored.window.w}x${restored.window.h}`);
+
+    // A window too narrow for the whole row. The width is emulated: the page lays itself out for it.
+    const NARROW = 420;
+    const devtools = await session(first.target);
+    let squeezed;
+    try {
+        await devtools.send('Emulation.setDeviceMetricsOverride', { width: NARROW, height: fresh.window.h, deviceScaleFactor: 0, mobile: false });
+        squeezed = await until('the narrow layout', async () => {
+            await devtools.send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1, height: 1, scale: 1 } });
+            const layout = JSON.parse((await devtools.send('Runtime.evaluate', { expression: LAYOUT, returnByValue: true, awaitPromise: true })).result.value);
+            return layout.window.w === NARROW ? layout : undefined;
+        }, 15_000);
+        await devtools.send('Emulation.clearDeviceMetricsOverride', {});
+    } finally {
+        devtools.close();
+    }
+    const widened = await layoutWhen(first.target, 'the window\'s own width', l => l.window.w === fresh.window.w && !!l.right && near(l.right.w, right.w));
+    check('in a window too narrow for the whole title row the name and the menu give way: the toggles and the window controls stay in view, in one thin row',
+        near(squeezed.top.h, desktop.title_bar_height) && squeezed.toggles.length === 2 && squeezed.toggles.every(toggle => near(toggle.w, desktop.sidebar_toggle_width))
+        && near(squeezed.toggles[1].r, squeezed.controls.minimize?.x) && near(squeezed.controls.close?.r, NARROW)
+        && squeezed.row.every((item, index) => item.x >= 0 && near(item.x, index === 0 ? 0 : squeezed.row[index - 1].r))
+        && near(widened.left.w, left.w),
+        `at ${NARROW} px: ${squeezed.row.map(item => `${item.id} ${Math.round(item.x)}-${Math.round(item.r)}`).join(', ')}`);
+
+    // 13 and 5: the user hides the right sidebar and closes the window with the row's own control.
+    await click(first.target, '#nexees-toggle-right-sidebar');
+    await layoutWhen(first.target, 'the right sidebar to hide', l => !l.right);
+    await click(first.target, '#close-button');
+    const closed = await until('the window to close', async () => first.child.exitCode !== null || first.child.signalCode !== null, 30_000)
+        .then(() => true, () => false);
+    check('the close control of the title row closes the window', closed);
+    if (!closed) {
+        await closeWindow(first);
+    }
 
     // 5: closing the window stops a host that was not asked to keep running.
-    await closeWindow(first);
     check('closing the window leaves the host running for its grace period', hostPids().includes(hostPid));
     await until('the host to stop after its grace period', async () => hostPids().length === 0, GRACE_MS + 15_000);
     check('without the opt-in, the host stops after its last window closed (RC-04)',
@@ -764,6 +1022,17 @@ try {
         await attached(window);
         hostPids().forEach(pid => seenHosts.add(pid));
         themed.push(await evaluate(window.target, `document.body.classList.contains('${THEME}')`));
+        if (round === 1) {
+            // The first window was closed with its right sidebar hidden.
+            const reopened = await layoutOf(window.target);
+            await click(window.target, '#nexees-toggle-right-sidebar');
+            const reshown = await layoutWhen(window.target, 'the right sidebar to show', l => !!l.right && l.tabs.some(tab => tab.current) && !!l.area);
+            check('a reopened window comes back as it was closed: the title row, the right sidebar hidden and its toggle saying so; shown again, it has its areas and its width',
+                reopened.frame === 'custom' && near(reopened.top?.h, desktop.title_bar_height) && !reopened.right && reopened.toggles[1]?.pressed === 'false'
+                && reopened.toggles[0]?.pressed === 'true' && reshown.toggles[1].pressed === 'true'
+                && reshown.tabs.map(tab => tab.label).join() === AREAS.join() && near(reshown.right.w, right.w, 1.5),
+                `reopened: ${reopened.toggles[1]?.label}; shown again: ${reshown.tabs.map(tab => tab.label).join(', ')} at ${reshown.right.w.toFixed(1)} px`);
+        }
         if (round === 3) {
             // In the last of them the user chooses another colour theme and returns. Returning to the
             // default needs no entry in the settings: Theia may remove it or write the default.

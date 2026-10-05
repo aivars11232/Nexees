@@ -1,0 +1,66 @@
+TASK-011: what else ran during the task, recorded 2026-10-05T12:47:24+02:00 with read-only commands.
+TASK-011 began at 2026-10-05T08:33:23+02:00. The commands of the task run with the isolated toolchain (env.sh):
+CARGO_HOME and RUSTUP_HOME under /mnt/F/Nexees-toolchains, not ~/.cargo; npm, Electron and the native builds use
+the home folder /mnt/F/Nexees-toolchains/home and its caches, not the user's. One command of the task did not: section 4.
+The session was paused from 2026-10-05 10:01:47 to 2026-10-05 11:32:36: the owner's plan ran out of usage and the owner resumed the session; the machine was not restarted.
+No command of the task ran in between (the session record holds none).
+
+== 1. The owner's IDE processes ==
+  4453  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [the Gradle extension's server; started 2026-10-05 06:19:57]
+  4509  /home/aivars/.vscode/extensions/rust-lang.rust-analyzer-0.3.3065-linux-x64/server/rust-analyzer  [VS Code's rust-analyzer; started 2026-10-05 06:19:57]
+  4667  /usr/lib/rust-analyzer-proc-macro-srv  [a proc-macro server of rust-analyzer; started 2026-10-05 06:19:58]
+  4673  /usr/lib/rust-analyzer-proc-macro-srv  [a proc-macro server of rust-analyzer; started 2026-10-05 06:19:58]
+  4968  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [the Java language server; started 2026-10-05 06:20:03]
+  5 processes, all of the owner's VS Code, started when the owner opened it again after the restart.
+  The task's toolchain environment (env.sh):
+    export RUSTUP_HOME=$T/rustup CARGO_HOME=$T/cargo CARGO_TARGET_DIR=$T/target
+
+== 2. Ignored files in the checkout: never committed, outside the snapshot ==
+  apps/desktop/node_modules: 1 files, written 2026-10-04 17:56:20 .. 2026-10-04 17:56:20; 0 since TASK-011 began
+  docs/evidence/TASK-003/prototypes/android-app/.gradle/: 17 files, written 2026-10-04 11:53:54 .. 2026-10-05 08:37:45; 5 since TASK-011 began
+  target/: 562 files, written 2026-10-04 11:52:23 .. 2026-10-05 06:20:02; 0 since TASK-011 began
+  target/ is rust-analyzer's cargo check output, and .gradle/ beside TASK-003's prototype the Java extension's cache.
+  apps/desktop/node_modules is the editor's link to /mnt/F/Nexees-toolchains/target/nexees/desktop/check/node_modules, kept since TASK-009 (CONVENTIONS.md section 4).
+  Other ignored entries: none.
+  Nothing of the Desktop build is in the checkout: it is built in /mnt/F/Nexees-toolchains/target/nexees/desktop.
+
+== 3. Cargo.lock and the Rust manifests ==
+  Changed since the task's base 53448f2: none. TASK-011 touches no Rust manifest.
+  $ cargo generate-lockfile --offline   (exit 0; in a scratch copy of the manifests, with the isolated toolchain)
+  Result: the regenerated lock is byte-identical to the checkout's Cargo.lock.
+
+== 4. Writes in the home caches since TASK-011 began ==
+  While the task was working: 20 files.
+    2026-10-05 08:37:45  ~/.gradle/caches/journal-1/file-access.bin
+    2026-10-05 08:37:45  ~/.gradle/caches/9.2.0/file-changes/last-build.bin
+    2026-10-05 08:37:45  ~/.gradle/caches/9.2.0/md-supplier/md-supplier.lock
+    2026-10-05 08:37:45  ~/.gradle/caches/9.2.0/md-rule/md-rule.lock
+    2026-10-05 09:20:46  ~/.gradle/caches/jars-9/jars-9.lock
+    2026-10-05 09:20:46  ~/.gradle/caches/8.9/fileContent/fileContent.lock
+    2026-10-05 09:20:46  ~/.gradle/caches/8.9/generated-gradle-jars/generated-gradle-jars.lock
+    2026-10-05 09:20:46  ~/.gradle/caches/8.9/fileHashes/fileHashes.lock
+    2026-10-05 09:20:46  ~/.gradle/daemon/8.9/registry.bin
+    2026-10-05 09:20:46  ~/.gradle/daemon/8.9/registry.bin.lock
+    2026-10-05 09:20:46  ~/.gradle/daemon/8.9/daemon-6446.out.log
+    2026-10-05 11:37:52  ~/.gradle/caches/9.2.0/fileContent/fileContent.lock
+    2026-10-05 11:37:52  ~/.gradle/caches/9.2.0/generated-gradle-jars/generated-gradle-jars.lock
+    2026-10-05 11:37:52  ~/.gradle/caches/modules-2/modules-2.lock
+    2026-10-05 11:37:52  ~/.gradle/caches/journal-1/journal-1.lock
+    2026-10-05 11:37:52  ~/.gradle/caches/9.2.0/fileHashes/fileHashes.lock
+    2026-10-05 11:37:52  ~/.gradle/daemon/9.2.0/registry.bin
+    2026-10-05 11:37:52  ~/.gradle/daemon/9.2.0/registry.bin.lock
+    2026-10-05 11:37:52  ~/.gradle/daemon/9.2.0/daemon-4840.out.log
+    2026-10-05 11:59:46  ~/.cargo/.global-cache   <- written by a command of the task, by mistake (below)
+    19 of them are files of the Gradle daemons of the owner's VS Code: their logs, registries, locks and cache
+    journals (section 1). No task command starts Gradle.
+    One write there was the task's own: ~/.cargo/.global-cache at 2026-10-05 11:59:46.
+    At 11:59:45 the task ran this script in a command that had not loaded the isolated toolchain (env.sh). The
+    lockfile check of section 3 was then run by the system's cargo, /usr/bin/cargo, with the owner's cargo home:
+    offline, in a scratch copy of the manifests. Cargo changed its own bookkeeping file there,
+    ~/.cargo/.global-cache, which records when its cached files were last used. No other file of ~/.cargo was
+    written and nothing was downloaded. The log of that run, which said that the regenerated lockfile differed, was
+    replaced by this one. The task's tools now refuse to run without the isolated toolchain.
+  While the session was paused: 0 files.
+  Folders of the application under the owner's home written since the task began: none. The application
+  under test ran only in private profiles in the temporary folder.
+

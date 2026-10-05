@@ -1,0 +1,69 @@
+TASK-011: tests/e2e/desktop/local_application.test.mjs against the installation in /mnt/F/Nexees-toolchains/target/nexees/desktop-install,
+run 2026-10-05T09:56:26+02:00 with node v26.10.0. The test makes its own private session: a nested KWin compositor
+drawing into memory, a D-Bus session that activates no service, a temporary HOME with its XDG folders and runtime
+folder, and no core dumps; it stops every process of that session and removes the profile before it ends.
+The real session's screen lock during this run: LockedHint=yes.
+
+$ node tests/e2e/desktop/local_application.test.mjs /mnt/F/Nexees-toolchains/target/nexees/desktop-install
+PASS  the installation carries the application icon in every size derived from the logo, and its desktop entry names it (B1)  [7 sizes; wrong: none; desktop-file-validate: exit 0 ]
+PASS  the installed Electron binary has the fuses the package definition names (SI-28, TH-03)  [RunAsNode=1 EnableCookieEncryption=0 EnableNodeOptionsEnvironmentVariable=0 EnableNodeCliInspectArguments=0 EnableEmbeddedAsarIntegrityValidation=0 OnlyLoadAppFromAsar=0 LoadBrowserProcessSpecificV8Snapshot=0 GrantFileProtocolExtraPrivileges=1 WasmTrapHandlers=1]
+PASS  the backend refuses to start without the window's token (TH-02)  [exit 1]
+PASS  no host runs before the window starts
+PASS  the window is a local application: its page is a file of the installed application, not a website (C20)  [/mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/lib/frontend/index.html]
+PASS  the workbench shows the local workspace's files  [, src, hello.txt]
+PASS  extensions stay disabled: no Extensions view and no extension host process (SA-08, SI-22)  [0 extension hosts]
+PASS  the status bar shows the host as attached, where the user sees it  [$(plug) Nexees host, Attached to the Nexees host on desktop-5eb3546db750202f5e6ea281cd097955]
+PASS  exactly one host process runs, separate from the window  [1 host(s)]
+PASS  the host runs at the user's privilege, in its own process group
+PASS  the host keeps nothing of the window that started it: it holds only the null device, its lock, its store and its channel (RC-04)  [8 descriptors]
+PASS  the channel folder and the socket are private to the user (0700, 0600)
+PASS  nexees-host status finds the running host
+PASS  the idle host uses no processor time and holds no network socket (RC-08)  [0 ticks in 5 s; 0 network sockets]
+PASS  nothing of the application listens beyond this machine: its backend and this test's DevTools port, on the loopback interface  [tcp 0100007F:93E9>00000000:0000 tcp 0100007F:2476>00000000:0000]
+PASS  the application connects to no other machine, and has fetched nothing  [4 connections, 0 beyond the loopback interface; 0 fetched dictionaries]
+PASS  the application keeps its settings in its own folder, not in one shared with other Electron or Theia applications  [/tmp/nexees-e2e-W4dDkB/config/Nexees]
+PASS  told to run as Node, to load a script through NODE_OPTIONS and to open an inspector, it is still the application and does none of it (TH-03)
+PASS  the page runs in a sandboxed renderer, without Node (TH-04)  [1 renderer(s) under seccomp; 0 Node globals in the page]
+PASS  no process the backend starts inherits the window's token: not its terminals, its file watcher or the host (SI-28)  [electron, bash and the host]
+PASS  the window is dark while it loads, before any theme is applied  [first painted #1E1E1E]
+PASS  the window wears the Nexees dark theme, and is dark to the desktop too (R18)  [monaco-enable-motion underline-links linux vs-dark nexees-dark theia-dark]
+PASS  every colour the theme names is one Theia knows and applies  [235 colours; not applied: none]
+PASS  the surfaces and text a user sees have the colours of the shared design tokens (R19)  [page, side bar, status bar, status bar text, tree text]
+PASS  the compact sizes are the tokens': rows, tabs, status bar and activity bar  [status bar height 22, status bar text 12px, tree row height 22, tree text 13px, activity bar width 48, tab height 35px, a tab in the window 35]
+PASS  the theme carries the syntax colours of the tokens  [14 rules]
+PASS  every icon of the icon mapping exists in the window's icon set  [plug, sync, warning, layout-sidebar-left, layout-sidebar-left-off, layout-sidebar-right, layout-sidebar-right-off, hubot, law, checklist, comment-discussion, output]
+PASS  the About dialog shows the logo: a file of the installation, the icon derived from the bound source (B1)  [/mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/resources/branding/nexees-128.png]
+PASS  the About dialog names Nexees, its version and its foundation, and links to nothing  [Nexees Version 0.0.0 Built on Eclipse Theia 1.76.0]
+PASS  buttons have the corner radius of the tokens  [4px]
+PASS  the window has no system frame but one thin title row: logo and name, menu, title, sidebar toggles and window controls, in that order (R18)  [custom title bar, 25 px high: nexees-title-brand, theia:menubar, theia-custom-title, nexees-sidebar-toggles, window-controls; menu File Edit Selection View Go Terminal Help; title "workspace - Nexees"]
+PASS  the title row moves the window by its free part, its logo and its title, and leaves the toggles and the window controls to the mouse  [drag drag drag no-drag no-drag]
+PASS  the title row shows the logo, the icon derived from the bound source as a file of the installation, beside the application's name (B1)  [Nexees; 16x16 px of /mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/resources/branding/nexees-128.png]
+PASS  both sidebar toggles stand in the title row immediately before the window controls, all in the widths of the tokens  [toggles at 929-953, 953-977; controls at 977-1007, 1007-1037, 1037-1067]
+PASS  the regions are arranged as approved: the activity bar and the left sidebar over the whole height, the editor and the right sidebar over the bottom panel, the status bar below  [activity 0,25 48x620; left 0,25 203x620; editor 203,25 510x453; right 712,25 354x453; bottom 203,478 864x167; status bar 0,645 1067x22]
+PASS  a new profile shows the panels in the shares of the tokens: the left sidebar of the window's width, the right one of the width beside it, the bottom panel of the height  [left sidebar 202.7 px for 202.7; right sidebar 354.2 px for 354.4; bottom panel 167.4 px for 167.4]
+PASS  the bottom panel of a new profile shows the terminal  [shell-tab-terminal-0]
+PASS  the right sidebar shows its five areas as one row of text tabs across its top, the first selected, and no bar of icons at the window's edge  [AI Agent (selected), LCL, Tasks, Chat, Logs]
+PASS  each area says that it is not available, and holds no control that could be taken for a working one  [AI Agent, LCL, Tasks, Chat, Logs]
+PASS  the right toggle hides the right sidebar whole, the editor taking its place, and shows it again in its width and with its area  [hidden: Show the right sidebar (codicon-layout-sidebar-right-off), editor to 1067 of 1067; shown: 354 px with Logs]
+PASS  the left toggle hides the left sidebar, leaving the activity bar, and shows it again in its width  [hidden: Show the left sidebar, 49 px left; shown: 203 px]
+PASS  a toggle follows its sidebar: hidden and shown from the activity bar, the left sidebar is shown so by its toggle  [Show the left sidebar, then Hide the left sidebar]
+PASS  the window controls work: maximised, the window fills the screen and offers to restore it; restored, it has its size again  [1067x667, maximised 1600x1000, restored 1067x667]
+PASS  in a window too narrow for the whole title row the name and the menu give way: the toggles and the window controls stay in view, in one thin row  [at 420 px: nexees-title-brand 0-62, theia:menubar 62-270, theia-custom-title 270-282, nexees-sidebar-toggles 282-330, window-controls 330-420]
+PASS  the close control of the title row closes the window
+PASS  closing the window leaves the host running for its grace period
+PASS  without the opt-in, the host stops after its last window closed (RC-04)
+PASS  a reopened window comes back as it was closed: the title row, the right sidebar hidden and its toggle saying so; shown again, it has its areas and its width  [reopened: Show the right sidebar; shown again: AI Agent, LCL, Tasks, Chat, Logs at 354.0 px]
+PASS  the user can choose another colour theme and return to Nexees Dark, and the choice is kept in the user's settings  [workbench.colorTheme was light, then undefined]
+PASS  three reopened windows found one and the same host (RC-T14)  [405556]
+PASS  the kept host outlives its windows (RC-04)
+PASS  each reopened window wears the Nexees theme again, with no choice of the user behind it  [true, true, true]
+PASS  start at login is off by default
+PASS  enabling it writes one user-level entry that runs the installed host to keep running (RC-05)
+PASS  systemd's generator turns the entry into one unit that runs the host in the graphical session and stops it with the session (RC-05)  [1 unit(s)]
+PASS  disabling it removes exactly that entry (RC-24)
+PASS  outside a login session, without a runtime folder, the host reports unsupported and starts nothing (RC-05)  [exit codes 4, 4, 4]
+PASS  a host that cannot run leaves the window unavailable, with the reason on pointing at the entry, and nothing else starts (RC-06, RC-T03)  [The Nexees host is unavailable: this session gives the host no channel folder private to you; the host runs only inside a login session. Click to try again.]
+PASS  once the cause is gone, clicking the entry attaches the window to a host (RC-06)
+ALL CHECKS PASSED
+dbus-run-session: dbus-daemon terminated by signal 9
+exit code: 0

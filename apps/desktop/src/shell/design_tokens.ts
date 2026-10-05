@@ -2,7 +2,10 @@
 // assets/theme/icon_mapping.json, the one source both clients share (R19). Do not edit this
 // file: change the source and run the script again.
 
-/** The Nexees design tokens: colours as #rrggbb, every other value in CSS pixels. */
+/**
+ * The Nexees design tokens: colours as #rrggbb, shares of a whole in percent in the groups
+ * whose names end in `_percent`, and every other value in CSS pixels.
+ */
 export const TOKENS = {
     color: {
         surface: {
@@ -56,6 +59,15 @@ export const TOKENS = {
         tab_height: 35,
         status_bar_height: 22,
         activity_bar_width: 48,
+        title_bar_height: 25,
+        title_logo_size: 16,
+        sidebar_toggle_width: 24,
+        window_control_width: 30,
+    },
+    desktop_percent: {
+        left_sidebar_width: 19,
+        right_sidebar_width: 41,
+        bottom_panel_height: 27,
     },
 } as const;
 
@@ -64,4 +76,13 @@ export const ICONS = {
     host_attached: 'plug',
     host_attaching: 'sync',
     host_unavailable: 'warning',
+    sidebar_left_shown: 'layout-sidebar-left',
+    sidebar_left_hidden: 'layout-sidebar-left-off',
+    sidebar_right_shown: 'layout-sidebar-right',
+    sidebar_right_hidden: 'layout-sidebar-right-off',
+    area_agent: 'hubot',
+    area_lcl: 'law',
+    area_tasks: 'checklist',
+    area_chat: 'comment-discussion',
+    area_logs: 'output',
 } as const;

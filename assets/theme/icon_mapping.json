@@ -3,6 +3,15 @@
   "icons": {
     "host_attached": "plug",
     "host_attaching": "sync",
-    "host_unavailable": "warning"
+    "host_unavailable": "warning",
+    "sidebar_left_shown": "layout-sidebar-left",
+    "sidebar_left_hidden": "layout-sidebar-left-off",
+    "sidebar_right_shown": "layout-sidebar-right",
+    "sidebar_right_hidden": "layout-sidebar-right-off",
+    "area_agent": "hubot",
+    "area_lcl": "law",
+    "area_tasks": "checklist",
+    "area_chat": "comment-discussion",
+    "area_logs": "output"
   }
 }

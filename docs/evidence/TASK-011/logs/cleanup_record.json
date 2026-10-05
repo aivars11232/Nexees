@@ -1,0 +1,109 @@
+{
+  "schema": "nexees-cleanup-record",
+  "version": 1,
+  "task": "TASK-011",
+  "applied": true,
+  "removed": [],
+  "refused": [],
+  "absent": [],
+  "kept_directories": [],
+  "preserved_untracked": [
+    {
+      "path": "apps/desktop/src/shell/panel_controls.ts",
+      "sha256": "7f65981156b2097a04dda95927748710ac2accd95c4735fc6b830d9bb7ef97c4"
+    },
+    {
+      "path": "apps/desktop/src/shell/panel_layout.ts",
+      "sha256": "6273a87687f3de4a548abdb51cd85f6681a4e23269bc6b74f676da2bbc49e32c"
+    },
+    {
+      "path": "apps/desktop/src/shell/right_sidebar.ts",
+      "sha256": "05120fd2d94e143941228ffab7e6b63ac06acb47079480f3106d23079ab966b7"
+    },
+    {
+      "path": "apps/desktop/src/shell/title_bar.ts",
+      "sha256": "79a802e1f5a20399e059f505d68db7a9cacf21f1b79a5374d21a0c1376b68c82"
+    },
+    {
+      "path": "docs/evidence/TASK-011/TASK-011_EVIDENCE.md",
+      "sha256": "2e6693562d94a7ca270c3565ebcefc5e1419acef40674e7c462bf7d669db2f13"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/approved_layout_measurements.txt",
+      "sha256": "09ce752478444d80774d5daa2fe0c3e2124eaf4412af96117442192211f64fbc"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/desktop_build.txt",
+      "sha256": "d810a555a5d218bff67f7a509f1b23dcf9c3630e9a3de041f0440e077b1cc68e"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/dispatch_task_011.record.json",
+      "sha256": "28ff28fab4be2d0ab0c52f91508060ae5b885fce01c7b2d6234e448dd1ed57ca"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/e2e_local_application.txt",
+      "sha256": "a32d20132369c1605a18173e6d6553ea35d3a465d87a74479c67e8cee55b1d00"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/ide_activity.txt",
+      "sha256": "91f204928a05b2c49a309c2521be2f3975a4174ced1527e5aed06f32394c8dcd"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/live_observations.txt",
+      "sha256": "11009dd1e6de8b1f9ef876fe869c9552ec6294e9bd7bd31405d94d79811a73da"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/native_language_suite.json",
+      "sha256": "ed46c2e2f94b17ed9da7cd4f63f909739df9b8a24e8c842ba4b6751d9b152ae3"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/negative_tests.txt",
+      "sha256": "89e053353ddde685471398357f5c070f4c2cb18ec45ee59ba74e5c172d296020"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/preflight.txt",
+      "sha256": "7767dda29a3269c571f5998378ae91000ecdfaf7d009141f63372cfbe34713bf"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/preflight_resume.txt",
+      "sha256": "42121164b5b2d75b8b104c60f9e4b98ae08438c2558c9bab9beb09593d7d18b0"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/regression.txt",
+      "sha256": "11cf43846440652eedf691faf36715cdeb7889ef98c6ed1471bdede3ce8a5adf"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/required_reading.txt",
+      "sha256": "b17661c4d492f7374b84daa766219a169b3913546f77ed9d8d6b97638bb45f70"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/run_checks.txt",
+      "sha256": "f98e8abfa949af6ffc42ddd0480f28b2c8425fe5c17d08b92c6c10463d8aa797"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/security_scan.txt",
+      "sha256": "7ab2993ec47c51efca90b0aa7a94e03c7afbfc73b0dd5a65b26210a308b0b5d0"
+    },
+    {
+      "path": "docs/evidence/TASK-011/logs/seeded_defects.txt",
+      "sha256": "0377111f008bcafde07867d21a33301e2abf81a62361bf245244ca09388d74ac"
+    },
+    {
+      "path": "docs/evidence/TASK-011/measure_approved_layout.py",
+      "sha256": "a4ea84a78d60c8d48c59022866f31c2000754189ed0c1a2ed93c68ec3ad8b54e"
+    },
+    {
+      "path": "docs/evidence/TASK-011/screens/01_approved_layout.png",
+      "sha256": "b5538e7dba0f8893d4e5c63656320391ab7045fe70a81b6536c1a4eeca4887db"
+    },
+    {
+      "path": "docs/evidence/TASK-011/screens/02_sidebars_hidden.png",
+      "sha256": "a2028a6dd41d6d9ba1ad8f54948380de5cd78020263a0b5147ccee4493264c85"
+    },
+    {
+      "path": "docs/evidence/TASK-011/screens/03_light_theme.png",
+      "sha256": "29fb2fa34abc9a3d5a10260a2e6b3ab71244904763fbf9f3b66001d362121724"
+    }
+  ],
+  "ignored_left_in_place": 580
+}

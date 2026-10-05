@@ -1,0 +1,96 @@
+TASK-011 receipt corroboration under CA-05, by the primary session's local tools.
+Run 2026-10-05T12:49:21+02:00. Agent self-corroboration: not an independent human or model review.
+
+1. Active pack
+OK    every pack file matches MANIFEST.json  [201 files]
+OK    MANIFEST.json hash  [8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4]
+OK    content identity recomputed equals the receipt and the binding  [bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1]
+
+2. Checkout, task and predecessors
+OK    observed root is the worktree root  [/mnt/F/Nexees/]
+OK    origin fetch and push identify the bound repository  [https://github.com/aivars11232/Nexees.git]
+OK    branch and HEAD  [main at 53448f2, the task's base and the accepted TASK-010, equal to origin/main: nothing was committed while the task worked]
+OK    nothing staged
+OK    the dispatch ran task 11 only and the receipt names TASK-011  [task.dispatch task.task_011]
+OK    predecessor TASK-001 accepted and its evidence unchanged since 284f97a  [record bbda5d83]
+OK    predecessor TASK-002 accepted and its evidence unchanged since d1a673f  [record c5fadc83]
+OK    predecessor TASK-003 accepted and its evidence unchanged since bccc9b1  [record 5e4a83c1]
+OK    predecessor TASK-004 accepted and its evidence unchanged since 1c85864  [record 2b7406b8]
+OK    predecessor TASK-005 accepted and its evidence unchanged since e83dcd7  [record 9554641f]
+OK    predecessor TASK-006 accepted and its evidence unchanged since fc42a93  [record b10ab5d9]
+OK    predecessor TASK-007 accepted and its evidence unchanged since 1c85864  [record 3e0ce66c]
+OK    predecessor TASK-008 accepted and its evidence unchanged since 2bf47a2  [record a8c8b44d]
+OK    predecessor TASK-009 accepted and its evidence unchanged since bba49c3  [record d65fa84a]
+OK    predecessor TASK-010 accepted and its evidence unchanged since 53448f2  [record 94da16cc]
+OK    completed prefix is TASK-001 to TASK-010
+OK    the charter is unchanged since TASK-001
+OK    no security or dependency record, lockfile or Rust source changed, and the user manual is the one manual source the task changed
+OK    the files the task added, changed and removed since its base are exactly those the evidence record lists in section 6  [4 new, 16 changed, 3 removed placeholders; unlisted: []]
+
+3. Evidence files
+    2e6693562d94a7ca270c3565ebcefc5e1419acef40674e7c462bf7d669db2f13  docs/evidence/TASK-011/TASK-011_EVIDENCE.md  [in snapshot, hash matches]
+    09ce752478444d80774d5daa2fe0c3e2124eaf4412af96117442192211f64fbc  docs/evidence/TASK-011/logs/approved_layout_measurements.txt  [in snapshot, hash matches]
+    4f5f9fc961bca61a8b36fbaf7caad4970ad7c9c22eb90e017321e033acc2c35e  docs/evidence/TASK-011/logs/cleanup_record.json  [in snapshot, hash matches]
+    d810a555a5d218bff67f7a509f1b23dcf9c3630e9a3de041f0440e077b1cc68e  docs/evidence/TASK-011/logs/desktop_build.txt  [in snapshot, hash matches]
+    28ff28fab4be2d0ab0c52f91508060ae5b885fce01c7b2d6234e448dd1ed57ca  docs/evidence/TASK-011/logs/dispatch_task_011.record.json  [in snapshot, hash matches]
+    a32d20132369c1605a18173e6d6553ea35d3a465d87a74479c67e8cee55b1d00  docs/evidence/TASK-011/logs/e2e_local_application.txt  [in snapshot, hash matches]
+    91f204928a05b2c49a309c2521be2f3975a4174ced1527e5aed06f32394c8dcd  docs/evidence/TASK-011/logs/ide_activity.txt  [in snapshot, hash matches]
+    11009dd1e6de8b1f9ef876fe869c9552ec6294e9bd7bd31405d94d79811a73da  docs/evidence/TASK-011/logs/live_observations.txt  [in snapshot, hash matches]
+    ed46c2e2f94b17ed9da7cd4f63f909739df9b8a24e8c842ba4b6751d9b152ae3  docs/evidence/TASK-011/logs/native_language_suite.json  [in snapshot, hash matches]
+    89e053353ddde685471398357f5c070f4c2cb18ec45ee59ba74e5c172d296020  docs/evidence/TASK-011/logs/negative_tests.txt  [in snapshot, hash matches]
+    7767dda29a3269c571f5998378ae91000ecdfaf7d009141f63372cfbe34713bf  docs/evidence/TASK-011/logs/preflight.txt  [in snapshot, hash matches]
+    42121164b5b2d75b8b104c60f9e4b98ae08438c2558c9bab9beb09593d7d18b0  docs/evidence/TASK-011/logs/preflight_resume.txt  [in snapshot, hash matches]
+    11cf43846440652eedf691faf36715cdeb7889ef98c6ed1471bdede3ce8a5adf  docs/evidence/TASK-011/logs/regression.txt  [in snapshot, hash matches]
+    b17661c4d492f7374b84daa766219a169b3913546f77ed9d8d6b97638bb45f70  docs/evidence/TASK-011/logs/required_reading.txt  [in snapshot, hash matches]
+    f98e8abfa949af6ffc42ddd0480f28b2c8425fe5c17d08b92c6c10463d8aa797  docs/evidence/TASK-011/logs/run_checks.txt  [in snapshot, hash matches]
+    7ab2993ec47c51efca90b0aa7a94e03c7afbfc73b0dd5a65b26210a308b0b5d0  docs/evidence/TASK-011/logs/security_scan.txt  [in snapshot, hash matches]
+    0377111f008bcafde07867d21a33301e2abf81a62361bf245244ca09388d74ac  docs/evidence/TASK-011/logs/seeded_defects.txt  [in snapshot, hash matches]
+    a4ea84a78d60c8d48c59022866f31c2000754189ed0c1a2ed93c68ec3ad8b54e  docs/evidence/TASK-011/measure_approved_layout.py  [in snapshot, hash matches]
+    b5538e7dba0f8893d4e5c63656320391ab7045fe70a81b6536c1a4eeca4887db  docs/evidence/TASK-011/screens/01_approved_layout.png  [in snapshot, hash matches]
+    a2028a6dd41d6d9ba1ad8f54948380de5cd78020263a0b5147ccee4493264c85  docs/evidence/TASK-011/screens/02_sidebars_hidden.png  [in snapshot, hash matches]
+    29fb2fa34abc9a3d5a10260a2e6b3ab71244904763fbf9f3b66001d362121724  docs/evidence/TASK-011/screens/03_light_theme.png  [in snapshot, hash matches]
+    dcef624b172a6886c9a696e0320604faad1fe04e7c4700e021f0390fefcf573d  docs/evidence/TASK-011/receipt/final_verification.txt  [receipt file, outside the snapshot by design]
+    34596842d2dc58d840c5a3a56b127c1d3e27db8480b24eb17f68dd1f6b7764fc  docs/evidence/TASK-011/receipt/snapshot_files.sha256  [receipt file, outside the snapshot by design]
+OK    every evidence file is present with the hash in the snapshot listing, and every file of the folder is listed  [23 files]
+OK    the only ignored files are the owner's IDE output and the editor's link, so a commit carries every evidence file  [580 ignored: target/ 562, docs/evidence/TASK-003/prototypes/android-app/.gradle/ 17, apps/desktop/node_modules 1]
+
+4. Logs, checks and decisions
+OK    run_checks.txt: all nine stages pass with 93 domain, 30 protocol, 29 state, 12 platform, 9 host and 58 tooling tests; the three core crates build for both Android targets
+OK    negative_tests.txt: 2 controls pass and 21 seeded defects are caught, the 7 test-stage cases by named failing tests  [7 test, 6 lint, 3 layout, 2 format, 3 docs]
+OK    seeded_defects.txt: in both runs exactly the end-to-end checks of the seeded defects fail, and the restored installation passes again  [26 failing checks over the two runs]
+OK    regression.txt: 25 commands exit 0; the TASK-001 to TASK-004 cross-checks, every crate's contract tests and the tooling tests pass
+OK    desktop_build.txt: the token and logo checks, the TypeScript check, the offline build from scratch and the installation exit 0; the installed application asks for the custom title bar in its page and its main process, and its bundle holds the four layout modules  [792 packages, 3 bundles with 0 errors, native modules rebuilt, the host built]
+OK    e2e_local_application.txt: 59 of 59 checks of the installed application pass
+OK    approved_layout_measurements.txt: the seven layout tokens measured on the approved picture are each within their tolerance, they are the values the token file holds, and the measurement repeated now prints the same lines  [title_bar_height 25 for 25.25, activity_bar_width 48 for 48.33, window_control_width 30 for 30.30, sidebar_toggle_width 24 for 23.44, left_sidebar_width 19 for 18.88, right_sidebar_width 41 for 40.93, bottom_panel_height 27 for 27.03]
+OK    live_observations.txt: the observations of the three debugging sessions, with the title row, with the system's frame and on a profile left by a stand-in for an earlier build, are all as expected, and every session ended with exit 0  [15, 3, 4 observations]
+OK    the logo script's own check finds the committed logo files in order, compared with the owner's file
+OK    the committed Desktop copy of the design tokens is what the sources give
+OK    no file a commit would hold, outside the evidence, carries a trace of the temporary measuring lines  [649 files searched]
+OK    native_language_suite.json: 51 of 51 language cases pass with lcl 1.0.0, the engine in use now
+OK    security_scan.txt: no finding
+OK    ide_activity.txt: no Rust manifest changed and the lockfile equals an offline resolution; the home-cache writes are listed, apart by whether the task was working, every one attributed, and the task's own write there is told as its own
+OK    the evidence record tells every write that a command of the task made in the owner's home caches by mistake  [~/.cargo/.global-cache at 2026-10-05 11:59:46]
+OK    preflight.txt: the task starts at 53448f2 with an intact pack, a clean checkout, the engine lcl 1.0.0 and unchanged canonical packages
+OK    required_reading.txt: the task's required documents were read again, and every reused read is byte-identical
+OK    final_verification.txt: every exit 0 and every inspection as expected, the installed application's checks included
+OK    the receipt's check IDs equal the task's, each accounted for in the evidence record  [17 IDs]
+OK    the reviewed policy IDs equal the catalog  [135 IDs]
+OK    the renderer decision equals the owner's answer recorded by TASK-003  [electron_permitted]
+OK    the task is assigned no remote requirement and no scenario; the eight remote observations stay unverified
+
+5. Closure record
+OK    the closure record passes the runner's own validator (schema nexees-task-closure version 1)  [no problem]
+OK    the cleanup was applied with an empty manifest, removed and refused nothing, and agrees with the closure  [24 untracked files and 580 ignored files left in place]
+OK    the cleanup record lists every untracked file except itself and the receipt, each with its hash in the snapshot listing  [24 files]
+OK    the final verification ran after the cleanup on the receipt's snapshot, unchanged before and after it  [34596842d2dc58d840c5a3a56b127c1d3e27db8480b24eb17f68dd1f6b7764fc]
+OK    manual impact updated: the user manual describes the title row, the regions, the toggles and the five areas, as the closure says  [docs/manuals/NEXEES_USER_MANUAL.md]
+
+6. Snapshot
+OK    the snapshot recomputed now equals the receipt's three snapshot values  [34596842d2dc58d840c5a3a56b127c1d3e27db8480b24eb17f68dd1f6b7764fc, 649 files]
+
+7. Before corroboration
+    The receipt with evidence_verified_by_host false and the blocker UNVERIFIED_RECEIPT was refused (exit 1, outcome
+    rejected) with exactly two diagnostics: validate.host_verified and validate.no_blocker. That record was not kept;
+    the evaluation is reproducible from receipt.json with those two values restored.
+
+Result: ALL CORROBORATED (52 of 52 observations)

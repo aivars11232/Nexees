@@ -13,7 +13,9 @@
       "config": {
         "applicationName": "Nexees",
         "defaultTheme": "nexees-dark",
-        "preferences": {},
+        "preferences": {
+          "window.titleBarStyle": "custom"
+        },
         "electron": {
           "windowOptions": {
             "webPreferences": {

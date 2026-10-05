@@ -1,0 +1,62 @@
+TASK-011: defects seeded against the end-to-end checks of the approved layout, 2026-10-05T11:34:13+02:00.
+Each run seeds several independent defects and must fail exactly the checks named for them, and no other: a check
+that still passed would not be checking what it says, and another check failing would mean a defect reaches
+further than understood. The unseeded run is logs/e2e_local_application.txt, where all 59 checks pass.
+
+== Run 1: the installation is broken ==
+  seeded: the Nexees arrangement of the regions not used, so that the window has Theia's own: the bottom panel under the editor alone
+  seeded: a gap of twenty pixels between the sidebar toggles and the window controls
+  seeded: the logo and name of the title row no longer a part that moves the window
+  seeded: the logo file of the application replaced by another picture of the logo (the 64-pixel icon under the 128-pixel name)
+  seeded: the right toggle given the same icon for a hidden sidebar as for a shown one
+  seeded: the Logs area named Log
+  seeded: every area saying that it is coming soon instead of that it is not available
+  seeded: the first layout looking for the terminal in the editor area, so that the bottom panel shows the Problems view
+  seeded: the maximise control doing nothing
+  seeded: the close control doing nothing
+  exit code 1; 44 checks passed, 15 failed
+  FAIL  the About dialog shows the logo: a file of the installation, the icon derived from the bound source (B1)  [/mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/resources/branding/nexees-128.png]
+  FAIL  the window has no system frame but one thin title row: logo and name, menu, title, sidebar toggles and window controls, in that order (R18)  [custom title bar, 25 px high: nexees-title-brand, theia:menubar, theia-custom-title, nexees-sidebar-toggles, window-controls; menu File Edit Selection View Go Terminal Help; title "workspace - Nexees"]
+  FAIL  the title row moves the window by its free part, its logo and its title, and leaves the toggles and the window controls to the mouse  [drag no-drag drag no-drag no-drag]
+  FAIL  the title row shows the logo, the icon derived from the bound source as a file of the installation, beside the application's name (B1)  [Nexees; 16x16 px of /mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/resources/branding/nexees-128.png]
+  FAIL  both sidebar toggles stand in the title row immediately before the window controls, all in the widths of the tokens  [toggles at 909-933, 933-957; controls at 977-1007, 1007-1037, 1037-1067]
+  FAIL  the regions are arranged as approved: the activity bar and the left sidebar over the whole height, the editor and the right sidebar over the bottom panel, the status bar below  [activity 0,25 48x620; left 0,25 203x620; editor 203,25 427x453; right 630,25 437x620; bottom 203,478 427x167; status bar 0,645 1067x22]
+  FAIL  a new profile shows the panels in the shares of the tokens: the left sidebar of the window's width, the right one of the width beside it, the bottom panel of the height  [left sidebar 202.7 px for 202.7; right sidebar 437.5 px for 354.4; bottom panel 167.4 px for 167.4]
+  FAIL  the bottom panel of a new profile shows the terminal  [shell-tab-problems]
+  FAIL  the right sidebar shows its five areas as one row of text tabs across its top, the first selected, and no bar of icons at the window's edge  [AI Agent (selected), LCL, Tasks, Chat, Log]
+  FAIL  each area says that it is not available, and holds no control that could be taken for a working one  [AI Agent: The AI Agent area is coming soon., 0 controls, LCL: The LCL area is coming soon., 0 controls, Tasks: The Tasks area is coming soon., 0 controls, Chat: The Chat area is coming soon., 0 controls, Logs: no tab]
+  FAIL  the right toggle hides the right sidebar whole, the editor taking its place, and shows it again in its width and with its area  [hidden: Show the right sidebar (codicon-layout-sidebar-right), editor to 1067 of 1067; shown: 437 px with Chat]
+  FAIL  the window controls work: maximised, the window fills the screen and offers to restore it; restored, it has its size again  [1067x667, maximised undefinedxundefined, restored 1067x667]
+  FAIL  in a window too narrow for the whole title row the name and the menu give way: the toggles and the window controls stay in view, in one thin row  [at 420 px: nexees-title-brand 0-58, theia:menubar 58-250, theia-custom-title 250-262, nexees-sidebar-toggles 262-310, window-controls 330-420]
+  FAIL  the close control of the title row closes the window  []
+  FAIL  a reopened window comes back as it was closed: the title row, the right sidebar hidden and its toggle saying so; shown again, it has its areas and its width  [reopened: Show the right sidebar; shown again: AI Agent, LCL, Tasks, Chat, Log at 437.0 px]
+  expected to fail: 15; failed as expected: 15; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+== Run 2: the test expects another visual system than the application has ==
+  seeded: a title row height the application does not have (desktop.title_bar_height 28 instead of 25)
+  seeded: a logo size the application does not have (desktop.title_logo_size 18 instead of 16)
+  seeded: a toggle width the application does not have (desktop.sidebar_toggle_width 28 instead of 24)
+  seeded: a window control width the application does not have (desktop.window_control_width 40 instead of 30)
+  seeded: an activity bar width the application does not have (desktop.activity_bar_width 44 instead of 48)
+  seeded: a tab height the application does not have (desktop.tab_height 33 instead of 35)
+  seeded: a share of the bottom panel the application does not have (desktop_percent.bottom_panel_height 35 instead of 27)
+  seeded: an icon mapping with another icon for a hidden left sidebar (layout-sidebar-right-off)
+  exit code 1; 48 checks passed, 11 failed
+  FAIL  the compact sizes are the tokens': rows, tabs, status bar and activity bar  [activity bar width 48, not 44; tab height 35px, not 33px; a tab in the window 35, not 33]
+  FAIL  the window has no system frame but one thin title row: logo and name, menu, title, sidebar toggles and window controls, in that order (R18)  [custom title bar, 25 px high: nexees-title-brand, theia:menubar, theia-custom-title, nexees-sidebar-toggles, window-controls; menu File Edit Selection View Go Terminal Help; title "workspace - Nexees"]
+  FAIL  the title row shows the logo, the icon derived from the bound source as a file of the installation, beside the application's name (B1)  [Nexees; 16x16 px of /mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/resources/branding/nexees-128.png]
+  FAIL  both sidebar toggles stand in the title row immediately before the window controls, all in the widths of the tokens  [toggles at 929-953, 953-977; controls at 977-1007, 1007-1037, 1037-1067]
+  FAIL  the regions are arranged as approved: the activity bar and the left sidebar over the whole height, the editor and the right sidebar over the bottom panel, the status bar below  [activity 0,25 48x620; left 0,25 203x620; editor 203,25 510x453; right 712,25 354x453; bottom 203,478 864x167; status bar 0,645 1067x22]
+  FAIL  a new profile shows the panels in the shares of the tokens: the left sidebar of the window's width, the right one of the width beside it, the bottom panel of the height  [left sidebar 202.7 px for 202.7; right sidebar 354.2 px for 354.4; bottom panel 167.4 px for 217.0]
+  FAIL  the right sidebar shows its five areas as one row of text tabs across its top, the first selected, and no bar of icons at the window's edge  [AI Agent (selected), LCL, Tasks, Chat, Logs]
+  FAIL  the left toggle hides the left sidebar, leaving the activity bar, and shows it again in its width  [hidden: Show the left sidebar, 49 px left; shown: 203 px]
+  FAIL  a toggle follows its sidebar: hidden and shown from the activity bar, the left sidebar is shown so by its toggle  [Show the left sidebar, then Hide the left sidebar]
+  FAIL  in a window too narrow for the whole title row the name and the menu give way: the toggles and the window controls stay in view, in one thin row  [at 420 px: nexees-title-brand 0-62, theia:menubar 62-270, theia-custom-title 270-282, nexees-sidebar-toggles 282-330, window-controls 330-420]
+  FAIL  a reopened window comes back as it was closed: the title row, the right sidebar hidden and its toggle saying so; shown again, it has its areas and its width  [reopened: Show the right sidebar; shown again: AI Agent, LCL, Tasks, Chat, Logs at 354.0 px]
+  expected to fail: 11; failed as expected: 11; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+After the runs the installation was installed again from the build folder, and the repository's test passes on it: exit code 0, 59 checks passed.
+
+ALL SEEDED DEFECTS CAUGHT

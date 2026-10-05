@@ -1,0 +1,26 @@
+TASK-011: the approved picture measured again and compared with the layout's design tokens, run 2026-10-05T09:57:29+02:00.
+docs/evidence/TASK-011/measure_approved_layout.py reads assets/design/desktop/approved-compact-layout.png and
+assets/theme/design_tokens.json; it writes nothing.
+
+$ sha256sum assets/design/desktop/approved-compact-layout.png assets/theme/design_tokens.json
+2310a6b99b11a8e65c56c3f1f002c4030cc9e87202718da1a7ed726f8103e9db  assets/design/desktop/approved-compact-layout.png
+535c371fb5ab11a4adc6d00758bb5a1df42259fbdb49f5c6100ef584fb184890  assets/theme/design_tokens.json
+exit code: 0
+
+$ python3 -B docs/evidence/TASK-011/measure_approved_layout.py
+The approved layout, assets/design/desktop/approved-compact-layout.png: 1536 x 1024 pixels.
+Rows: the window begins at 117.0 and ends at 907.5; its title row ends at 152.0, the bottom panel begins at 681.0, the status bar at 877.0.
+Columns: the activity bar ends at 67.0, the left sidebar at 290.0; the right sidebar begins at 1026.0.
+Scale: the status bar is 30.5 pixels of the picture for 22 of the window: 1.386 to 1.
+Title row, drawn stretches: the two toggles within (1334, 1398); the window controls (1418, 1430), (1460, 1472), (1502, 1514).
+
+OK    desktop.title_bar_height = 25; measured 25.25 (the title row with its border, to the scale); difference 0.25, tolerance 1.5
+OK    desktop.activity_bar_width = 48; measured 48.33 (the activity bar, to the scale); difference 0.33, tolerance 1.5
+OK    desktop.window_control_width = 30; measured 30.30 (the distance from one window control to the next, to the scale); difference 0.30, tolerance 1.5
+OK    desktop.sidebar_toggle_width = 24; measured 23.44 (half the frame that holds the two toggles, to the scale); difference 0.56, tolerance 1.5
+OK    desktop_percent.left_sidebar_width = 19; measured 18.88 (the activity bar and the left sidebar, of the window's width); difference 0.12, tolerance 1.0
+OK    desktop_percent.right_sidebar_width = 41; measured 40.93 (the right sidebar, of the width beside the left sidebar); difference 0.07, tolerance 1.0
+OK    desktop_percent.bottom_panel_height = 27; measured 27.03 (the bottom panel, of the height between the title row and the status bar); difference 0.03, tolerance 1.0
+
+EVERY TOKEN IS WITHIN ITS TOLERANCE
+exit code: 0

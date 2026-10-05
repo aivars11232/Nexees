@@ -61,11 +61,12 @@ Nexees/
 │       │   │   ├── activity_bar.source
 │       │   │   ├── design_tokens.ts
 │       │   │   ├── main_window.ts
-│       │   │   ├── panel_controls.source
-│       │   │   ├── panel_layout.source
+│       │   │   ├── panel_controls.ts
+│       │   │   ├── panel_layout.ts
+│       │   │   ├── right_sidebar.ts
 │       │   │   ├── status_bar.source
 │       │   │   ├── theme.ts
-│       │   │   └── title_bar.source
+│       │   │   └── title_bar.ts
 │       │   ├── workspaces/
 │       │   │   ├── editor_tabs.source
 │       │   │   ├── file_tree.source
@@ -550,24 +551,54 @@ Nexees/
 │   │   │   │   ├── receipt.json
 │   │   │   │   └── snapshot_files.sha256
 │   │   │   └── TASK-009_EVIDENCE.md
-│   │   └── TASK-010/
+│   │   ├── TASK-010/
+│   │   │   ├── logs/
+│   │   │   │   ├── cleanup_record.json
+│   │   │   │   ├── desktop_build.txt
+│   │   │   │   ├── dispatch_task_010.record.json
+│   │   │   │   ├── dispatch_task_010_resume.record.json
+│   │   │   │   ├── e2e_local_application.txt
+│   │   │   │   ├── ide_activity.txt
+│   │   │   │   ├── logo_import.txt
+│   │   │   │   ├── native_language_suite.json
+│   │   │   │   ├── native_language_suite_resume.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── preflight.txt
+│   │   │   │   ├── preflight_resume.txt
+│   │   │   │   ├── regression.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── run_checks.txt
+│   │   │   │   ├── screen_lock_observation.txt
+│   │   │   │   ├── security_scan.txt
+│   │   │   │   └── seeded_defects.txt
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── corroboration.txt
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   └── snapshot_files.sha256
+│   │   │   ├── screens/
+│   │   │   │   ├── 01_trust_question.png
+│   │   │   │   ├── 02_workbench.png
+│   │   │   │   └── 03_about.png
+│   │   │   └── TASK-010_EVIDENCE.md
+│   │   └── TASK-011/
 │   │       ├── logs/
+│   │       │   ├── approved_layout_measurements.txt
 │   │       │   ├── cleanup_record.json
 │   │       │   ├── desktop_build.txt
-│   │       │   ├── dispatch_task_010.record.json
-│   │       │   ├── dispatch_task_010_resume.record.json
+│   │       │   ├── dispatch_task_011.record.json
 │   │       │   ├── e2e_local_application.txt
 │   │       │   ├── ide_activity.txt
-│   │       │   ├── logo_import.txt
+│   │       │   ├── live_observations.txt
 │   │       │   ├── native_language_suite.json
-│   │       │   ├── native_language_suite_resume.json
 │   │       │   ├── negative_tests.txt
 │   │       │   ├── preflight.txt
 │   │       │   ├── preflight_resume.txt
 │   │       │   ├── regression.txt
 │   │       │   ├── required_reading.txt
 │   │       │   ├── run_checks.txt
-│   │       │   ├── screen_lock_observation.txt
 │   │       │   ├── security_scan.txt
 │   │       │   └── seeded_defects.txt
 │   │       ├── receipt/
@@ -578,10 +609,11 @@ Nexees/
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
 │   │       ├── screens/
-│   │       │   ├── 01_trust_question.png
-│   │       │   ├── 02_workbench.png
-│   │       │   └── 03_about.png
-│   │       └── TASK-010_EVIDENCE.md
+│   │       │   ├── 01_approved_layout.png
+│   │       │   ├── 02_sidebars_hidden.png
+│   │       │   └── 03_light_theme.png
+│   │       ├── TASK-011_EVIDENCE.md
+│   │       └── measure_approved_layout.py
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
 │   │   └── NEXEES_USER_MANUAL.md

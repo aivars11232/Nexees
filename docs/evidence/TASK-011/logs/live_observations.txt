@@ -1,0 +1,46 @@
+TASK-011: observations of the running window that the end-to-end test does not repeat, made 2026-10-05T12:11:37+02:00 with the
+installed application in /mnt/F/Nexees-toolchains/target/nexees/desktop-install,
+in three private debugging sessions of the same kind as the end-to-end test's: a nested KWin compositor drawing into
+memory on a screen of 1600 by 1000, a D-Bus session of its own, and a temporary profile that the session removes.
+A scratch script of the task drives the window through the DevTools protocol, with clicks, drags, the mouse wheel
+and keys, reads the page, and writes one line per observation: what was seen, and whether it is what the
+implementation is meant to do. Each session is one run; nothing here is a test the repository repeats.
+
+== Session 1: a new profile, with the title row ==
+as expected  a new profile, with a file opened from the Explorer: picture 01  [page 1067x667; title row 25 px; left 203, right 354, bottom 167 px]
+as expected  Ctrl+J hides and shows the bottom panel  [167, 0, 167 px]
+as expected  both sidebars hidden with their toggles: picture 02  [Show the left sidebar, Show the right sidebar]
+as expected  Theia's Outline view, opened from the command palette, takes a sixth tab after the areas and is selected  [AI Agent, LCL, Tasks, Chat, Logs, Outline*]
+as expected  closed by the cross on its tab, it leaves the five areas, one of them selected  [AI Agent*, LCL, Tasks, Chat, Logs]
+as expected  a finding about the foundation: the tooltip of a tab closed by its cross appears at the window's top left corner afterwards and stays until the next click  [tooltip "Outline" at 0,5; after a click in the editor: gone]
+as expected  under Theia's light theme the title row, the toggles and the right sidebar's tabs take that theme's colours: picture 03  [{"name":"rgb(0, 106, 177)","row":"rgb(221, 221, 221)","toggle":"rgb(51, 51, 51)","tab":"rgb(66, 66, 66)"}]
+as expected  dragged narrower by its edge, the right sidebar no longer shows every tab; the mouse wheel over the row scrolls it to the others  [354 px to 192 px; in view AI Agent, LCL, Tasks; after the wheel Tasks, Chat, Logs]
+as expected  a tab that becomes selected is scrolled into view  [selected Outline*; in view Logs, Outline]
+as expected  dragged wider again by its edge, the sidebar shows all five tabs  [350 px; in view AI Agent, LCL, Tasks, Chat, Logs]
+as expected  from the menu the Tab key reaches the left toggle and then the right one; Enter and the space bar work them  [tab stops nexees-toggle-left-sidebar, nexees-toggle-right-sidebar; left sidebar after Enter 49 px; right sidebar after the space bar 0 px; both shown again]
+as expected  the Chat tab dragged into the bottom panel becomes a tab there  [right AI Agent*, LCL, Tasks, Logs; bottom Problems, bash, Chat*]
+as expected  dragged back onto the right sidebar, it takes its place among the areas again  [AI Agent, LCL, Tasks, Chat*, Logs]
+as expected  with the Explorer dragged into the bottom panel the left sidebar holds no view, and its toggle is disabled  [0 views left; toggles Show the left sidebar (disabled), Hide the right sidebar]
+as expected  the same in a tab bar of Theia's that this task did not touch: the last tab of the bottom panel, closed by its cross, leaves its tooltip at the same corner  [the tab Explorer; tooltip "Explorer" at 0,5]
+15 observations, all as expected
+session exit: 0
+
+== Session 2: a new profile whose store says the system's frame, as Theia leaves it after the title bar style
+   was set to native and the application restarted ==
+as expected  started as after a restart with the title bar style native, the window has the system's frame: no title row and no toggles in the page, and the layout is otherwise the same  [style native; title row 0 px; toggles shown 0; right tabs AI Agent*, LCL, Tasks, Chat, Logs; page 1067x638]
+as expected  the command View: Toggle Right Panel hides and shows the right sidebar  [354, 0, 354 px]
+as expected  the command View: Toggle Left Panel hides and shows the left sidebar  [203, 49, 203 px]
+3 observations, all as expected
+session exit: 0
+
+== Session 3: a profile that an earlier build left behind. A second installation of this build was changed in three
+   places of its installed copy so that it stores what a build before TASK-011 stores: its first layout does
+   nothing of this task's, it adds no area, and its configuration asks for the system's frame. That application
+   ran once on a new profile and was closed; then this build started on the same profile. It is a stand-in:
+   the build of TASK-010 itself was not run. ==
+as expected  the first application left the profile as a build before this task leaves it: no area, the system's frame, and Theia's own first layout with the three panels closed  [areas 0; views of the right sidebar: Outline; title row 0 px]
+as expected  started on that profile, this build restores the stored layout and adds the five areas, before the view that was stored in the right sidebar  [right sidebar: AI Agent, LCL, Tasks, Chat, Logs, Outline; shown: left false, right false, bottom false]
+as expected  a finding: the window of that profile keeps the system's frame, because Theia remembers the frame of the profile's last window; it has no title row and no toggles  [style native; title row 0 px; toggles shown 0]
+as expected  the command View: Toggle Right Panel shows the right sidebar, with the first area  [417 px; AI Agent*, LCL, Tasks, Chat, Logs, Outline]
+4 observations, all as expected
+session exit: 0

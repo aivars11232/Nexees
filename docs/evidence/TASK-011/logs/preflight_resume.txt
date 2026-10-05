@@ -1,0 +1,147 @@
+TASK-011 checkout preflight (binding B26), pack verification and predecessor lineage.
+Recorded 2026-10-05T11:33:45+02:00 with read-only commands besides the freshness fetch, when the session resumed in the middle of
+the task (B26 point 6): the owner's plan ran out of usage and the session stood still from about 10:01:47 to 11:32:36 on 2026-10-05, when the owner resumed it; the development machine was not restarted (running since 06:17:48), and the session's scratch folder is intact. The task began at commit 53448f2.
+
+== B26 checkout identity ==
+cwd (physical): /mnt/F/Nexees
+git toplevel: /mnt/F/Nexees
+git dir: /mnt/F/Nexees/.git
+superproject: []
+parent .git at /mnt/F or /mnt: none
+remotes (credentials redacted):
+origin	https://github.com/aivars11232/Nexees.git (fetch)
+origin	https://github.com/aivars11232/Nexees.git (push)
+url rewrite rules: none
+explicit origin pushurl: none
+branch: main
+HEAD: 53448f2feaf33a0c88b31e139039ccdff1f55f28
+origin/main (fetched for freshness, current branch only, no tags; fetch exit 0): 53448f2feaf33a0c88b31e139039ccdff1f55f28
+upstream: origin/main
+worktrees:
+/mnt/F/Nexees 53448f2 [main]
+hooks path: []; non-sample hooks: 0
+staged files: 0; stash entries: 0; tracked files: 627
+status (porcelain, untracked shown per file): M FILE_TREE.txt
+ M README.md
+ M apps/desktop/package.json
+ M apps/desktop/src/shell/about_dialog.ts
+ M apps/desktop/src/shell/design_tokens.ts
+ M apps/desktop/src/shell/main_window.ts
+ D apps/desktop/src/shell/panel_controls.source
+ D apps/desktop/src/shell/panel_layout.source
+ M apps/desktop/src/shell/theme.ts
+ D apps/desktop/src/shell/title_bar.source
+ M assets/theme/design_tokens.json
+ M assets/theme/icon_mapping.json
+ M docs/architecture/subsystems.lcl.txt
+ M docs/engineering/CONVENTIONS.md
+ M docs/manuals/NEXEES_USER_MANUAL.md
+ M scripts/build/design_tokens.py
+ M tests/e2e/desktop/local_application.test.mjs
+ M tests/tooling/test_build_desktop.py
+ M tests/tooling/test_design_tokens.py
+?? apps/desktop/src/shell/panel_controls.ts
+?? apps/desktop/src/shell/panel_layout.ts
+?? apps/desktop/src/shell/right_sidebar.ts
+?? apps/desktop/src/shell/title_bar.ts
+?? docs/evidence/TASK-011/logs/approved_layout_measurements.txt
+?? docs/evidence/TASK-011/logs/desktop_build.txt
+?? docs/evidence/TASK-011/logs/dispatch_task_011.record.json
+?? docs/evidence/TASK-011/logs/e2e_local_application.txt
+?? docs/evidence/TASK-011/logs/native_language_suite.json
+?? docs/evidence/TASK-011/logs/preflight.txt
+?? docs/evidence/TASK-011/logs/required_reading.txt
+?? docs/evidence/TASK-011/logs/seeded_defects.txt
+?? docs/evidence/TASK-011/measure_approved_layout.py
+HEAD equals origin/main: True; the task's base 53448f2 is an ancestor of HEAD: True
+
+== Pack verification (v0.5.3) ==
+manifest files: 201 | hash mismatches: [] | unlisted on disk: [] | listed but missing: []
+MANIFEST.json sha256: 8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4 (expected 8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4: True)
+content identity recomputed: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | declared: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | manifest: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | PROCEDURAL_CHANGES new_content_identity: bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1 | all equal bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1: True
+tasks/task_011.lcl.txt sha256: 35b1b79b7ee24df3b2abb363c5216dbf7c0b153f730715ba841dedab8e294d0e | PROCEDURAL_CHANGES after_sha256 35b1b79b7ee24df3b2abb363c5216dbf7c0b153f730715ba841dedab8e294d0e | task declaration unchanged: True | other record fields unchanged: True
+accept_task.lcl.txt sha256: 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836
+policies/task_002_075_continuation.lcl.txt sha256: 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9
+LCL engine: lcl 1.0.0 (15a3e9390870e0742fa09e87d2b0ba29e503caf9aa986c1cf4a3899763cfb820) | LCL repository HEAD ada0b5c, clean: True | the revision the pack binds, fa1592b, is in its history: True | canonical packages changed since it: 0
+
+== Predecessor lineage ==
+TASK-001 receipt: task TASK-001 | purpose implementation_review | blockers [] | host verified True | pack identity e288da0e1b727e1b646ad1b03155f5a067e4d932ae026686e904d1ceb66d4672
+TASK-001 evaluation.record.json sha256: bbda5d839f7713bbd43a0fb3c0c299043abe8f7b055e6e3ce8c110fde3ba07e7 (expected bbda5d83…: True) | outcome accepted | terminal status.succeeded
+TASK-001 accepted state: 284f97a02d3ad9288f3701860e608b366b10979f Freeze the Nexees project charter (TASK-001) | on origin/main: True
+TASK-001 deliverables (docs/charter, docs/evidence/TASK-001) changed since then: (none)
+TASK-002 receipt: task TASK-002 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-002 evaluation.record.json sha256: c5fadc8310565f2a73c1f16209987b9a1a086c99919cd6cb101c010eb243bd13 (expected c5fadc83…: True) | outcome accepted | terminal status.succeeded
+TASK-002 accepted state: d1a673f62d1a9a31839290e8041eb3c7eb91ba97 Define the Nexees modular architecture (TASK-002) | on origin/main: True
+TASK-002 deliverables (docs/architecture, docs/evidence/TASK-002) changed since then: 5 files, by later commits:
+  f0c713a Checkpoint of TASK-010 in progress: logo, design tokens and the Nexees theme  [the first checkpoint of TASK-010 in progress, which the owner asked for before pausing the session on 2026-10-04; not a closure]
+  bba49c3 Create the Nexees Desktop shell and its local host (TASK-009)
+  2bf47a2 Implement the persistent state store and its migrations (TASK-008)
+  9f28c37 Define the versioned Nexees protocol (TASK-007)
+  fc42a93 Implement the shared Nexees domain model (TASK-006)
+  e83dcd7 Create the Nexees repository scaffold and engineering conventions (TASK-005)
+  2eaa199 Audit Nexees reuse, licenses and dependency feasibility (TASK-003)
+TASK-003 receipt: task TASK-003 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-003 evaluation.record.json sha256: 5e4a83c107ae50947fc92e25b5ebd60cc3b567b07073357e3702a54b6a5756d0 (expected 5e4a83c1…: True) | outcome accepted | terminal status.succeeded
+TASK-003 accepted state: bccc9b1a6136effc8b3dfc9bc40c03d28e5471eb Record the owner's approval of the TASK-003 SDK cache rewrite | on origin/main: True
+TASK-003 deliverables (docs/dependencies, docs/evidence/TASK-003) changed since then: 6 files, by later commits:
+  53448f2 Apply the Nexees branding, logo, theme and compact visual system (TASK-010)
+  bba49c3 Create the Nexees Desktop shell and its local host (TASK-009)
+  2bf47a2 Implement the persistent state store and its migrations (TASK-008)
+  9f28c37 Define the versioned Nexees protocol (TASK-007)
+  fc42a93 Implement the shared Nexees domain model (TASK-006)
+  e83dcd7 Create the Nexees repository scaffold and engineering conventions (TASK-005)
+TASK-004 receipt: task TASK-004 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-004 evaluation.record.json sha256: 2b7406b82bf63a524943a87c60cf322ec17291bfaf800efd23676e0097bbc83f (expected 2b7406b8…: True) | outcome accepted | terminal status.succeeded
+TASK-004 accepted state: 0337be0488dc71bbae6dcaa1fa815991597d7807 Create the Nexees threat model and security invariants (TASK-004) | on origin/main: True
+TASK-004 deliverables (docs/security, docs/evidence/TASK-004) changed since then: 5 files, by later commits:
+  bba49c3 Create the Nexees Desktop shell and its local host (TASK-009)
+  1c85864 Repair TASK-004's enforcement-point check; refresh TASK-007's receipt  [TASK-007's follow-up, accepted with TASK-007's refreshed receipt]
+  e83dcd7 Create the Nexees repository scaffold and engineering conventions (TASK-005)
+TASK-005 receipt: task TASK-005 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-005 evaluation.record.json sha256: 9554641f1fb2383d936a58cedfdc345d896a21ac28e7208e135c3dc8aead7b9b (expected 9554641f…: True) | outcome accepted | terminal status.succeeded
+TASK-005 accepted state: e83dcd74b6ea2338b865bb8beccf8d809c476b06 Create the Nexees repository scaffold and engineering conventions (TASK-005) | on origin/main: True
+TASK-005 deliverables (docs/engineering, docs/evidence/TASK-005) changed since then: 1 files, by later commits:
+  53448f2 Apply the Nexees branding, logo, theme and compact visual system (TASK-010)
+  bba49c3 Create the Nexees Desktop shell and its local host (TASK-009)
+  2bf47a2 Implement the persistent state store and its migrations (TASK-008)
+  9f28c37 Define the versioned Nexees protocol (TASK-007)
+  fc42a93 Implement the shared Nexees domain model (TASK-006)
+TASK-006 receipt: task TASK-006 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-006 evaluation.record.json sha256: b10ab5d95cfbb2a7553c90665ae670abe4cd7921204e1859644ed6e77d899f36 (expected b10ab5d9…: True) | outcome accepted | terminal status.succeeded
+TASK-006 accepted state: fc42a93bf9f62f662ba7a1bb61d5e662b1812ada Implement the shared Nexees domain model (TASK-006) | on origin/main: True
+TASK-006 deliverables (core/domain, docs/evidence/TASK-006) changed since then: 10 files, by later commits:
+  d00bb83 Let only the execution host's own final verification complete a task  [the owner-directed correction of core/domain/task.rs made before TASK-009, not a task commit]
+  9f28c37 Define the versioned Nexees protocol (TASK-007)
+TASK-007 receipt: task TASK-007 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-007 evaluation.record.json sha256: 3e0ce66c6fc460bd64eb7d1d435777ab52838a8f840541e83e95d3afbac619e8 (expected 3e0ce66c…: True) | outcome accepted | terminal status.succeeded
+TASK-007 accepted state: 1c85864e81ed5b8bfddaf5a8c4466a74a367232c Repair TASK-004's enforcement-point check; refresh TASK-007's receipt | on origin/main: True
+TASK-007 deliverables (core/protocol, docs/evidence/TASK-007) changed since then: (none)
+TASK-008 receipt: task TASK-008 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-008 evaluation.record.json sha256: a8c8b44db09aee9f0f8f88e029d8bb92ad54167d650878864ed1a6b93f68b2a2 (expected a8c8b44d…: True) | outcome accepted | terminal status.succeeded
+TASK-008 accepted state: 2bf47a24605e575b06b99b971151cb7976716b55 Implement the persistent state store and its migrations (TASK-008) | on origin/main: True
+TASK-008 deliverables (core/state, docs/evidence/TASK-008) changed since then: 1 files, by later commits:
+  bba49c3 Create the Nexees Desktop shell and its local host (TASK-009)
+TASK-009 receipt: task TASK-009 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-009 evaluation.record.json sha256: d65fa84a9fd910b3c394cacb8727701a1d8cbe1e1774e4f5b0154cd8b5e47245 (expected d65fa84a…: True) | outcome accepted | terminal status.succeeded
+TASK-009 accepted state: bba49c36e33851f2bdf1a8238d281dc9eff45900 Create the Nexees Desktop shell and its local host (TASK-009) | on origin/main: True
+TASK-009 deliverables (apps/desktop, platform/desktop, packaging/desktop, scripts/build, tests/e2e/desktop, docs/evidence/TASK-009) changed since then: 12 files, by later commits:
+  53448f2 Apply the Nexees branding, logo, theme and compact visual system (TASK-010)
+  7414e6a Checkpoint of TASK-010 in progress: end-to-end checks of the Nexees look  [the second checkpoint of TASK-010 in progress, of the same day; not a closure]
+  f0c713a Checkpoint of TASK-010 in progress: logo, design tokens and the Nexees theme  [the first checkpoint of TASK-010 in progress, which the owner asked for before pausing the session on 2026-10-04; not a closure]
+TASK-010 receipt: task TASK-010 | purpose implementation_review | blockers [] | host verified True | pack identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1
+TASK-010 evaluation.record.json sha256: 94da16cc977ee0e60184e59452ba6b8cae70acb521e3ffc317d2af3f8696a6cd (expected 94da16cc…: True) | outcome accepted | terminal status.succeeded
+TASK-010 accepted state: 53448f2feaf33a0c88b31e139039ccdff1f55f28 Apply the Nexees branding, logo, theme and compact visual system (TASK-010) | on origin/main: True
+TASK-010 deliverables (assets/branding, assets/theme, apps/desktop, scripts/build, tests/e2e/desktop, docs/evidence/TASK-010) changed since then: (none)
+Uncommitted changes to predecessor evidence and the charter: (none)
+Uncommitted changes in other paths that predecessors delivered, the work in progress of TASK-011 listed in the status above: 18 files
+Commits after the last accepted task that are not a task's own: (none)
+
+== Pre-existing state that is not task-owned (preserved, never committed) ==
+The owner's VS Code keeps ignored output in the checkout (recorded since TASK-006):
+  target/: 562 files, written 2026-10-04T11:52:23 .. 2026-10-05T06:20:02
+  docs/evidence/TASK-003/prototypes/android-app/.gradle/: 17 files, written 2026-10-04T11:53:54 .. 2026-10-05T08:37:45
+  apps/desktop/node_modules: the editor's link to /mnt/F/Nexees-toolchains/target/nexees/desktop/check/node_modules, kept since TASK-009 (docs/engineering/CONVENTIONS.md section 4)
+  other ignored files: none
+Owner IDE processes running now: 6 (rust-analyzer with its proc-macro servers, and the Java processes of VS Code's Java and Gradle extensions)
+rust-analyzer's last cargo check (target/flycheck0/stdout): 2026-10-05T06:20:02, 0 error(s) in its output.
+TASK-011 began at 2026-10-05T08:33:23+02:00 and resumes now.

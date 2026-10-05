@@ -334,7 +334,9 @@ Established by TASK-010, for both clients (R18, R19).
 
 - **One source of the look.** `assets/theme/design_tokens.json` holds the colours, text sizes,
   spacing and control sizes, and `assets/theme/icon_mapping.json` the icon of each concept, by
-  its Codicon name. A client's code holds no colour, size or icon name of its own.
+  its Codicon name. A client's code holds no colour, size or icon name of its own. A group of
+  tokens whose name ends in `_percent` holds shares instead of sizes: the part of its space a
+  panel takes when it is first shown.
 - **Each client has a generated copy** in its own language, committed beside the code that
   uses it. `scripts/build/design_tokens.py` writes it and is the only thing that does; the
   Desktop copy is `apps/desktop/src/shell/design_tokens.ts`. To change the look, edit the JSON,
@@ -356,3 +358,29 @@ Established by TASK-010, for both clients (R18, R19).
 - **A build takes only recorded icons.** `scripts/build/build_desktop.py` refuses an icon
   whose SHA-256 is not the one the manifest records, so a substituted picture cannot reach an
   installation.
+
+## 15. The Desktop layout
+
+Established by TASK-011 (Desktop UI contract, R18).
+
+- **Every region is Theia's own.** The title row is Theia's title bar for a window without the
+  system's frame, and the activity bar, the sidebars, the editor, the bottom panel and the
+  status bar are its panels. `apps/desktop/src/shell/` only arranges them:
+  - `title_bar`: the row, with the logo and name and the place of the sidebar toggles;
+  - `panel_controls`: the two toggles, which run Theia's commands and show what the sidebars did;
+  - `panel_layout`: where the regions stand, the share each takes, and a new profile's first layout;
+  - `right_sidebar`: the right sidebar's row of text tabs, and its areas.
+- **One thin row.** Whatever a later task adds to the title row goes into that row, left of the
+  sidebar toggles, which stay immediately before the window controls. Nothing gets a row of its
+  own above or below it, and the row keeps the height of its token.
+- **Sizes and shares are design tokens** (section 14): pixels in `desktop`, and in
+  `desktop_percent` the share each panel takes when it is first shown. `panel_layout` says of
+  which space: the left sidebar's is of the window's width, the right one's of the width beside
+  the left one, the bottom panel's of the height between the title row and the status bar.
+- **A right-sidebar area is an ordinary view** of Theia's right side panel, which the widget
+  factory `AREA_VIEWS` makes under the area's ID. The task that fills an area gives that ID its
+  own view there and keeps the ID, so that a stored layout still finds the area. Until then the
+  area says that it is not available and holds no control.
+- **The end-to-end test checks the layout as the user sees it:** the places and order of the
+  regions, their shares, the toggles and the areas. A task that changes the layout changes those
+  checks in the same change.

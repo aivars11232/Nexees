@@ -1,0 +1,33 @@
+TASK-011 negative tests, 2026-10-05T12:42:32+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. 7 cases break one rule
+of the design-token script, the committed copies or the one name of the logo file each: a test-stage case
+passes only when the named test fails. The lint cases seed a defect into each of the four layout modules
+that the TypeScript compiler must refuse, among them an override of a method the foundation does not have.
+The others seed defects the layout, format and docs stages must catch.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: a share of the whole window accepted as if it were a size is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_tokens_that_break_a_rule_are_refused)
+PASS  test: the title row's height changed without writing the Desktop copy again is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_committed_desktop_copy_is_current)
+PASS  test: a share changed without writing the Desktop copy again is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_committed_desktop_copy_is_current)
+PASS  test: a layout token nothing in the window uses is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_uses_every_token_and_every_icon)
+PASS  test: an icon of a control nothing in the window shows is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_uses_every_token_and_every_icon)
+PASS  test: an area's icon that is no Codicon name is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_committed_desktop_copy_is_current, test_the_window_uses_every_token_and_every_icon)
+PASS  test: the title row naming a logo file of its own is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_names_the_file_the_build_places_and_names_it_once)
+PASS  lint: the title row naming a token that does not exist is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: the arrangement overriding a method Theia's shell does not have is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: the first layout opening a region Theia's shell does not have is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: a toggle for a side that is no sidebar is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: the right sidebar's handler overriding a method Theia's handler does not have is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: an unused value left in the right sidebar is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  layout: a shell placeholder back without its marker is caught (exit 1: FINDING: apps/desktop/src/shell/title_bar.source is a placeholder without its marker; implement it under its real extension instead)
+PASS  layout: the marker stripped from a placeholder the task did not implement is caught (exit 1: FINDING: apps/desktop/src/shell/status_bar.source is a placeholder without its marker; implement it under its real extension instead)
+PASS  layout: the shell folder without its slot in the catalogue is caught (exit 1: FINDING: apps/desktop/src/shell/panel_layout.ts belongs to 0 subsystems instead of one: [])
+PASS  format: the arrangement indented with a tab is caught (exit 1: FINDING: apps/desktop/src/shell/panel_layout.ts: line 43 indents with a tab)
+PASS  format: a line of the title row left with trailing spaces is caught (exit 1: FINDING: apps/desktop/src/shell/title_bar.ts: line 37 has trailing whitespace)
+PASS  docs: a file the file tree does not list is caught (exit 1: FINDING: FILE_TREE.txt does not match the files; regenerate it with --write-file-tree)
+PASS  docs: the README linking to a folder that does not exist is caught (exit 1: FINDING: README.md links to apps/desktop/src/layout/, which does not exist)
+PASS  docs: the user manual without its status line is caught (exit 1: FINDING: docs/manuals/NEXEES_USER_MANUAL.md does not state its status)
+
+ALL NEGATIVE TESTS PASSED

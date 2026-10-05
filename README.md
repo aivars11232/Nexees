@@ -141,7 +141,17 @@ TASK-010 gave Nexees its look.
 - The logo reaches the product only as the bound source and icons scaled down from it
   (`scripts/build/brand_assets.py`); an installation carries the icon in seven sizes.
 
-The approved layout and panels come with TASK-011 and TASK-012.
+TASK-011 gave the window the approved layout.
+- One thin title row replaces the system's title bar. It holds the logo and name, the menu, the
+  window's title, the two sidebar toggles and, immediately after them, the window controls.
+- Under it stand the activity bar and the left sidebar, the editor and the right sidebar over the
+  bottom panel, and the status bar. A new profile shows them in the shares measured on the
+  approved layout, which are design tokens too.
+- The right sidebar shows its five areas as a row of text tabs: AI Agent, LCL, Tasks, Chat and
+  Logs. No task has filled an area yet, and each says so.
+- Every region is Theia's own panel, arranged in [apps/desktop/src/shell/](apps/desktop/src/shell/).
+
+What Nexees keeps of the layout the user leaves behind, and where, is the subject of TASK-012.
 
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.

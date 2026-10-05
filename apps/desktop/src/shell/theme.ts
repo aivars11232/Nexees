@@ -313,6 +313,7 @@ function sizeRules(): string[] {
         '--theia-private-horizontal-tab-height': TOKENS.desktop.tab_height,
         '--theia-statusBar-height': TOKENS.desktop.status_bar_height,
         '--theia-private-sidebar-tab-width': TOKENS.desktop.activity_bar_width,
+        '--theia-private-menubar-height': TOKENS.desktop.title_bar_height,
     };
     const declarations = Object.entries(variables).map(([name, pixels]) => `${name}: ${pixels}px;`);
     return [

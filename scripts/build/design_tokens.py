@@ -14,7 +14,9 @@ The script fails closed. Before it writes anything it refuses a source that is n
 it understands:
 
 - design_tokens.json holds `description`, `color` and groups of numbers. A colour is `#rrggbb`
-  in lower case, in a group under `color`. Every other value is a whole number from 1 to 1024.
+  in lower case, in a group under `color`. Every other value is a whole number from 1 to 1024:
+  a size. In a group whose name ends in `_percent` it is a share of a whole instead, a whole
+  percent from 1 to 99.
 - icon_mapping.json holds `description` and `icons`, a map from a concept to the name of a
   Codicon.
 - Names are lower-case words joined by underscores, and no name appears twice.
@@ -41,6 +43,9 @@ NAME = re.compile(r'[a-z][a-z0-9]*(_[a-z0-9]+)*')
 COLOUR = re.compile(r'#[0-9a-f]{6}')
 CODICON = re.compile(r'[a-z][a-z0-9]*(-[a-z0-9]+)*')
 LARGEST_NUMBER = 1024
+# A group with this ending holds shares of a whole, in percent, not sizes.
+PERCENT_SUFFIX = '_percent'
+LARGEST_PERCENT = 99
 MINIMUM_CONTRAST = 4.5
 # The colour groups that are drawn on a surface, and so must be readable on every one of them.
 ON_SURFACES = ('text', 'accent', 'status', 'syntax')
@@ -109,9 +114,10 @@ def checked_tokens(tokens: dict) -> dict:
     for name, numbers in groups.items():
         if name == 'color':
             continue
+        kind, largest = ('share', LARGEST_PERCENT) if name.endswith(PERCENT_SUFFIX) else ('size', LARGEST_NUMBER)
         for token, value in group(name, numbers).items():
-            if type(value) is not int or not 1 <= value <= LARGEST_NUMBER:
-                raise Refused(f'{name}.{token} is {value!r}; a size is a whole number from 1 to {LARGEST_NUMBER}')
+            if type(value) is not int or not 1 <= value <= largest:
+                raise Refused(f'{name}.{token} is {value!r}; a {kind} is a whole number from 1 to {largest}')
     colour = groups['color']
     for needed in ('surface', 'accent', *ON_SURFACES):
         if needed not in colour:
@@ -160,7 +166,10 @@ def desktop_copy(root: Path) -> str:
             f'// {ICONS}, the one source both clients share (R19). Do not edit this\n'
             '// file: change the source and run the script again.\n'
             '\n'
-            '/** The Nexees design tokens: colours as #rrggbb, every other value in CSS pixels. */\n'
+            '/**\n'
+            ' * The Nexees design tokens: colours as #rrggbb, shares of a whole in percent in the groups\n'
+            f' * whose names end in `{PERCENT_SUFFIX}`, and every other value in CSS pixels.\n'
+            ' */\n'
             f'export const TOKENS = {typescript(tokens)} as const;\n'
             '\n'
             '/** The Nexees icon language: the name of the Codicon that stands for each concept. */\n'

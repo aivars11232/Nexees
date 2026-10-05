@@ -112,12 +112,17 @@ class RepositoryLogoTest(unittest.TestCase):
         self.assertIn(build_desktop.WINDOW_ICON_SIZE, build_desktop.logo_icons())
         self.assertTrue(build_desktop.WINDOW_ICON.endswith(f'nexees-{build_desktop.WINDOW_ICON_SIZE}.png'))
 
-    def test_the_about_dialog_names_the_file_the_build_places(self) -> None:
-        """The dialog reads the logo two folders above its page, lib/frontend: the application's own folder."""
-        dialog = (build_desktop.APP / 'src/shell/about_dialog.ts').read_text(encoding='utf-8')
-        named = re.search(r"^const LOGO = '\.\./\.\./(.+)';$", dialog, re.M)
+    def test_the_window_names_the_file_the_build_places_and_names_it_once(self) -> None:
+        """The window reads the logo two folders above its page, lib/frontend: the application's own
+        folder. The About dialog names the file, and the title row shows the same one by that name."""
+        shell = build_desktop.APP / 'src/shell'
+        dialog = (shell / 'about_dialog.ts').read_text(encoding='utf-8')
+        named = re.search(r"^export const LOGO = '\.\./\.\./(.+)';$", dialog, re.M)
         self.assertIsNotNone(named)
         self.assertEqual(named.group(1), build_desktop.WINDOW_ICON)
+        naming = [path.name for path in sorted(shell.glob('*.ts')) if '.png' in path.read_text(encoding='utf-8')]
+        self.assertEqual(naming, ['about_dialog.ts'])
+        self.assertIn("import { LOGO } from './about_dialog';", (shell / 'title_bar.ts').read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':
