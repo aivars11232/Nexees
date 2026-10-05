@@ -22,6 +22,15 @@
 //! status, and an intent with an explicit `unsupported` outcome: this build carries out none yet
 //! (RC-12). At most [`MAX_WINDOWS`] windows are attached at once.
 //!
+//! **The window's panels.** The host keeps the panel layout a window stores, in the state store,
+//! and gives it back when a window asks: view state lives with the host, so a window that was
+//! closed or stopped unexpectedly finds its panels as the user left them (ST-VIEW,
+//! FD-UI-CLIENT). The layout is presentation only. The host checks its shape, keeps it under
+//! [`WINDOW_CLIENT`] and reads nothing else into it; a window cannot name another client. A
+//! window that agreed on a protocol version older than these messages is refused them, and when
+//! the store cannot give or take the layout the host closes the window's channel instead of
+//! answering with a guess.
+//!
 //! **Lifetime.** When the last window detaches, the host stops after [`GRACE`], so a window that
 //! reloads reattaches to it. A host started with `--keep-running` stays: keeping the host after
 //! the window closes is its own opt-in, and start at login is how the user gives it (RC-04). A
@@ -43,8 +52,9 @@ use std::sync::{Arc, Condvar, Mutex, MutexGuard, PoisonError};
 use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
+use nexees_domain::client::{ClientLayout, PanelLayout};
 use nexees_domain::errors::Outcome;
-use nexees_domain::ids::DeviceId;
+use nexees_domain::ids::{ClientId, DeviceId};
 use nexees_domain::text::Note;
 use nexees_domain::time::Timestamp;
 use nexees_platform_desktop::lifecycle::application_lifecycle::{
@@ -61,6 +71,10 @@ use nexees_state::state_store::{StateError, StateStore};
 const GRACE: Duration = Duration::from_secs(5);
 /// Most windows attached at once; another one is refused.
 const MAX_WINDOWS: usize = 8;
+/// The client whose view state the host keeps for its windows. Every window of this user is
+/// that one client: windows are told apart only once they show different workspaces, which
+/// per-workspace view state brings (TASK-016).
+const WINDOW_CLIENT: &str = "desktop-window";
 /// How long a new window has to say hello, and how long `start` waits for one answer.
 const HELLO_TIMEOUT: Duration = Duration::from_secs(5);
 /// How long `start` waits for a host to answer.
@@ -148,14 +162,21 @@ fn serve_in(folder: &ChannelFolder, data: &Path, keep_running: bool, grace: Dura
     };
     let attached = Arc::new(Attached::default());
     let listener = Arc::new(listener);
+    let store: SharedStore = Arc::new(Mutex::new(Some(store)));
     {
         let (listener, attached) = (Arc::clone(&listener), Arc::clone(&attached));
-        thread::spawn(move || accept_windows(&listener, &attached, &device));
+        let store = Arc::clone(&store);
+        thread::spawn(move || accept_windows(&listener, &attached, &device, &store));
     }
     attached.wait_until_done(keep_running, grace);
     // No new window reaches a host that is stopping.
     let removed = listener.remove_socket();
-    let closed = store.close(now());
+    // Taken out of the windows' reach and closed in order; a window served after this finds no
+    // store and is turned away.
+    let closed = match lock_store(&store).take() {
+        Some(store) => store.close(now()),
+        None => Ok(()),
+    };
     drop(lock);
     match (removed, closed) {
         (Ok(()), Ok(())) => exit::OK,
@@ -212,6 +233,42 @@ fn data_folder() -> Option<PathBuf> {
                 .map(|home| home.join(".local/share"))
         })
         .map(|base| base.join("nexees"))
+}
+
+/// The host's one store, shared by the threads that serve its windows; `None` once the host is
+/// stopping.
+type SharedStore = Arc<Mutex<Option<StateStore>>>;
+
+fn lock_store(store: &SharedStore) -> MutexGuard<'_, Option<StateStore>> {
+    // The store commits or rolls back each write as a whole, so a window's thread that panicked
+    // while holding the lock left it consistent.
+    store.lock().unwrap_or_else(PoisonError::into_inner)
+}
+
+/// The panel layout the store keeps for the window client, if any.
+fn kept_layout(store: &SharedStore) -> Result<Option<PanelLayout>, StateError> {
+    let guard = lock_store(store);
+    let store = guard.as_ref().ok_or(StateError::InUse)?;
+    Ok(store
+        .get::<ClientLayout>(WINDOW_CLIENT)?
+        .map(|layout| layout.panels))
+}
+
+/// Keeps `panels` as the window client's layout, in place of the one kept before. It returns
+/// once the store has it on disk.
+fn keep_layout(
+    store: &SharedStore,
+    device: &DeviceId,
+    panels: &PanelLayout,
+) -> Result<(), StateError> {
+    let layout = ClientLayout {
+        client_id: ClientId::new(WINDOW_CLIENT)?,
+        device_id: device.clone(),
+        panels: panels.clone(),
+    };
+    let mut guard = lock_store(store);
+    let store = guard.as_mut().ok_or(StateError::InUse)?;
+    store.write(now(), |w| w.put(&layout))
 }
 
 /// The windows attached to the host, and since when none has been.
@@ -295,7 +352,12 @@ impl Attached {
 }
 
 /// Accepts windows for as long as the host runs, each on its own thread.
-fn accept_windows(listener: &Listener, attached: &Arc<Attached>, device: &DeviceId) {
+fn accept_windows(
+    listener: &Listener,
+    attached: &Arc<Attached>,
+    device: &DeviceId,
+    store: &SharedStore,
+) {
     loop {
         let window = match listener.accept() {
             Ok(window) => window,
@@ -312,17 +374,18 @@ fn accept_windows(listener: &Listener, attached: &Arc<Attached>, device: &Device
             window.close();
             continue;
         }
-        let (attached, device) = (Arc::clone(attached), device.clone());
+        let (attached, device, store) = (Arc::clone(attached), device.clone(), Arc::clone(store));
         thread::spawn(move || {
             // However the window leaves, it is counted out.
-            let _ = attend(window, &device);
+            let _ = attend(window, &device, &store);
             attached.detach();
         });
     }
 }
 
-/// Serves one window until it detaches: the hellos, then its resyncs and intents.
-fn attend(mut window: Connection, device: &DeviceId) -> Result<(), IpcError> {
+/// Serves one window until it detaches: the hellos, then its resyncs, its intents and its panel
+/// layout.
+fn attend(mut window: Connection, device: &DeviceId, store: &SharedStore) -> Result<(), IpcError> {
     window.set_timeout(Some(HELLO_TIMEOUT))?;
     let ClientMessage::Hello(theirs) = window.receive()? else {
         // A window opens with its hello; anything else is refused.
@@ -331,18 +394,38 @@ fn attend(mut window: Connection, device: &DeviceId) -> Result<(), IpcError> {
     };
     let ours = Hello::current();
     window.send(&HostMessage::Hello(ours))?;
-    if negotiate(&ours, &theirs, MIN_SECURE_VERSION).is_err() {
+    let Ok(agreed) = negotiate(&ours, &theirs, MIN_SECURE_VERSION) else {
         // A version mismatch after an update is refused, never bridged (RC-23).
         window.close();
         return Ok(());
-    }
+    };
     // Attached: the window may stay quiet for as long as it is open.
     window.set_timeout(None)?;
     loop {
-        match window.receive()? {
+        let message: ClientMessage = window.receive()?;
+        if message.since() > agreed.get() {
+            // The two agreed on a version that does not have this message.
+            window.close();
+            return Ok(());
+        }
+        match message {
             ClientMessage::Hello(_) => {
                 window.close();
                 return Ok(());
+            }
+            ClientMessage::LoadLayout {} => {
+                let Ok(panels) = kept_layout(store) else {
+                    window.close();
+                    return Ok(());
+                };
+                window.send(&HostMessage::Layout(panels))?;
+            }
+            ClientMessage::StoreLayout(panels) => {
+                if keep_layout(store, device, &panels).is_err() {
+                    window.close();
+                    return Ok(());
+                }
+                window.send(&HostMessage::Layout(Some(panels)))?;
             }
             // The host has no events yet, so a resync is its status alone.
             ClientMessage::Resync { .. } => window.send(&HostMessage::Status(status(device)?))?,
@@ -462,10 +545,13 @@ fn now() -> Timestamp {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::Write;
+    use std::os::unix::net::UnixStream;
     use std::sync::atomic::{AtomicU64, Ordering};
 
+    use nexees_domain::client::{PanelLayoutFields, PanelState};
     use nexees_domain::device::ProtocolVersions;
-    use nexees_domain::ids::{AgentSessionId, OperationId, RequestId, WorkspaceId};
+    use nexees_domain::ids::{AgentSessionId, OperationId, RequestId, ViewId, WorkspaceId};
     use nexees_domain::remote_request::ExpectedRevision;
     use nexees_domain::revision::Generation;
     use nexees_protocol::messages::{Intent, IntentFields};
@@ -683,6 +769,138 @@ mod tests {
             }
             other => panic!("expected an acknowledgment, got {other:?}"),
         }
+    }
+
+    /// A panel layout whose right sidebar is as given; the other panels are fixed.
+    fn panels(right_shown: bool, right_size: u32, right_view: &str) -> PanelLayout {
+        let panel = |shown, size, view: &str| PanelState {
+            shown,
+            size: Some(size),
+            selected: Some(ViewId::new(view).unwrap()),
+        };
+        PanelLayout::try_from(PanelLayoutFields {
+            left: panel(true, 203, "explorer-view-container"),
+            right: panel(right_shown, right_size, right_view),
+            bottom: panel(true, 167, "terminal-0"),
+        })
+        .unwrap()
+    }
+
+    /// A window that speaks in raw frames, to send what no well-formed message can hold: four
+    /// bytes of big-endian length, then the JSON. The hellos are exchanged.
+    fn raw_window(profile: &Profile) -> UnixStream {
+        let mut window = UnixStream::connect(profile.folder().socket()).unwrap();
+        window
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        send_frame(&mut window, r#"{"hello":{"versions":{"min":1,"max":2}}}"#);
+        let mut length = [0_u8; 4];
+        window.read_exact(&mut length).unwrap();
+        let mut hello = vec![0_u8; u32::from_be_bytes(length) as usize];
+        window.read_exact(&mut hello).unwrap();
+        assert!(hello.starts_with(br#"{"hello":"#));
+        window
+    }
+
+    fn send_frame(window: &mut UnixStream, body: &str) {
+        let length = u32::try_from(body.len()).unwrap().to_be_bytes();
+        window.write_all(&length).unwrap();
+        window.write_all(body.as_bytes()).unwrap();
+    }
+
+    /// Sends `message` and returns the layout the host answers with.
+    fn layout_after(window: &mut Connection, message: &ClientMessage) -> Option<PanelLayout> {
+        window.send(message).unwrap();
+        match window.receive().unwrap() {
+            HostMessage::Layout(kept) => kept,
+            other => panic!("expected the kept layout, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_window_finds_the_panels_it_stored_after_the_host_restarted() {
+        let profile = Profile::new("layout");
+        let host = profile.host(false, Duration::from_millis(300));
+        let mut first = window(&profile);
+        assert_eq!(
+            layout_after(&mut first, &ClientMessage::LoadLayout {}),
+            None
+        );
+        let shown = panels(true, 354, "nexees-area-agent");
+        assert_eq!(
+            layout_after(&mut first, &ClientMessage::StoreLayout(shown.clone())),
+            Some(shown)
+        );
+        // The next layout replaces the first: the right sidebar hidden, with the area and the
+        // width it comes back with.
+        let hidden = panels(false, 420, "nexees-area-tasks");
+        assert_eq!(
+            layout_after(&mut first, &ClientMessage::StoreLayout(hidden.clone())),
+            Some(hidden.clone())
+        );
+        // Another window of the same user is the same client.
+        assert_eq!(
+            layout_after(&mut window(&profile), &ClientMessage::LoadLayout {}),
+            Some(hidden.clone())
+        );
+        drop(first);
+        assert_eq!(finish(host), exit::OK);
+        // A new host on the same store, as after the window and the host were both closed.
+        let host = profile.host(false, Duration::from_millis(300));
+        let mut reopened = window(&profile);
+        assert_eq!(
+            layout_after(&mut reopened, &ClientMessage::LoadLayout {}),
+            Some(hidden)
+        );
+        drop(reopened);
+        assert_eq!(finish(host), exit::OK);
+    }
+
+    #[test]
+    fn a_layout_that_is_none_closes_the_channel_and_leaves_the_kept_one() {
+        let profile = Profile::new("bad-layout");
+        let _host = profile.host(true, Duration::from_millis(100));
+        let kept = panels(true, 354, "nexees-area-agent");
+        let mut good = window(&profile);
+        layout_after(&mut good, &ClientMessage::StoreLayout(kept.clone()));
+        let hidden = r#"{"shown":false,"size":null,"selected":null}"#;
+        let storing = |left: &str| {
+            format!(r#"{{"store_layout":{{"left":{left},"right":{hidden},"bottom":{hidden}}}}}"#)
+        };
+        for bad in [
+            // A size that is none, a view name that is no identifier, another client's name, a
+            // field that rides along.
+            storing(r#"{"shown":true,"size":0,"selected":null}"#),
+            storing(r#"{"shown":false,"size":null,"selected":"../x"}"#),
+            r#"{"load_layout":{"client_id":"another-window"}}"#.to_owned(),
+            storing(r#"{"shown":false,"size":null,"selected":null,"run":"x"}"#),
+        ] {
+            let mut rude = raw_window(&profile);
+            send_frame(&mut rude, &bad);
+            // The host answers nothing and closes: the read ends without a byte.
+            let mut answer = Vec::new();
+            assert_eq!(rude.read_to_end(&mut answer).unwrap(), 0, "{bad}");
+        }
+        assert_eq!(
+            layout_after(&mut good, &ClientMessage::LoadLayout {}),
+            Some(kept)
+        );
+    }
+
+    #[test]
+    fn a_window_of_the_first_protocol_is_served_but_refused_the_layout_messages() {
+        let profile = Profile::new("layout-v1");
+        let _host = profile.host(true, Duration::from_millis(100));
+        let mut old = Connection::connect(&profile.folder()).unwrap();
+        old.set_timeout(Some(Duration::from_secs(5))).unwrap();
+        let first = Hello::new(ProtocolVersions { min: 1, max: 1 }).unwrap();
+        old.send(&ClientMessage::Hello(first)).unwrap();
+        assert!(matches!(old.receive().unwrap(), HostMessage::Hello(_)));
+        // What the first protocol has still works.
+        assert!(device_of(&mut old).as_str().starts_with("desktop-"));
+        // What it does not have is refused: the two agreed on version 1.
+        old.send(&ClientMessage::LoadLayout {}).unwrap();
+        assert_eq!(old.receive::<HostMessage>().unwrap_err(), IpcError::Closed);
     }
 
     #[test]

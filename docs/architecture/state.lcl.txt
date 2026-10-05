@@ -53,7 +53,7 @@ DATA:
         copies: "None. Another device's focus is never applied implicitly; a view transfer happens only on the user's explicit request (A6)."
         sync_policy: "never"
         sensitivity: "ordinary"
-        notes: "Authoritative for presentation only. It is never an input to authorization, agent binding, command targeting, import destination or model switching (C2, R11, RC-20)."
+        notes: "Authoritative for presentation only. It is never an input to authorization, agent binding, command targeting, import destination or model switching (C2, R11, RC-20). TASK-012 keeps one panel layout per client (nexees.client.layout): which panels of its window are shown, their sizes and their selected views; what a client keeps per workspace follows with TASK-016. Until then the Desktop foundation keeps the rest of its own layout, which view stands in which panel and the open editors, in the window's profile."
         schema_tasks: ["TASK-012", "TASK-016"]
 
 DATA:

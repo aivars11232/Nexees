@@ -10,6 +10,10 @@
 // as core/protocol defines them. The window opens with its hello, keeps the host only when the
 // two share a protocol version, and resyncs to the host's status.
 //
+// From protocol version 2 the window also gives the host its panel layout to keep, and asks for
+// it when it starts (ST-VIEW). The host answers such a request with the layout it keeps, in the
+// order of the requests. With a host of version 1 the window does without.
+//
 // When the channel closes, the window tries again a bounded number of times with growing pauses,
 // then shows the host as unavailable until the user asks again (RC-06, RC-08). When the window
 // leaves, it detaches by closing the channel; whether the host then stops is the host's decision
@@ -30,13 +34,17 @@ import { execFile } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as net from 'node:net';
 import * as path from 'node:path';
-import { HOST_CONNECTION_PATH, HostConnectionClient, HostConnectionService, HostState } from './main.protocol';
+import {
+    HOST_CONNECTION_PATH, HostConnectionClient, HostConnectionService, HostState, PanelLayout, panelLayout,
+} from './main.protocol';
 
 /** The largest message on the local channel, in bytes (`binding.sec_max_ipc_message`). */
 const MAX_MESSAGE_BYTES = 4096;
 /** The protocol versions this window speaks, and the minimum secure one (core/protocol). */
-const VERSIONS = { min: 1, max: 1 };
+const VERSIONS = { min: 1, max: 2 };
 const MIN_SECURE_VERSION = 1;
+/** The first protocol version that has the panel layout messages (core/protocol). */
+const LAYOUT_SINCE_VERSION = 2;
 /** The pauses before each new attempt after the channel closed; there are no more (RC-08). */
 const RETRY_PAUSES_MS = [500, 1000, 2000, 4000, 8000];
 /** How long `nexees-host start` may take, and how long the host has for each answer. */
@@ -98,10 +106,16 @@ export class HostAttachment implements BackendApplicationContribution {
     protected socket: net.Socket | undefined;
     protected retries = 0;
     protected stopped = false;
+    /** The first attempt to attach; a request for the kept layout waits for it to end. */
+    protected firstAttempt: Promise<void> = Promise.resolve();
+    /** The answers the host still owes, oldest first: it answers a window's requests in order. */
+    protected readonly awaited: Array<(answer: [string, unknown] | undefined) => void> = [];
+    /** The newest layout the window stored while no host could take it. */
+    protected waiting: PanelLayout | undefined;
 
     onStart(): void {
         // Not in initialize(): the window's backend does not wait for the host to start.
-        void this.attach();
+        this.firstAttempt = this.attach();
     }
 
     onStop(): void {
@@ -127,6 +141,46 @@ export class HostAttachment implements BackendApplicationContribution {
         return this.state;
     }
 
+    async loadLayout(): Promise<PanelLayout | undefined> {
+        await this.firstAttempt;
+        const [kind, kept] = await this.ask({ load_layout: {} }) ?? [];
+        return kind === 'layout' ? panelLayout(kept) : undefined;
+    }
+
+    async storeLayout(layout: unknown): Promise<boolean> {
+        const checked = panelLayout(layout);
+        if (!checked) {
+            return false;
+        }
+        const [kind, kept] = await this.ask({ store_layout: checked }) ?? [];
+        if (kind === 'layout' && panelLayout(kept)) {
+            return true;
+        }
+        this.waiting = checked;
+        return false;
+    }
+
+    /**
+     * Sends a request the host answers with one message, and resolves with that answer as its
+     * kind and body. Resolves with undefined when no host of a protocol version with layouts is
+     * attached, or when the channel closes first; a host that does not answer in time is taken
+     * for lost, and its channel is closed.
+     */
+    protected ask(request: unknown): Promise<[string, unknown] | undefined> {
+        const socket = this.socket;
+        if (!socket || this.state.kind !== 'attached' || this.state.protocol < LAYOUT_SINCE_VERSION) {
+            return Promise.resolve(undefined);
+        }
+        return new Promise(resolve => {
+            const timer = setTimeout(() => socket.destroy(), ANSWER_TIMEOUT_MS);
+            this.awaited.push(answer => {
+                clearTimeout(timer);
+                resolve(answer);
+            });
+            socket.write(frame(request));
+        });
+    }
+
     protected setState(state: HostState): void {
         this.state = state;
         for (const listener of this.listeners) {
@@ -139,7 +193,8 @@ export class HostAttachment implements BackendApplicationContribution {
         try {
             await startHost(hostProgram());
             const socket = await connect(path.join(channelFolder(), 'host.sock'));
-            const { device, protocol } = await handshake(socket);
+            // After the hellos the host sends only answers to this window's requests.
+            const { device, protocol } = await handshake(socket, message => this.awaited.shift()?.(variant(message)));
             if (this.stopped) {
                 socket.destroy();
                 return;
@@ -148,6 +203,11 @@ export class HostAttachment implements BackendApplicationContribution {
             this.retries = 0;
             socket.once('close', () => this.lost('the channel to the host closed'));
             this.setState({ kind: 'attached', device, protocol });
+            const waiting = this.waiting;
+            if (waiting) {
+                this.waiting = undefined;
+                void this.storeLayout(waiting);
+            }
         } catch (error) {
             this.lost(error instanceof Unavailable ? error.message : `the host could not be reached: ${String(error)}`);
         }
@@ -156,6 +216,10 @@ export class HostAttachment implements BackendApplicationContribution {
     /** After a failed or closed attachment: try again after the next pause, or give up. */
     protected lost(reason: string): void {
         this.socket = undefined;
+        // No answer comes on a closed channel.
+        for (const resolve of this.awaited.splice(0)) {
+            resolve(undefined);
+        }
         if (this.stopped) {
             return;
         }
@@ -312,9 +376,9 @@ export function negotiate(theirs: unknown): number | undefined {
 /**
  * The hellos and the first resync. Resolves with the host's device and the protocol version, or
  * rejects, closing the socket, when the host speaks no common version, sends anything else or
- * does not answer in time.
+ * does not answer in time. Every later message of the host goes to `onLater`.
  */
-function handshake(socket: net.Socket): Promise<{ device: string; protocol: number }> {
+function handshake(socket: net.Socket, onLater: (message: unknown) => void): Promise<{ device: string; protocol: number }> {
     return new Promise((resolve, reject) => {
         let protocol: number | undefined;
         const fail = (reason: string) => {
@@ -342,8 +406,8 @@ function handshake(socket: net.Socket): Promise<{ device: string; protocol: numb
             socket.removeAllListeners('data');
             socket.removeAllListeners('error');
             socket.off('close', closed);
-            // Attached: later messages are checked as frames; the window shows no events yet.
-            const later = new FrameReader(() => undefined, () => socket.destroy());
+            // Attached: later messages are checked as frames and handed on.
+            const later = new FrameReader(onLater, () => socket.destroy());
             socket.on('data', chunk => later.push(bytes(chunk)));
             socket.on('error', () => socket.destroy());
             resolve({ device, protocol });
@@ -370,6 +434,8 @@ export default new ContainerModule(bind => {
         const service: HostConnectionService = {
             getState: async () => attachment.getState(),
             retry: () => attachment.retry(),
+            loadLayout: () => attachment.loadLayout(),
+            storeLayout: layout => attachment.storeLayout(layout),
         };
         return service;
     })).inSingletonScope();

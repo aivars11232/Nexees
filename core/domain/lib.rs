@@ -28,8 +28,9 @@
 //! - **Versioned records.** Every stored or sent record has a unique schema name and a version
 //!   ([`schema::Versioned`]); another name or version is refused.
 //! - **Explicit bindings.** Sessions, tasks, imports, handoffs and requests name their device,
-//!   workspace and revisions. UI focus ([`client::ClientState`]) is never one of their inputs,
-//!   and a revision of another workspace is rejected (C2, C21, R11).
+//!   workspace and revisions. What a client shows ([`client::ClientState`],
+//!   [`client::ClientLayout`]) is never one of their inputs, and a revision of another
+//!   workspace is rejected (C2, C21, R11).
 //! - **Separate planes.** Control records (grants, approvals, requests), synchronized records and
 //!   UI focus are different types, and each record declares whether it may travel
 //!   ([`schema::SyncPolicy`]); authority never does (C22, AD-04, AD-05).

@@ -165,6 +165,13 @@ identifier!(
     check_id
 );
 identifier!(
+    /// A view of a UI client as the client itself names it, such as a sidebar view or a
+    /// bottom-panel view of the Desktop window. A host keeps the name and gives it back; it
+    /// reads no meaning into it.
+    ViewId,
+    check_id
+);
+identifier!(
     /// A remote request: unique per request and never reused (RC-17).
     RequestId,
     check_id

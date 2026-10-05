@@ -217,7 +217,7 @@ DATA:
         boundary_id: "TB-01"
         name: "Window and local host"
         between: "A UI client and its own device's local host"
-        crossing: "Typed user intents in; state snapshots and events out (IF-ATTACH). On Desktop this is local IPC between processes."
+        crossing: "Typed user intents and the client's own view state in; state snapshots, events and that view state out (IF-ATTACH). On Desktop this is local IPC between processes."
         rule: "The host admits only its own OS user, bounds and validates every message, and authorizes every intent with the same permission engine."
         invariants: ["SI-17", "SI-02"]
         enforced_by: ["SS-LOCAL-HOST", "SS-DESKTOP-CLIENT", "SS-ANDROID-CLIENT", "SS-DOMAIN-PROTOCOL", "IF-ATTACH"]

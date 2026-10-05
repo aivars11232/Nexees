@@ -25,7 +25,7 @@ use std::time::Duration;
 
 use nexees_domain::authority::{Approval, PermissionGrant, RemoteGrant};
 use nexees_domain::changes::ContentChange;
-use nexees_domain::client::ClientState;
+use nexees_domain::client::{ClientLayout, ClientState};
 use nexees_domain::device::{HostCapabilities, PeerDevice};
 use nexees_domain::errors::{DomainError, ErrorKind};
 use nexees_domain::handoff::Handoff;
@@ -224,6 +224,7 @@ stored! {
     PeerDevice => |r| r.fields().device_id.as_str().into();
     HostCapabilities => |r| r.fields().device_id.as_str().into();
     ClientState => |r| r.client_id.as_str().into();
+    ClientLayout => |r| r.client_id.as_str().into();
     PermissionGrant => |r| r.fields().grant_id.as_str().into();
     RemoteGrant => |r| r.fields().grant_id.as_str().into();
     Approval => |r| r.fields().approval_id.as_str().into();
@@ -806,9 +807,12 @@ pub(crate) mod tests {
     use std::sync::atomic::{AtomicU64, Ordering};
 
     use super::*;
+    use crate::migrations::migration_registry::SCHEMA_VERSION;
+    use crate::migrations::migration_registry::tests::then;
     use crate::operation_journal::{EffectState, JournalEntry, JournalEntryFields};
     use nexees_domain::authority::{ApprovalFields, Direction, RemoteGrantFields, ScopeEntry};
     use nexees_domain::changes::{ChangeKind, ContentChangeFields};
+    use nexees_domain::client::{PanelLayout, PanelLayoutFields, PanelState};
     use nexees_domain::device::{DeviceKind, PeerDeviceFields, ProtocolVersions, TrustState};
     use nexees_domain::errors::Outcome;
     use nexees_domain::ids::{
@@ -1124,12 +1128,9 @@ pub(crate) mod tests {
         };
         let db = PathBuf::from(db);
         if scenario == "migration" {
-            let steps = [
-                MIGRATIONS[0],
-                crate::migrations::migration_registry::tests::CRASHING_V2,
-            ];
+            let steps = then(crate::migrations::migration_registry::tests::CRASHING_NEXT);
             let _ = StateStore::open_with(&db, at(900), &steps);
-            unreachable!("the second step crashes");
+            unreachable!("the step after this build's crashes");
         }
         let (mut store, _) = StateStore::open(&db, at(900)).unwrap();
         store
@@ -1167,7 +1168,7 @@ pub(crate) mod tests {
         assert_eq!(
             opened,
             Opened {
-                schema_version: 1,
+                schema_version: SCHEMA_VERSION,
                 migrated_from: Some(0),
                 previous_session: PreviousSession::None,
                 interrupted: Interrupted::default(),
@@ -1220,6 +1221,45 @@ pub(crate) mod tests {
         );
         assert_eq!(store.get::<Task>("w").unwrap(), None, "keys are per schema");
         assert!(store.check_integrity().is_ok());
+    }
+
+    /// A client's layout with the right sidebar as given and the other panels fixed.
+    fn layout(client: &str, right_shown: bool, right_size: u32) -> ClientLayout {
+        let panel = |shown, size, view: &str| PanelState {
+            shown,
+            size: Some(size),
+            selected: Some(nexees_domain::ids::ViewId::new(view).unwrap()),
+        };
+        ClientLayout {
+            client_id: nexees_domain::ids::ClientId::new(client).unwrap(),
+            device_id: DeviceId::new("pc").unwrap(),
+            panels: PanelLayout::try_from(PanelLayoutFields {
+                left: panel(true, 203, "explorer-view-container"),
+                right: panel(right_shown, right_size, "nexees-area-tasks"),
+                bottom: panel(true, 167, "terminal-0"),
+            })
+            .unwrap(),
+        }
+    }
+
+    #[test]
+    fn a_clients_layout_is_one_record_that_its_next_layout_replaces() {
+        let scratch = Scratch::new("layout");
+        let (mut store, _) = StateStore::open(&scratch.db(), at(1)).unwrap();
+        assert_eq!(store.get::<ClientLayout>("desktop-window").unwrap(), None);
+        store
+            .write(at(2), |w| w.put(&layout("desktop-window", true, 354)))
+            .unwrap();
+        store
+            .write(at(3), |w| w.put(&layout("desktop-window", false, 420)))
+            .unwrap();
+        store.close(at(4)).unwrap();
+        // After a restart the host finds the layout the client stored last, and only that one.
+        let (store, _) = StateStore::open(&scratch.db(), at(5)).unwrap();
+        assert_eq!(
+            store.all::<ClientLayout>().unwrap(),
+            vec![layout("desktop-window", false, 420)]
+        );
     }
 
     #[test]
@@ -1352,7 +1392,7 @@ pub(crate) mod tests {
             StateStore::open(&scratch.db(), at(3)).map(|_| ()),
             Err(StateError::NewerSchema {
                 found: 7,
-                supported: 1
+                supported: SCHEMA_VERSION
             })
         );
         assert_eq!(
@@ -1586,12 +1626,9 @@ pub(crate) mod tests {
         store.close(at(3)).unwrap();
         let before = bodies(&db);
         // Update: the next schema version, which adds an index and changes no record.
-        let steps = [
-            MIGRATIONS[0],
-            crate::migrations::migration_registry::tests::INDEX_V2,
-        ];
+        let steps = then(crate::migrations::migration_registry::tests::INDEX_NEXT);
         let (store, opened) = StateStore::open_with(&db, at(4), &steps).unwrap();
-        assert_eq!(opened.migrated_from, Some(1));
+        assert_eq!(opened.migrated_from, Some(SCHEMA_VERSION));
         store.close(at(5)).unwrap();
         // Restart.
         let (store, opened) = StateStore::open_with(&db, at(6), &steps).unwrap();
@@ -1653,8 +1690,9 @@ pub(crate) mod tests {
 
     #[test]
     fn the_record_set_changes_only_with_a_migration() {
-        // Schema version 1 stores exactly these records at these versions. Adding a record, or
-        // changing one's version, needs a new migration step and a new entry here.
+        // Schema version 2 stores exactly these records at these versions; it added the client
+        // layout to those of version 1. Adding a record, or changing one's version, needs a new
+        // migration step and a new entry here.
         let stored: Vec<_> = RECORDS.iter().map(|r| (r.schema, r.version)).collect();
         assert_eq!(
             stored,
@@ -1665,6 +1703,7 @@ pub(crate) mod tests {
                 ("nexees.device.peer", 1),
                 ("nexees.device.host_capabilities", 1),
                 ("nexees.client.state", 1),
+                ("nexees.client.layout", 1),
                 ("nexees.authority.permission_grant", 1),
                 ("nexees.authority.remote_grant", 1),
                 ("nexees.authority.approval", 1),
@@ -1680,7 +1719,7 @@ pub(crate) mod tests {
                 ("nexees.import.transaction", 1),
             ]
         );
-        assert_eq!(crate::migrations::migration_registry::SCHEMA_VERSION, 1);
+        assert_eq!(SCHEMA_VERSION, 2);
         // Requests, approvals and grants are records that never travel: they have no way into
         // the outbox, whose only body is a content change.
         assert!(!<Approval as Record>::SYNC.travels());

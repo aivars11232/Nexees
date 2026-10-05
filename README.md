@@ -151,7 +151,18 @@ TASK-011 gave the window the approved layout.
   Logs. No task has filled an area yet, and each says so.
 - Every region is Theia's own panel, arranged in [apps/desktop/src/shell/](apps/desktop/src/shell/).
 
-What Nexees keeps of the layout the user leaves behind, and where, is the subject of TASK-012.
+TASK-012 made the window remember its panels.
+- Which of the left sidebar, the right sidebar and the bottom panel are shown, their sizes and
+  their selected views are the window's view state. The window gives it to the Nexees host,
+  which keeps it in the device's state store, and gets it back when it starts
+  ([apps/desktop/src/shell/panel_memory.ts](apps/desktop/src/shell/panel_memory.ts)).
+- So the panels come back as the user left them: after the window was closed, after it was
+  stopped unexpectedly, and on a profile in which Theia has stored nothing.
+- The layout is presentation only. It is a typed record of the shared domain model
+  (`core/domain/client.rs`), carried by two new messages of the window's channel, which made
+  protocol version 2 and schema version 2 of the state store.
+- It is one layout for the window. What a client remembers per workspace comes with the
+  workspaces (TASK-013 to TASK-016).
 
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.

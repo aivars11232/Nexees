@@ -175,7 +175,7 @@ mod tests {
     use super::*;
     use crate::authority::{Approval, PermissionGrant, RemoteGrant};
     use crate::changes::ContentChange;
-    use crate::client::ClientState;
+    use crate::client::{ClientLayout, ClientState};
     use crate::device::{HostCapabilities, PeerDevice};
     use crate::handoff::Handoff;
     use crate::import::ImportTransaction;
@@ -197,6 +197,7 @@ mod tests {
             entry::<PeerDevice>(),
             entry::<HostCapabilities>(),
             entry::<ClientState>(),
+            entry::<ClientLayout>(),
             entry::<AgentSession>(),
             entry::<ExecutionTransfer>(),
             entry::<Task>(),

@@ -1,0 +1,54 @@
+TASK-012 required reading, recorded 2026-10-05T14:05:00+02:00.
+Pack: /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3, content identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1, the same pack TASK-002 to TASK-011 read.
+"same as TASK-011" means the file's SHA-256 equals the hash in TASK-011's logs/required_reading.txt.
+
+== Read for TASK-012 ==
+The session's context was compacted during TASK-011, so the documents the task names as required reading, the continuation
+profile and usage guide it tells to read first, and the three documents of the mandatory order that bear on what this task
+keeps (the persistent state model, the workspace model and the acceptance criteria) were read again from the pack, not taken
+from memory.
+01 5b1112b69879418d52b31725ce37e5967f301647bef20c34bcd9b4705c65ba47  tasks/task_012.lcl.txt  [not in TASK-011's list; read in full, as the dispatched packet delivers it: the objective and the scope (persist panel widths, visibility, selected tabs and layout state, without multi-workspace semantics yet), the reuse-first requirement, the three security requirements, the verification list and the completion gate]
+02 319c19c730973b831dec5ef648b0e9548a0e80eb0a9731286da0b48f52270466  architecture/desktop_ui.lcl.txt  [same as TASK-011; required by TASK-012; read again in full: the required regions, among them the two sidebars and the bottom panel whose state this task keeps]
+03 d50fc3a3e4f6487861289b7088d7b0289c7543bda253566584ee0484733917e6  architecture/persistent_state_model.lcl.txt  [same as TASK-011; read again in full, as the subject of this task: provider-independent state with stable IDs, an explicit schema version, migration support, crash-safe writes and integrity checks, and no redundant state store]
+04 e0a2c21d22a13037f7188f3131050e99b02a44880ffa8b947a8c9cbfeae605c2  architecture/workspace_model.lcl.txt  [same as TASK-011; read again in full, for what this task leaves to the workspaces: the UI state each workspace preserves, and the steps of a foreground switch]
+05 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9  policies/task_002_075_continuation.lcl.txt  [same as TASK-011; read again in full (CA-01 to CA-12)]
+06 cd49629e16e714a0dc40bceaca81470330d9868ff1eed9451f06dbb35d7f3f97  policies/code_readability_and_cleanup.lcl.txt  [same as TASK-011; required by TASK-012; read again in full (Q1 to Q5)]
+07 8b8cc8813dc12b6b7237bb5a952b6dc5e2847631919a4ca4ed6357fd8f5fae85  policies/no_unnecessary_code.lcl.txt  [same as TASK-011; required by TASK-012; read again in full; rule 03 on duplicate state stores and validators bears on this task]
+08 638e4d6d8f433f3996dd349eca02479de4cf06c8b95ef8b5a4d728a327182875  architecture/manuals_and_help.lcl.txt  [same as TASK-011; required by TASK-012; read again in full, for the manual update and its truthfulness rule]
+09 2307183519d203e547a031a11dde634a5222588febfd6bd706e429d8ca8473a5  policies/master_rules.lcl.txt  [same as TASK-011; required by TASK-012; read again in full (R1 to R31); R5 to R9, R13, R25 and R26 bear on this task]
+10 ad16c8b61cd9c84d5dc60884e2900e858594d3f2ccaf5c912b40401a388c180f  policies/global_contracts.lcl.txt  [same as TASK-011; required by TASK-012; read again in full (C1 to C31); C2, C5, C15, C17 and C25 bear on this task]
+11 51677c6af1cb4f045fa2a9672acd3536198bb75d1482f145cf0860eea4950c6e  bindings/bindings.lcl.txt  [same as TASK-011; required by TASK-012; read again in full (B1 to B26 and the remote-control bindings); B11 for the shared schema, B26 for the checkout]
+12 afa9b2dcb9b3df808097c8e4fa1b350403b054a08956fa14cfbe99417847bfed  checks/stop_conditions.lcl.txt  [same as TASK-011; required by TASK-012; read again in full; none applied]
+13 666b655bb987f453d3c577e3922c8915b055244c002f9d9ec186ca8358f336cf  reuse/reuse_matrix.lcl.txt  [same as TASK-011; required by the reuse-first requirement; read again in full: components inherited from the chosen IDE foundation come first, and no second database for local persistence]
+14 aec37d86e486f2d403797d6a61c0cd199aaf2a3173938706a1310d770a16540a  guidance/usage.lcl.txt  [same as TASK-011; read again in full]
+15 2fc8668acfe23069eb4a9fe378729a55e2a65e7ac409c70bfc4cd0263ff98473  policies/acceptance_criteria.lcl.txt  [same as TASK-011; read again in full: workspaces preserve UI state, a restart restores state, a recoverable crash loses no authoritative progress, and versioned state migrations are tested]
+
+== The rest of the mandatory read order, reused ==
+Read in full for an earlier task and byte-identical now, so reused as the continuation profile allows.
+01 b049368991443c6ac7ea248c15ec675c9e1a6296bdb5f0fbc62d328c083ce8b1  architecture/android_ui.lcl.txt  [same as TASK-011; reused]
+02 b8382ec17bcaa75317b26ce8238305d8d004f2a9aaf1ed9d6038b56ee4bd8a02  policies/reuse_policy.lcl.txt  [same as TASK-011; reused]
+03 ae0d3943cf66ce8afe131eadd66f35eab9077bb04c60a838a5404636cef053f0  policies/security_baseline.lcl.txt  [same as TASK-011; reused]
+04 5b68c8feaa79dc6c43782f6a0a0c4949367ec34af6c4e2f5321fd40e387ab547  policies/usage_and_agents.lcl.txt  [same as TASK-011; reused]
+05 ce1115d1e1db3da02dda7484959a11d5e7e028d6fea1143224759e204fa6510f  bindings/read_order.lcl.txt  [same as TASK-011; reused]
+06 2f65ff575dbfade3fde459efd125c62e5f7d0a47874b2dbf6d5c22b289443956  architecture/system_architecture.lcl.txt  [same as TASK-011; reused]
+07 7dcf4e8a1765d5d6404e0594d10933aa315337b9b43e9f0d5152192dedb23d20  architecture/android_operating_model.lcl.txt  [same as TASK-011; reused]
+08 7d91532203589febd37811a0e28adb4e81e87a70951da50f80bfd542a5eba145  architecture/remote_device_control.lcl.txt  [same as TASK-011; reused]
+09 544ac6195525b0d6019aae1ee326e6bfeddb4c55907346744201f0fad29fafd5  verification/remote_control_acceptance.lcl.txt  [same as TASK-011; reused]
+10 c8c1e700d0ff0ab17ff26e1a093d0461e601aaab496900035b0c051ebaae1729  verification/security_gate.lcl.txt  [same as TASK-011; reused]
+11 c2e67f60229a5a5d106a82ef4b8caf33ad24b0b0f624af5bcb297b22754c0e65  verification/test_strategy.lcl.txt  [same as TASK-011; reused]
+12 3529983147c2af3a3d0767f7698f72f094017feed4f06df9eb0b0e1565a477ac  checks/runtime_gates.lcl.txt  [same as TASK-011; reused]
+13 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836  accept_task.lcl.txt  [same as TASK-011; reused]
+14 5166634ebfdab4e67a9876b68c7b9d085f309f479f4e41756adff7939b4d4f9d  main.lcl.txt  [same as TASK-011; reused]
+15 960dedd6f7c1bc90bed915f75455ba770b38f3b4dc37c519e765bb7e98ae10e3  README_FIRST.txt  [same as TASK-011; reused]
+
+Documents changed since their last recorded read: none
+Unverified reuse: none
+
+Other sources read for this task, none of them downloaded: the repository's own records that name TASK-012 (docs/architecture:
+the state catalogue's ST-VIEW, the failure domain FD-UI-CLIENT, the interface IF-ATTACH and the subsystems it joins; docs/security:
+the boundary TB-01, the threat TH-01 and the invariant SI-17), the code the panel layout passes through (core/domain, core/protocol,
+core/state with its migration registry, the Desktop host and the window's backend), and the sources of the foundation as the
+Desktop build folder holds them (Eclipse Theia 1.76.0: how it stores and restores its layout, its storage services, and how its
+shell and side panels report and take their sizes, visibility and selected views).
+External sources consulted: none. No download by any command of the task: npm, Electron and the native builds ran
+offline from the isolated caches, and the application under test connected to nothing (the end-to-end test checks it).

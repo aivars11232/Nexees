@@ -1,7 +1,8 @@
 //! The message families of the protocol, kept apart (IF-ATTACH, IF-REMOTE, IF-SYNC, C22, AD-05).
 //!
 //! - A window and its own host exchange [`ClientMessage`] and [`HostMessage`] over local IPC:
-//!   intents, acknowledgments, status and ordered domain events.
+//!   intents, acknowledgments, status and ordered domain events, and the panel layout the host
+//!   keeps for the window (ST-VIEW).
 //! - Two paired hosts exchange [`PeerMessage`], which holds exactly one family per message:
 //!   [`RemoteMessage`] for requests, acknowledgments, reconciliation, status and execution
 //!   transfers, or [`SyncMessage`] for content changes and portable records. The sync family has no
@@ -23,6 +24,7 @@
 //! Neither reconnect touches bindings, ownership or focus (RC-20).
 
 use nexees_domain::changes::ContentChange;
+use nexees_domain::client::PanelLayout;
 use nexees_domain::errors::{Blocker, DomainError, ErrorKind, Outcome};
 use nexees_domain::events::{AgentRunState, DomainEvent};
 use nexees_domain::ids::{
@@ -47,7 +49,7 @@ use crate::operations::{LocalIntent, RemoteRequest};
 use crate::serialization::{
     Base64Bytes, MAX_FRAME_BYTES, MAX_IPC_MESSAGE_BYTES, ProtocolError, decode,
 };
-use crate::version_negotiation::Hello;
+use crate::version_negotiation::{Hello, LAYOUT_SINCE_VERSION};
 
 /// Most request IDs one reconciliation may name.
 pub const MAX_RECONCILE: usize = 256;
@@ -725,6 +727,24 @@ pub enum ClientMessage {
         /// The last event the window applied; absent when it has none.
         after: Option<EventSeq>,
     },
+    /// Asks for the panel layout the host keeps for this client; answered by
+    /// [`HostMessage::Layout`]. From protocol version 2.
+    LoadLayout {},
+    /// The client's panels as they are now, for the host to keep as its view state (ST-VIEW);
+    /// answered by [`HostMessage::Layout`] with what the host then keeps. It names no client:
+    /// the host keeps it for the client on this channel. From protocol version 2.
+    StoreLayout(PanelLayout),
+}
+
+impl ClientMessage {
+    /// The first protocol version that has this message. A host refuses a message newer than
+    /// the version it agreed on with the window.
+    pub const fn since(&self) -> u32 {
+        match self {
+            Self::Hello(_) | Self::Intent(_) | Self::Resync { .. } => 1,
+            Self::LoadLayout {} | Self::StoreLayout(_) => LAYOUT_SINCE_VERSION,
+        }
+    }
 }
 
 /// Messages from a host to one of its windows.
@@ -739,6 +759,10 @@ pub enum HostMessage {
     Status(HostStatus),
     /// The next event of the stream.
     Event(SequencedEvent),
+    /// The panel layout the host keeps for this client, or none: the answer to
+    /// [`ClientMessage::LoadLayout`] and [`ClientMessage::StoreLayout`]. It is presentation
+    /// only, never an instruction (ST-VIEW). From protocol version 2.
+    Layout(Option<PanelLayout>),
 }
 
 /// The remote-control family between paired hosts.
@@ -1138,6 +1162,54 @@ pub(crate) mod tests {
             decode_client(&oversized),
             Err(ProtocolError::TooLarge { .. })
         ));
+    }
+
+    #[test]
+    fn a_windows_layout_messages_are_small_strict_and_of_protocol_version_2() {
+        let panels = concat!(
+            r#"{"left":{"shown":true,"size":203,"selected":"explorer-view-container"},"#,
+            r#""right":{"shown":false,"size":354,"selected":"nexees-area-tasks"},"#,
+            r#""bottom":{"shown":true,"size":167,"selected":null}}"#
+        );
+        let layout: PanelLayout = serde_json::from_str(panels).unwrap();
+        let store = ClientMessage::StoreLayout(layout.clone());
+        let bytes = encode(&store, MAX_IPC_MESSAGE_BYTES).unwrap();
+        assert_eq!(
+            String::from_utf8(bytes.clone()).unwrap(),
+            format!(r#"{{"store_layout":{panels}}}"#)
+        );
+        assert_eq!(decode_client(&bytes).unwrap(), store);
+        assert_eq!(
+            decode_client(br#"{"load_layout":{}}"#).unwrap(),
+            ClientMessage::LoadLayout {}
+        );
+        let kept = encode(&HostMessage::Layout(Some(layout)), MAX_IPC_MESSAGE_BYTES).unwrap();
+        assert_eq!(
+            String::from_utf8(kept).unwrap(),
+            format!(r#"{{"layout":{panels}}}"#)
+        );
+        assert_eq!(
+            decode_host(br#"{"layout":null}"#).unwrap(),
+            HostMessage::Layout(None)
+        );
+        // A window names no client and no target, and a size that is none is refused before the
+        // host looks at anything else.
+        for bad in [
+            r#"{"load_layout":{"client_id":"another-window"}}"#.to_owned(),
+            format!(r#"{{"store_layout":{panels},"client_id":"another-window"}}"#),
+            format!(r#"{{"store_layout":{}}}"#, panels.replace("203", "0")),
+            format!(
+                r#"{{"store_layout":{}}}"#,
+                panels.replace(r#""size":203"#, r#""workspace":"w","size":203"#)
+            ),
+        ] {
+            assert!(decode_client(bad.as_bytes()).is_err(), "{bad}");
+        }
+        // Both messages belong to protocol version 2; everything older is of version 1.
+        assert_eq!(store.since(), LAYOUT_SINCE_VERSION);
+        assert_eq!(ClientMessage::LoadLayout {}.since(), LAYOUT_SINCE_VERSION);
+        assert_eq!(ClientMessage::Resync { after: None }.since(), 1);
+        assert_eq!(ClientMessage::Hello(Hello::current()).since(), 1);
     }
 
     fn transfer(state: TransferState) -> ExecutionTransfer {

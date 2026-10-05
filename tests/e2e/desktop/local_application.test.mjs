@@ -54,13 +54,23 @@
 //     holding no control; each toggle hides and shows its sidebar and follows it; in a window
 //     too narrow for the row the toggles and the window controls stay in view; the window
 //     controls work, the one that closes the window among them; and a reopened window comes
-//     back as it was closed.
+//     back as it was closed;
+// 14. what the window remembers of its panels (ST-VIEW, R13, C5): it gives the host its panels as
+//     the user leaves them, which are shown, their sizes and their selected views, and a sidebar
+//     hidden at once after an area was selected with that area; a reopened window has them
+//     again, and a sidebar that was hidden comes back with its view and its width; a window
+//     stopped without closing has them as they last settled; a change made in the moment before
+//     the window closes is not lost; with the foundation's stored layout removed from the
+//     profile the next window still has its panels, from the host; and what the user changes
+//     while the host cannot be reached stays in the window's profile and is given to the host
+//     once it can.
 //
 // It exits 0 when every check passes and prints one line per check.
 
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
+import * as net from 'node:net';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -576,6 +586,7 @@ const LAYOUT = `(async () => {
         area: area ? { text: area.innerText.trim(),
             controls: area.querySelectorAll('button, input, select, textarea, a, [role="button"], [tabindex="0"]').length } : null,
         bottomTab: document.querySelector('#theia-bottom-content-panel .lm-TabBar-tab.lm-mod-current')?.id ?? null,
+        rightTab: document.querySelector('#theia-right-content-panel .lm-TabBar-tab.lm-mod-current')?.id ?? null,
     });
 })()`;
 
@@ -607,6 +618,84 @@ async function clickTab(target, label) {
     return !!tab;
 }
 
+/** Drags the mouse from one point of the page to another in steps, as a user moving a border would. */
+async function drag(target, from, to) {
+    const devtools = await session(target);
+    try {
+        await devtools.send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...from });
+        await devtools.send('Input.dispatchMouseEvent', { type: 'mousePressed', ...from, button: 'left', clickCount: 1 });
+        for (let step = 1; step <= 10; step += 1) {
+            await devtools.send('Input.dispatchMouseEvent', { type: 'mouseMoved', button: 'left', buttons: 1,
+                x: from.x + (to.x - from.x) * step / 10, y: from.y + (to.y - from.y) * step / 10 });
+            await devtools.send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1, height: 1, scale: 1 } });
+        }
+        await devtools.send('Input.dispatchMouseEvent', { type: 'mouseReleased', ...to, button: 'left', clickCount: 1 });
+    } finally {
+        devtools.close();
+    }
+}
+
+/**
+ * The panel layout the host keeps, asked for on the host's own channel as a window asks
+ * (core/protocol): the hellos, then `load_layout`. Null when it keeps none.
+ */
+function keptLayout() {
+    return new Promise((resolve, reject) => {
+        const socket = net.createConnection(path.join(runtime, 'nexees', 'host.sock'));
+        const timer = setTimeout(() => socket.destroy(new Error('the host did not answer')), 5_000);
+        const say = message => {
+            const body = Buffer.from(JSON.stringify(message));
+            const length = Buffer.alloc(4);
+            length.writeUInt32BE(body.length);
+            socket.write(Buffer.concat([length, body]));
+        };
+        let received = Buffer.alloc(0);
+        let greeted = false;
+        socket.on('connect', () => say({ hello: { versions: { min: 1, max: 2 } } }));
+        socket.on('data', chunk => {
+            received = Buffer.concat([received, chunk]);
+            while (received.length >= 4 && received.length >= 4 + received.readUInt32BE(0)) {
+                const size = received.readUInt32BE(0);
+                const message = JSON.parse(received.subarray(4, 4 + size).toString('utf8'));
+                received = received.subarray(4 + size);
+                if (!greeted) {
+                    greeted = true;
+                    say({ load_layout: {} });
+                } else {
+                    clearTimeout(timer);
+                    socket.destroy();
+                    resolve(message.layout);
+                }
+            }
+        });
+        socket.on('error', error => {
+            clearTimeout(timer);
+            reject(error);
+        });
+    });
+}
+
+/**
+ * What the window shows of its three panels, in the terms of the layout the host keeps: for a
+ * shown panel its size and, where the page tells it, its selected view.
+ */
+function panelsOf(layout) {
+    const view = tab => tab?.replace(/^shell-tab-/, '') ?? null;
+    return {
+        left: layout.explorer ? { shown: true, size: Math.round(layout.left.w) } : { shown: false },
+        right: layout.right ? { shown: true, size: Math.round(layout.right.w), selected: view(layout.rightTab) } : { shown: false },
+        bottom: layout.bottom ? { shown: true, size: Math.round(layout.bottom.h), selected: view(layout.bottomTab) } : { shown: false },
+    };
+}
+
+/** Whether the layout the host keeps says what the window shows: for a shown panel its size and its view too. */
+function keeps(kept, panels) {
+    return !!kept && ['left', 'right', 'bottom'].every(name => {
+        const [held, seen] = [kept[name], panels[name]];
+        return held.shown === seen.shown && (!seen.shown || (near(held.size, seen.size, 1.5) && (seen.selected === undefined || held.selected === seen.selected)));
+    });
+}
+
 async function shown(target) {
     // Asking for one pixel of the page makes it draw a frame. Theia's start waits for a frame, and
     // the nested compositor draws none while the user's real session is locked: it then locks its
@@ -620,7 +709,8 @@ async function shown(target) {
  * workbench, answers Theia's question whether to trust a folder it has not seen with no (the
  * folder then opens in Restricted Mode), and opens the Explorer where a stored layout has it
  * closed; a new profile shows it open. Returns once the question is answered and the Explorer
- * lists the workspace's files. `extra` adds to the launcher's environment and arguments.
+ * lists the workspace's files. `extra` adds to the launcher's environment and arguments; with
+ * `asLeft` the window is left as it comes back, its Explorer open or not.
  */
 async function openWindow(workspace, extra = { env: {}, args: [] }) {
     const child = spawn(path.join(prefix, 'bin/nexees'),
@@ -652,8 +742,11 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
         // then the question may still come and cover the window, so the window is not ready. Nor is
         // it while its loading screen, though fading, still lies over the workbench and takes the clicks.
         const now = await shown(target);
-        if (now?.files.includes('hello.txt') && now.restricted && !now.loading) {
+        if (now?.restricted && !now.loading && (extra.asLeft || now.files.includes('hello.txt'))) {
             return now;
+        }
+        if (extra.asLeft) {
+            return undefined;
         }
         // Open the Explorer only while it is closed: a click on an open one would close it.
         const open = await evaluate(target, `(document.querySelector('#explorer-view-container')?.getBoundingClientRect().width ?? 0) > 0`);
@@ -923,10 +1016,20 @@ try {
     check('each area says that it is not available, and holds no control that could be taken for a working one',
         unfilled.join() === AREAS.join(), unfilled.join(', '));
 
-    // Each toggle hides its sidebar and shows it again as it was: in its width, and with the area that was selected, the last one.
-    const selected = (await layoutOf(first.target)).tabs.find(tab => tab.current)?.label;
+    // Each toggle hides its sidebar and shows it again as it was: in its width, and with the area that was selected. The
+    // user selects the Tasks area and hides the right sidebar at once, before the panels have settled.
+    const selected = 'Tasks';
+    await clickTab(first.target, selected);
     await click(first.target, '#nexees-toggle-right-sidebar');
     const noRight = await layoutWhen(first.target, 'the right sidebar to hide', l => !l.right);
+    // 14: the host is given the hidden sidebar with the area it showed last, though no layout was taken while it showed it.
+    const hiddenAtOnce = await until('the host to keep the right sidebar as hidden', async () => {
+        const layout = await keptLayout();
+        return layout?.right.shown === false ? layout : undefined;
+    }, 15_000).catch(() => keptLayout());
+    check('a sidebar hidden at once after an area was selected is kept with that area and its width',
+        hiddenAtOnce?.right.shown === false && hiddenAtOnce.right.selected === 'nexees-area-tasks' && near(hiddenAtOnce.right.size, right.w, 1.5),
+        `the host keeps: ${JSON.stringify(hiddenAtOnce?.right)}; the sidebar was ${right.w.toFixed(1)} px wide`);
     await click(first.target, '#nexees-toggle-right-sidebar');
     const rightAgain = await layoutWhen(first.target, 'the right sidebar to show', l => !!l.right && near(l.right.w, right.w));
     check('the right toggle hides the right sidebar whole, the editor taking its place, and shows it again in its width and with its area',
@@ -934,7 +1037,7 @@ try {
         && rightToggle.pressed === 'true' && rightToggle.icon === `codicon-${ICONS.sidebar_right_shown}` && rightToggle.label === 'Hide the right sidebar'
         && noRight.toggles[1].pressed === 'false' && noRight.toggles[1].icon === `codicon-${ICONS.sidebar_right_hidden}`
         && noRight.toggles[1].label === 'Show the right sidebar' && noRight.toggles[1].tip === noRight.toggles[1].label
-        && rightAgain.toggles[1].pressed === 'true' && rightAgain.tabs.find(tab => tab.current)?.label === selected && selected !== AREAS[0]
+        && rightAgain.toggles[1].pressed === 'true' && rightAgain.tabs.find(tab => tab.current)?.label === selected
         && near(rightAgain.right.x, rightAgain.editor.r),
         `hidden: ${noRight.toggles[1].label} (${noRight.toggles[1].icon}), editor to ${Math.round(noRight.editor.r)} of ${noRight.window.w}; `
         + `shown: ${Math.round(rightAgain.right.w)} px with ${selected}`);
@@ -1049,6 +1152,105 @@ try {
     check('the kept host outlives its windows (RC-04)', hostPids().includes(kept.pid));
     check('each reopened window wears the Nexees theme again, with no choice of the user behind it',
         themed.length === 3 && themed.every(Boolean), themed.join(', '));
+
+    // 14: what the window remembers of its panels, which the kept host keeps for it.
+    const asLeft = { env: {}, args: [], asLeft: true };
+    const orAsItIs = (window, what, wanted) => layoutWhen(window.target, what, wanted).catch(() => layoutOf(window.target));
+    const tabsOf = layout => layout.tabs.map(tab => tab.label).join(', ');
+    let window = await openWindow(workspace);
+    await attached(window);
+    const began = await layoutOf(window.target);
+    // The user selects the Tasks area, makes the right sidebar narrower, selects Problems in the
+    // bottom panel and hides the left sidebar.
+    await clickTab(window.target, 'Tasks');
+    const border = { x: began.right.x + 1, y: began.right.y + began.right.h / 2 };
+    await drag(window.target, border, { x: border.x + 90, y: border.y });
+    await click(window.target, '#shell-tab-problems');
+    await click(window.target, '#nexees-toggle-left-sidebar');
+    const changed = await orAsItIs(window, 'the panels as the user changed them', l => !l.explorer && l.rightTab === 'shell-tab-nexees-area-tasks'
+        && l.bottomTab === 'shell-tab-problems' && near(l.right?.w, began.right.w - 90, 3));
+    const keeping = await until('the host to keep the panels', async () => {
+        const layout = await keptLayout();
+        return keeps(layout, panelsOf(changed)) ? layout : undefined;
+    }, 15_000).catch(() => keptLayout());
+    check('the window gives the host its panels as the user leaves them: which are shown, their sizes and their selected views',
+        !changed.explorer && near(changed.right?.w, began.right.w - 90, 3) && keeps(keeping, panelsOf(changed)),
+        `the window: ${JSON.stringify(panelsOf(changed))}; the host keeps: ${JSON.stringify(keeping)}`);
+    await click(window.target, '#nexees-toggle-right-sidebar');
+    await orAsItIs(window, 'the right sidebar to hide', l => !l.right);
+    await until('the host to keep the right sidebar as hidden', async () => (await keptLayout())?.right.shown === false, 15_000).catch(() => undefined);
+    await closeWindow(window);
+
+    window = await openWindow(workspace, asLeft);
+    const reopened = await orAsItIs(window, 'the panels of the reopened window', l => !l.explorer && !l.right && !!l.bottom);
+    check('a reopened window has its panels as they were left: both sidebars hidden, the bottom panel in its height and with its view',
+        !reopened.explorer && !reopened.right && near(reopened.bottom?.h, changed.bottom?.h, 1.5) && reopened.bottomTab === 'shell-tab-problems',
+        `left sidebar ${reopened.explorer ? 'shown' : 'hidden'}, right sidebar ${reopened.right ? 'shown' : 'hidden'}; `
+        + `bottom panel ${reopened.bottom?.h.toFixed(1)} px for ${changed.bottom?.h.toFixed(1)}, ${reopened.bottomTab}`);
+    await click(window.target, '#nexees-toggle-right-sidebar');
+    const back = await orAsItIs(window, 'the right sidebar to come back', l => !!l.right && !!l.rightTab && !!l.area);
+    check('a sidebar that was hidden when the window closed comes back with the view and the width it had',
+        back.rightTab === 'shell-tab-nexees-area-tasks' && near(back.right?.w, changed.right?.w, 1.5),
+        `${back.rightTab} at ${back.right?.w.toFixed(1)} px for ${changed.right?.w.toFixed(1)}`);
+    // The user selects the Chat area and shows the left sidebar. Once the panels have settled, the
+    // window is stopped as a crash stops it.
+    await clickTab(window.target, 'Chat');
+    await click(window.target, '#nexees-toggle-left-sidebar');
+    const settled = await orAsItIs(window, 'the Chat area and the left sidebar', l => !!l.explorer && l.rightTab === 'shell-tab-nexees-area-chat');
+    await until('the host to keep them', async () => keeps(await keptLayout(), panelsOf(settled)) || undefined, 15_000).catch(() => undefined);
+    // Every process of the window at once: its main process, its page and its backend. The host
+    // is another program and goes on.
+    const ofTheWindow = () => sessionProcesses().filter(pid => exeOf(pid) === electron);
+    for (const pid of ofTheWindow()) {
+        try {
+            process.kill(pid, 'SIGKILL');
+        } catch {
+            // Gone with its parent.
+        }
+    }
+    await until('the stopped window\'s processes to be gone', async () => ofTheWindow().length === 0, 15_000);
+
+    window = await openWindow(workspace, asLeft);
+    const recovered = await orAsItIs(window, 'the panels of the window after the stop', l => !!l.explorer && l.rightTab === 'shell-tab-nexees-area-chat');
+    check('a window that was stopped without closing comes back with its panels as they last settled',
+        !!recovered.explorer && recovered.rightTab === 'shell-tab-nexees-area-chat'
+        && near(recovered.right?.w, settled.right?.w, 1.5) && near(recovered.left?.w, settled.left?.w, 1.5),
+        `left sidebar ${recovered.explorer ? `shown at ${recovered.left?.w.toFixed(1)} px` : 'hidden'}; `
+        + `right sidebar ${recovered.right?.w.toFixed(1)} px with ${recovered.rightTab}`);
+    // The user selects the Logs area; later hides the left sidebar and closes the window at once,
+    // before the panels have settled.
+    await clickTab(window.target, 'Logs');
+    await until('the host to keep the Logs area', async () => (await keptLayout())?.right.selected === 'nexees-area-logs' || undefined, 15_000).catch(() => undefined);
+    await click(window.target, '#nexees-toggle-left-sidebar');
+    await closeWindow(window);
+
+    window = await openWindow(workspace, asLeft);
+    const late = await orAsItIs(window, 'the panels with the late change', l => !l.explorer && l.rightTab === 'shell-tab-nexees-area-logs');
+    const taken = await until('the host to keep the late change', async () => (await keptLayout())?.left.shown === false || undefined, 15_000)
+        .then(() => true, () => false);
+    check('a change made in the moment before the window closes is not lost: the next window has it, and the host then keeps it',
+        !late.explorer && late.rightTab === 'shell-tab-nexees-area-logs' && taken,
+        `left sidebar ${late.explorer ? 'shown' : 'hidden'}, ${late.rightTab}; the host keeps the left sidebar as ${taken ? 'hidden' : 'shown'}`);
+    // The user opens Theia's Outline view, which takes a sixth tab of the right sidebar, and
+    // returns to the Logs area. Which views a panel holds is in Theia's own stored layout.
+    await runCommand(window.target, 'View: Toggle Outline');
+    await orAsItIs(window, 'the Outline view', l => l.rightTab === 'shell-tab-outline-view');
+    await clickTab(window.target, 'Logs');
+    const sixth = await orAsItIs(window, 'the Logs area beside the Outline view', l => l.rightTab === 'shell-tab-nexees-area-logs' && l.tabs.length === 6);
+    await until('the host to keep the Logs area', async () => (await keptLayout())?.right.selected === 'nexees-area-logs' || undefined, 15_000).catch(() => undefined);
+    await closeWindow(window);
+
+    // What Theia stored of its own layout goes; the host still has the panels.
+    fs.rmSync(path.join(process.env.XDG_CONFIG_HOME, 'Nexees/Local Storage'), { recursive: true });
+    window = await openWindow(workspace, asLeft);
+    const fromHost = await orAsItIs(window, 'the panels the host keeps', l => !l.explorer && l.rightTab === 'shell-tab-nexees-area-logs');
+    check('the panels are the host\'s to keep: with the foundation\'s stored layout removed from the profile, the next window still has them',
+        tabsOf(sixth) === [...AREAS, 'Outline'].join(', ') && tabsOf(fromHost) === AREAS.join(', ')
+        && !fromHost.explorer && fromHost.rightTab === 'shell-tab-nexees-area-logs' && near(fromHost.right?.w, settled.right?.w, 1.5)
+        && fromHost.bottomTab === 'shell-tab-problems',
+        `the window was closed with ${tabsOf(sixth)}; the next one, without Theia's layout, has ${tabsOf(fromHost)}, ${fromHost.rightTab}, `
+        + `the left sidebar ${fromHost.explorer ? 'shown' : 'hidden'}, the right one at ${fromHost.right?.w.toFixed(1)} px, ${fromHost.bottomTab}`);
+    await closeWindow(window);
     kept.kill('SIGTERM');
     await until('the kept host to stop', async () => hostPids().length === 0, 10_000);
 
@@ -1098,10 +1300,26 @@ try {
     check('a host that cannot run leaves the window unavailable, with the reason on pointing at the entry, and nothing else starts (RC-06, RC-T03)',
         /no channel folder private to you/.test(unavailable.label) && hostPids().length === 0 && (fs.statSync(channel).mode & 0o777) === 0o755,
         reason);
+    // 14: with no host to give them to, the user hides the right sidebar. The window keeps the
+    // change in its own profile, and only then can a host be reached again.
+    await click(refused.target, '#nexees-toggle-right-sidebar');
+    const meanwhile = await layoutWhen(refused.target, 'the right sidebar to hide', l => !l.right).catch(() => layoutOf(refused.target));
+    const heldBack = await until('the window to keep the change in its profile', async () => {
+        const layout = JSON.parse(await evaluate(refused.target,
+            `localStorage.getItem(Object.keys(localStorage).find(key => key.endsWith(':nexees.panels.unsaved')) ?? '') ?? 'null'`));
+        return keeps(layout, panelsOf(meanwhile)) ? layout : undefined;
+    }, 15_000).catch(() => undefined);
     fs.chmodSync(channel, 0o700);
     await click(refused.target, '#status-bar-nexees-host');
     await attached(refused);
     check('once the cause is gone, clicking the entry attaches the window to a host (RC-06)', hostPids().length === 1);
+    const caughtUp = await until('the host to keep the panels it could not be given', async () => {
+        const layout = await keptLayout();
+        return keeps(layout, panelsOf(meanwhile)) ? layout : undefined;
+    }, 15_000).catch(() => keptLayout());
+    check('what the user changed while the host could not be reached is given to the host once it can be',
+        !meanwhile.right && !!heldBack && keeps(caughtUp, panelsOf(meanwhile)),
+        `the window: ${JSON.stringify(panelsOf(meanwhile))}; its profile kept: ${JSON.stringify(heldBack ?? null)}; the host keeps: ${JSON.stringify(caughtUp)}`);
     await closeWindow(refused);
     await until('the host to stop after its grace period', async () => hostPids().length === 0, GRACE_MS + 15_000);
 } catch (error) {

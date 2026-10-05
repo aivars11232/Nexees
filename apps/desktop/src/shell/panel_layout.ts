@@ -5,8 +5,8 @@
 //
 // Every region is Theia's own panel. This file only arranges them, through the three places
 // Theia offers for that: the method that assembles the shell's layout, the shell's options, and
-// the default layout a contribution gives a profile that has none stored. Theia stores the layout
-// the user leaves and restores it; what Nexees keeps of it, and where, is the subject of TASK-012.
+// the default layout a contribution gives a profile that has none stored. What the window
+// remembers of the panels once the user has changed them is panel_memory's.
 
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Layout } from '@theia/core/shared/@lumino/widgets';
@@ -52,11 +52,25 @@ export class NexeesShell extends ApplicationShell {
         });
         return this.createBoxLayout([this.topPanel, besideLeft, this.statusBar], [0, 1, 0], { direction: 'top-to-bottom', spacing: 0 });
     }
+
+    /**
+     * The bottom panel as Theia's own layout data describes it: whether it is shown, and its
+     * height, or the height it comes back with while it is hidden (panel_memory).
+     */
+    bottomPanelData(): { shown: boolean; size: number | undefined } {
+        const shown = !this.bottomPanel.isHidden;
+        return { shown, size: shown ? this.getBottomPanelSize() : this.bottomPanelState.lastPanelSize };
+    }
+
+    /** Resolves once the bottom panel has the size it was last given. */
+    bottomPanelUpdate(): Promise<void> {
+        return this.bottomPanelState.pendingUpdate;
+    }
 }
 
 /** What a profile with no stored layout shows: the approved layout, with every region open. */
 @injectable()
-export class PanelLayout implements FrontendApplicationContribution {
+export class FirstLayout implements FrontendApplicationContribution {
 
     constructor(
         @inject(ApplicationShell) protected readonly shell: ApplicationShell,

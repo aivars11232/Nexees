@@ -8,6 +8,9 @@ that hold a fuse wire; the real binary is exercised by tests/e2e/desktop/local_a
 
 An application carries the logo only as the icons the logo manifest records: the build refuses an
 icon file that is anything else, so a substituted picture cannot reach an installation.
+
+The window speaks the host's protocol in TypeScript, so it states the protocol's versions and bounds
+a second time. The last test holds each of those numbers to the one the shared core defines.
 """
 from __future__ import annotations
 
@@ -123,6 +126,51 @@ class RepositoryLogoTest(unittest.TestCase):
         naming = [path.name for path in sorted(shell.glob('*.ts')) if '.png' in path.read_text(encoding='utf-8')]
         self.assertEqual(naming, ['about_dialog.ts'])
         self.assertIn("import { LOGO } from './about_dialog';", (shell / 'title_bar.ts').read_text(encoding='utf-8'))
+
+
+class WindowProtocolTest(unittest.TestCase):
+    """What the window's TypeScript states of the host's protocol is what the shared core defines."""
+
+    ROOT = build_desktop.APP.parents[1]
+
+    def number(self, path: str, pattern: str) -> int:
+        """The one number `pattern` finds in the file `path`, with or without digit separators."""
+        text = (self.ROOT / path).read_text(encoding='utf-8')
+        found = re.findall(pattern, text, re.M)
+        self.assertEqual(len(found), 1, f'{path}: {pattern} found {len(found)} times')
+        return int(found[0].replace('_', ''))
+
+    def test_the_window_states_the_versions_and_bounds_of_the_shared_core(self) -> None:
+        def rust(path: str, name: str, kind: str) -> int:
+            return self.number(path, rf'^pub const {name}: {kind} = ([\d_]+);$')
+
+        def typescript(path: str, name: str) -> int:
+            return self.number(path, rf'^(?:export )?const {name} = ([\d_]+);$')
+
+        versions = 'core/protocol/version_negotiation.rs'
+        window, contract = 'apps/desktop/src/main.ts', 'apps/desktop/src/main.protocol.ts'
+        core = {
+            'newest version': rust(versions, 'CURRENT_VERSION', 'u32'),
+            'minimum secure version': rust(versions, 'MIN_SECURE_VERSION', 'u32'),
+            'first version with layouts': rust(versions, 'LAYOUT_SINCE_VERSION', 'u32'),
+            'largest message': rust('core/protocol/serialization.rs', 'MAX_IPC_MESSAGE_BYTES', 'usize'),
+            'largest panel size': rust('core/domain/client.rs', 'MAX_PANEL_SIZE', 'u32'),
+            'longest view name': rust('core/domain/ids.rs', 'MAX_ID_BYTES', 'usize'),
+        }
+        # The pattern of a view's name allows one first character and then at most so many more.
+        view_name = r'^const VIEW_ID = /\^\[A-Za-z0-9\]\[A-Za-z0-9_\.:-\]\{0,(\d+)\}\$/;$'
+        stated = {
+            'newest version': self.number(window, r'^const VERSIONS = \{ min: \d+, max: (\d+) \};$'),
+            'minimum secure version': typescript(window, 'MIN_SECURE_VERSION'),
+            'first version with layouts': typescript(window, 'LAYOUT_SINCE_VERSION'),
+            'largest message': typescript(window, 'MAX_MESSAGE_BYTES'),
+            'largest panel size': typescript(contract, 'MAX_PANEL_SIZE'),
+            'longest view name': 1 + self.number(contract, view_name),
+        }
+        self.assertEqual(stated, core)
+        # The oldest version the window speaks is the minimum secure one: it never offers an older one.
+        oldest = self.number(window, r'^const VERSIONS = \{ min: (\d+), max: \d+ \};$')
+        self.assertEqual(oldest, core['minimum secure version'])
 
 
 if __name__ == '__main__':

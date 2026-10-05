@@ -21,7 +21,7 @@ DATA:
         surfaces: ["SF-01"]
         scenario: "The program connects to the window-to-host socket and sends intents as if it were the window: approve a pending remote request, change a setting, start an agent."
         invariants: ["SI-17", "SI-02", "SI-14"]
-        mitigations: "The peer-credential check refuses other OS users. Every intent is authorized by the host's permission engine like any request, so the program gains nothing the user's grants do not already allow, and sensitive changes need step-up with the user's own factor (SI-14)."
+        mitigations: "The peer-credential check refuses other OS users. Every intent is authorized by the host's permission engine like any request, so the program gains nothing the user's grants do not already allow, and sensitive changes need step-up with the user's own factor (SI-14). The panel layout a window stores is no intent: it is a bounded, schema-validated record of presentation from which the host derives nothing, so the program can at most rearrange the window's panels at its next start (ST-VIEW, TASK-012)."
         enforced_by: ["SS-LOCAL-HOST", "SS-PLATFORM-DESKTOP", "SS-SECURITY", "SS-DOMAIN-PROTOCOL", "IF-ATTACH"]
         enforcement_points: ["apps/desktop/src/application_host", "core/security/permission_engine", "core/protocol/serialization"]
         owner_tasks: ["TASK-009", "TASK-022", "TASK-024"]

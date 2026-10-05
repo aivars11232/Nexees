@@ -369,7 +369,8 @@ Established by TASK-011 (Desktop UI contract, R18).
   - `title_bar`: the row, with the logo and name and the place of the sidebar toggles;
   - `panel_controls`: the two toggles, which run Theia's commands and show what the sidebars did;
   - `panel_layout`: where the regions stand, the share each takes, and a new profile's first layout;
-  - `right_sidebar`: the right sidebar's row of text tabs, and its areas.
+  - `right_sidebar`: the right sidebar's row of text tabs, and its areas;
+  - `panel_memory`: what the window remembers of its panels (section 16).
 - **One thin row.** Whatever a later task adds to the title row goes into that row, left of the
   sidebar toggles, which stay immediately before the window controls. Nothing gets a row of its
   own above or below it, and the row keeps the height of its token.
@@ -384,3 +385,29 @@ Established by TASK-011 (Desktop UI contract, R18).
 - **The end-to-end test checks the layout as the user sees it:** the places and order of the
   regions, their shares, the toggles and the areas. A task that changes the layout changes those
   checks in the same change.
+
+## 16. What a client remembers
+
+Established by TASK-012 (ST-VIEW, R13, C5).
+
+- **View state lives with the host.** What a window remembers of its presentation is a typed,
+  versioned record of `core/domain/client`, which the host keeps in the device's state store.
+  The window gives it to the host and asks for it on its own channel; it never writes the store
+  itself. The first such record is the panel layout: which of the left sidebar, the right
+  sidebar and the bottom panel are shown, their sizes and their selected views.
+- **Presentation only.** A view-state record names no target and carries no intent. The host
+  checks its shape and bounds and reads nothing else into it, and nothing takes it as an input
+  to authorization, binding or targeting (AD-06).
+- **One layout per client for now.** Every window of a user is the client `desktop-window`.
+  View state per workspace comes with TASK-016. That task also decides whether Theia's own
+  stored layout, which holds the place of each view and the open editors, moves into the store.
+- **Changes reach the host as they settle** (`apps/desktop/src/shell/panel_memory`). A change the
+  host has not taken is kept in the window's profile and outranks the host's copy at the next
+  start. A task that adds view state extends the module's sample and the record together, and
+  the end-to-end checks with them.
+- **A new record is a new step, and a new message a new version.** Adding a record to the state
+  store, or changing one's version, is a step of the migration registry with its test
+  (`core/state/migrations/`). A new message between a window and its host is a new protocol
+  version (`core/protocol/version_negotiation`); two ends that agreed on an older version do
+  without it.
+

@@ -5,6 +5,12 @@
 //! agreed version: the newest one both speak, if it is at least [`MIN_SECURE_VERSION`]. Otherwise
 //! the channel is refused. It never falls back to an older or weaker mode. A window and a host that
 //! no longer agree after an update stop, as two peers do; neither guesses (STOP-08).
+//!
+//! The versions so far:
+//!
+//! 1. The first protocol.
+//! 2. Adds the messages by which a window loads and stores its panel layout
+//!    ([`LAYOUT_SINCE_VERSION`]). Two ends that agree on version 1 do without them.
 
 use std::fmt;
 
@@ -14,7 +20,13 @@ use nexees_domain::remote_request::ProtocolVersion;
 use serde::{Deserialize, Serialize};
 
 /// The newest protocol version this build speaks.
-pub const CURRENT_VERSION: u32 = 1;
+pub const CURRENT_VERSION: u32 = 2;
+
+/// The first version that has the panel layout messages between a window and its host. An end
+/// that agreed on an older version neither sends nor accepts them.
+pub const LAYOUT_SINCE_VERSION: u32 = 2;
+// This build speaks the version that has them.
+const _: () = assert!(LAYOUT_SINCE_VERSION <= CURRENT_VERSION);
 
 /// The oldest version this build accepts. Raising it retires versions whose security checks are
 /// weaker; it is never lowered to reach an old peer.
@@ -131,6 +143,15 @@ mod tests {
     }
 
     #[test]
+    fn this_build_and_one_of_the_first_protocol_agree_on_version_1() {
+        // After an update a new window may meet a host that still runs, or the reverse: they
+        // talk, on the older version, and the newer end leaves out what that version lacks.
+        let agreed = negotiate(&Hello::current(), &hello(1, 1), MIN_SECURE_VERSION).unwrap();
+        assert_eq!(agreed.get(), 1);
+        assert!(agreed.get() < LAYOUT_SINCE_VERSION);
+    }
+
+    #[test]
     fn a_mismatch_is_refused_never_downgraded() {
         assert_eq!(
             negotiate(&hello(1, 1), &hello(2, 3), 1),
@@ -154,7 +175,7 @@ mod tests {
                 .is_err()
         );
         let text = serde_json::to_string(&Hello::current()).unwrap();
-        assert_eq!(text, r#"{"versions":{"min":1,"max":1}}"#);
+        assert_eq!(text, r#"{"versions":{"min":1,"max":2}}"#);
         assert_eq!(
             serde_json::from_str::<Hello>(&text).unwrap(),
             Hello::current()

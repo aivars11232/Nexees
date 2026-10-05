@@ -31,7 +31,7 @@ use crate::operation_journal::JournalEntry;
 use crate::state_store::{StateError, millis, verify};
 
 /// The store schema version this build reads and writes.
-pub const SCHEMA_VERSION: u32 = 1;
+pub const SCHEMA_VERSION: u32 = 2;
 
 /// One migration step, from `version - 1` to `version`.
 #[derive(Debug, Clone, Copy)]
@@ -48,13 +48,22 @@ pub struct Migration {
 }
 
 /// The migrations of this build, in order. The last one's version is [`SCHEMA_VERSION`].
-pub const MIGRATIONS: &[Migration] = &[Migration {
-    version: 1,
-    description: "The initial store: metadata, migration history, versioned records, the outbox \
-                  and the operation journal",
-    rewrites: &[],
-    apply: create_version_1,
-}];
+pub const MIGRATIONS: &[Migration] = &[
+    Migration {
+        version: 1,
+        description: "The initial store: metadata, migration history, versioned records, the \
+                      outbox and the operation journal",
+        rewrites: &[],
+        apply: create_version_1,
+    },
+    Migration {
+        version: 2,
+        description: "A new record: the panel layout a host keeps for a UI client \
+                      (nexees.client.layout, version 1)",
+        rewrites: &[],
+        apply: keep_tables,
+    },
+];
 
 /// What a build with a list of steps does with a store at some schema version.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -238,6 +247,13 @@ fn create_version_1(tx: &Transaction<'_>) -> Result<(), StateError> {
     Ok(())
 }
 
+/// A step that adds a record schema and changes no table: `records` holds every schema. The
+/// step exists for its version, so that a build that does not know the new record refuses a
+/// store that may hold one instead of misreading it.
+fn keep_tables(_: &Transaction<'_>) -> Result<(), StateError> {
+    Ok(())
+}
+
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;
@@ -291,26 +307,39 @@ pub(crate) mod tests {
         Ok(())
     }
 
+    /// The schema version after this build's: the one a test's own step produces.
+    pub(crate) const NEXT: u32 = SCHEMA_VERSION + 1;
+
+    /// This build's steps, followed by `step`.
+    pub(crate) fn then(step: Migration) -> Vec<Migration> {
+        MIGRATIONS.iter().copied().chain([step]).collect()
+    }
+
     /// A later schema version that adds an index and changes no record.
-    pub(crate) const INDEX_V2: Migration = Migration {
-        version: 2,
+    pub(crate) const INDEX_NEXT: Migration = Migration {
+        version: NEXT,
         description: "test: an index",
         rewrites: &[],
         apply: add_index,
     };
 
     /// A later schema version during which the host dies.
-    pub(crate) const CRASHING_V2: Migration = Migration {
-        version: 2,
+    pub(crate) const CRASHING_NEXT: Migration = Migration {
+        version: NEXT,
         description: "test: the host dies",
         rewrites: &[],
         apply: crash_halfway,
     };
 
-    /// A store at version 1 holding unsynced changes, a draft, a staged import, tasks and
-    /// security state, closed in order.
+    /// A store at this build's version holding unsynced changes, a draft, a staged import, tasks
+    /// and security state, closed in order.
     fn populated(scratch: &Scratch) {
-        let (mut store, _) = StateStore::open(&scratch.db(), at(1)).unwrap();
+        populated_by(scratch, MIGRATIONS);
+    }
+
+    /// The same store as a build with `steps` leaves it.
+    fn populated_by(scratch: &Scratch, steps: &[Migration]) {
+        let (mut store, _) = StateStore::open_with(&scratch.db(), at(1), steps).unwrap();
         let pc = DeviceId::new("pc").unwrap();
         store
             .write(at(2), |w| {
@@ -351,13 +380,21 @@ pub(crate) mod tests {
 
     #[test]
     fn a_store_is_current_older_or_newer_than_the_build() {
-        assert_eq!(plan(1, MIGRATIONS), Plan::Current);
-        assert_eq!(plan(0, MIGRATIONS), Plan::Upgrade { from: 0, to: 1 });
+        assert_eq!(plan(SCHEMA_VERSION, MIGRATIONS), Plan::Current);
+        for older in [0, 1] {
+            assert_eq!(
+                plan(older, MIGRATIONS),
+                Plan::Upgrade {
+                    from: older,
+                    to: SCHEMA_VERSION
+                }
+            );
+        }
         assert_eq!(
-            plan(4, MIGRATIONS),
+            plan(SCHEMA_VERSION + 2, MIGRATIONS),
             Plan::Newer {
-                found: 4,
-                supported: 1
+                found: SCHEMA_VERSION + 2,
+                supported: SCHEMA_VERSION
             }
         );
     }
@@ -368,9 +405,9 @@ pub(crate) mod tests {
         populated(&scratch);
         let before = bodies(&scratch.db());
         let (store, opened) =
-            StateStore::open_with(&scratch.db(), at(4), &[MIGRATIONS[0], INDEX_V2]).unwrap();
-        assert_eq!(opened.migrated_from, Some(1));
-        assert_eq!(opened.schema_version, 2);
+            StateStore::open_with(&scratch.db(), at(4), &then(INDEX_NEXT)).unwrap();
+        assert_eq!(opened.migrated_from, Some(SCHEMA_VERSION));
+        assert_eq!(opened.schema_version, NEXT);
         // Old task IDs keep their status: nothing becomes completed by migrating.
         let statuses: Vec<_> = store
             .all::<nexees_domain::task::Task>()
@@ -385,7 +422,38 @@ pub(crate) mod tests {
             before,
             "every record kept byte for byte"
         );
+        assert_eq!(version(&scratch), NEXT);
+    }
+
+    #[test]
+    fn version_2_keeps_a_version_1_store_byte_for_byte_and_the_first_build_then_refuses_it() {
+        let scratch = Scratch::new("to-2");
+        // A store as the first build left it, before the client layout record existed.
+        let first = &MIGRATIONS[..1];
+        populated_by(&scratch, first);
+        assert_eq!(version(&scratch), 1);
+        let before = bodies(&scratch.db());
+        let (store, opened) = StateStore::open(&scratch.db(), at(4)).unwrap();
+        assert_eq!(
+            (opened.migrated_from, opened.schema_version),
+            (Some(1), SCHEMA_VERSION)
+        );
+        store.close(at(5)).unwrap();
         assert_eq!(version(&scratch), 2);
+        assert_eq!(
+            bodies(&scratch.db()),
+            before,
+            "every record kept byte for byte"
+        );
+        // The store may now hold a record the first build does not know, so that build refuses
+        // it instead of misreading it.
+        assert_eq!(
+            StateStore::open_with(&scratch.db(), at(6), first).map(|_| ()),
+            Err(StateError::NewerSchema {
+                found: 2,
+                supported: 1
+            })
+        );
     }
 
     #[test]
@@ -394,20 +462,24 @@ pub(crate) mod tests {
         populated(&scratch);
         let before = bodies(&scratch.db());
         let resetting = Migration {
-            version: 2,
+            version: NEXT,
             description: "test: a defective step that resets revocations",
             rewrites: &[],
             apply: reset_revocations,
         };
-        let refused = StateStore::open_with(&scratch.db(), at(4), &[MIGRATIONS[0], resetting]);
-        let Err(StateError::Migration { version: 2, reason }) = refused.map(|_| ()) else {
+        let refused = StateStore::open_with(&scratch.db(), at(4), &then(resetting));
+        let Err(StateError::Migration {
+            version: NEXT,
+            reason,
+        }) = refused.map(|_| ())
+        else {
             panic!("the defective step must be refused");
         };
         assert!(
             reason.contains("nexees.authority.remote_grant/g2"),
             "{reason}"
         );
-        assert_eq!(version(&scratch), 1);
+        assert_eq!(version(&scratch), SCHEMA_VERSION);
         assert_eq!(bodies(&scratch.db()), before);
     }
 
@@ -418,17 +490,17 @@ pub(crate) mod tests {
         let before = bodies(&scratch.db());
         // Declared, so the comparison allows it; but no field may go missing, to be defaulted.
         let dropping = Migration {
-            version: 2,
+            version: NEXT,
             description: "test: a step that drops a field",
             rewrites: &[nexees_domain::authority::RemoteGrant::SCHEMA],
             apply: drop_revocations,
         };
-        let refused = StateStore::open_with(&scratch.db(), at(4), &[MIGRATIONS[0], dropping]);
+        let refused = StateStore::open_with(&scratch.db(), at(4), &then(dropping));
         assert!(matches!(
             refused.map(|_| ()),
-            Err(StateError::Migration { version: 2, .. })
+            Err(StateError::Migration { version: NEXT, .. })
         ));
-        assert_eq!(version(&scratch), 1);
+        assert_eq!(version(&scratch), SCHEMA_VERSION);
         assert_eq!(bodies(&scratch.db()), before);
     }
 
@@ -438,17 +510,17 @@ pub(crate) mod tests {
         populated(&scratch);
         let before = bodies(&scratch.db());
         let failing = Migration {
-            version: 2,
+            version: NEXT,
             description: "test: a failing step",
             rewrites: &[],
             apply: fail,
         };
-        let refused = StateStore::open_with(&scratch.db(), at(4), &[MIGRATIONS[0], failing]);
+        let refused = StateStore::open_with(&scratch.db(), at(4), &then(failing));
         assert!(matches!(
             refused.map(|_| ()),
-            Err(StateError::Migration { version: 2, .. })
+            Err(StateError::Migration { version: NEXT, .. })
         ));
-        assert_eq!(version(&scratch), 1);
+        assert_eq!(version(&scratch), SCHEMA_VERSION);
         assert_eq!(bodies(&scratch.db()), before);
         // The build that wrote it still opens it.
         assert!(StateStore::open(&scratch.db(), at(5)).is_ok());
@@ -460,7 +532,7 @@ pub(crate) mod tests {
         populated(&scratch);
         let before = bodies(&scratch.db());
         crash_in_child("migration", &scratch.db());
-        assert_eq!(version(&scratch), 1);
+        assert_eq!(version(&scratch), SCHEMA_VERSION);
         assert_eq!(bodies(&scratch.db()), before);
         let half_done: i64 = rusqlite::Connection::open(scratch.db())
             .unwrap()
@@ -473,8 +545,8 @@ pub(crate) mod tests {
         assert_eq!(half_done, 0, "nothing of the interrupted step is left");
         // A later open migrates normally, and the migration is checked as a whole.
         let (store, opened) =
-            StateStore::open_with(&scratch.db(), at(5), &[MIGRATIONS[0], INDEX_V2]).unwrap();
-        assert_eq!(opened.migrated_from, Some(1));
+            StateStore::open_with(&scratch.db(), at(5), &then(INDEX_NEXT)).unwrap();
+        assert_eq!(opened.migrated_from, Some(SCHEMA_VERSION));
         assert!(store.check_integrity().is_ok());
     }
 }

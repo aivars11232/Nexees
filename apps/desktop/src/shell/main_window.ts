@@ -1,8 +1,9 @@
 // The Nexees main window (apps/desktop/src/shell/main_window): what Nexees adds to Theia's
 // workbench, bound here in one place. That is the Nexees look (theme), the About dialog
 // (about_dialog) and the approved layout: the title row with the sidebar toggles (title_bar,
-// panel_controls), the arrangement of the regions (panel_layout) and the right sidebar with its
-// areas (right_sidebar). The window's view of the Nexees host in the status bar is in this file.
+// panel_controls), the arrangement of the regions (panel_layout), the right sidebar with its
+// areas (right_sidebar) and what the window remembers of its panels (panel_memory). The window's
+// view of the Nexees host in the status bar is in this file.
 //
 // The entry shows what the window's backend reports and nothing else: attached, with the
 // host's device; attaching; or unavailable, with the reason (RC-06). When the host is
@@ -25,7 +26,8 @@ import { HOST_CONNECTION_PATH, HostConnectionClient, HostConnectionService, Host
 import { NexeesAboutDialog } from './about_dialog';
 import { ICONS } from './design_tokens';
 import { SidebarToggles } from './panel_controls';
-import { NexeesShell, PANEL_SHARES, PanelLayout } from './panel_layout';
+import { FirstLayout, NexeesShell, PANEL_SHARES } from './panel_layout';
+import { PanelMemory } from './panel_memory';
 import { AREA_VIEWS, RightSidebar, SidePanels } from './right_sidebar';
 import { NexeesTheme } from './theme';
 import { TitleBar, WindowTitle } from './title_bar';
@@ -105,8 +107,8 @@ export default new ContainerModule((bind, _unbind, _isBound, rebind) => {
     bind(RightSidebar).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(RightSidebar);
     bind(StylingParticipant).toService(RightSidebar);
-    bind(PanelLayout).toSelf().inSingletonScope();
-    bind(FrontendApplicationContribution).toService(PanelLayout);
+    bind(FirstLayout).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(FirstLayout);
     bind(SidebarToggles).toSelf().inSingletonScope();
     bind(TitleBar).toSelf().inSingletonScope();
     rebind(ElectronMenuContribution).toService(TitleBar);
@@ -120,4 +122,7 @@ export default new ContainerModule((bind, _unbind, _isBound, rebind) => {
     bind(MainWindow).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(MainWindow);
     bind(CommandContribution).toService(MainWindow);
+    // After the contributions that put the areas in place: it selects views by their IDs.
+    bind(PanelMemory).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(PanelMemory);
 });
