@@ -1,0 +1,39 @@
+TASK-010: defects seeded against the end-to-end checks of the Nexees look, 2026-10-05T08:14:58+02:00.
+Each run seeds several independent defects and must fail exactly the checks named for them, and no other: a check
+that still passed would not be checking what it says, and another check failing would mean a defect reaches
+further than understood. The unseeded run is logs/e2e_local_application.txt, where all 43 checks pass.
+
+== Run 1: the installation is broken ==
+  seeded: the window's About icon replaced by another picture of the logo (the 64-pixel icon under the 128-pixel name)
+  seeded: the installed 48-pixel icon replaced by the 32-pixel one, and the Icon line removed from the desktop entry
+  seeded: the application configured with Theia's dark theme as its default instead of Nexees Dark
+  seeded: Electron told to be light, not dark, when it is ready
+  exit code 1; 36 checks passed, 7 failed
+  FAIL  the installation carries the application icon in every size derived from the logo, and its desktop entry names it (B1)  [7 sizes; wrong: 48; desktop-file-validate: exit 0 ]
+  FAIL  the window is dark while it loads, before any theme is applied  [first painted #FFFFFF]
+  FAIL  the window wears the Nexees dark theme, and is dark to the desktop too (R18)  [monaco-enable-motion underline-links vs-dark dark-theia linux theia-dark]
+  FAIL  every colour the theme names is one Theia knows and applies  [235 colours; not applied: foreground, descriptionForeground, disabledForeground, errorForeground, icon.foreground, focusBorder, selection.background, widget.border, textLink.foreground, textLink.activeForeground, textPreformat.foreground, textPreformat.backgro]
+  FAIL  the surfaces and text a user sees have the colours of the shared design tokens (R19)  [page rgb(30, 30, 30); side bar rgb(37, 37, 38); status bar rgb(0, 122, 204); status bar text rgb(255, 255, 255); tree text rgb(204, 204, 204)]
+  FAIL  the About dialog shows the logo: a file of the installation, the icon derived from the bound source (B1)  [/mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/resources/branding/nexees-128.png]
+  FAIL  each reopened window wears the Nexees theme again, with no choice of the user behind it  [false, false, false]
+  expected to fail: 7; failed as expected: 7; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+== Run 2: the test expects another visual system than the application has ==
+  seeded: a surface token the application does not have (surface.raised #202a3a instead of #161d29)
+  seeded: a syntax token the application does not have (syntax.keyword #d090e8)
+  seeded: a size token the application does not have (desktop.status_bar_height 24 instead of 22)
+  seeded: a corner radius the application does not have (radius.control 6 instead of 4)
+  seeded: an icon mapping that names an icon the icon set does not hold (no-such-codicon)
+  exit code 1; 38 checks passed, 5 failed
+  FAIL  the surfaces and text a user sees have the colours of the shared design tokens (R19)  [status bar rgb(22, 29, 41)]
+  FAIL  the compact sizes are the tokens': rows, tabs, status bar and activity bar  [status bar height 22, not 24]
+  FAIL  the theme carries the syntax colours of the tokens  [14 rules]
+  FAIL  every icon of the icon mapping exists in the window's icon set  [plug, sync]
+  FAIL  buttons have the corner radius of the tokens  [4px]
+  expected to fail: 5; failed as expected: 5; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+After the runs the installation was installed again from the build folder, and the repository's test passes on it: exit code 0, 43 checks passed.
+
+ALL SEEDED DEFECTS CAUGHT

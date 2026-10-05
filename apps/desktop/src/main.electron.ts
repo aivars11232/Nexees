@@ -13,7 +13,8 @@
 //   a profile has loaded that theme once, Electron and Theia paint what the desktop prefers,
 //   which on a light desktop is a white window. Once a theme is loaded, Theia tells Electron
 //   which kind it is, so a user who chooses a light theme gets a light window. Electron takes
-//   the setting only once it is ready; this module asks first, so it is set before any window.
+//   the setting only once it is ready. This module is loaded before Theia starts, so its
+//   request is the first to run at that moment, before any window is made.
 
 import { ContainerModule } from '@theia/core/shared/inversify';
 import { app, nativeTheme } from '@theia/core/electron-shared/electron';

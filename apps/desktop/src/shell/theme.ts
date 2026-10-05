@@ -16,7 +16,7 @@ import { MonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-s
 import { TOKENS } from './design_tokens';
 
 /** The ID of the Nexees colour theme, which apps/desktop/package.json names as the default. */
-export const NEXEES_DARK = 'nexees-dark';
+const NEXEES_DARK = 'nexees-dark';
 
 const { surface, border, text, accent, status, syntax } = TOKENS.color;
 
@@ -29,7 +29,7 @@ function alpha(colour: string, opacity: number): string {
  * The workbench colours of the Nexees theme, by colour ID. Whatever is not named keeps the
  * default of Theia's dark themes.
  */
-export const WORKBENCH_COLOURS: Readonly<Record<string, string>> = {
+const WORKBENCH_COLOURS: Readonly<Record<string, string>> = {
     // Text and focus everywhere.
     'foreground': text.primary,
     'descriptionForeground': text.secondary,
@@ -75,6 +75,10 @@ export const WORKBENCH_COLOURS: Readonly<Record<string, string>> = {
     'activityBar.border': border.subtle,
     'activityBarBadge.background': accent.fill,
     'activityBarBadge.foreground': text.on_accent,
+    'activityErrorBadge.background': status.error,
+    'activityErrorBadge.foreground': surface.window,
+    'activityWarningBadge.background': status.warning,
+    'activityWarningBadge.foreground': surface.window,
     'sideBar.background': surface.window,
     'sideBar.foreground': text.primary,
     'sideBarSectionHeader.background': surface.window,
@@ -149,6 +153,11 @@ export const WORKBENCH_COLOURS: Readonly<Record<string, string>> = {
     'editorWhitespace.foreground': alpha(text.muted, 0.4),
     'editorRuler.foreground': border.subtle,
     'editorLink.activeForeground': accent.primary,
+    'editorCodeLens.foreground': text.muted,
+    'editor.foldPlaceholderForeground': text.muted,
+    'editorLightBulb.foreground': status.warning,
+    'editorLightBulbAutoFix.foreground': accent.primary,
+    'editorLightBulbAi.foreground': accent.secondary,
     'editorError.foreground': status.error,
     'editorWarning.foreground': status.warning,
     'editorInfo.foreground': accent.primary,
@@ -275,10 +284,12 @@ export const WORKBENCH_COLOURS: Readonly<Record<string, string>> = {
     'problemsErrorIcon.foreground': status.error,
     'problemsWarningIcon.foreground': status.warning,
     'problemsInfoIcon.foreground': accent.primary,
+    'settings.headerForeground': text.primary,
+    'settings.modifiedItemIndicator': accent.primary,
 };
 
 /** The colours of code, by TextMate scope. Code outside these scopes keeps the editor's text colour. */
-export const SYNTAX_COLOURS: ReadonlyArray<{ scope: string[]; settings: { foreground: string } }> = [
+const SYNTAX_COLOURS: ReadonlyArray<{ scope: string[]; settings: { foreground: string } }> = [
     { scope: ['comment', 'punctuation.definition.comment'], settings: { foreground: text.muted } },
     { scope: ['keyword', 'storage'], settings: { foreground: syntax.keyword } },
     { scope: ['string'], settings: { foreground: syntax.string } },
@@ -293,7 +304,7 @@ export const SYNTAX_COLOURS: ReadonlyArray<{ scope: string[]; settings: { foregr
  * variables take the tokens, and its inputs, buttons and selection boxes take the Nexees corner
  * radius.
  */
-export function sizeRules(): string[] {
+function sizeRules(): string[] {
     const variables = {
         '--theia-ui-font-size1': TOKENS.font.base,
         '--theia-statusBar-font-size': TOKENS.font.small,

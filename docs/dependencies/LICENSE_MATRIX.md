@@ -22,6 +22,7 @@ real phone.
 | Android test device | Emulator only; the owner's phone was not touched |
 | Toolchains | Isolated in `/mnt/F/Nexees-toolchains/`, outside the repository |
 | Desktop session tests | HopToDesk launched once; start-at-login tested in an isolated profile only |
+| Logo source (BIND-B1-LOGO, TASK-010) | The file `Nexees Logo⁄Icon.png` in the owner's Pictures folder; read in place, copied byte for byte into `assets/branding/source/` |
 
 ## Strategy in brief
 

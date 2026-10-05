@@ -32,9 +32,9 @@ before any setting or command line (SI-28, TH-03), and reads them back. PREFIX m
 absolute folder outside the checkout. Nothing is installed anywhere else.
 
 The logo reaches an application only as the icons scripts/build/brand_assets.py derived from the
-bound source (B1): `build` copies the one the window shows into the application's resources, and
-`install` copies them all. Both refuse an icon that is not the one assets/branding/manifest.json
-records.
+bound source (B1): `check` and `build` copy the one the window shows into the application's
+resources in their build folder, and `install` copies them all under PREFIX. Each refuses an icon
+that is not the one assets/branding/manifest.json records.
 
 Exit codes: 0 done, 1 a step failed, 2 a missing setting or a refused folder.
 """

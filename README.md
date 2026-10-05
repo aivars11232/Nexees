@@ -23,9 +23,9 @@ exists.
 
 The charter also records what was open when it was frozen: the Desktop renderer
 decision, the Review/Supervisor amendment deferred to TASK-075, and the logo source
-path, which does not currently resolve. TASK-003 obtained the owner's renderer answer,
-**Electron permitted**, recorded in [docs/dependencies/](docs/dependencies/); the
-charter itself stays frozen.
+path, which did not resolve. TASK-003 obtained the owner's renderer answer, **Electron
+permitted**, and TASK-010 the owner's answer on the logo source. Both are recorded in
+[docs/dependencies/](docs/dependencies/); the charter itself stays frozen.
 
 [docs/architecture/](docs/architecture/) defines the modular architecture (TASK-002): the
 subsystems and the module files each one owns, shared versus client-specific code, the
@@ -129,8 +129,19 @@ Eclipse Theia and Electron.
   renderer without Node, and the window connects to nothing beyond this machine.
 
 `scripts/build/build_desktop.py` checks, builds and installs it outside the checkout;
-`tests/e2e/desktop/local_application.test.mjs` tests the installed application. The approved
-branding, layout and panels come with TASK-010 to TASK-012.
+`tests/e2e/desktop/local_application.test.mjs` tests the installed application.
+
+TASK-010 gave Nexees its look.
+- [assets/theme/](assets/theme/) holds the shared design tokens and the icon mapping: the one
+  source of the colours, sizes and icons of both clients, taken from the approved compact
+  layout. `scripts/build/design_tokens.py` checks them, including the contrast that text must
+  keep, and writes each client's copy.
+- The Desktop window opens in the Nexees dark theme with compact, VS Code-like sizes; Theia's
+  other themes stay available. Its About dialog shows the logo.
+- The logo reaches the product only as the bound source and icons scaled down from it
+  (`scripts/build/brand_assets.py`); an installation carries the icon in seven sizes.
+
+The approved layout and panels come with TASK-011 and TASK-012.
 
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.
@@ -146,7 +157,7 @@ that upstream frameworks or implementation will eventually generate.
 | `core/` | Shared workspace, agent, tools, security, task execution, state, providers, LCL, sync, remote control and help. |
 | `platform/` | Device-specific execution, lifecycle, scoped storage, secrets and transport adapters. |
 | `integrations/` | Reusable IDE, LCL, auth, provider, external-agent, Git and syntax-index adapters. |
-| `assets/` | Existing approved visual references, future verified icon imports and shared visual resources. |
+| `assets/` | The approved visual references, the logo source with its derived icons, and the design tokens and icon mapping both clients share. |
 | `config/` | Configuration slots and the existing non-secret local-path example. |
 | `docs/charter/` | Frozen project charter as an LCL project: scope, traceability, open decisions and structural checks. |
 | `docs/architecture/` | Modular architecture as an LCL project: subsystems and module ownership, hosts, interfaces, authoritative state, flows, failure domains and decisions. |
@@ -178,12 +189,15 @@ They are not published instructions for a working release. The model-orientation
 prompt is a template; its fields must be bound to the verified session/protocol schema.
 The runtime must enforce read-only access independently of what a prompt says.
 
-Existing approved logo and Desktop-layout references are unchanged. The development
-machine logo binding remains exactly `/home/aivars/Pictures/Nexees Logo/Icon.png`.
-That local file was not accessed when this layout was created, and TASK-001 found that
-the path does not resolve on the development machine (charter item BIND-B1-LOGO). The
-chat reference is not a silent replacement for the owner-bound build source. Source/derived icon folders remain empty until the
-real source is verified and the required assets are produced.
+The approved logo and Desktop-layout references are unchanged. The pack binds the logo to
+`/home/aivars/Pictures/Nexees Logo/Icon.png`, a path that does not resolve on the
+development machine (charter item BIND-B1-LOGO). In TASK-010 the owner confirmed that the
+logo is the file in that Pictures folder whose name is `Nexees Logo⁄Icon.png`, with the
+character U+2044 where the binding writes a folder separator. `scripts/build/brand_assets.py`
+reads only that file, and never changes it. It copied the file byte for byte to
+`assets/branding/source/` and derived the application's icon sizes into
+`assets/branding/derived/`; `assets/branding/manifest.json` records them. The chat reference
+remains a reference only: nothing is derived from it.
 
 ## Inventory
 

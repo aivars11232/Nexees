@@ -552,9 +552,24 @@ Nexees/
 │   │   │   └── TASK-009_EVIDENCE.md
 │   │   └── TASK-010/
 │   │       ├── logs/
+│   │       │   ├── cleanup_record.json
+│   │       │   ├── desktop_build.txt
 │   │       │   ├── dispatch_task_010.record.json
+│   │       │   ├── dispatch_task_010_resume.record.json
+│   │       │   ├── e2e_local_application.txt
+│   │       │   ├── ide_activity.txt
+│   │       │   ├── logo_import.txt
 │   │       │   ├── native_language_suite.json
-│   │       │   └── preflight.txt
+│   │       │   ├── native_language_suite_resume.json
+│   │       │   ├── negative_tests.txt
+│   │       │   ├── preflight.txt
+│   │       │   ├── preflight_resume.txt
+│   │       │   ├── regression.txt
+│   │       │   ├── required_reading.txt
+│   │       │   ├── run_checks.txt
+│   │       │   ├── screen_lock_observation.txt
+│   │       │   ├── security_scan.txt
+│   │       │   └── seeded_defects.txt
 │   │       ├── receipt/
 │   │       │   ├── RECEIPT_RESULT.md
 │   │       │   ├── corroboration.txt
@@ -562,7 +577,11 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       └── CHECKPOINT.md
+│   │       ├── screens/
+│   │       │   ├── 01_trust_question.png
+│   │       │   ├── 02_workbench.png
+│   │       │   └── 03_about.png
+│   │       └── TASK-010_EVIDENCE.md
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
 │   │   └── NEXEES_USER_MANUAL.md

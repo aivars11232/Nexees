@@ -1,0 +1,29 @@
+TASK-010 negative tests, 2026-10-05T08:19:14+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. 11 cases break one rule
+of the logo import, its check, the build's icons, the design-token script or the committed copies each: a
+test-stage case passes only when the named test fails. The others seed defects the lint, layout, format and
+docs stages must catch.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: an icon scaled up from a smaller source is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_scaling_up_is_refused)
+PASS  test: a source that is not an 8-bit RGBA PNG read anyway is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_a_source_that_is_missing_or_refused_writes_nothing, test_anything_but_a_sound_square_8_bit_rgba_png_is_refused)
+PASS  test: transparent pixels adding their stored colour to an icon is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_a_transparent_pixel_adds_no_colour_of_its_own, test_check_reports_every_way_the_files_can_stop_being_the_recorded_logo, test_one_colour_stays_one_colour_at_every_size, test_the_committed_logo_files_are_the_recorded_source_and_exactly_its_icons)
+PASS  test: a substituted icon accepted once its hash is recorded is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_check_reports_every_way_the_files_can_stop_being_the_recorded_logo)
+PASS  test: the import given a way to name another source is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_command_line_offers_no_way_to_name_another_source)
+PASS  test: a logo icon in the repository replaced by another picture is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_committed_logo_files_are_the_recorded_source_and_exactly_its_icons, test_the_icon_the_build_places_for_the_window_is_one_the_real_manifest_records)
+PASS  test: a build taking an icon the manifest does not record is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_an_icon_that_is_not_the_recorded_one_is_refused)
+PASS  test: text colours no longer held to their contrast is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_tokens_that_break_a_rule_are_refused)
+PASS  test: a name given twice in a source accepted is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_a_refused_source_or_a_name_given_twice_writes_nothing)
+PASS  test: a token changed without writing the Desktop copy again is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_committed_desktop_copy_is_current)
+PASS  test: a token nothing in the window uses is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_uses_every_token_and_every_icon)
+PASS  lint: the theme naming a token that does not exist is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: an unused value in the About dialog is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  layout: the logo tests without a subsystem is caught (exit 1: FINDING: tests/tooling/test_brand_assets is not attributed to a subsystem)
+PASS  layout: a theme placeholder back without its marker is caught (exit 1: FINDING: assets/theme/design_tokens.source is a placeholder without its marker; implement it under its real extension instead)
+PASS  format: the icon mapping indented with a tab is caught (exit 1: FINDING: assets/theme/icon_mapping.json: line 3 indents with a tab)
+PASS  docs: the owner's logo decision dropped from the count of owner decisions is caught (exit 1: FINDING: lcl validate --spec /mnt/F/LCL/canonical/LCL_Core_0.1.0 exited with 1)
+PASS  docs: a file the file tree does not list is caught (exit 1: FINDING: FILE_TREE.txt does not match the files; regenerate it with --write-file-tree)
+
+ALL NEGATIVE TESTS PASSED

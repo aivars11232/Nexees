@@ -38,12 +38,13 @@
 //     loads nothing NODE_OPTIONS names and opens no inspector; the backend refuses to start
 //     without the window's token, and no process it starts inherits that token; the page runs in
 //     a sandboxed renderer without Node;
-// 12. the Nexees look (R18, B1): the window wears the Nexees dark theme, whose every colour Theia
-//     knows and applies and whose surfaces, text and sizes are the shared design tokens'; a
-//     reopened window wears it again; each icon of the icon mapping exists; the About dialog
-//     shows the logo, as a file of the installation that is the icon derived from the bound
-//     source, with the name and version and no link; and the installation carries that icon in
-//     every derived size, named by its desktop entry.
+// 12. the Nexees look (R18, B1): the window is dark while it loads; it wears the Nexees dark
+//     theme, whose every colour Theia knows and applies and whose surfaces, text and sizes are
+//     the shared design tokens'; a reopened window wears it again; each icon of the icon mapping
+//     exists; the About dialog shows the logo, as a file of the installation that is the icon
+//     derived from the bound source, with the name and version and no link; the user can choose
+//     another colour theme and return, the choice kept in the user's settings; and the
+//     installation carries the icon in every derived size, named by its desktop entry.
 //
 // It exits 0 when every check passes and prints one line per check.
 
@@ -331,6 +332,62 @@ async function press(target, key, code, virtualKey) {
     }
 }
 
+/**
+ * Types `text` into the list the command palette shows and takes the entry that starts with it, as a user would:
+ * only once the list has taken the text and its highlighted entry is that one.
+ */
+async function choose(target, text) {
+    await send(target, 'Input.insertText', { text });
+    await until(`"${text}" highlighted in the palette`, async () => (await evaluate(target, `(() => {
+        const palette = document.querySelector('.quick-input-widget');
+        const focused = palette?.querySelector('.quick-input-list .monaco-list-row.focused');
+        return !!palette?.querySelector('input')?.value.endsWith(${JSON.stringify(text)})
+            && !!focused?.innerText.trim().startsWith(${JSON.stringify(text)});
+    })()`)) || undefined, 15_000);
+    await press(target, 'Enter', 'Enter', 13);
+}
+
+/**
+ * Runs a command from the command palette, opened with F1. A window listens to its keys only once
+ * its start is complete, so F1 is pressed again, as a user would, until the palette shows.
+ */
+async function runCommand(target, command) {
+    // Open means shown and holding the keyboard: text typed before that would be lost.
+    const open = `(() => {
+        const palette = document.querySelector('.quick-input-widget');
+        return !!palette && getComputedStyle(palette).display !== 'none' && document.activeElement === palette.querySelector('input');
+    })()`;
+    await until('the command palette', async () => {
+        if (!(await evaluate(target, open))) {
+            await press(target, 'F1', 'F1', 112);
+            await sleep(500);
+        }
+        return (await evaluate(target, open)) || undefined;
+    }, 30_000);
+    await choose(target, command);
+}
+
+/**
+ * Chooses a colour theme as a user would, with the command Preferences: Color Theme, and waits until the window wears it
+ * and the user's settings hold one of the values in `kept`. Returns the value they hold.
+ */
+async function chooseTheme(target, theme, bodyClass, kept) {
+    const userSettings = path.join(process.env.XDG_CONFIG_HOME, 'Nexees/theia/settings.json');
+    await runCommand(target, 'Preferences: Color Theme');
+    // The command replaces the palette's list by the list of themes; typing waits for that list.
+    await until('the list of themes', async () => (await evaluate(target, `(() => {
+        const palette = document.querySelector('.quick-input-widget');
+        return palette?.querySelector('input')?.value === '' && document.activeElement === palette.querySelector('input')
+            && [...palette.querySelectorAll('.quick-input-list .monaco-list-row')].some(row => row.innerText.trim().startsWith('Nexees Dark'));
+    })()`)) || undefined, 15_000);
+    await choose(target, theme);
+    return until(`the theme ${theme}`, async () => {
+        await shown(target);
+        const setting = fs.existsSync(userSettings) ? JSON.parse(fs.readFileSync(userSettings, 'utf8'))['workbench.colorTheme'] : undefined;
+        return (await evaluate(target, `document.body.classList.contains('${bodyClass}')`)) && kept.includes(setting) ? String(setting) : undefined;
+    }, 15_000);
+}
+
 function sha256(file) {
     return createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 }
@@ -383,6 +440,7 @@ const PROBE = `JSON.stringify((() => {
         origin: location.protocol + '//' + location.hostname,
         page: decodeURIComponent(location.pathname),
         shell: !!document.querySelector('#theia-app-shell'),
+        restricted: !!document.getElementById('status-bar-workspace-trust-status'),
         files: [...document.querySelectorAll('.theia-TreeNodeSegment')].map(n => n.textContent),
         host: entry ? {
             visible: box.width > 0 && box.height > 0,
@@ -446,7 +504,8 @@ const ABOUT = `JSON.stringify((() => {
 
 async function shown(target) {
     // Asking for one pixel of the page makes it draw a frame. Theia's start waits for a frame, and
-    // a compositor that draws into memory does not always ask for one on its own.
+    // the nested compositor draws none while the user's real session is locked: it then locks its
+    // own screen too. The test must not depend on whether the developer's screen is locked.
     await send(target, 'Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1, height: 1, scale: 1 } });
     return JSON.parse((await evaluate(target, PROBE)) ?? 'null');
 }
@@ -455,7 +514,7 @@ async function shown(target) {
  * Opens a window from the installed launcher on `workspace`, as a user would: it waits for the
  * workbench, answers Theia's question whether to trust a folder it has not seen with no (the
  * folder then opens in Restricted Mode), and opens the Explorer, which a fresh profile shows
- * closed. Returns once the Explorer lists the workspace's files. `extra` adds to the launcher's
+ * closed. Returns once the question is answered and the Explorer lists the workspace's files. `extra` adds to the launcher's
  * environment and arguments.
  */
 async function openWindow(workspace, extra = { env: {}, args: [] }) {
@@ -463,11 +522,17 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
         [workspace, `--remote-debugging-port=${DEBUG_PORT}`, '--remote-debugging-address=127.0.0.1', ...extra.args],
         { env: { ...process.env, ...extra.env }, detached: true, stdio: 'ignore' });
     children.push(child);
+    // What the page prefers and has painted the first time it can be asked, long before its theme is loaded.
+    let early;
     const target = await until('the workbench', async () => {
         const found = await page();
+        if (found && early === undefined) {
+            early = await evaluate(found, `JSON.stringify({ dark: matchMedia('(prefers-color-scheme: dark)').matches,
+                painted: document.documentElement.style.getPropertyValue('--theia-editor-background') })`);
+        }
         const seen = found ? await shown(found) : null;
-        // The shell alone: Theia may ask the trust question before it starts the Nexees part of
-        // the window, and the host's entry then comes only after the answer.
+        // The shell alone: the host's entry comes when the Nexees part of the window has started,
+        // which may be before or after Theia asks the trust question.
         return seen?.shell ? found : undefined;
     }, 120_000);
     let lastClick = 0;
@@ -478,8 +543,10 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
         if (answered) {
             return undefined;
         }
+        // Answering no puts the folder in Restricted Mode, which the status bar then shows. Until
+        // then the question may still come and cover the window, so the window is not ready.
         const now = await shown(target);
-        if (now?.files.includes('hello.txt')) {
+        if (now?.files.includes('hello.txt') && now.restricted) {
             return now;
         }
         // Open the Explorer only while it is closed: a click on an open one would close it.
@@ -490,7 +557,7 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
         }
         return undefined;
     }, 60_000);
-    return { child, target, seen };
+    return { child, target, seen, early: JSON.parse(early ?? 'null') };
 }
 
 /** Waits until the status bar shows, where the user sees it, that the window is attached to a host. */
@@ -635,6 +702,8 @@ try {
     // 12: the Nexees look, on the running window.
     const look = JSON.parse(await evaluate(first.target, LOOK));
     const { surface, text } = TOKENS.color;
+    check('the window is dark while it loads, before any theme is applied',
+        first.early?.dark === true && !/^#f{6}$/i.test(first.early.painted), `first painted ${first.early?.painted || 'nothing yet'}`);
     check('the window wears the Nexees dark theme, and is dark to the desktop too (R18)',
         look.classes.includes(THEME) && look.classes.includes('theia-dark') && look.prefersDark, look.classes.join(' '));
     const unapplied = look.colours.filter(([, named, applied]) => colour(named) !== colour(applied)).map(([id]) => id);
@@ -662,12 +731,7 @@ try {
     check('every icon of the icon mapping exists in the window\'s icon set',
         look.codicons.length === Object.keys(ICONS).length, look.codicons.join(', '));
 
-    await press(first.target, 'F1', 'F1', 112);
-    await until('the command palette', async () => (await evaluate(first.target, `!!document.querySelector('.quick-input-widget input')`)) || undefined, 15_000);
-    await send(first.target, 'Input.insertText', { text: 'About' });
-    await until('the About command in the palette', async () => (await evaluate(first.target,
-        `[...document.querySelectorAll('.quick-input-list .monaco-list-row')].some(row => row.innerText.trim() === 'About')`)) || undefined, 15_000);
-    await press(first.target, 'Enter', 'Enter', 13);
+    await runCommand(first.target, 'About');
     const about = await until('the About dialog with its logo', async () => {
         const seen = JSON.parse((await evaluate(first.target, ABOUT)) ?? 'null');
         return seen?.logo?.complete ? seen : undefined;
@@ -700,13 +764,22 @@ try {
         await attached(window);
         hostPids().forEach(pid => seenHosts.add(pid));
         themed.push(await evaluate(window.target, `document.body.classList.contains('${THEME}')`));
+        if (round === 3) {
+            // In the last of them the user chooses another colour theme and returns. Returning to the
+            // default needs no entry in the settings: Theia may remove it or write the default.
+            const light = await chooseTheme(window.target, 'Light (Theia)', 'theia-light', ['light']);
+            const back = await chooseTheme(window.target, 'Nexees Dark', THEME, [THEME, undefined]);
+            check('the user can choose another colour theme and return to Nexees Dark, and the choice is kept in the user\'s settings',
+                light === 'light', `workbench.colorTheme was ${light}, then ${back}`);
+        }
         await closeWindow(window);
     }
     await sleep(GRACE_MS + 2_000);
     check('three reopened windows found one and the same host (RC-T14)',
         seenHosts.size === 1 && seenHosts.has(kept.pid), [...seenHosts].join(', '));
     check('the kept host outlives its windows (RC-04)', hostPids().includes(kept.pid));
-    check('each reopened window wears the Nexees theme again', themed.length === 3 && themed.every(Boolean), themed.join(', '));
+    check('each reopened window wears the Nexees theme again, with no choice of the user behind it',
+        themed.length === 3 && themed.every(Boolean), themed.join(', '));
     kept.kill('SIGTERM');
     await until('the kept host to stop', async () => hostPids().length === 0, 10_000);
 

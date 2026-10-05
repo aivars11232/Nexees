@@ -1,16 +1,24 @@
-"""Tests for scripts/build/build_desktop.py: setting the fuses of an Electron binary (SI-28, TH-03).
+"""Tests for scripts/build/build_desktop.py: setting the fuses of an Electron binary (SI-28, TH-03),
+and taking the logo's icons into an application (B1).
 
 The install step changes bytes inside the installed copy of the Electron binary, so the rule under
 test is that it changes exactly the fuses it was asked for, reads the result back from the file,
 and refuses any binary whose fuse wire it does not know exactly. The tests use small stand-in files
 that hold a fuse wire; the real binary is exercised by tests/e2e/desktop/local_application.
+
+An application carries the logo only as the icons the logo manifest records: the build refuses an
+icon file that is anything else, so a substituted picture cannot reach an installation.
 """
 from __future__ import annotations
 
+import hashlib
 import importlib.util
+import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 BUILD = Path(__file__).resolve().parents[2] / 'scripts' / 'build' / 'build_desktop.py'
 spec = importlib.util.spec_from_file_location('build_desktop', BUILD)
@@ -71,6 +79,45 @@ class FuseTest(unittest.TestCase):
         with self.assertRaises(build_desktop.Refused):
             build_desktop.set_fuses(removed, {'RunAsNode': False, 'EnableNodeCliInspectArguments': False})
         self.assertEqual(removed.read_bytes(), before)
+
+
+class LogoIconTest(unittest.TestCase):
+    def setUp(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.branding = Path(tmp.name)
+        (self.branding / 'derived').mkdir()
+        self.icons = {16: b'sixteen', 128: b'the window icon'}
+        for size, data in self.icons.items():
+            (self.branding / f'derived/nexees-{size}.png').write_bytes(data)
+        manifest = {'derived': [{'file': f'derived/nexees-{size}.png', 'size': size,
+                                 'sha256': hashlib.sha256(data).hexdigest()} for size, data in self.icons.items()]}
+        (self.branding / 'manifest.json').write_text(json.dumps(manifest))
+        patch = mock.patch.object(build_desktop, 'BRANDING', self.branding)
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def test_the_icons_the_manifest_records_are_taken_by_size(self) -> None:
+        self.assertEqual(build_desktop.logo_icons(), self.icons)
+
+    def test_an_icon_that_is_not_the_recorded_one_is_refused(self) -> None:
+        (self.branding / 'derived/nexees-128.png').write_bytes(b'another picture')
+        with self.assertRaises(build_desktop.Refused):
+            build_desktop.logo_icons()
+
+
+
+class RepositoryLogoTest(unittest.TestCase):
+    def test_the_icon_the_build_places_for_the_window_is_one_the_real_manifest_records(self) -> None:
+        self.assertIn(build_desktop.WINDOW_ICON_SIZE, build_desktop.logo_icons())
+        self.assertTrue(build_desktop.WINDOW_ICON.endswith(f'nexees-{build_desktop.WINDOW_ICON_SIZE}.png'))
+
+    def test_the_about_dialog_names_the_file_the_build_places(self) -> None:
+        """The dialog reads the logo two folders above its page, lib/frontend: the application's own folder."""
+        dialog = (build_desktop.APP / 'src/shell/about_dialog.ts').read_text(encoding='utf-8')
+        named = re.search(r"^const LOGO = '\.\./\.\./(.+)';$", dialog, re.M)
+        self.assertIsNotNone(named)
+        self.assertEqual(named.group(1), build_desktop.WINDOW_ICON)
 
 
 if __name__ == '__main__':

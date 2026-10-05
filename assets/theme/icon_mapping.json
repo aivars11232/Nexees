@@ -1,5 +1,5 @@
 {
-  "description": "The Nexees icon language: the icon that stands for each concept on both clients, so that a state looks the same on Desktop and Android (R19). Every icon is the name of a Codicon, the icon set the Desktop foundation ships. scripts/build/design_tokens.py checks this file and writes each client's copy.",
+  "description": "The Nexees icon language: the icon that stands for each concept on both clients, so that a state looks the same on Desktop and Android (R19). Every icon is the name of a Codicon, the icon set the Desktop foundation ships (CC-BY-4.0: a client that ships the set carries its attribution). scripts/build/design_tokens.py checks this file and writes each client's copy.",
   "icons": {
     "host_attached": "plug",
     "host_attaching": "sync",

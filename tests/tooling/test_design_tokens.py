@@ -1,9 +1,8 @@
 """Tests for scripts/build/design_tokens.py: the shared design tokens are checked before any
 client copy is written, and the committed Desktop copy is exactly what the sources give (R19).
 
-The refusals are tested on small token files made here. Three tests check the repository
-itself: the committed Desktop copy is current, no token or icon is left unused by the window, and
-the logo icon the window's About dialog names is the one the build places.
+The refusals are tested on small token files made here. Two tests check the repository
+itself: the committed Desktop copy is current, and no token or icon is left unused by the window.
 """
 from __future__ import annotations
 

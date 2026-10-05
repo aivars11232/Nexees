@@ -54,6 +54,7 @@ The marker convention CONV-MARKER-01 is recorded in the charter, and its rules a
 | `apps/desktop/` | TypeScript (`.ts`, `.tsx`) on Theia and Electron; the local host is a Rust binary |
 | `apps/android/` | Kotlin, with the core linked through JNI |
 | `integrations/` | Rust; the IDE adapters are TypeScript, because they run inside Theia |
+| `assets/` | Data both clients read is JSON (`.json`); pictures are PNG. No code (section 14) |
 | `scripts/` | Python 3.11 or later, standard library only (`.py`); POSIX shell (`.sh`) for thin entry points |
 | `tests/` | The language of what the test exercises; `tests/tooling/` is Python |
 
@@ -205,7 +206,9 @@ a credential-shaped string assembles it at runtime, so the source itself holds n
   prefix made by `scripts/build/build_desktop.py install` and runs the application in a private
   nested session of its own; the task that changes the Desktop records its run. It is also the
   test of the Desktop runtime's hardening (SG-05), and it checks what the user sees: an entry
-  counts only where it is visible.
+  counts only where it is visible. At each probe it asks the page for one pixel, which makes the
+  page draw a frame: while the developer's real screen is locked, the nested compositor locks
+  its own screen too and draws nothing, and Theia's start waits for a frame.
 
 ## 10. Task evidence and closure
 
@@ -324,3 +327,32 @@ one content source of the two manuals, for both clients. Each states its status 
 The bundling helper `scripts/build/bundle_manuals` (TASK-071 and TASK-072) builds the in-app
 manuals from them. A feature task updates them in the same change as the behaviour they
 describe (R26), or records why its change has no manual impact.
+
+## 14. The visual system and the logo
+
+Established by TASK-010, for both clients (R18, R19).
+
+- **One source of the look.** `assets/theme/design_tokens.json` holds the colours, text sizes,
+  spacing and control sizes, and `assets/theme/icon_mapping.json` the icon of each concept, by
+  its Codicon name. A client's code holds no colour, size or icon name of its own.
+- **Each client has a generated copy** in its own language, committed beside the code that
+  uses it. `scripts/build/design_tokens.py` writes it and is the only thing that does; the
+  Desktop copy is `apps/desktop/src/shell/design_tokens.ts`. To change the look, edit the JSON,
+  run the script and commit both. The script refuses a source it does not understand and any
+  text, accent, status or syntax colour whose contrast against a surface is under 4.5 to 1.
+  [test: `tests/tooling/test_design_tokens.py` checks that the committed copy is current and
+  that the window uses every token and icon]
+- **The Desktop theme** is `apps/desktop/src/shell/theme.ts`. It says which token each of
+  Theia's colours and size variables takes, and holds no colour value itself. The end-to-end
+  test checks that Theia knows and applies every colour it names.
+- **The logo has one source** (binding B1): the file the owner confirmed,
+  `brand_assets.LOGO_SOURCE`. `scripts/build/brand_assets.py import` reads only that file,
+  never writes to it, and offers no way to name another. It writes the byte-identical copy,
+  the derived icons and `manifest.json` under `assets/branding/`. Those files are never
+  edited, redrawn or replaced by hand. An icon is the source scaled down; a size larger than
+  the source is refused. A new size is added to `ICON_SIZES` and derived by a new import on
+  the owner's machine. [test: `tests/tooling/test_brand_assets.py` checks that the committed
+  files are the recorded source and exactly its icons]
+- **A build takes only recorded icons.** `scripts/build/build_desktop.py` refuses an icon
+  whose SHA-256 is not the one the manifest records, so a substituted picture cannot reach an
+  installation.

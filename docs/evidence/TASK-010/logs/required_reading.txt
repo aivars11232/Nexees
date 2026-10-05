@@ -1,0 +1,66 @@
+TASK-010 required reading, recorded 2026-10-05T06:39:47+02:00.
+Pack: /mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3, content identity bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1, the same pack TASK-002 to TASK-009 read.
+"same as TASK-009" means the file's SHA-256 equals the hash in TASK-009's logs/required_reading.txt.
+
+== Read for TASK-010 ==
+01 cd80055c0d7280738313ce8de1daeb029a4d6c36e59b49a1ab0b814581cd838f  tasks/task_010.lcl.txt  [not in TASK-009's list; read in full: the objective, the two scope lines (the logo only from the bound path; shared design tokens and assets for Desktop and later Android), the reuse-first requirement, the security requirements, the verification, the 17 check IDs; no remote requirement and no scenario is assigned]
+02 319c19c730973b831dec5ef648b0e9548a0e80eb0a9731286da0b48f52270466  architecture/desktop_ui.lcl.txt  [same as TASK-009; required by TASK-010; read again in full: the compact, dark, VS Code-like direction, the required regions, the logo source, compactness against the approved mockup, and the v0.2 and v0.3 additions; the regions and the top-right toggles are TASK-011's]
+03 b049368991443c6ac7ea248c15ec675c9e1a6296bdb5f0fbc62d328c083ce8b1  architecture/android_ui.lcl.txt  [not in TASK-009's list; read in full for what Android reuses from this task: the logo, the dark visual language, the colour system and the icon language]
+04 51677c6af1cb4f045fa2a9672acd3536198bb75d1482f145cf0860eea4950c6e  bindings/bindings.lcl.txt  [same as TASK-009; required by TASK-010; B1 read again in full (the source asset, its consumers, and its four rules: no redrawing or automatic substitution, derived sizes only as packaging requires, the visual identity preserved, logo work stopped while the source is unavailable), and B26]
+05 afa9b2dcb9b3df808097c8e4fa1b350403b054a08956fa14cfbe99417847bfed  checks/stop_conditions.lcl.txt  [same as TASK-009; required by TASK-010; read again in full; STOP-03 (a missing required source file) applied to the logo until the owner answered]
+06 2307183519d203e547a031a11dde634a5222588febfd6bd706e429d8ca8473a5  policies/master_rules.lcl.txt  [same as TASK-009; required by TASK-010; R18 (the approved visual identity, no substituted branding), R19 (Android is Nexees: one design language) and R26 (manuals evolve with the product) read again]
+07 ad16c8b61cd9c84d5dc60884e2900e858594d3f2ccaf5c912b40401a388c180f  policies/global_contracts.lcl.txt  [same as TASK-009; required by TASK-010; C16 (reuse), C17 (no unnecessary code) and C20 (an installed local application) read again]
+08 cd49629e16e714a0dc40bceaca81470330d9868ff1eed9451f06dbb35d7f3f97  policies/code_readability_and_cleanup.lcl.txt  [same as TASK-009; required by TASK-010; read again in full (Q1 to Q5)]
+09 8b8cc8813dc12b6b7237bb5a952b6dc5e2847631919a4ca4ed6357fd8f5fae85  policies/no_unnecessary_code.lcl.txt  [same as TASK-009; required by TASK-010; read again in full]
+10 638e4d6d8f433f3996dd349eca02479de4cf06c8b95ef8b5a4d728a327182875  architecture/manuals_and_help.lcl.txt  [same as TASK-009; required by TASK-010; read again for the manual update]
+11 666b655bb987f453d3c577e3922c8915b055244c002f9d9ec186ca8358f336cf  reuse/reuse_matrix.lcl.txt  [same as TASK-009; required by the reuse-first requirement; read again: components inherited from the chosen IDE foundation are preferred, and a new substantial dependency needs a recorded decision; TASK-010 adds none]
+
+== The rest of the mandatory read order, reused ==
+Read in full for an earlier task and byte-identical now, so reused as the continuation profile allows.
+01 488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9  policies/task_002_075_continuation.lcl.txt  [same as TASK-009; reused]
+02 aec37d86e486f2d403797d6a61c0cd199aaf2a3173938706a1310d770a16540a  guidance/usage.lcl.txt  [same as TASK-009; reused]
+03 b8382ec17bcaa75317b26ce8238305d8d004f2a9aaf1ed9d6038b56ee4bd8a02  policies/reuse_policy.lcl.txt  [same as TASK-009; reused]
+04 ae0d3943cf66ce8afe131eadd66f35eab9077bb04c60a838a5404636cef053f0  policies/security_baseline.lcl.txt  [same as TASK-009; reused]
+05 2fc8668acfe23069eb4a9fe378729a55e2a65e7ac409c70bfc4cd0263ff98473  policies/acceptance_criteria.lcl.txt  [same as TASK-009; reused]
+06 5b68c8feaa79dc6c43782f6a0a0c4949367ec34af6c4e2f5321fd40e387ab547  policies/usage_and_agents.lcl.txt  [same as TASK-009; reused]
+07 ce1115d1e1db3da02dda7484959a11d5e7e028d6fea1143224759e204fa6510f  bindings/read_order.lcl.txt  [same as TASK-009; reused]
+08 e0a2c21d22a13037f7188f3131050e99b02a44880ffa8b947a8c9cbfeae605c2  architecture/workspace_model.lcl.txt  [same as TASK-009; reused]
+09 2f65ff575dbfade3fde459efd125c62e5f7d0a47874b2dbf6d5c22b289443956  architecture/system_architecture.lcl.txt  [same as TASK-009; reused]
+10 d50fc3a3e4f6487861289b7088d7b0289c7543bda253566584ee0484733917e6  architecture/persistent_state_model.lcl.txt  [same as TASK-009; reused]
+11 7dcf4e8a1765d5d6404e0594d10933aa315337b9b43e9f0d5152192dedb23d20  architecture/android_operating_model.lcl.txt  [same as TASK-009; reused]
+12 7d91532203589febd37811a0e28adb4e81e87a70951da50f80bfd542a5eba145  architecture/remote_device_control.lcl.txt  [same as TASK-009; reused]
+13 544ac6195525b0d6019aae1ee326e6bfeddb4c55907346744201f0fad29fafd5  verification/remote_control_acceptance.lcl.txt  [same as TASK-009; reused]
+14 c8c1e700d0ff0ab17ff26e1a093d0461e601aaab496900035b0c051ebaae1729  verification/security_gate.lcl.txt  [same as TASK-009; reused]
+15 c2e67f60229a5a5d106a82ef4b8caf33ad24b0b0f624af5bcb297b22754c0e65  verification/test_strategy.lcl.txt  [same as TASK-009; reused]
+16 3529983147c2af3a3d0767f7698f72f094017feed4f06df9eb0b0e1565a477ac  checks/runtime_gates.lcl.txt  [same as TASK-009; reused]
+17 5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836  accept_task.lcl.txt  [same as TASK-009; reused]
+18 5166634ebfdab4e67a9876b68c7b9d085f309f479f4e41756adff7939b4d4f9d  main.lcl.txt  [same as TASK-009; reused]
+19 960dedd6f7c1bc90bed915f75455ba770b38f3b4dc37c519e765bb7e98ae10e3  README_FIRST.txt  [same as TASK-009; reused]
+   9f257d67c28d79718dead07137774b9f59208e4190395e53e2300b8493c03af2  TASK_REQUIREMENT_MAP.json  [same as TASK-009; TASK-010's entry: dependency TASK-009, 17 check IDs, no remote requirement, no scenario]
+   7dc96677324c2e5ad40520d4072c690f6c5d4c69c72cb654b632a2a3bf56bed8  PROCEDURAL_CHANGES.json  [same as TASK-009; TASK-010's entry: dependency TASK-009, 17 check IDs, no remote requirement, no scenario]
+
+Repository records read for TASK-010:
+- docs/charter: the open item BIND-B1-LOGO (the bound path that does not resolve, and who decides) and CONV-MARKER-01; the
+  charter is frozen and was not changed;
+- docs/architecture: SS-ASSETS (its four slots, its owners TASK-010 and TASK-058, and its two must-nots: the logo is never
+  redrawn, regenerated or substituted, and the visual system is never forked per client), SS-DESKTOP-CLIENT and
+  SS-BUILD-RELEASE with their slots; no other architecture record names TASK-010;
+- docs/security and docs/dependencies: no record names TASK-010; the owner decisions of docs/dependencies/strategy.lcl.txt
+  and LICENSE_MATRIX.md (where @vscode/codicons and its attribution duty are recorded) were read for the records this task adds;
+- docs/engineering/CONVENTIONS.md in full; docs/manuals/NEXEES_USER_MANUAL.md section 2; README.md;
+- assets/: the approved logo reference, the approved compact layout and the sidebar-control reference (viewed and measured:
+  the token colours are sampled from the approved layout), and the placeholders this task replaced;
+- the bound logo file itself, /home/aivars/Pictures/Nexees Logo⁄Icon.png: viewed, measured and hashed, read-only;
+- config/local-paths.example.json: read; an untouched placeholder that still shows the pack's path, left as it is;
+- Theia 1.76.0's own code in the Desktop build folder, for how it registers a colour theme, applies a default theme and
+  its preference defaults, sets its size variables, shows its About dialog and starts its window: @theia/core
+  lib/browser/theming.js, styling-service.js, color-application-contribution.js, about-dialog.js, frontend-application.js,
+  preload/theme-preload-contribution.js, preferences/frontend-config-preference-contributions.js, electron-main/
+  electron-main-application.js, electron-browser/menu/electron-menu-contribution.js, src/browser/style/*.css, and
+  @theia/monaco lib/browser/monaco-theming-service.js, monaco-indexed-db.js and textmate/monaco-theme-registry.js.
+
+Documents changed since their last recorded read: none
+Unverified reuse: none
+
+External sources consulted: none. No download by any command of the task: npm, Electron and the native builds ran
+offline from the isolated caches, and the application under test connected to nothing (the end-to-end test checks it).

@@ -1,0 +1,64 @@
+TASK-010: why the window's start stalled in the private test session on 2026-10-04, recorded 2026-10-05T06:50:44+02:00.
+
+What was seen on 2026-10-04 from about 20:03: started in the end-to-end test's private session, the window stayed on its
+loading screen. Theia had started its contributions and then waited for one drawn frame before attaching its workbench;
+requestAnimationFrame never fired, although the page reported itself visible. Asking the page for a screenshot over the
+DevTools protocol made it draw a frame, and the start went on. The same installation had started normally at 19:20 and
+19:50, and it started normally again on 2026-10-05 after the machine was restarted.
+
+The cause: the login session was marked as locked. A nested KWin compositor follows that mark (logind's LockedHint of
+the user's session): it starts its own lock screen, which covers every window, and it draws no client window while
+locked. The mark is set when the real screen is locked, and also when any nested compositor locks itself. Nothing of
+TASK-010's changes is involved, and a window on a real, unlocked screen is drawn as usual.
+
+1. The system log of that evening, read on 2026-10-05. Every private session that ended after about 19:50 left this line
+   of the lock screen's greeter, which lost its compositor when the test stopped it. The session that ended at 19:49
+   left none. The one that ended at 19:31:44 did; it had stayed open, without input, for eleven minutes (observation 3).
+$ journalctl --user --since "2026-10-04 19:00" --until "2026-10-04 20:20" | grep kscreenlocker_greet
+Oct 04 19:31:44 arch kscreenlocker_greet[962434]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 19:51:00 arch kscreenlocker_greet[999841]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 19:57:57 arch kscreenlocker_greet[1006104]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:05:18 arch kscreenlocker_greet[1019005]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:05:50 arch kscreenlocker_greet[1021438]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:06:42 arch kscreenlocker_greet[1022115]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:07:13 arch kscreenlocker_greet[1023126]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:08:52 arch kscreenlocker_greet[1024157]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:09:23 arch kscreenlocker_greet[1025502]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:09:53 arch kscreenlocker_greet[1026219]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:10:20 arch kscreenlocker_greet[1026936]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:11:11 arch kscreenlocker_greet[1027973]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:12:58 arch kscreenlocker_greet[1029342]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:13:57 arch kscreenlocker_greet[1030349]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:15:07 arch kscreenlocker_greet[1032299]: The Wayland connection broke. Did the Wayland compositor die?
+Oct 04 20:16:16 arch kscreenlocker_greet[1034213]: The Wayland connection broke. Did the Wayland compositor die?
+
+2. Two observations on 2026-10-05 with the same installation, each in a fresh private session, ten seconds after the
+   page appeared, with nothing asking the page for a frame. They were made by hand, and their output is copied here:
+
+   06:26, the real session unlocked (LockedHint=no):
+     frames: raf fired; visibility visible
+     page:   {"entry":true,"preload":false,"dialog":true}
+     The host's entry is in the status bar and the loading screen is gone, while Theia's trust question is still open.
+
+   06:31, the real session locked (LockedHint=yes):
+     nested compositor 21128; lock-screen processes below it: 1
+     frames: no frame in 3s
+     page:   {"entry":false,"preload":true}
+
+   The real session was locked at 06:28 by a mistake of the task, which TASK-010_EVIDENCE.md section 11 records: a
+   command meant for a private session reached the real one. The owner unlocked it; it was unlocked again by 06:36.
+
+3. A third observation on 2026-10-05: a private session started at 07:35:01 and left without input. At 07:41:40 its
+   compositor had a lock screen of its own (one lock-screen process below it), and LockedHint of the login session was
+   yes. The private session was then stopped. At 07:42 no lock-screen process ran on the machine at all, so the real
+   screen was not locked, and LockedHint was still yes. So a private session that gets no input for some minutes locks
+   itself and marks the user's whole login session as locked, and the mark stays when the private session ends, until
+   the real screen is next locked and unlocked. The task did not change the mark. This is what the session that ended
+   at 19:31:44 on 2026-10-04 most likely did. Which of the two set the mark later that evening, a private session or a
+   lock of the real screen, was not established.
+
+4. What the task did about it. The end-to-end test asks the page for one pixel at each probe (its function `shown`),
+   which draws a frame, so the test does not depend on the mark: it passed its checks on 2026-10-04 at 20:14 with the
+   session marked as locked, and on 2026-10-05 without the mark. One run of the test takes about a minute, far less
+   than a compositor needs to lock itself. The task's own debugging sessions are now closed within four minutes.
+   Nothing was changed about screen locking, in the test session or anywhere else.

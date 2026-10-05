@@ -1,0 +1,79 @@
+Secret and privacy scan for TASK-010, run 2026-10-05T08:25:23+02:00.
+
+1. The security stage of scripts/test/run_checks.py, over every file a commit of this checkout would hold
+   (credential formats, private-key file names, and evidence that Git would ignore):
+$ python3 -B scripts/test/run_checks.py --stage security
+   == security ==
+   621 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+   -- security: PASS
+   
+   security PASS
+   ALL STAGES PASSED
+   exit code: 0
+
+2. The files TASK-010 added or changed since its base bba49c3, without this report (55 files):
+   FILE_TREE.txt
+   README.md
+   apps/desktop/package.json
+   apps/desktop/resources/application_metadata.json
+   apps/desktop/src/main.electron.ts
+   apps/desktop/src/shell/about_dialog.ts
+   apps/desktop/src/shell/design_tokens.ts
+   apps/desktop/src/shell/main_window.ts
+   apps/desktop/src/shell/theme.ts
+   assets/branding/derived/nexees-128.png
+   assets/branding/derived/nexees-16.png
+   assets/branding/derived/nexees-24.png
+   assets/branding/derived/nexees-256.png
+   assets/branding/derived/nexees-32.png
+   assets/branding/derived/nexees-48.png
+   assets/branding/derived/nexees-64.png
+   assets/branding/manifest.json
+   assets/branding/source/nexees-logo.png
+   assets/theme/design_tokens.json
+   assets/theme/icon_mapping.json
+   docs/architecture/subsystems.lcl.txt
+   docs/dependencies/LICENSE_MATRIX.md
+   docs/dependencies/checks.lcl.txt
+   docs/dependencies/strategy.lcl.txt
+   docs/engineering/CONVENTIONS.md
+   docs/evidence/TASK-010/TASK-010_EVIDENCE.md
+   docs/evidence/TASK-010/logs/cleanup_record.json
+   docs/evidence/TASK-010/logs/desktop_build.txt
+   docs/evidence/TASK-010/logs/dispatch_task_010.record.json
+   docs/evidence/TASK-010/logs/dispatch_task_010_resume.record.json
+   docs/evidence/TASK-010/logs/e2e_local_application.txt
+   docs/evidence/TASK-010/logs/ide_activity.txt
+   docs/evidence/TASK-010/logs/logo_import.txt
+   docs/evidence/TASK-010/logs/native_language_suite.json
+   docs/evidence/TASK-010/logs/native_language_suite_resume.json
+   docs/evidence/TASK-010/logs/negative_tests.txt
+   docs/evidence/TASK-010/logs/preflight.txt
+   docs/evidence/TASK-010/logs/preflight_resume.txt
+   docs/evidence/TASK-010/logs/regression.txt
+   docs/evidence/TASK-010/logs/required_reading.txt
+   docs/evidence/TASK-010/logs/run_checks.txt
+   docs/evidence/TASK-010/logs/screen_lock_observation.txt
+   docs/evidence/TASK-010/logs/seeded_defects.txt
+   docs/evidence/TASK-010/screens/01_trust_question.png
+   docs/evidence/TASK-010/screens/02_workbench.png
+   docs/evidence/TASK-010/screens/03_about.png
+   docs/manuals/NEXEES_USER_MANUAL.md
+   packaging/desktop/package_definition.json
+   scripts/build/brand_assets.py
+   scripts/build/build_desktop.py
+   scripts/build/design_tokens.py
+   tests/e2e/desktop/local_application.test.mjs
+   tests/tooling/test_brand_assets.py
+   tests/tooling/test_build_desktop.py
+   tests/tooling/test_design_tokens.py
+   Pictures among them, not read as text: 11 ['assets/branding/derived/nexees-128.png', 'assets/branding/derived/nexees-16.png', 'assets/branding/derived/nexees-24.png', 'assets/branding/derived/nexees-256.png', 'assets/branding/derived/nexees-32.png', 'assets/branding/derived/nexees-48.png', 'assets/branding/derived/nexees-64.png', 'assets/branding/source/nexees-logo.png', 'docs/evidence/TASK-010/screens/01_trust_question.png', 'docs/evidence/TASK-010/screens/02_workbench.png', 'docs/evidence/TASK-010/screens/03_about.png']
+   E-mail-shaped strings in the others: 6 occurrences in 1 (file, string) pairs; none is the owner's
+     docs/evidence/TASK-010/logs/desktop_build.txt: i@izs.me x6
+     i@izs.me is the public contact in the deprecation notice of the glob package, which npm prints during the build; the committed lockfile of TASK-003's prototype carries it too
+   Executable files among them: 3. Executable at the base bba49c3 already, mode unchanged: ['scripts/build/build_desktop.py'].
+   Made executable by TASK-010: ['scripts/build/brand_assets.py', 'scripts/build/design_tokens.py']; intended:
+     scripts/build/brand_assets.py: a command-line entry point with a shebang, like the build script
+     scripts/build/design_tokens.py: a command-line entry point with a shebang, like the build script
+
+Result: no credential, no key material, no ignored evidence, no personal address; only the intended executables

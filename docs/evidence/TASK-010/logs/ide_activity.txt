@@ -1,0 +1,55 @@
+TASK-010: what else ran during the task, recorded 2026-10-05T08:25:23+02:00 with read-only commands.
+TASK-010 began at 2026-10-04T19:11:04+02:00. Every command of the task runs with the isolated toolchain (env.sh):
+CARGO_HOME and RUSTUP_HOME under /mnt/F/Nexees-toolchains, never ~/.cargo; npm, Electron and the native builds use
+the home folder /mnt/F/Nexees-toolchains/home and its caches, never the user's.
+The session was paused from 2026-10-04 20:25:00 to 2026-10-05 06:23:00: the owner stopped it at their usage limit, the machine was
+restarted, and the owner resumed it. No command of the task ran in between (the session record holds none).
+
+== 1. The owner's IDE processes ==
+  4453  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [the Gradle extension's server; started 2026-10-05 06:19:57]
+  4509  /home/aivars/.vscode/extensions/rust-lang.rust-analyzer-0.3.3065-linux-x64/server/rust-analyzer  [VS Code's rust-analyzer; started 2026-10-05 06:19:57]
+  4667  /usr/lib/rust-analyzer-proc-macro-srv  [a proc-macro server of rust-analyzer; started 2026-10-05 06:19:58]
+  4673  /usr/lib/rust-analyzer-proc-macro-srv  [a proc-macro server of rust-analyzer; started 2026-10-05 06:19:58]
+  4840  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [a Gradle daemon of the Gradle extension; started 2026-10-05 06:20:00]
+  4968  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [the Java language server; started 2026-10-05 06:20:03]
+  6446  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [a Gradle daemon of the Gradle extension; started 2026-10-05 06:20:23]
+  7 processes, all of the owner's VS Code, started when the owner opened it again after the restart.
+  The task's toolchain environment (env.sh):
+    export RUSTUP_HOME=$T/rustup CARGO_HOME=$T/cargo CARGO_TARGET_DIR=$T/target
+
+== 2. Ignored files in the checkout: never committed, outside the snapshot ==
+  apps/desktop/node_modules: 1 files, written 2026-10-04 17:56:20 .. 2026-10-04 17:56:20; 0 since TASK-010 began
+  docs/evidence/TASK-003/prototypes/android-app/.gradle/: 17 files, written 2026-10-04 11:53:54 .. 2026-10-05 06:20:40; 9 since TASK-010 began
+  target/: 562 files, written 2026-10-04 11:52:23 .. 2026-10-05 06:20:02; 43 since TASK-010 began
+  target/ is rust-analyzer's cargo check output, and .gradle/ beside TASK-003's prototype the Java extension's cache.
+  apps/desktop/node_modules is the editor's link to /mnt/F/Nexees-toolchains/target/nexees/desktop/check/node_modules, kept since TASK-009 (CONVENTIONS.md section 4).
+  Other ignored entries: none.
+  Nothing of the Desktop build is in the checkout: it is built in /mnt/F/Nexees-toolchains/target/nexees/desktop.
+
+== 3. Cargo.lock and the Rust manifests ==
+  Changed since the task's base bba49c3: none. TASK-010 touches no Rust manifest.
+  $ cargo generate-lockfile --offline   (exit 0; in a scratch copy of the manifests, with the isolated toolchain)
+  Result: the regenerated lock is byte-identical to the checkout's Cargo.lock.
+
+== 4. Writes in the home caches since TASK-010 began ==
+  While the task was working: 2 files.
+    2026-10-05 08:25:16  ~/.gradle/daemon/8.9/daemon-6446.out.log
+    2026-10-05 08:25:22  ~/.gradle/daemon/9.2.0/daemon-4840.out.log
+    These are the logs of Gradle daemons of the owner's VS Code (section 1). No task command starts Gradle.
+  While the session was paused: 6501 files, none of them the task's:
+    ~/.android: 4 files, written at 2026-10-04 22:44 (3), 2026-10-04 22:45 (1)
+    ~/.cargo: 1 files, written at 2026-10-05 06:19 (1)
+    ~/.gradle: 148 files, written at 2026-10-04 21:18 (1), 2026-10-04 21:28 (1), 2026-10-04 21:29 (53), 2026-10-04 21:30 (15), 2026-10-04 22:36 (17), 2026-10-04 22:37 (19), 2026-10-04 22:38 (8), 2026-10-04 22:39 (3) ...
+    ~/.npm: 6348 files, written at 2026-10-04 21:28 (2), 2026-10-04 21:29 (2), 2026-10-05 06:20 (6344)
+    What npm's own logs of those hours name as the commands (the programs Claude Code's plugins start for the
+    owner's session, and nothing of Nexees):
+      3 x npm exec @modelcontextprotocol/server-pdf --stdio
+      3 x npm exec @wonderwhy-er/desktop-commander@latest
+      3 x npm exec prisma mcp
+      2 x npm exec @gitkraken/gk mcp --plugin --host=claude
+    ~/.gradle then holds Kotlin build profiles and script caches of several Gradle versions, and ~/.android the
+    state files of an Android emulator and adb on its default port: the owner's own work on the machine during the
+    pause. The task uses neither; its adb, when a task needs one, listens on port 5039 under the isolated home.
+  Folders of the application under the owner's home written since the task began: none. The application
+  under test ran only in private profiles in the temporary folder.
+

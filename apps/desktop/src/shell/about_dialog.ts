@@ -14,7 +14,7 @@ import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/front
 import { TOKENS } from './design_tokens';
 
 /** The logo in the application's resources, relative to the window's page (lib/frontend). */
-export const LOGO = '../../resources/branding/nexees-128.png';
+const LOGO = '../../resources/branding/nexees-128.png';
 /** The side of the logo in the dialog; the file has twice as many pixels, for dense screens. */
 const LOGO_SIDE = 64;
 /** The package of the foundation whose version the dialog names. */

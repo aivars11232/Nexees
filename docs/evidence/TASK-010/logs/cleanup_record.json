@@ -1,0 +1,85 @@
+{
+  "schema": "nexees-cleanup-record",
+  "version": 1,
+  "task": "TASK-010",
+  "applied": true,
+  "removed": [],
+  "refused": [],
+  "absent": [],
+  "kept_directories": [],
+  "preserved_untracked": [
+    {
+      "path": "docs/evidence/TASK-010/TASK-010_EVIDENCE.md",
+      "sha256": "90181416ad4a1ff1d6824785569ff03744bd1b3486a1e46d9ff183ea68e8f866"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/desktop_build.txt",
+      "sha256": "120ee5d88fb4abce5ced655d86f853e5187cc8667af4406b27f852e440cd1790"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/dispatch_task_010_resume.record.json",
+      "sha256": "4dfbbf29a379d983982c9d83a6b4c62c5495ea5c2b44a0c9ea61cceaf22fef9c"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/e2e_local_application.txt",
+      "sha256": "fe9ec79e1cf29f7762da7663a547b05cc96b1312e8ba5c06054d8a645996233c"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/ide_activity.txt",
+      "sha256": "c9c608356f69a8841a6f3f508b8b76f6fcad4830d56433655be58d4c1e74172a"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/logo_import.txt",
+      "sha256": "5120570c54d58c3bf91cd91e6a599a851f796a1af56c05de7c9ee769a0bceb12"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/native_language_suite_resume.json",
+      "sha256": "ed46c2e2f94b17ed9da7cd4f63f909739df9b8a24e8c842ba4b6751d9b152ae3"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/negative_tests.txt",
+      "sha256": "f267abe9b72c41b4ffd510f36998adee10473dc1b24380988b04e09cc3d3bfcf"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/preflight_resume.txt",
+      "sha256": "6f5f72ee8f90c5f0f450c8c7585b8cbdbc6c3138d99e1a0a4e1243f0beec11f5"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/regression.txt",
+      "sha256": "0f007a97f393c0162f31c22a53235f106d7c5cb8d26767bb96ecfb3b3e830017"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/required_reading.txt",
+      "sha256": "b0825255d16f7447a297786afa60058d1643d8cbda0b6c5ac8a1b17d28402a0e"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/run_checks.txt",
+      "sha256": "0ffd094f77833c15f9455125eb5c71e7cb385c0a51ef9bf002dd826a227c5c2f"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/screen_lock_observation.txt",
+      "sha256": "1634f84c3565474957c0ffc339f36465b6bc0b92ff15b0b2722700b717d8a78e"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/security_scan.txt",
+      "sha256": "4474f6eff0ffd45043b9aaea9b2b093799e76f29fa09617237637df51769eb04"
+    },
+    {
+      "path": "docs/evidence/TASK-010/logs/seeded_defects.txt",
+      "sha256": "142abeb20d471dbf8004f78af87569199b8d906be9e4fecfacacceecc9ce26b6"
+    },
+    {
+      "path": "docs/evidence/TASK-010/screens/01_trust_question.png",
+      "sha256": "3dc6f9f40a3e7310f2752c20722a3b21a81d724caf430051cb522bd95c023994"
+    },
+    {
+      "path": "docs/evidence/TASK-010/screens/02_workbench.png",
+      "sha256": "bbf080322fad372129b40078d06a05672c637c54015b078be2c7504b952b0527"
+    },
+    {
+      "path": "docs/evidence/TASK-010/screens/03_about.png",
+      "sha256": "bc296b32dae558c2a9676d1ce26f2d2a427eb43c72eb6535fff2e7a89edc205b"
+    }
+  ],
+  "ignored_left_in_place": 580
+}
