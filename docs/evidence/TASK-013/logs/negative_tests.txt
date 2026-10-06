@@ -1,0 +1,37 @@
+TASK-013 negative tests, 2026-10-06T20:25:28+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. 12 cases break one rule
+each of the workspaces: of the registry's roots, its devices and its foreground, of the agents a switch must
+leave bound where they are, of the workspace messages and their protocol version, of the pages the host sends,
+or of the numbers the window states a second time. A test-stage case passes only when the named test fails.
+The lint cases seed defects that the TypeScript compiler and Clippy must refuse. The others seed defects the
+layout, format and docs stages must catch.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: a root kept as it was spelled rather than in its canonical form is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: workspace_registry::tests::a_root_that_was_moved_or_replaced_by_a_link_is_not_opened, workspace_registry::tests::created_workspaces_keep_their_ids_kinds_names_and_roots_across_a_restart)
+PASS  test: a root inside another workspace's root accepted is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_workspace_request_that_cannot_be_carried_out_is_refused_and_changes_nothing)
+PASS  test: a workspace whose root was replaced by a link opened as if it were still its folder is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: workspace_registry::tests::a_root_that_was_moved_or_replaced_by_a_link_is_not_opened)
+PASS  test: a root longer than the registry's bound accepted is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: workspace_registry::tests::a_root_must_be_an_absolute_path_to_an_existing_folder_of_bounded_length)
+PASS  test: a workspace opened on a device that has no replica of it is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: workspace_registry::tests::a_root_that_was_moved_or_replaced_by_a_link_is_not_opened)
+PASS  test: closing a workspace that the client does not show is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_creates_opens_lists_and_closes_workspaces_that_outlive_the_host)
+PASS  test: opening a workspace rebinding a running agent to it is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_windows_foreground_switches_leave_a_bound_agent_session_unchanged)
+PASS  test: the workspace messages counted as part of protocol version 2 is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_of_protocol_version_2_is_served_but_refused_the_workspace_messages)
+PASS  test: a request for a new workspace taking fields it does not know is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_workspace_request_that_cannot_be_carried_out_is_refused_and_changes_nothing)
+PASS  test: a page of the list larger than one message of the window's channel is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::the_largest_workspace_fits_one_page_and_a_long_list_comes_in_pages)
+PASS  test: the window stating an older protocol version than the shared core has is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_states_the_versions_and_bounds_of_the_shared_core)
+PASS  test: the window allowing a longer workspace name than the host accepts is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_states_the_versions_and_bounds_of_the_shared_core)
+PASS  lint: the switcher giving the host a bare path where the contract asks for a workspace target is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: the switcher without words for one of the host's refusals is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: the backend's service without the method that opens a workspace is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: a value left unused in the registry is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+PASS  layout: the registry without its slot in the catalogue is caught (exit 1: FINDING: core/workspaces/workspace_registry.rs belongs to 0 subsystems instead of one: [])
+PASS  layout: the marker stripped from the workspace-binding placeholder, which this task did not implement is caught (exit 1: FINDING: core/workspaces/workspace_binding.source is a placeholder without its marker; implement it under its real extension instead)
+PASS  format: a line of the registry longer than a hundred characters is caught (exit 1: FINDING: core/workspaces/workspace_registry.rs: line 45 is longer than 100 characters)
+PASS  format: the registry written as the formatter would not write it is caught (exit 1: FINDING: cargo fmt --all --check exited with 1)
+PASS  format: a line of the switcher left with trailing spaces is caught (exit 1: FINDING: apps/desktop/src/workspaces/workspace_switcher.ts: line 38 has trailing whitespace)
+PASS  docs: a file the file tree does not list is caught (exit 1: FINDING: FILE_TREE.txt does not match the files; regenerate it with --write-file-tree)
+PASS  docs: the README linking to a file that does not exist is caught (exit 1: FINDING: README.md links to core/workspaces/workspace_registries.rs, which does not exist)
+PASS  docs: the user manual without its status line is caught (exit 1: FINDING: docs/manuals/NEXEES_USER_MANUAL.md does not state its status)
+
+ALL NEGATIVE TESTS PASSED

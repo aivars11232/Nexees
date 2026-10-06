@@ -29,7 +29,7 @@ import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shel
 import { ShellLayoutRestorer } from '@theia/core/lib/browser/shell/shell-layout-restorer';
 import { SidePanelHandler } from '@theia/core/lib/browser/shell/side-panel-handler';
 import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
-import { HostConnectionService, MAX_PANEL_SIZE, PanelLayout, PanelState, isViewId, panelLayout } from '../main.protocol';
+import { HostConnectionService, MAX_PANEL_SIZE, PanelLayout, PanelState, isId, panelLayout } from '../main.protocol';
 import { NexeesShell } from './panel_layout';
 
 /** How long the panels must stay as they are before they are stored: a drag is one change. */
@@ -193,7 +193,7 @@ export class PanelMemory implements FrontendApplicationContribution {
      * whose ID is no identifier is not remembered.
      */
     protected panel(shown: boolean, size: number | undefined, selected: Widget | undefined, before: PanelState | undefined): PanelState {
-        const id = selected && isViewId(selected.id) ? selected.id : null;
+        const id = selected && isId(selected.id) ? selected.id : null;
         return {
             shown,
             size: pixels(size) ?? before?.size ?? null,

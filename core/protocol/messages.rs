@@ -1,8 +1,9 @@
 //! The message families of the protocol, kept apart (IF-ATTACH, IF-REMOTE, IF-SYNC, C22, AD-05).
 //!
 //! - A window and its own host exchange [`ClientMessage`] and [`HostMessage`] over local IPC:
-//!   intents, acknowledgments, status and ordered domain events, and the panel layout the host
-//!   keeps for the window (ST-VIEW).
+//!   intents, acknowledgments, status and ordered domain events, the panel layout the host keeps
+//!   for the window (ST-VIEW), and the workspaces of the host's device, which the window lists,
+//!   creates, opens and closes (ST-WORKSPACE).
 //! - Two paired hosts exchange [`PeerMessage`], which holds exactly one family per message:
 //!   [`RemoteMessage`] for requests, acknowledgments, reconciliation, status and execution
 //!   transfers, or [`SyncMessage`] for content changes and portable records. The sync family has no
@@ -40,16 +41,16 @@ use nexees_domain::revision::Generation;
 use nexees_domain::schema::{Record, Validate};
 use nexees_domain::session::{ExecutionTransfer, TransferState};
 use nexees_domain::task::{Evidence, TaskStatus};
-use nexees_domain::text::Note;
+use nexees_domain::text::{Label, Note};
 use nexees_domain::time::Timestamp;
-use nexees_domain::workspace::WorkspaceRecord;
+use nexees_domain::workspace::{ContentAvailability, DeviceRoot, WorkspaceKind, WorkspaceRecord};
 use serde::{Deserialize, Serialize};
 
 use crate::operations::{LocalIntent, RemoteRequest};
 use crate::serialization::{
     Base64Bytes, MAX_FRAME_BYTES, MAX_IPC_MESSAGE_BYTES, ProtocolError, decode,
 };
-use crate::version_negotiation::{Hello, LAYOUT_SINCE_VERSION};
+use crate::version_negotiation::{Hello, LAYOUT_SINCE_VERSION, WORKSPACES_SINCE_VERSION};
 
 /// Most request IDs one reconciliation may name.
 pub const MAX_RECONCILE: usize = 256;
@@ -714,6 +715,100 @@ pub fn receive_transfer(
         })
 }
 
+/// A workspace as a window is told about it: its ID, kind and name, its root on the host's device
+/// and whether its content is there (core/workspaces/workspace_registry). It is for showing: a
+/// window that acts on a workspace names it by its ID or by its root, never by its name.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct WorkspaceEntry {
+    /// The workspace.
+    pub workspace_id: WorkspaceId,
+    /// Its kind.
+    pub kind: WorkspaceKind,
+    /// Its name.
+    pub name: Label,
+    /// Its root on the host's device; absent when only a listing of it is known there.
+    pub root: Option<DeviceRoot>,
+    /// Whether its content is on the host's device.
+    pub availability: ContentAvailability,
+}
+
+/// A workspace a window asks its host to create on the host's device.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct NewWorkspace {
+    /// Its kind.
+    pub kind: WorkspaceKind,
+    /// Its name.
+    pub name: Label,
+    /// The folder that holds its content.
+    pub root: DeviceRoot,
+}
+
+/// The workspace a window asks to open: by its ID, or the one whose root is a folder.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum WorkspaceTarget {
+    /// The workspace with this ID.
+    WorkspaceId(WorkspaceId),
+    /// The workspace whose root is this folder, however the path spells it.
+    Root(DeviceRoot),
+}
+
+/// Why a host refused a window's workspace request. A refused request changed nothing.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum WorkspaceRefusal {
+    /// No workspace on the host's device has that ID, or that root.
+    NotFound,
+    /// The root is not an absolute path.
+    RootNotAbsolute,
+    /// The root does not exist or cannot be read.
+    RootMissing,
+    /// The root is not a folder.
+    RootNotAFolder,
+    /// The root's path is not text, or is too long.
+    RootUnusable,
+    /// The recorded root was moved, or replaced by a link.
+    RootMoved,
+    /// The root shares files with another workspace's root.
+    Overlaps,
+    /// Only a listing of the workspace is known on the host's device (A3).
+    NotHere,
+    /// The client does not show that workspace.
+    NotOpen,
+}
+
+/// A host's answer to a window's workspace request.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case", deny_unknown_fields)]
+pub enum WorkspaceAnswer {
+    /// The workspaces of the host's device after the window's cursor, in ID order, as many as one
+    /// message holds.
+    Page {
+        /// The workspaces.
+        entries: Vec<WorkspaceEntry>,
+        /// Whether more follow after the last of them.
+        more: bool,
+        /// The workspace the client shows, if any.
+        foreground: Option<WorkspaceId>,
+    },
+    /// The request was carried out.
+    Done {
+        /// The workspace it concerned, when it created or opened one.
+        workspace: Option<WorkspaceEntry>,
+        /// The workspace the client shows now, if any.
+        foreground: Option<WorkspaceId>,
+    },
+    /// The request was refused.
+    Refused {
+        /// Why.
+        reason: WorkspaceRefusal,
+        /// The other workspace, when a root overlaps its root.
+        workspace_id: Option<WorkspaceId>,
+    },
+}
+
 /// Messages from a window to its own host.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case", deny_unknown_fields)]
@@ -734,6 +829,25 @@ pub enum ClientMessage {
     /// answered by [`HostMessage::Layout`] with what the host then keeps. It names no client:
     /// the host keeps it for the client on this channel. From protocol version 2.
     StoreLayout(PanelLayout),
+    /// Asks for the workspaces of the host's device in ID order, after `after` when it is given;
+    /// answered by [`HostMessage::Workspaces`] with a page. From protocol version 3.
+    ListWorkspaces {
+        /// The last workspace of the page before, if any.
+        after: Option<WorkspaceId>,
+    },
+    /// Asks the host to create a workspace on its device; answered by
+    /// [`HostMessage::Workspaces`]. From protocol version 3.
+    CreateWorkspace(NewWorkspace),
+    /// Makes a workspace the foreground workspace of the client on this channel: the one it
+    /// shows (C2, B2). It names no client and binds no agent; answered by
+    /// [`HostMessage::Workspaces`]. From protocol version 3.
+    OpenWorkspace(WorkspaceTarget),
+    /// Closes the workspace the client on this channel shows; answered by
+    /// [`HostMessage::Workspaces`]. From protocol version 3.
+    CloseWorkspace {
+        /// The workspace the client shows.
+        workspace_id: WorkspaceId,
+    },
 }
 
 impl ClientMessage {
@@ -743,6 +857,10 @@ impl ClientMessage {
         match self {
             Self::Hello(_) | Self::Intent(_) | Self::Resync { .. } => 1,
             Self::LoadLayout {} | Self::StoreLayout(_) => LAYOUT_SINCE_VERSION,
+            Self::ListWorkspaces { .. }
+            | Self::CreateWorkspace(_)
+            | Self::OpenWorkspace(_)
+            | Self::CloseWorkspace { .. } => WORKSPACES_SINCE_VERSION,
         }
     }
 }
@@ -763,6 +881,8 @@ pub enum HostMessage {
     /// [`ClientMessage::LoadLayout`] and [`ClientMessage::StoreLayout`]. It is presentation
     /// only, never an instruction (ST-VIEW). From protocol version 2.
     Layout(Option<PanelLayout>),
+    /// The answer to a workspace request. From protocol version 3.
+    Workspaces(WorkspaceAnswer),
 }
 
 /// The remote-control family between paired hosts.
@@ -1210,6 +1330,116 @@ pub(crate) mod tests {
         assert_eq!(ClientMessage::LoadLayout {}.since(), LAYOUT_SINCE_VERSION);
         assert_eq!(ClientMessage::Resync { after: None }.since(), 1);
         assert_eq!(ClientMessage::Hello(Hello::current()).since(), 1);
+    }
+
+    #[test]
+    fn a_windows_workspace_messages_are_strict_and_of_protocol_version_3() {
+        let wire = [
+            (
+                r#"{"list_workspaces":{"after":null}}"#,
+                ClientMessage::ListWorkspaces { after: None },
+            ),
+            (
+                concat!(
+                    r#"{"create_workspace":{"kind":"lcl","name":"LCL — Next","#,
+                    r#""root":"/home/u/lcl-next"}}"#
+                ),
+                ClientMessage::CreateWorkspace(NewWorkspace {
+                    kind: WorkspaceKind::Lcl,
+                    name: Label::new("LCL — Next").unwrap(),
+                    root: DeviceRoot::new("/home/u/lcl-next").unwrap(),
+                }),
+            ),
+            (
+                r#"{"open_workspace":{"workspace_id":"ws-1"}}"#,
+                ClientMessage::OpenWorkspace(WorkspaceTarget::WorkspaceId(
+                    WorkspaceId::new("ws-1").unwrap(),
+                )),
+            ),
+            (
+                r#"{"open_workspace":{"root":"/home/u/arch-dock"}}"#,
+                ClientMessage::OpenWorkspace(WorkspaceTarget::Root(
+                    DeviceRoot::new("/home/u/arch-dock").unwrap(),
+                )),
+            ),
+            (
+                r#"{"close_workspace":{"workspace_id":"ws-1"}}"#,
+                ClientMessage::CloseWorkspace {
+                    workspace_id: WorkspaceId::new("ws-1").unwrap(),
+                },
+            ),
+        ];
+        for (text, message) in &wire {
+            assert_eq!(&decode_client(text.as_bytes()).unwrap(), message, "{text}");
+            assert_eq!(
+                String::from_utf8(encode(message, MAX_IPC_MESSAGE_BYTES).unwrap()).unwrap(),
+                *text
+            );
+            // Every one of them belongs to protocol version 3.
+            assert_eq!(message.since(), WORKSPACES_SINCE_VERSION, "{text}");
+        }
+        let entry = WorkspaceEntry {
+            workspace_id: WorkspaceId::new("ws-1").unwrap(),
+            kind: WorkspaceKind::Code,
+            name: Label::new("Arch Dock").unwrap(),
+            root: Some(DeviceRoot::new("/home/u/arch-dock").unwrap()),
+            availability: ContentAvailability::Local,
+        };
+        for (text, answer) in [
+            (
+                concat!(
+                    r#"{"workspaces":{"page":{"entries":[{"workspace_id":"ws-1","kind":"code","#,
+                    r#""name":"Arch Dock","root":"/home/u/arch-dock","availability":"local"}],"#,
+                    r#""more":false,"foreground":"ws-1"}}}"#
+                ),
+                WorkspaceAnswer::Page {
+                    entries: vec![entry.clone()],
+                    more: false,
+                    foreground: Some(entry.workspace_id.clone()),
+                },
+            ),
+            (
+                r#"{"workspaces":{"done":{"workspace":null,"foreground":null}}}"#,
+                WorkspaceAnswer::Done {
+                    workspace: None,
+                    foreground: None,
+                },
+            ),
+            (
+                r#"{"workspaces":{"refused":{"reason":"overlaps","workspace_id":"ws-1"}}}"#,
+                WorkspaceAnswer::Refused {
+                    reason: WorkspaceRefusal::Overlaps,
+                    workspace_id: Some(entry.workspace_id.clone()),
+                },
+            ),
+        ] {
+            let message = HostMessage::Workspaces(answer);
+            assert_eq!(decode_host(text.as_bytes()).unwrap(), message, "{text}");
+            assert_eq!(
+                String::from_utf8(encode(&message, MAX_IPC_MESSAGE_BYTES).unwrap()).unwrap(),
+                text
+            );
+        }
+        // A window names no client and no agent, carries no authority, and a root or a name that
+        // is no valid value is refused before the host looks at anything else.
+        for bad in [
+            r#"{"list_workspaces":{"after":null,"client_id":"another-window"}}"#,
+            r#"{"open_workspace":{"workspace_id":"ws-1","agent_session":"claude-1"}}"#,
+            r#"{"open_workspace":{"workspace_id":"ws-1","root":"/x"}}"#,
+            r#"{"create_workspace":{"kind":"code","name":"W","root":"/w","grants":["all"]}}"#,
+            r#"{"create_workspace":{"kind":"android","name":"W","root":"/w"}}"#,
+            r#"{"create_workspace":{"kind":"code","name":"two\nlines","root":"/w"}}"#,
+            r#"{"create_workspace":{"kind":"code","name":"W","root":"/w\u0000x"}}"#,
+            r#"{"close_workspace":{}}"#,
+        ] {
+            assert!(decode_client(bad.as_bytes()).is_err(), "{bad}");
+        }
+        assert!(
+            decode_host(
+                br#"{"workspaces":{"done":{"workspace":null,"foreground":null,"bound":"s"}}}"#
+            )
+            .is_err()
+        );
     }
 
     fn transfer(state: TransferState) -> ExecutionTransfer {

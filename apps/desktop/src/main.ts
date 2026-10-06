@@ -11,8 +11,9 @@
 // two share a protocol version, and resyncs to the host's status.
 //
 // From protocol version 2 the window also gives the host its panel layout to keep, and asks for
-// it when it starts (ST-VIEW). The host answers such a request with the layout it keeps, in the
-// order of the requests. With a host of version 1 the window does without.
+// it when it starts (ST-VIEW). From version 3 it lists, creates, opens and closes the workspaces
+// of the host's device (ST-WORKSPACE). The host answers each such request with one message, in
+// the order of the requests. With a host of an older version the window does without.
 //
 // When the channel closes, the window tries again a bounded number of times with growing pauses,
 // then shows the host as unavailable until the user asks again (RC-06, RC-08). When the window
@@ -35,16 +36,19 @@ import * as fs from 'node:fs';
 import * as net from 'node:net';
 import * as path from 'node:path';
 import {
-    HOST_CONNECTION_PATH, HostConnectionClient, HostConnectionService, HostState, PanelLayout, panelLayout,
+    HOST_CONNECTION_PATH, HostConnectionClient, HostConnectionService, HostState, PanelLayout, WorkspaceAnswer, WorkspaceEntry,
+    WorkspaceList, isId, newWorkspace, panelLayout, workspaceAnswer, workspaceTarget,
 } from './main.protocol';
 
 /** The largest message on the local channel, in bytes (`binding.sec_max_ipc_message`). */
 const MAX_MESSAGE_BYTES = 4096;
 /** The protocol versions this window speaks, and the minimum secure one (core/protocol). */
-const VERSIONS = { min: 1, max: 2 };
+const VERSIONS = { min: 1, max: 3 };
 const MIN_SECURE_VERSION = 1;
 /** The first protocol version that has the panel layout messages (core/protocol). */
 const LAYOUT_SINCE_VERSION = 2;
+/** The first protocol version that has the workspace messages (core/protocol). */
+const WORKSPACES_SINCE_VERSION = 3;
 /** The pauses before each new attempt after the channel closed; there are no more (RC-08). */
 const RETRY_PAUSES_MS = [500, 1000, 2000, 4000, 8000];
 /** How long `nexees-host start` may take, and how long the host has for each answer. */
@@ -143,7 +147,7 @@ export class HostAttachment implements BackendApplicationContribution {
 
     async loadLayout(): Promise<PanelLayout | undefined> {
         await this.firstAttempt;
-        const [kind, kept] = await this.ask({ load_layout: {} }) ?? [];
+        const [kind, kept] = await this.ask({ load_layout: {} }, LAYOUT_SINCE_VERSION) ?? [];
         return kind === 'layout' ? panelLayout(kept) : undefined;
     }
 
@@ -152,7 +156,7 @@ export class HostAttachment implements BackendApplicationContribution {
         if (!checked) {
             return false;
         }
-        const [kind, kept] = await this.ask({ store_layout: checked }) ?? [];
+        const [kind, kept] = await this.ask({ store_layout: checked }, LAYOUT_SINCE_VERSION) ?? [];
         if (kind === 'layout' && panelLayout(kept)) {
             return true;
         }
@@ -160,15 +164,77 @@ export class HostAttachment implements BackendApplicationContribution {
         return false;
     }
 
+    async listWorkspaces(): Promise<WorkspaceList | undefined> {
+        await this.firstAttempt;
+        const entries: WorkspaceEntry[] = [];
+        let after: string | null = null;
+        for (;;) {
+            const answer = await this.workspaceRequest({ list_workspaces: { after } });
+            if (answer?.kind !== 'page') {
+                return undefined;
+            }
+            entries.push(...answer.entries);
+            const last = answer.entries.at(-1)?.workspace_id;
+            if (!answer.more || last === undefined) {
+                return { entries, foreground: answer.foreground };
+            }
+            if (after !== null && last <= after) {
+                // A list that does not move on is no list.
+                return undefined;
+            }
+            after = last;
+        }
+    }
+
+    async createWorkspace(request: unknown): Promise<WorkspaceAnswer | undefined> {
+        const checked = newWorkspace(request);
+        if (!checked) {
+            return undefined;
+        }
+        await this.firstAttempt;
+        return this.workspaceRequest({ create_workspace: checked });
+    }
+
+    async openWorkspace(target: unknown): Promise<WorkspaceAnswer | undefined> {
+        const checked = workspaceTarget(target);
+        if (!checked) {
+            return undefined;
+        }
+        await this.firstAttempt;
+        return this.workspaceRequest({ open_workspace: checked });
+    }
+
+    async closeWorkspace(workspaceId: unknown): Promise<WorkspaceAnswer | undefined> {
+        if (!isId(workspaceId)) {
+            return undefined;
+        }
+        await this.firstAttempt;
+        return this.workspaceRequest({ close_workspace: { workspace_id: workspaceId } });
+    }
+
+    /** Sends a workspace request and resolves with the host's answer, checked; undefined without one. */
+    protected async workspaceRequest(request: unknown): Promise<WorkspaceAnswer | undefined> {
+        const [kind, body] = await this.ask(request, WORKSPACES_SINCE_VERSION) ?? [];
+        return kind === 'workspaces' ? workspaceAnswer(body) : undefined;
+    }
+
     /**
      * Sends a request the host answers with one message, and resolves with that answer as its
-     * kind and body. Resolves with undefined when no host of a protocol version with layouts is
-     * attached, or when the channel closes first; a host that does not answer in time is taken
-     * for lost, and its channel is closed.
+     * kind and body. Resolves with undefined when no host of a protocol version with the message
+     * (`since`) is attached, when the request does not fit one message of the channel, or when
+     * the channel closes first; a host that does not answer in time is taken for lost, and its
+     * channel is closed.
      */
-    protected ask(request: unknown): Promise<[string, unknown] | undefined> {
+    protected ask(request: unknown, since: number): Promise<[string, unknown] | undefined> {
         const socket = this.socket;
-        if (!socket || this.state.kind !== 'attached' || this.state.protocol < LAYOUT_SINCE_VERSION) {
+        if (!socket || this.state.kind !== 'attached' || this.state.protocol < since) {
+            return Promise.resolve(undefined);
+        }
+        let bytes: Buffer;
+        try {
+            bytes = frame(request);
+        } catch {
+            // Not sent, so no answer is awaited for it.
             return Promise.resolve(undefined);
         }
         return new Promise(resolve => {
@@ -177,7 +243,7 @@ export class HostAttachment implements BackendApplicationContribution {
                 clearTimeout(timer);
                 resolve(answer);
             });
-            socket.write(frame(request));
+            socket.write(bytes);
         });
     }
 
@@ -436,6 +502,10 @@ export default new ContainerModule(bind => {
             retry: () => attachment.retry(),
             loadLayout: () => attachment.loadLayout(),
             storeLayout: layout => attachment.storeLayout(layout),
+            listWorkspaces: () => attachment.listWorkspaces(),
+            createWorkspace: request => attachment.createWorkspace(request),
+            openWorkspace: target => attachment.openWorkspace(target),
+            closeWorkspace: workspaceId => attachment.closeWorkspace(workspaceId),
         };
         return service;
     })).inSingletonScope();

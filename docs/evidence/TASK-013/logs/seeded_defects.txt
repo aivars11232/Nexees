@@ -1,0 +1,47 @@
+TASK-013: defects seeded against the end-to-end checks of the workspaces, 2026-10-06T19:51:13+02:00.
+Each run breaks the workspace code of the disposable installation in one or more independent ways, in the
+window's installed page or in its backend, and must fail exactly the checks named for those defects, and no
+other: a check that still passed would not be checking what it says, and another check failing would mean a
+defect reaches further than understood. The unseeded run is logs/e2e_local_application.txt, where all 75
+checks pass.
+Three checks of the workspaces are not seeded here. Opening a workspace from the list: the window asks the host
+to open the chosen workspace before it shows its folder, and again when it starts on that folder, so a defect in
+one of the two is repaired by the other; a defect that keeps the window from showing the workspace's tree stops
+the test at its wait for that tree, and the run then ends without the checks after it. The workspaces outliving
+the host, and a link to a workspace's folder showing that workspace: both are the host program's, which this
+tool does not patch; the host's and the registry's tests hold them, and the negative tests break them there.
+
+== Run 1: the window makes the folder it starts on an LCL workspace and every workspace the user creates a CODE one, and keeps a refused folder's client as it was ==
+  seeded: the window claims the folder it starts on as an LCL workspace
+  seeded: the window creates a CODE workspace whatever kind the user chose
+  seeded: a window whose folder the host refuses as a workspace keeps showing the one its client showed, and says nothing
+  exit code 1; 72 checks passed, 3 failed
+  FAIL  the folder a window shows is a CODE workspace of the host, with a stable ID, and the window's client shows it (C1, B2, B6)  [{"foreground":"ws-8d4f50cf9d6c77e40b1353b6d75b574a","entries":["ws-8d4f50cf9d6c77e40b1353b6d75b574a lcl workspace /tmp/nexees-e2e-urEPpG/workspace"]}]
+  FAIL  a new LCL workspace created from the command palette is shown at once, with its own tree (B2, B5)  [{"foreground":"ws-7198bdf569337c9eb2e39ebe983534e1","entries":["ws-7198bdf569337c9eb2e39ebe983534e1 code LCL — Next /tmp/nexees-e2e-urEPpG/lcl-next","ws-8d4f50cf9d6c77e40b1353b6d75b574a lcl workspace /tmp/nexees-e2e-urEPpG/workspace"]}; the Explorer: , rules, ]
+  FAIL  a window on a folder inside another workspace's root shows no workspace, says why, and makes none of the folder (C1, C2)  [undefined; {"foreground":"ws-7198bdf569337c9eb2e39ebe983534e1","entries":["ws-7198bdf569337c9eb2e39ebe983534e1 code LCL — Next /tmp/nexees-e2e-urEPpG/lcl-next","ws-8d4f50cf9d6c77e40b1353b6d75b574a lcl workspace /tmp/nexees-e2e-urEPpG/workspace"]}]
+  expected to fail: 3; failed as expected: 3; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+== Run 2: the window does not say why the host refused, and never tells the host that it shows no workspace ==
+  seeded: the window says nothing when the host refuses a new workspace
+  seeded: closing the workspace closes the window's folder but not the client's workspace at the host
+  seeded: a window that starts on no folder leaves its client showing the workspace it showed
+  exit code 1; 73 checks passed, 2 failed
+  FAIL  a folder inside another workspace's root is refused, and the window says why; the workspaces stay as they were  [undefined; {"foreground":"ws-7f542375655c1e1794d6795ec133ce3d","entries":["ws-7f542375655c1e1794d6795ec133ce3d code workspace /tmp/nexees-e2e-HiWtU6/workspace","ws-cbd4993238849c9846539d3d698f48dc lcl LCL — Next /tmp/nexees-e2e-HiWtU6/lcl-next"]}]
+  FAIL  closing the workspace leaves the window's client showing none and the window no folder (C2)  [{"foreground":"ws-7f542375655c1e1794d6795ec133ce3d","entries":["ws-7f542375655c1e1794d6795ec133ce3d code workspace /tmp/nexees-e2e-HiWtU6/workspace","ws-cbd4993238849c9846539d3d698f48dc lcl LCL — Next /tmp/nexees-e2e-HiWtU6/lcl-next"]}; the Explorer: OPEN EDIT]
+  expected to fail: 2; failed as expected: 2; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+== Run 3: the window's backend asks for an LCL workspace whatever the window asked for, and words every refusal as an unknown workspace ==
+  seeded: the backend asks the host for an LCL workspace whatever kind the window asked for
+  seeded: the backend gives the window every refusal of the host as "no such workspace"
+  exit code 1; 72 checks passed, 3 failed
+  FAIL  the folder a window shows is a CODE workspace of the host, with a stable ID, and the window's client shows it (C1, B2, B6)  [{"foreground":"ws-d79e9baed347b1a60cd9cace2200912c","entries":["ws-d79e9baed347b1a60cd9cace2200912c lcl workspace /tmp/nexees-e2e-y1MpkC/workspace"]}]
+  FAIL  a folder inside another workspace's root is refused, and the window says why; the workspaces stay as they were  [The workspace was not created. There is no such workspace on this device.; {"foreground":"ws-d79e9baed347b1a60cd9cace2200912c","entries":["ws-09c1acdb58b88c82a6b2e08f41e3a06a lcl LCL — Next /tmp/nexees-e2e-y1MpkC/lcl-next","ws-d79e9baed347b1a60cd9cace2200912c ]
+  FAIL  a window on a folder inside another workspace's root shows no workspace, says why, and makes none of the folder (C1, C2)  [This folder is not a Nexees workspace. There is no such workspace on this device.; {"foreground":null,"entries":["ws-09c1acdb58b88c82a6b2e08f41e3a06a lcl LCL — Next /tmp/nexees-e2e-y1MpkC/lcl-next","ws-d79e9baed347b1a60cd9cace2200912c lcl workspace /tmp/nexees]
+  expected to fail: 3; failed as expected: 3; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+After the runs the installation was installed again from the build folder, and the repository's test passes on it: exit code 0, 75 checks passed.
+
+ALL SEEDED DEFECTS CAUGHT

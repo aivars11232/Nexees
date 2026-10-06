@@ -153,19 +153,25 @@ class WindowProtocolTest(unittest.TestCase):
             'newest version': rust(versions, 'CURRENT_VERSION', 'u32'),
             'minimum secure version': rust(versions, 'MIN_SECURE_VERSION', 'u32'),
             'first version with layouts': rust(versions, 'LAYOUT_SINCE_VERSION', 'u32'),
+            'first version with workspaces': rust(versions, 'WORKSPACES_SINCE_VERSION', 'u32'),
             'largest message': rust('core/protocol/serialization.rs', 'MAX_IPC_MESSAGE_BYTES', 'usize'),
             'largest panel size': rust('core/domain/client.rs', 'MAX_PANEL_SIZE', 'u32'),
-            'longest view name': rust('core/domain/ids.rs', 'MAX_ID_BYTES', 'usize'),
+            'longest identifier': rust('core/domain/ids.rs', 'MAX_ID_BYTES', 'usize'),
+            'longest workspace name': rust('core/domain/text.rs', 'MAX_LABEL_BYTES', 'usize'),
+            'longest root': rust('core/domain/workspace.rs', 'MAX_PATH_BYTES', 'usize'),
         }
-        # The pattern of a view's name allows one first character and then at most so many more.
-        view_name = r'^const VIEW_ID = /\^\[A-Za-z0-9\]\[A-Za-z0-9_\.:-\]\{0,(\d+)\}\$/;$'
+        # The pattern of an identifier allows one first character and then at most so many more.
+        identifier = r'^const ID = /\^\[A-Za-z0-9\]\[A-Za-z0-9_\.:-\]\{0,(\d+)\}\$/;$'
         stated = {
             'newest version': self.number(window, r'^const VERSIONS = \{ min: \d+, max: (\d+) \};$'),
             'minimum secure version': typescript(window, 'MIN_SECURE_VERSION'),
             'first version with layouts': typescript(window, 'LAYOUT_SINCE_VERSION'),
+            'first version with workspaces': typescript(window, 'WORKSPACES_SINCE_VERSION'),
             'largest message': typescript(window, 'MAX_MESSAGE_BYTES'),
             'largest panel size': typescript(contract, 'MAX_PANEL_SIZE'),
-            'longest view name': 1 + self.number(contract, view_name),
+            'longest identifier': 1 + self.number(contract, identifier),
+            'longest workspace name': typescript(contract, 'MAX_NAME_BYTES'),
+            'longest root': typescript(contract, 'MAX_ROOT_BYTES'),
         }
         self.assertEqual(stated, core)
         # The oldest version the window speaks is the minimum secure one: it never offers an older one.

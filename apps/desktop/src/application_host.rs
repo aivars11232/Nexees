@@ -31,6 +31,14 @@
 //! the store cannot give or take the layout the host closes the window's channel instead of
 //! answering with a guess.
 //!
+//! **The workspaces.** The host keeps the registry of its device's workspaces in the state store
+//! (core/workspaces/workspace_registry) and answers a window that lists, creates, opens or closes
+//! one. A new workspace gets its ID from sixteen random bytes. Opening a workspace makes it the
+//! foreground workspace of [`WINDOW_CLIENT`], what the window shows; it binds no agent and
+//! changes nothing else (C2, R11). A request the registry refuses is answered with the reason and
+//! changes nothing; when the store fails, the host closes the window's channel. A list is sent in
+//! pages that each fit one message of the channel.
+//!
 //! **Lifetime.** When the last window detaches, the host stops after [`GRACE`], so a window that
 //! reloads reattaches to it. A host started with `--keep-running` stays: keeping the host after
 //! the window closes is its own opt-in, and start at login is how the user gives it (RC-04). A
@@ -54,7 +62,7 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use nexees_domain::client::{ClientLayout, PanelLayout};
 use nexees_domain::errors::Outcome;
-use nexees_domain::ids::{ClientId, DeviceId};
+use nexees_domain::ids::{ClientId, DeviceId, WorkspaceId};
 use nexees_domain::text::Note;
 use nexees_domain::time::Timestamp;
 use nexees_platform_desktop::lifecycle::application_lifecycle::{
@@ -63,17 +71,24 @@ use nexees_platform_desktop::lifecycle::application_lifecycle::{
 use nexees_platform_desktop::transport::local_ipc::{
     ChannelFolder, Connection, IpcError, Listener,
 };
-use nexees_protocol::messages::{Acknowledgment, ClientMessage, HostMessage, HostStatus};
+use nexees_protocol::messages::{
+    Acknowledgment, ClientMessage, HostMessage, HostStatus, NewWorkspace, WorkspaceAnswer,
+    WorkspaceEntry, WorkspaceRefusal, WorkspaceTarget,
+};
+use nexees_protocol::serialization::{MAX_IPC_MESSAGE_BYTES, encode};
 use nexees_protocol::version_negotiation::{Hello, MIN_SECURE_VERSION, negotiate};
 use nexees_state::state_store::{StateError, StateStore};
+use nexees_workspaces::workspace_registry::{
+    self as registry, RegistryError, RootProblem, Workspace,
+};
 
 /// How long the host stays after its last window detaches, so a reloading window reattaches.
 const GRACE: Duration = Duration::from_secs(5);
 /// Most windows attached at once; another one is refused.
 const MAX_WINDOWS: usize = 8;
-/// The client whose view state the host keeps for its windows. Every window of this user is
-/// that one client: windows are told apart only once they show different workspaces, which
-/// per-workspace view state brings (TASK-016).
+/// The client whose view state and foreground workspace the host keeps for its windows. Every
+/// window of this user is that one client for now: windows are told apart only once they show
+/// different workspaces side by side (TASK-014), with per-workspace view state (TASK-016).
 const WINDOW_CLIENT: &str = "desktop-window";
 /// How long a new window has to say hello, and how long `start` waits for one answer.
 const HELLO_TIMEOUT: Duration = Duration::from_secs(5);
@@ -271,6 +286,167 @@ fn keep_layout(
     store.write(now(), |w| w.put(&layout))
 }
 
+/// Carries out a window's workspace request with the device's registry, for the window client.
+/// A refusal is an answer; an error is the store's, and the window's channel then closes.
+fn workspaces(
+    store: &SharedStore,
+    device: &DeviceId,
+    request: ClientMessage,
+) -> Result<WorkspaceAnswer, StateError> {
+    let client = ClientId::new(WINDOW_CLIENT)?;
+    let mut guard = lock_store(store);
+    let store = guard.as_mut().ok_or(StateError::InUse)?;
+    let done = match request {
+        ClientMessage::ListWorkspaces { after } => return page(store, device, &client, after),
+        ClientMessage::CreateWorkspace(new) => create_workspace(store, device, new).map(Some),
+        ClientMessage::OpenWorkspace(target) => {
+            match open_workspace(store, device, &client, target) {
+                Ok(None) => {
+                    return Ok(WorkspaceAnswer::Refused {
+                        reason: WorkspaceRefusal::NotFound,
+                        workspace_id: None,
+                    });
+                }
+                opened => opened,
+            }
+        }
+        ClientMessage::CloseWorkspace { workspace_id } => {
+            registry::close(store, now(), &client, &workspace_id).map(|()| None)
+        }
+        _ => return Err(StateError::Database("not a workspace request".into())),
+    };
+    match done {
+        Ok(workspace) => Ok(WorkspaceAnswer::Done {
+            workspace: workspace.as_ref().map(entry),
+            foreground: registry::foreground(store, &client).map_err(store_error)?,
+        }),
+        Err(error) => refused(error),
+    }
+}
+
+/// Creates the workspace the window describes, under a new ID of sixteen random bytes.
+fn create_workspace(
+    store: &mut StateStore,
+    device: &DeviceId,
+    new: NewWorkspace,
+) -> Result<Workspace, RegistryError> {
+    let id = WorkspaceId::new(format!("ws-{}", random_hex()?))?;
+    let root = Path::new(new.root.as_str());
+    registry::create(store, now(), device, id, new.kind, new.name, root)
+}
+
+/// Opens the workspace the window names, by its ID or by its root; none when no workspace has
+/// the root it names.
+fn open_workspace(
+    store: &mut StateStore,
+    device: &DeviceId,
+    client: &ClientId,
+    target: WorkspaceTarget,
+) -> Result<Option<Workspace>, RegistryError> {
+    let id = match target {
+        WorkspaceTarget::WorkspaceId(id) => id,
+        WorkspaceTarget::Root(root) => {
+            match registry::find_by_root(store, device, Path::new(root.as_str()))? {
+                Some(found) => found.id().clone(),
+                None => return Ok(None),
+            }
+        }
+    };
+    registry::open(store, now(), device, client, &id).map(Some)
+}
+
+/// The workspaces after `after`, in ID order, as many as one message to a window holds. A
+/// workspace that does not fit a message on its own is left out; none the registry makes is that
+/// large.
+fn page(
+    store: &StateStore,
+    device: &DeviceId,
+    client: &ClientId,
+    after: Option<WorkspaceId>,
+) -> Result<WorkspaceAnswer, StateError> {
+    let foreground = registry::foreground(store, client).map_err(store_error)?;
+    let mut entries: Vec<WorkspaceEntry> = Vec::new();
+    let mut more = false;
+    let later = |workspace: &&Workspace| {
+        after
+            .as_ref()
+            .is_none_or(|a| workspace.id().as_str() > a.as_str())
+    };
+    for workspace in registry::list(store, device)
+        .map_err(store_error)?
+        .iter()
+        .filter(later)
+    {
+        entries.push(entry(workspace));
+        let answer = WorkspaceAnswer::Page {
+            entries: entries.clone(),
+            more: true,
+            foreground: foreground.clone(),
+        };
+        if encode(&HostMessage::Workspaces(answer), MAX_IPC_MESSAGE_BYTES).is_err() {
+            entries.pop();
+            if !entries.is_empty() {
+                more = true;
+                break;
+            }
+        }
+    }
+    Ok(WorkspaceAnswer::Page {
+        entries,
+        more,
+        foreground,
+    })
+}
+
+/// A workspace as a window is told about it.
+fn entry(workspace: &Workspace) -> WorkspaceEntry {
+    let replica = workspace.replica.fields();
+    WorkspaceEntry {
+        workspace_id: workspace.record.workspace_id.clone(),
+        kind: workspace.record.kind,
+        name: workspace.record.name.clone(),
+        root: replica.root.clone(),
+        availability: replica.availability,
+    }
+}
+
+/// The answer to a request the registry refused; an error of the store stays an error.
+fn refused(error: RegistryError) -> Result<WorkspaceAnswer, StateError> {
+    let (reason, workspace_id) = match error {
+        RegistryError::NotFound(_) => (WorkspaceRefusal::NotFound, None),
+        RegistryError::Root(problem) => (
+            match problem {
+                RootProblem::NotAbsolute => WorkspaceRefusal::RootNotAbsolute,
+                RootProblem::Missing => WorkspaceRefusal::RootMissing,
+                RootProblem::NotADirectory => WorkspaceRefusal::RootNotAFolder,
+                RootProblem::Unusable => WorkspaceRefusal::RootUnusable,
+                RootProblem::Moved => WorkspaceRefusal::RootMoved,
+            },
+            None,
+        ),
+        RegistryError::Overlaps(other) => (WorkspaceRefusal::Overlaps, Some(other)),
+        RegistryError::NotHere(_) => (WorkspaceRefusal::NotHere, None),
+        RegistryError::NotOpen(_) => (WorkspaceRefusal::NotOpen, None),
+        // A new ID taken already, or a value the decoded message could not hold: not the window's
+        // to answer for.
+        error
+        @ (RegistryError::Store(_) | RegistryError::Invalid(_) | RegistryError::Exists(_)) => {
+            return Err(store_error(error));
+        }
+    };
+    Ok(WorkspaceAnswer::Refused {
+        reason,
+        workspace_id,
+    })
+}
+
+fn store_error(error: RegistryError) -> StateError {
+    match error {
+        RegistryError::Store(error) => error,
+        other => StateError::Database(other.to_string()),
+    }
+}
+
 /// The windows attached to the host, and since when none has been.
 #[derive(Default)]
 struct Attached {
@@ -383,8 +559,8 @@ fn accept_windows(
     }
 }
 
-/// Serves one window until it detaches: the hellos, then its resyncs, its intents and its panel
-/// layout.
+/// Serves one window until it detaches: the hellos, then its resyncs, its intents, its panel
+/// layout and its workspace requests.
 fn attend(mut window: Connection, device: &DeviceId, store: &SharedStore) -> Result<(), IpcError> {
     window.set_timeout(Some(HELLO_TIMEOUT))?;
     let ClientMessage::Hello(theirs) = window.receive()? else {
@@ -426,6 +602,16 @@ fn attend(mut window: Connection, device: &DeviceId, store: &SharedStore) -> Res
                     return Ok(());
                 }
                 window.send(&HostMessage::Layout(Some(panels)))?;
+            }
+            request @ (ClientMessage::ListWorkspaces { .. }
+            | ClientMessage::CreateWorkspace(_)
+            | ClientMessage::OpenWorkspace(_)
+            | ClientMessage::CloseWorkspace { .. }) => {
+                let Ok(answer) = workspaces(store, device, request) else {
+                    window.close();
+                    return Ok(());
+                };
+                window.send(&HostMessage::Workspaces(answer))?;
             }
             // The host has no events yet, so a resync is its status alone.
             ClientMessage::Resync { .. } => window.send(&HostMessage::Status(status(device)?))?,
@@ -549,13 +735,19 @@ mod tests {
     use std::os::unix::net::UnixStream;
     use std::sync::atomic::{AtomicU64, Ordering};
 
-    use nexees_domain::client::{PanelLayoutFields, PanelState};
+    use nexees_domain::client::{ClientState, PanelLayoutFields, PanelState};
     use nexees_domain::device::ProtocolVersions;
-    use nexees_domain::ids::{AgentSessionId, OperationId, RequestId, ViewId, WorkspaceId};
+    use nexees_domain::ids::{AgentSessionId, ModelId, OperationId, ProviderId, RequestId, ViewId};
+    use nexees_domain::lcl::SpecificationMode;
+    use nexees_domain::model_capabilities::ProviderModel;
     use nexees_domain::remote_request::ExpectedRevision;
-    use nexees_domain::revision::Generation;
+    use nexees_domain::revision::{Generation, RevisionId, WorkspaceRevision};
+    use nexees_domain::session::{AgentSession, AgentSessionFields, AutonomyMode};
+    use nexees_domain::text::Label;
+    use nexees_domain::workspace::{ContentAvailability, DeviceRoot, WorkspaceKind};
     use nexees_protocol::messages::{Intent, IntentFields};
     use nexees_protocol::operations::{AgentPause, LocalIntent};
+    use nexees_workspaces::workspace_registry::MAX_ROOT_BYTES;
 
     /// A private runtime folder and data folder for one test, removed when it ends.
     struct Profile(PathBuf);
@@ -793,7 +985,7 @@ mod tests {
         window
             .set_read_timeout(Some(Duration::from_secs(5)))
             .unwrap();
-        send_frame(&mut window, r#"{"hello":{"versions":{"min":1,"max":2}}}"#);
+        send_frame(&mut window, r#"{"hello":{"versions":{"min":1,"max":3}}}"#);
         let mut length = [0_u8; 4];
         window.read_exact(&mut length).unwrap();
         let mut hello = vec![0_u8; u32::from_be_bytes(length) as usize];
@@ -901,6 +1093,324 @@ mod tests {
         // What it does not have is refused: the two agreed on version 1.
         old.send(&ClientMessage::LoadLayout {}).unwrap();
         assert_eq!(old.receive::<HostMessage>().unwrap_err(), IpcError::Closed);
+    }
+
+    /// Sends a workspace request and returns the host's answer.
+    fn ask(window: &mut Connection, message: ClientMessage) -> WorkspaceAnswer {
+        window.send(&message).unwrap();
+        match window.receive().unwrap() {
+            HostMessage::Workspaces(answer) => answer,
+            other => panic!("expected a workspace answer, got {other:?}"),
+        }
+    }
+
+    fn new_workspace(kind: WorkspaceKind, name: &str, root: &Path) -> ClientMessage {
+        ClientMessage::CreateWorkspace(NewWorkspace {
+            kind,
+            name: Label::new(name).unwrap(),
+            root: DeviceRoot::new(root.to_str().unwrap()).unwrap(),
+        })
+    }
+
+    /// The workspace a carried-out request concerned, and the foreground it left.
+    fn done(answer: WorkspaceAnswer) -> (Option<WorkspaceEntry>, Option<WorkspaceId>) {
+        match answer {
+            WorkspaceAnswer::Done {
+                workspace,
+                foreground,
+            } => (workspace, foreground),
+            other => panic!("expected the request carried out, got {other:?}"),
+        }
+    }
+
+    fn refusal(reason: WorkspaceRefusal) -> WorkspaceAnswer {
+        WorkspaceAnswer::Refused {
+            reason,
+            workspace_id: None,
+        }
+    }
+
+    /// Every workspace the host lists, through all its pages; the foreground; how many pages.
+    fn listed(window: &mut Connection) -> (Vec<WorkspaceEntry>, Option<WorkspaceId>, usize) {
+        let (mut all, mut after, mut pages) = (Vec::new(), None, 0);
+        loop {
+            let WorkspaceAnswer::Page {
+                entries,
+                more,
+                foreground,
+            } = ask(window, ClientMessage::ListWorkspaces { after })
+            else {
+                panic!("expected a page");
+            };
+            pages += 1;
+            after = entries.last().map(|entry| entry.workspace_id.clone());
+            all.extend(entries);
+            if !more {
+                return (all, foreground, pages);
+            }
+        }
+    }
+
+    fn by_id(mut entries: Vec<WorkspaceEntry>) -> Vec<WorkspaceEntry> {
+        entries.sort_by(|a, b| a.workspace_id.as_str().cmp(b.workspace_id.as_str()));
+        entries
+    }
+
+    #[test]
+    fn a_window_creates_opens_lists_and_closes_workspaces_that_outlive_the_host() {
+        let profile = Profile::new("workspaces");
+        let roots = profile.0.join("roots");
+        for dir in ["arch-dock", "lcl-next", "x"] {
+            fs::create_dir_all(roots.join(dir)).unwrap();
+        }
+        let host = profile.host(false, Duration::from_millis(300));
+        let mut first = window(&profile);
+        assert_eq!(listed(&mut first), (Vec::new(), None, 1));
+        let code = new_workspace(WorkspaceKind::Code, "Arch Dock", &roots.join("arch-dock"));
+        let (code, foreground) = done(ask(&mut first, code));
+        let code = code.unwrap();
+        // A new workspace has a stable ID of sixteen random bytes, and creating opens nothing.
+        assert!(code.workspace_id.as_str().starts_with("ws-"));
+        assert_eq!(code.workspace_id.as_str().len(), 3 + 32);
+        assert_eq!(
+            (code.kind, code.availability),
+            (WorkspaceKind::Code, ContentAvailability::Local)
+        );
+        assert_eq!(foreground, None);
+        let lcl = new_workspace(WorkspaceKind::Lcl, "LCL — Next", &roots.join("lcl-next"));
+        let lcl = done(ask(&mut first, lcl)).0.unwrap();
+        // Opened by its root, however the path spells it, then the other by its ID.
+        let spelled = DeviceRoot::new(format!("{}/x/../arch-dock", roots.display())).unwrap();
+        let opened = done(ask(
+            &mut first,
+            ClientMessage::OpenWorkspace(WorkspaceTarget::Root(spelled)),
+        ));
+        assert_eq!(
+            opened,
+            (Some(code.clone()), Some(code.workspace_id.clone()))
+        );
+        let by_lcl_id =
+            ClientMessage::OpenWorkspace(WorkspaceTarget::WorkspaceId(lcl.workspace_id.clone()));
+        assert_eq!(
+            done(ask(&mut first, by_lcl_id)).1,
+            Some(lcl.workspace_id.clone())
+        );
+        let both = by_id(vec![code.clone(), lcl.clone()]);
+        assert_eq!(
+            listed(&mut first),
+            (both.clone(), Some(lcl.workspace_id.clone()), 1)
+        );
+        // Another window of the same user is the same client, with the same foreground.
+        assert_eq!(
+            listed(&mut window(&profile)).1,
+            Some(lcl.workspace_id.clone())
+        );
+        // Only the workspace the client shows can be closed; then it shows none.
+        let close = |id: &WorkspaceId| ClientMessage::CloseWorkspace {
+            workspace_id: id.clone(),
+        };
+        assert_eq!(
+            ask(&mut first, close(&code.workspace_id)),
+            refusal(WorkspaceRefusal::NotOpen)
+        );
+        assert_eq!(
+            done(ask(&mut first, close(&lcl.workspace_id))),
+            (None, None)
+        );
+        drop(first);
+        assert_eq!(finish(host), exit::OK);
+        // A new host on the same store lists the same workspaces under the same IDs.
+        let host = profile.host(false, Duration::from_millis(300));
+        let mut again = window(&profile);
+        assert_eq!(listed(&mut again), (both, None, 1));
+        drop(again);
+        assert_eq!(finish(host), exit::OK);
+    }
+
+    #[test]
+    fn a_workspace_request_that_cannot_be_carried_out_is_refused_and_changes_nothing() {
+        let profile = Profile::new("workspace-refusals");
+        let roots = profile.0.join("roots");
+        fs::create_dir_all(roots.join("a/src")).unwrap();
+        fs::create_dir_all(roots.join("c")).unwrap();
+        fs::write(roots.join("file.txt"), "not a folder").unwrap();
+        let _host = profile.host(true, Duration::from_millis(100));
+        let mut window = window(&profile);
+        let a = done(ask(
+            &mut window,
+            new_workspace(WorkspaceKind::Code, "A", &roots.join("a")),
+        ));
+        let a = a.0.unwrap();
+        assert_eq!(
+            ask(
+                &mut window,
+                new_workspace(WorkspaceKind::Lcl, "Inside", &roots.join("a/src"))
+            ),
+            WorkspaceAnswer::Refused {
+                reason: WorkspaceRefusal::Overlaps,
+                workspace_id: Some(a.workspace_id.clone())
+            }
+        );
+        for (root, reason) in [
+            (PathBuf::from("relative"), WorkspaceRefusal::RootNotAbsolute),
+            (roots.join("missing"), WorkspaceRefusal::RootMissing),
+            (roots.join("file.txt"), WorkspaceRefusal::RootNotAFolder),
+        ] {
+            let request = new_workspace(WorkspaceKind::Code, "W", &root);
+            assert_eq!(
+                ask(&mut window, request),
+                refusal(reason),
+                "{}",
+                root.display()
+            );
+        }
+        let open = |target| ClientMessage::OpenWorkspace(target);
+        let unknown = WorkspaceTarget::WorkspaceId(WorkspaceId::new("ws-unknown").unwrap());
+        assert_eq!(
+            ask(&mut window, open(unknown)),
+            refusal(WorkspaceRefusal::NotFound)
+        );
+        // A folder that is no workspace's root is not one, and neither is a missing folder.
+        let other =
+            WorkspaceTarget::Root(DeviceRoot::new(roots.join("c").to_str().unwrap()).unwrap());
+        assert_eq!(
+            ask(&mut window, open(other)),
+            refusal(WorkspaceRefusal::NotFound)
+        );
+        let gone =
+            WorkspaceTarget::Root(DeviceRoot::new(roots.join("gone").to_str().unwrap()).unwrap());
+        assert_eq!(
+            ask(&mut window, open(gone)),
+            refusal(WorkspaceRefusal::RootMissing)
+        );
+        assert_eq!(listed(&mut window), (vec![a], None, 1));
+        // A message that names a client or an agent, or carries anything else, closes the channel.
+        for bad in [
+            r#"{"list_workspaces":{"after":null,"client_id":"another-window"}}"#,
+            r#"{"open_workspace":{"workspace_id":"ws-1","agent_session":"claude-1"}}"#,
+            r#"{"create_workspace":{"kind":"code","name":"W","root":"/w","grants":["all"]}}"#,
+        ] {
+            let mut rude = raw_window(&profile);
+            send_frame(&mut rude, bad);
+            let mut answer = Vec::new();
+            assert_eq!(rude.read_to_end(&mut answer).unwrap(), 0, "{bad}");
+        }
+    }
+
+    #[test]
+    fn a_window_of_protocol_version_2_is_served_but_refused_the_workspace_messages() {
+        let profile = Profile::new("workspaces-v2");
+        let _host = profile.host(true, Duration::from_millis(100));
+        let mut older = Connection::connect(&profile.folder()).unwrap();
+        older.set_timeout(Some(Duration::from_secs(5))).unwrap();
+        let second = Hello::new(ProtocolVersions { min: 1, max: 2 }).unwrap();
+        older.send(&ClientMessage::Hello(second)).unwrap();
+        assert!(matches!(older.receive().unwrap(), HostMessage::Hello(_)));
+        // TASK-012's window keeps its layouts, and is refused what version 2 does not have.
+        assert_eq!(
+            layout_after(&mut older, &ClientMessage::LoadLayout {}),
+            None
+        );
+        older
+            .send(&ClientMessage::ListWorkspaces { after: None })
+            .unwrap();
+        assert_eq!(
+            older.receive::<HostMessage>().unwrap_err(),
+            IpcError::Closed
+        );
+    }
+
+    fn session_bound_to(workspace: &WorkspaceId, device: &DeviceId) -> AgentSession {
+        AgentSession::try_from(AgentSessionFields {
+            session_id: AgentSessionId::new("claude-1").unwrap(),
+            workspace_id: workspace.clone(),
+            execution_device_id: device.clone(),
+            checkout: WorkspaceRevision {
+                workspace_id: workspace.clone(),
+                revision: RevisionId::new("r7").unwrap(),
+            },
+            specification_mode: SpecificationMode::Standard,
+            specification: None,
+            model: ProviderModel {
+                provider_id: ProviderId::new("anthropic").unwrap(),
+                model_id: ModelId::new("claude-opus-5-5").unwrap(),
+            },
+            generation: Generation::FIRST,
+            autonomy: AutonomyMode::Balanced,
+            orientation_override: None,
+        })
+        .unwrap()
+    }
+
+    #[test]
+    fn a_windows_foreground_switches_leave_a_bound_agent_session_unchanged() {
+        // Claude runs on Arch Dock; the user switches the window to the LCL project and back.
+        let profile = Profile::new("workspace-agent");
+        let roots = profile.0.join("roots");
+        for dir in ["arch-dock", "lcl-next"] {
+            fs::create_dir_all(roots.join(dir)).unwrap();
+        }
+        let host = profile.host(false, Duration::from_millis(200));
+        let mut first = window(&profile);
+        let code = new_workspace(WorkspaceKind::Code, "Arch Dock", &roots.join("arch-dock"));
+        let code = done(ask(&mut first, code)).0.unwrap().workspace_id;
+        let lcl = new_workspace(WorkspaceKind::Lcl, "LCL — Next", &roots.join("lcl-next"));
+        let lcl = done(ask(&mut first, lcl)).0.unwrap().workspace_id;
+        drop(first);
+        assert_eq!(finish(host), exit::OK);
+        // The session is in the store before the host serves the switches.
+        let db = profile.data().join("state.db");
+        let (mut store, _) = StateStore::open(&db, now()).unwrap();
+        let session = session_bound_to(&code, &store.device_id().unwrap().unwrap());
+        store.write(now(), |w| w.insert(&session)).unwrap();
+        store.close(now()).unwrap();
+
+        let host = profile.host(false, Duration::from_millis(200));
+        let mut window = window(&profile);
+        for target in [&code, &lcl, &code, &lcl] {
+            let open = ClientMessage::OpenWorkspace(WorkspaceTarget::WorkspaceId(target.clone()));
+            assert_eq!(done(ask(&mut window, open)).1.as_ref(), Some(target));
+        }
+        drop(window);
+        assert_eq!(finish(host), exit::OK);
+        let (store, _) = StateStore::open(&db, now()).unwrap();
+        assert_eq!(store.all::<AgentSession>().unwrap(), vec![session]);
+        let state = store.get::<ClientState>(WINDOW_CLIENT).unwrap().unwrap();
+        assert_eq!(state.foreground_workspace, Some(lcl));
+        store.close(now()).unwrap();
+    }
+
+    #[test]
+    fn the_largest_workspace_fits_one_page_and_a_long_list_comes_in_pages() {
+        // The longest ID, a name and a root at the registry's limits made of characters that JSON
+        // escapes: one such workspace still fits a message of the window's channel.
+        let largest = WorkspaceEntry {
+            workspace_id: WorkspaceId::new("w".repeat(128)).unwrap(),
+            kind: WorkspaceKind::Code,
+            name: Label::new("\"".repeat(256)).unwrap(),
+            root: Some(DeviceRoot::new(format!("/{}", "\\".repeat(MAX_ROOT_BYTES - 1))).unwrap()),
+            availability: ContentAvailability::SyncedCopy,
+        };
+        let page = HostMessage::Workspaces(WorkspaceAnswer::Page {
+            foreground: Some(largest.workspace_id.clone()),
+            entries: vec![largest],
+            more: true,
+        });
+        assert!(encode(&page, MAX_IPC_MESSAGE_BYTES).is_ok());
+
+        let profile = Profile::new("workspace-pages");
+        let _host = profile.host(true, Duration::from_millis(100));
+        let mut window = window(&profile);
+        let mut made = Vec::new();
+        for n in 0..14 {
+            let root = profile.0.join(format!("roots/{n:02}-{}", "p".repeat(180)));
+            fs::create_dir_all(&root).unwrap();
+            let request = new_workspace(WorkspaceKind::Lcl, &format!("Project {n}"), &root);
+            made.push(done(ask(&mut window, request)).0.unwrap());
+        }
+        let (all, foreground, pages) = listed(&mut window);
+        assert!(pages > 1, "{pages} page(s)");
+        assert_eq!((all, foreground), (by_id(made), None));
     }
 
     #[test]

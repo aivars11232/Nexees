@@ -20,5 +20,5 @@
     "rootDir": ".",
     "outDir": "lib"
   },
-  "include": ["*.ts", "shell/*.ts"]
+  "include": ["*.ts", "shell/*.ts", "workspaces/*.ts"]
 }

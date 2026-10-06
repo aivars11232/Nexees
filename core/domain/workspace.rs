@@ -57,8 +57,8 @@ pub const MAX_SEGMENT_BYTES: usize = 255;
 /// It can never leave the root. It is not absolute, and it has no empty, `.` or `..` segment. It
 /// contains no backslash, no colon (a drive or alternate-stream prefix on Windows) and no control
 /// character. Segments are compared byte for byte. Filesystem-specific aliases, such as case or
-/// Unicode normalization collisions, are checked by the code that writes to a filesystem
-/// (TASK-051, TASK-013).
+/// Unicode normalization collisions, are checked by the code that writes to a filesystem: the
+/// workspace scope (TASK-023) and import (TASK-051).
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RelativePath(String);
 

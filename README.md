@@ -164,6 +164,22 @@ TASK-012 made the window remember its panels.
 - It is one layout for the window. What a client remembers per workspace comes with the
   workspaces (TASK-013 to TASK-016).
 
+TASK-013 made the device's workspaces a registry the host keeps.
+- A workspace has a stable ID, a kind (CODE or LCL), a name, a root folder on this device and
+  whether its content is here
+  ([core/workspaces/workspace_registry.rs](core/workspaces/workspace_registry.rs)). The host
+  keeps the registry in the device's state store, so the workspaces outlive the host.
+- A folder is one workspace's: a root never is, contains or lies inside another workspace's
+  root, whatever spelling, link or mount names it.
+- The folder a window shows is its foreground workspace. Opening a folder makes it a CODE
+  workspace when it is none yet; a folder that cannot be one, such as one inside another
+  workspace's folder, is shown with a warning and no workspace. The command palette creates,
+  opens and closes workspaces
+  ([apps/desktop/src/workspaces/workspace_switcher.ts](apps/desktop/src/workspaces/workspace_switcher.ts)).
+  Opening or closing a workspace binds no agent and changes nothing else.
+- The messages that carry this made protocol version 3. Telling several windows apart, and
+  what each workspace keeps of its view, come with TASK-014 and TASK-016.
+
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.
 This is a complete inventory of this planned layout, not a prediction of every file

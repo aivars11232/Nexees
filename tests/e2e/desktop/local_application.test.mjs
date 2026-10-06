@@ -63,7 +63,15 @@
 //     the window closes is not lost; with the foundation's stored layout removed from the
 //     profile the next window still has its panels, from the host; and what the user changes
 //     while the host cannot be reached stays in the window's profile and is given to the host
-//     once it can.
+//     once it can;
+// 15. the workspaces (C1, C2, B2, B5, B6, ST-WORKSPACE): the folder a window shows is a CODE
+//     workspace of the host, with a stable ID, and the window's client shows it; a new LCL
+//     workspace created from the command palette is shown at once, with its own tree; opening a
+//     workspace from the list shows its tree; the workspaces outlive the host, under the same
+//     IDs; a folder inside another workspace's root is refused, and the window says why; closing
+//     the workspace leaves the client showing none and the window no folder; a window on a link
+//     to a workspace's folder shows that workspace, and a window on a folder inside another
+//     workspace's root shows none and says why.
 //
 // It exits 0 when every check passes and prints one line per check.
 
@@ -331,17 +339,26 @@ async function session(target) {
     await new Promise((resolve, reject) => {
         socket.onopen = resolve;
         socket.onerror = reject;
+        setTimeout(() => reject(new Error('the page\'s DevTools did not answer')), 10_000);
     });
     let sent = 0;
     return {
-        /** Sends one command and returns its result. */
+        /**
+         * Sends one command and returns its result; nothing when the page does not answer within
+         * ten seconds, as while it starts again on another folder.
+         */
         send(method, params) {
             const id = sent += 1;
             socket.send(JSON.stringify({ id, method, params }));
             return new Promise(resolve => {
+                const timer = setTimeout(() => {
+                    socket.removeEventListener('message', listener);
+                    resolve(undefined);
+                }, 10_000);
                 const listener = event => {
                     const message = JSON.parse(event.data);
                     if (message.id === id) {
+                        clearTimeout(timer);
                         socket.removeEventListener('message', listener);
                         resolve(message.result);
                     }
@@ -682,6 +699,86 @@ function keptLayout() {
 }
 
 /**
+ * A channel to the host as a window opens one: the hellos exchanged, then one answer to each
+ * request, in order (core/protocol).
+ */
+async function hostChannel() {
+    const socket = net.createConnection(path.join(runtime, 'nexees', 'host.sock'));
+    const waiting = [];
+    let received = Buffer.alloc(0);
+    socket.on('data', chunk => {
+        received = Buffer.concat([received, chunk]);
+        while (received.length >= 4 && received.length >= 4 + received.readUInt32BE(0)) {
+            const size = received.readUInt32BE(0);
+            const message = JSON.parse(received.subarray(4, 4 + size).toString('utf8'));
+            received = received.subarray(4 + size);
+            waiting.shift()?.resolve(message);
+        }
+    });
+    socket.on('error', error => waiting.splice(0).forEach(answer => answer.reject(error)));
+    await new Promise((resolve, reject) => {
+        socket.once('connect', resolve);
+        socket.once('error', reject);
+    });
+    const ask = message => new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('the host did not answer')), 5_000);
+        waiting.push({ resolve: answer => { clearTimeout(timer); resolve(answer); }, reject });
+        const body = Buffer.from(JSON.stringify(message));
+        const length = Buffer.alloc(4);
+        length.writeUInt32BE(body.length);
+        socket.write(Buffer.concat([length, body]));
+    });
+    await ask({ hello: { versions: { min: 1, max: 3 } } });
+    return { ask, close: () => socket.destroy() };
+}
+
+/** Every workspace of the host's device, page after page, and the workspace the window client shows. */
+async function workspacesOf() {
+    const host = await hostChannel();
+    try {
+        const entries = [];
+        let after = null;
+        for (;;) {
+            const { page } = (await host.ask({ list_workspaces: { after } })).workspaces;
+            entries.push(...page.entries);
+            if (!page.more || page.entries.length === 0) {
+                return { entries, foreground: page.foreground };
+            }
+            after = page.entries.at(-1).workspace_id;
+        }
+    } finally {
+        host.close();
+    }
+}
+
+/** Types `text` into the box of the quick input that asks `prompt`, over what it holds, and confirms it, as a user would. */
+async function typeInto(target, prompt, text) {
+    await until(`the question "${prompt}"`, async () => (await evaluate(target, `(() => {
+        const box = document.querySelector('.quick-input-widget');
+        return !!box && getComputedStyle(box).display !== 'none' && box.innerText.includes(${JSON.stringify(prompt)})
+            && document.activeElement === box.querySelector('input');
+    })()`)) || undefined, 15_000);
+    // Ctrl+A selects what the box holds, and the text typed replaces it.
+    for (const type of ['keyDown', 'keyUp']) {
+        await send(target, 'Input.dispatchKeyEvent', { type, key: 'a', code: 'KeyA', modifiers: 2, windowsVirtualKeyCode: 65, nativeVirtualKeyCode: 65 });
+    }
+    await send(target, 'Input.insertText', { text });
+    await until(`"${text}" in the box`, async () => (await evaluate(target,
+        `document.querySelector('.quick-input-widget input')?.value === ${JSON.stringify(text)}`)) || undefined, 15_000);
+    await press(target, 'Enter', 'Enter', 13);
+}
+
+/** Waits until the command palette lists rows that start with each of `labels`, with nothing typed yet. */
+async function listed(target, what, labels) {
+    await until(what, async () => (await evaluate(target, `(() => {
+        const palette = document.querySelector('.quick-input-widget');
+        const rows = [...(palette?.querySelectorAll('.quick-input-list .monaco-list-row') ?? [])].map(row => row.innerText.trim());
+        return palette?.querySelector('input')?.value === '' && document.activeElement === palette.querySelector('input')
+            && ${JSON.stringify(labels)}.every(label => rows.some(row => row.startsWith(label)));
+    })()`)) || undefined, 15_000);
+}
+
+/**
  * What the window shows of its three panels, in the terms of the layout the host keeps: for a
  * shown panel its size and, where the page tells it, its selected view.
  */
@@ -739,8 +836,18 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
         // which may be before or after Theia asks the trust question.
         return seen?.shell ? found : undefined;
     }, 120_000);
+    const seen = await filesShown(target, 'hello.txt', extra.asLeft);
+    return { child, target, seen, early: JSON.parse(early ?? 'null') };
+}
+
+/**
+ * Waits until the window shows its folder, with `file` among the files of its Explorer: it answers
+ * Theia's question whether to trust the folder with no, and opens the Explorer where it is closed.
+ * With `asLeft` the Explorer is left as it is. Also for a window that started again on another folder.
+ */
+async function filesShown(target, file, asLeft = false) {
     let lastClick = 0;
-    const seen = await until('the workspace files in the Explorer', async () => {
+    return until(`${file} in the Explorer`, async () => {
         // The trust question may come a moment after the workbench; it is answered whenever it shows.
         const answered = await evaluate(target,
             `(() => { const no = [...document.querySelectorAll('button')].find(b => b.innerText.startsWith("No, I don't trust")); no?.click(); return !!no; })()`);
@@ -751,10 +858,10 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
         // then the question may still come and cover the window, so the window is not ready. Nor is
         // it while its loading screen, though fading, still lies over the workbench and takes the clicks.
         const now = await shown(target);
-        if (now?.restricted && !now.loading && (extra.asLeft || now.files.includes('hello.txt'))) {
+        if (now?.restricted && !now.loading && (asLeft || now.files.includes(file))) {
             return now;
         }
-        if (extra.asLeft) {
+        if (asLeft) {
             return undefined;
         }
         // Open the Explorer only while it is closed: a click on an open one would close it.
@@ -765,7 +872,6 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
         }
         return undefined;
     }, 60_000);
-    return { child, target, seen, early: JSON.parse(early ?? 'null') };
 }
 
 /** Waits until the status bar shows, where the user sees it, that the window is attached to a host. */
@@ -1268,7 +1374,117 @@ try {
         `the window was closed with ${tabsOf(sixth)}; the next one, without Theia's layout, has ${tabsOf(fromHost)}, ${fromHost.rightTab}, `
         + `the left sidebar ${fromHost.explorer ? 'shown' : 'hidden'}, the right one at ${fromHost.right?.w.toFixed(1)} px, ${fromHost.bottomTab}`);
     await closeWindow(window);
+
+    // 15: the workspaces of the device, which the kept host keeps. An LCL project beside the window's folder.
+    const lclRoot = path.join(profile, 'lcl-next');
+    fs.mkdirSync(path.join(lclRoot, 'rules'), { recursive: true });
+    fs.writeFileSync(path.join(lclRoot, 'project.lcl.txt'), 'LCL:\n    VERSION: "0.3.0"\n');
+    fs.writeFileSync(path.join(lclRoot, 'rules/master.lcl.txt'), 'LCL:\n    VERSION: "0.3.0"\n');
+    const [codeRoot, lclReal] = [fs.realpathSync(workspace), fs.realpathSync(lclRoot)];
+    const brief = list => JSON.stringify({ foreground: list.foreground, entries: list.entries.map(entry => `${entry.workspace_id} ${entry.kind} ${entry.name} ${entry.root}`) });
+    window = await openWindow(workspace);
+    await attached(window);
+    const claimed = await until('the window\'s folder as its workspace', async () => {
+        const list = await workspacesOf();
+        const own = list.entries.find(entry => entry.root === codeRoot);
+        return own && list.foreground === own.workspace_id ? list : undefined;
+    }, 15_000).catch(() => workspacesOf());
+    const code = claimed.entries.find(entry => entry.root === codeRoot);
+    check('the folder a window shows is a CODE workspace of the host, with a stable ID, and the window\'s client shows it (C1, B2, B6)',
+        code?.kind === 'code' && code.name === path.basename(workspace) && /^ws-[0-9a-f]{32}$/.test(code.workspace_id)
+        && code.availability === 'local' && claimed.foreground === code.workspace_id && window.seen.files.includes('hello.txt'),
+        brief(claimed));
+    // The user creates an LCL workspace from the command palette: its kind, its folder, its name.
+    await runCommand(window.target, 'Nexees: New Workspace…');
+    await listed(window.target, 'the kinds of workspace', ['Code', 'LCL']);
+    await choose(window.target, 'LCL');
+    await typeInto(window.target, 'The folder of the new workspace', lclRoot);
+    await typeInto(window.target, 'The name of the new workspace', 'LCL — Next');
+    const lclShown = await filesShown(window.target, 'project.lcl.txt');
+    const created = await until('the LCL workspace shown', async () => {
+        const list = await workspacesOf();
+        return list.entries.some(entry => entry.root === lclReal && entry.workspace_id === list.foreground) ? list : undefined;
+    }, 15_000).catch(() => workspacesOf());
+    const lcl = created.entries.find(entry => entry.root === lclReal);
+    check('a new LCL workspace created from the command palette is shown at once, with its own tree (B2, B5)',
+        lcl?.kind === 'lcl' && lcl.name === 'LCL — Next' && created.foreground === lcl.workspace_id
+        && lclShown.files.includes('rules') && !lclShown.files.includes('hello.txt')
+        && created.entries.find(entry => entry.root === codeRoot)?.workspace_id === code?.workspace_id,
+        `${brief(created)}; the Explorer: ${lclShown.files.join(', ')}`);
+    // The user opens the code workspace again from the list of workspaces.
+    await runCommand(window.target, 'Nexees: Open Workspace…');
+    await listed(window.target, 'the list of workspaces', [path.basename(workspace), 'LCL — Next']);
+    await choose(window.target, path.basename(workspace));
+    const shownBack = await filesShown(window.target, 'hello.txt');
+    const openedAgain = await until('the code workspace shown again', async () => {
+        const list = await workspacesOf();
+        return list.foreground === code?.workspace_id ? list : undefined;
+    }, 15_000).catch(() => workspacesOf());
+    check('opening a workspace from the list shows its tree, and the window\'s client shows that workspace (B2, B6)',
+        openedAgain.foreground === code?.workspace_id && shownBack.files.includes('src') && !shownBack.files.includes('project.lcl.txt'),
+        `${brief(openedAgain)}; the Explorer: ${shownBack.files.join(', ')}`);
+    await closeWindow(window);
+    // The host stops and a new one starts on the same store.
     kept.kill('SIGTERM');
+    await until('the kept host to stop', async () => hostPids().length === 0, 10_000);
+    const keptAgain = spawn(hostProgram, ['serve', '--keep-running'], { env: process.env, detached: true, stdio: 'ignore' });
+    children.push(keptAgain);
+    await until('the kept host again', async () => host('status') === 0, 15_000);
+    const restarted = await workspacesOf();
+    check('the workspaces outlive the host: a new host lists the same ones, under the same IDs, kinds, names and roots (ST-WORKSPACE)',
+        brief(restarted) === brief(openedAgain) && restarted.entries.length === 2, brief(restarted));
+    // The user tries to make a workspace of a folder inside the code workspace's root.
+    window = await openWindow(workspace);
+    await attached(window);
+    await runCommand(window.target, 'Nexees: New Workspace…');
+    await listed(window.target, 'the kinds of workspace', ['Code', 'LCL']);
+    await choose(window.target, 'Code');
+    await typeInto(window.target, 'The folder of the new workspace', path.join(workspace, 'src'));
+    await typeInto(window.target, 'The name of the new workspace', 'Inside');
+    const said = await until('the window to say why', async () => JSON.parse(await evaluate(window.target,
+        `JSON.stringify([...document.querySelectorAll('.theia-notification-message')].map(message => message.innerText.trim()))`) ?? '[]')
+        .find(text => text.startsWith('The workspace was not created.')), 15_000).catch(() => undefined);
+    const unchanged = await workspacesOf();
+    check('a folder inside another workspace\'s root is refused, and the window says why; the workspaces stay as they were',
+        !!said?.includes(`"${path.basename(workspace)}"`) && brief(unchanged) === brief(restarted), `${said}; ${brief(unchanged)}`);
+    // The user closes the workspace.
+    await runCommand(window.target, 'Nexees: Close Workspace');
+    const empty = await until('the window without a folder', async () => {
+        const now = await shown(window.target);
+        const explorer = await evaluate(window.target, `document.querySelector('#explorer-view-container')?.innerText ?? ''`);
+        return now?.shell && !now.loading && now.files.length === 0 && /no folder opened/i.test(explorer ?? '') ? explorer : undefined;
+    }, 30_000).catch(() => undefined);
+    const closedAll = await workspacesOf();
+    check('closing the workspace leaves the window\'s client showing none and the window no folder (C2)',
+        !!empty && closedAll.foreground === null && closedAll.entries.length === 2, `${brief(closedAll)}; the Explorer: ${empty?.replace(/\s+/g, ' ')}`);
+    await closeWindow(window);
+    // A link to the LCL workspace's folder is that folder: a window on it shows the LCL workspace.
+    const lclLink = path.join(profile, 'lcl-link');
+    fs.symlinkSync(lclRoot, lclLink);
+    window = await openWindow(lclLink, asLeft);
+    const viaLink = await filesShown(window.target, 'project.lcl.txt');
+    const linked = await until('the LCL workspace shown through the link', async () => {
+        const list = await workspacesOf();
+        return list.foreground === lcl?.workspace_id ? list : undefined;
+    }, 15_000).catch(() => workspacesOf());
+    check('a window on a link to a workspace\'s folder shows that workspace, and no second workspace is made of the folder (C1)',
+        linked.foreground === lcl?.workspace_id && linked.entries.length === 2 && viaLink.files.includes('rules'),
+        `${brief(linked)}; the Explorer: ${viaLink.files.join(', ')}`);
+    await closeWindow(window);
+    // A folder inside the code workspace's root cannot be a workspace: a window on it shows none, and says why.
+    window = await openWindow(path.join(workspace, 'src'), asLeft);
+    const warned = await until('the window to say why its folder is no workspace', async () => JSON.parse(await evaluate(window.target,
+        `JSON.stringify([...document.querySelectorAll('.theia-notification-message')].map(message => message.innerText.trim()))`) ?? '[]')
+        .find(text => text.startsWith('This folder is not a Nexees workspace.')), 15_000).catch(() => undefined);
+    const shownNone = await until('the window\'s client to show no workspace', async () => {
+        const list = await workspacesOf();
+        return list.foreground === null ? list : undefined;
+    }, 15_000).catch(() => workspacesOf());
+    check('a window on a folder inside another workspace\'s root shows no workspace, says why, and makes none of the folder (C1, C2)',
+        !!warned?.includes(`"${path.basename(workspace)}"`) && brief(shownNone) === brief({ ...linked, foreground: null }),
+        `${warned}; ${brief(shownNone)}`);
+    await closeWindow(window);
+    keptAgain.kill('SIGTERM');
     await until('the kept host to stop', async () => hostPids().length === 0, 10_000);
 
     // 7: start at login, in this profile only.

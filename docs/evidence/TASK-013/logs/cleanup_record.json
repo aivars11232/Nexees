@@ -1,0 +1,81 @@
+{
+  "schema": "nexees-cleanup-record",
+  "version": 1,
+  "task": "TASK-013",
+  "applied": true,
+  "removed": [],
+  "refused": [],
+  "absent": [],
+  "kept_directories": [],
+  "preserved_untracked": [
+    {
+      "path": "apps/desktop/src/workspaces/workspace_switcher.ts",
+      "sha256": "941065a1b55c6a7086e9692708361d4a923e86ee53a8ed85c05e08ef9dbe9eb2"
+    },
+    {
+      "path": "core/workspaces/Cargo.toml",
+      "sha256": "29f7d7ffee0a4ea316d3e99432abf4c6707074ace32e2a5cbb9864fba0d53d87"
+    },
+    {
+      "path": "core/workspaces/lib.rs",
+      "sha256": "74f68476d8d0b66b24584851d537d5ad7ef0dcc73bbd8ce50c2e4a1575c3640b"
+    },
+    {
+      "path": "core/workspaces/workspace_registry.rs",
+      "sha256": "61a56bcb500d6786e0a63d39c913c8cee4a3365b122a742dde734de45a73db7c"
+    },
+    {
+      "path": "docs/evidence/TASK-013/TASK-013_EVIDENCE.md",
+      "sha256": "d4ee18e26bdac0398f6ea95afd32c94419351d59869b91bf5325751ef5aa67d2"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/desktop_build.txt",
+      "sha256": "4409bdf92e0a0e8a20a976579924ae79b64d4a4bbd1ee75abef76e5f4471c221"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/dispatch_task_013.record.json",
+      "sha256": "5d6a49098c8f06250edc767b1dbca36b3eb87250aa43d94e609cc3c59dfe34b8"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/e2e_local_application.txt",
+      "sha256": "fa331c1029aa2907b0673401aedfb855537395f89829a11c7a6ddbf5ab85aba2"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/ide_activity.txt",
+      "sha256": "ba8a125665efb81740c45396c3dfa7d6c1b6515d209506fd9ca842740cb269fc"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/native_language_suite.json",
+      "sha256": "ed46c2e2f94b17ed9da7cd4f63f909739df9b8a24e8c842ba4b6751d9b152ae3"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/negative_tests.txt",
+      "sha256": "1ba99c31640fe1e2a72f7a95542e607f5a60782a6cfd62b3005f32e6a4e6b80a"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/preflight.txt",
+      "sha256": "5036d9df0e14ec5ddf2432ff2016a417d1e2a9efb073517a8a5c50f2d767c9ed"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/regression.txt",
+      "sha256": "b30cab6ed2f8e07c9e043c7676ec32fcb8e695e1212328274f22fe4b4ad8aa46"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/required_reading.txt",
+      "sha256": "72ca89d65141b71cd38c3f1c47affe0942e8037d7ba8d0048f56a11a9eb667e8"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/run_checks.txt",
+      "sha256": "78828a02d5d2f712d0552e6188d9a25675516962ce11ac4128012c3243fb1be3"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/security_scan.txt",
+      "sha256": "66cc76c16194945fef9795eeb8adb4c89368acd3c27e5ca15a5635ddb6c34ca4"
+    },
+    {
+      "path": "docs/evidence/TASK-013/logs/seeded_defects.txt",
+      "sha256": "051a7316130709023a4fd7d2236121e5334470b53a66de5b0dd2365de39e63ff"
+    }
+  ],
+  "ignored_left_in_place": 616
+}

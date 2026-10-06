@@ -149,6 +149,7 @@ dependencies = [
  "nexees-platform-desktop",
  "nexees-protocol",
  "nexees-state",
+ "nexees-workspaces",
 ]
 
 [[package]]
@@ -186,6 +187,14 @@ dependencies = [
  "rusqlite",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "nexees-workspaces"
+version = "0.0.0"
+dependencies = [
+ "nexees-domain",
+ "nexees-state",
 ]
 
 [[package]]

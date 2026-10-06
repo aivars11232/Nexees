@@ -16,6 +16,8 @@ path = "src/application_host.rs"
 nexees-domain = { path = "../../core/domain" }
 nexees-protocol = { path = "../../core/protocol" }
 nexees-state = { path = "../../core/state" }
+# The registry of the device's workspaces, which the host keeps for its windows (TASK-013).
+nexees-workspaces = { path = "../../core/workspaces" }
 nexees-platform-desktop = { path = "../../platform/desktop" }
 
 [lints]

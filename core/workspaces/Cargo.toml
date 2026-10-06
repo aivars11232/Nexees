@@ -1,0 +1,19 @@
+[package]
+name = "nexees-workspaces"
+description = "The Nexees workspaces: the registry and lifecycle of a device's workspaces, with stable IDs, kinds, names, device-local roots and content availability."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+# The crate root sits beside the module files named by the architecture slots of core/workspaces.
+[lib]
+path = "lib.rs"
+
+[dependencies]
+nexees-domain = { path = "../domain" }
+# The registry keeps its workspaces in the device's one state store (IF-STORE).
+nexees-state = { path = "../state" }
+
+[lints]
+workspace = true

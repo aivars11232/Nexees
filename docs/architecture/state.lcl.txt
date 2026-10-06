@@ -37,7 +37,7 @@ DATA:
         copies: "A shared logical workspace ID, type and name are known to every participating device; each device maps that ID to its own root."
         sync_policy: "portable_record"
         sensitivity: "private"
-        notes: "The device-local root never travels, and a PC absolute path is never an Android path (B18)."
+        notes: "The device-local root never travels, and a PC absolute path is never an Android path (B18). TASK-013 keeps the registry (core/workspaces/workspace_registry): each workspace's record and this device's replica, written in one transaction under an ID that is never reused. A root is an existing folder in its canonical form, and on its device it never is, contains or lies inside another workspace's root, compared by the directories' identity."
         schema_tasks: ["TASK-006", "TASK-008", "TASK-013"]
 
 DATA:
@@ -53,7 +53,7 @@ DATA:
         copies: "None. Another device's focus is never applied implicitly; a view transfer happens only on the user's explicit request (A6)."
         sync_policy: "never"
         sensitivity: "ordinary"
-        notes: "Authoritative for presentation only. It is never an input to authorization, agent binding, command targeting, import destination or model switching (C2, R11, RC-20). TASK-012 keeps one panel layout per client (nexees.client.layout): which panels of its window are shown, their sizes and their selected views; what a client keeps per workspace follows with TASK-016. Until then the Desktop foundation keeps the rest of its own layout, which view stands in which panel and the open editors, in the window's profile."
+        notes: "Authoritative for presentation only. It is never an input to authorization, agent binding, command targeting, import destination or model switching (C2, R11, RC-20). TASK-012 keeps one panel layout per client (nexees.client.layout): which panels of its window are shown, their sizes and their selected views; what a client keeps per workspace follows with TASK-016. Until then the Desktop foundation keeps the rest of its own layout, which view stands in which panel and the open editors, in the window's profile. From TASK-013 the Desktop host writes its window client's foreground workspace (nexees.client.state) on the windows' behalf: the folder a window shows."
         schema_tasks: ["TASK-012", "TASK-016"]
 
 DATA:

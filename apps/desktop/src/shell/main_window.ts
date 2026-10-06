@@ -2,8 +2,9 @@
 // workbench, bound here in one place. That is the Nexees look (theme), the About dialog
 // (about_dialog) and the approved layout: the title row with the sidebar toggles (title_bar,
 // panel_controls), the arrangement of the regions (panel_layout), the right sidebar with its
-// areas (right_sidebar) and what the window remembers of its panels (panel_memory). The window's
-// view of the Nexees host in the status bar is in this file.
+// areas (right_sidebar) and what the window remembers of its panels (panel_memory); and the
+// window's workspaces (../workspaces/workspace_switcher). The window's view of the Nexees host in
+// the status bar is in this file.
 //
 // The entry shows what the window's backend reports and nothing else: attached, with the
 // host's device; attaching; or unavailable, with the reason (RC-06). When the host is
@@ -22,7 +23,7 @@ import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { CustomTitleWidget, ElectronMenuContribution } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
-import { HOST_CONNECTION_PATH, HostConnectionClient, HostConnectionService, HostState } from '../main.protocol';
+import { HOST_CONNECTION_PATH, HostConnectionClient, HostConnectionService, HostState, HostStateEvents } from '../main.protocol';
 import { NexeesAboutDialog } from './about_dialog';
 import { ICONS } from './design_tokens';
 import { SidebarToggles } from './panel_controls';
@@ -31,6 +32,7 @@ import { PanelMemory } from './panel_memory';
 import { AREA_VIEWS, RightSidebar, SidePanels } from './right_sidebar';
 import { NexeesTheme } from './theme';
 import { TitleBar, WindowTitle } from './title_bar';
+import { WorkspaceSwitcher } from '../workspaces/workspace_switcher';
 
 /** The status bar entry's ID. */
 const ENTRY = 'nexees-host';
@@ -116,6 +118,7 @@ export default new ContainerModule((bind, _unbind, _isBound, rebind) => {
     rebind(CustomTitleWidget).to(WindowTitle).inSingletonScope();
 
     bind(HostStateRelay).toSelf().inSingletonScope();
+    bind(HostStateEvents).toService(HostStateRelay);
     // The host connection stays in this window's own backend, never a remote one.
     bind(HostConnectionService).toDynamicValue(context => ServiceConnectionProvider.createLocalProxy<HostConnectionService>(
         context.container, HOST_CONNECTION_PATH, context.container.get(HostStateRelay))).inSingletonScope();
@@ -125,4 +128,8 @@ export default new ContainerModule((bind, _unbind, _isBound, rebind) => {
     // After the contributions that put the areas in place: it selects views by their IDs.
     bind(PanelMemory).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(PanelMemory);
+    // The folder the window shows is its client's foreground workspace (B2).
+    bind(WorkspaceSwitcher).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toService(WorkspaceSwitcher);
+    bind(CommandContribution).toService(WorkspaceSwitcher);
 });

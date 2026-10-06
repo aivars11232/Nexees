@@ -411,3 +411,30 @@ Established by TASK-012 (ST-VIEW, R13, C5).
   version (`core/protocol/version_negotiation`); two ends that agreed on an older version do
   without it.
 
+## 17. Workspaces
+
+Established by TASK-013 (C1 to C4, B2, B18, ST-WORKSPACE).
+
+- **One registry per device.** A workspace is its record, which every participating device
+  knows, and this device's replica with its root (`core/domain/workspace`). The registry
+  (`core/workspaces/workspace_registry`) keeps both in the device's state store and writes them
+  in one transaction. No other code creates, opens or closes a workspace.
+- **IDs are given once.** A new workspace's ID comes from its creator, on the Desktop sixteen
+  random bytes from the host; it is never derived from a name or a path and never reused.
+- **A root is one workspace's.** A root is an existing folder, kept in its canonical form and
+  at most 1024 bytes long. On its device it never is, contains or lies inside another
+  workspace's root, compared by the directories' identity, so no spelling of a path, link or
+  mount makes one workspace's files another's. A root that has since been moved or replaced
+  by a link is not opened.
+- **Open and close are the foreground.** Opening a workspace makes it the foreground workspace
+  of the client that asked, and closing it leaves that client none. Neither binds an agent or
+  changes another record (C2, R11): an agent names its workspace itself. A window's request
+  names no client; the host keeps the foreground for the client on that channel.
+- **The window shows its foreground.** The folder a Desktop window shows is its client's
+  foreground workspace (`apps/desktop/src/workspaces/workspace_switcher`): a folder the window
+  opens that is no workspace yet becomes a CODE workspace, and a folder that cannot be one
+  leaves the client with none. Theia's own workspace shows the folder (reuse first). Every
+  window of a user is still one client; telling windows apart is TASK-014's.
+- **A new workspace operation** goes into the registry with its tests, into the protocol as a
+  new version, and into the switcher, with end-to-end checks of what the window then shows.
+

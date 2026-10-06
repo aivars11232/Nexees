@@ -72,7 +72,7 @@ Nexees/
 │       │   │   ├── editor_tabs.source
 │       │   │   ├── file_tree.source
 │       │   │   ├── lcl_workspace.source
-│       │   │   ├── workspace_switcher.source
+│       │   │   ├── workspace_switcher.ts
 │       │   │   └── workspace_view.source
 │       │   ├── application_host.rs
 │       │   ├── main.electron.ts
@@ -241,10 +241,12 @@ Nexees/
 │   │   ├── package_verification.source
 │   │   └── update_service.source
 │   └── workspaces/
+│       ├── Cargo.toml
 │       ├── file_tree_model.source
+│       ├── lib.rs
 │       ├── view_state.source
 │       ├── workspace_binding.source
-│       ├── workspace_registry.source
+│       ├── workspace_registry.rs
 │       └── workspace_revision.source
 ├── docs/
 │   ├── architecture/
@@ -615,19 +617,42 @@ Nexees/
 │   │   │   │   └── 03_light_theme.png
 │   │   │   ├── TASK-011_EVIDENCE.md
 │   │   │   └── measure_approved_layout.py
-│   │   └── TASK-012/
+│   │   ├── TASK-012/
+│   │   │   ├── logs/
+│   │   │   │   ├── cleanup_record.json
+│   │   │   │   ├── desktop_build.txt
+│   │   │   │   ├── dispatch_task_012.record.json
+│   │   │   │   ├── e2e_local_application.txt
+│   │   │   │   ├── ide_activity.txt
+│   │   │   │   ├── live_observations.txt
+│   │   │   │   ├── native_language_suite.json
+│   │   │   │   ├── negative_tests.txt
+│   │   │   │   ├── preflight.txt
+│   │   │   │   ├── preflight_resume.txt
+│   │   │   │   ├── preflight_resume_2.txt
+│   │   │   │   ├── regression.txt
+│   │   │   │   ├── required_reading.txt
+│   │   │   │   ├── run_checks.txt
+│   │   │   │   ├── security_scan.txt
+│   │   │   │   └── seeded_defects.txt
+│   │   │   ├── receipt/
+│   │   │   │   ├── RECEIPT_RESULT.md
+│   │   │   │   ├── corroboration.txt
+│   │   │   │   ├── evaluation.record.json
+│   │   │   │   ├── final_verification.txt
+│   │   │   │   ├── receipt.json
+│   │   │   │   └── snapshot_files.sha256
+│   │   │   └── TASK-012_EVIDENCE.md
+│   │   └── TASK-013/
 │   │       ├── logs/
 │   │       │   ├── cleanup_record.json
 │   │       │   ├── desktop_build.txt
-│   │       │   ├── dispatch_task_012.record.json
+│   │       │   ├── dispatch_task_013.record.json
 │   │       │   ├── e2e_local_application.txt
 │   │       │   ├── ide_activity.txt
-│   │       │   ├── live_observations.txt
 │   │       │   ├── native_language_suite.json
 │   │       │   ├── negative_tests.txt
 │   │       │   ├── preflight.txt
-│   │       │   ├── preflight_resume.txt
-│   │       │   ├── preflight_resume_2.txt
 │   │       │   ├── regression.txt
 │   │       │   ├── required_reading.txt
 │   │       │   ├── run_checks.txt
@@ -640,7 +665,7 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       └── TASK-012_EVIDENCE.md
+│   │       └── TASK-013_EVIDENCE.md
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md
 │   │   └── NEXEES_USER_MANUAL.md
