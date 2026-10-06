@@ -1,0 +1,42 @@
+TASK-014: defects seeded against the end-to-end checks of the windows' workspaces, 2026-10-06T22:49:00+02:00.
+Each run breaks the installed window's code in one or more independent ways, in its page or in its backend, and
+must fail exactly the checks named for those defects, and no other: a check that still passed would not be
+checking what it says, and another check failing would mean a defect reaches further than understood. The
+unseeded run is logs/e2e_local_application.txt, where all 78 checks pass.
+The host's part, that each window is a client of its own and that a window which leaves shows nothing, is the
+host program's, which this tool does not patch; the host's tests hold it, and the negative tests break it there.
+The backend's part is seeded here: run 3 gives every window of the application one attachment, and with it one
+channel and one client at the host, as before this task.
+
+== Run 1: the title row names the folder instead of the workspace, and the commands that add a folder stay ==
+  seeded: the title row names the workspace by its folder's name instead of its own
+  seeded: Theia's commands that add a folder to a window are left in place
+  exit code 1; 75 checks passed, 3 failed
+  FAIL  a new LCL workspace created from the command palette is shown at once, with its own tree and its own name (B2, B5)  [["ws-64a496b1e53435c5cc307ba9605e7897 code workspace /tmp/nexees-e2e-0bLp4n/workspace","ws-b20641fdf2db84ea3245c17c7feba667 lcl LCL — Next /tmp/nexees-e2e-0bLp4n/lcl-next"]; the title row: {"kind":"lcl","name":"lcl-next","tip":"LCL workspace \"LCL — Next\", /t]
+  FAIL  a window on a link to a workspace's folder shows that workspace, and no second workspace is made of the folder (C1)  [["ws-64a496b1e53435c5cc307ba9605e7897 code workspace /tmp/nexees-e2e-0bLp4n/workspace","ws-b20641fdf2db84ea3245c17c7feba667 lcl LCL — Next /tmp/nexees-e2e-0bLp4n/lcl-next"]; the title row: {"kind":"lcl","name":"lcl-next","tip":"LCL workspace \"LCL — Next\", /t]
+  FAIL  a window offers no way to add a second folder to it, so a CODE tree and an LCL tree are never one Explorer (B5, B6)  [for "Add Folder to Workspace": Workspaces: Add Folder to Workspace...; for "Nexees: New Workspace": Nexees: New Workspace… recently used]
+  expected to fail: 3; failed as expected: 3; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+== Run 2: a folder that cannot be a workspace is shown anyway, a CODE workspace is named with the icon of an LCL one, and a click on the workspace's name does nothing ==
+  seeded: the window keeps showing a folder it cannot show, and says nothing
+  seeded: the title row gives a CODE workspace the icon of an LCL workspace
+  seeded: a click on the workspace's name in the title row runs no command
+  exit code 1; 75 checks passed, 3 failed
+  FAIL  the folder a window shows is a CODE workspace of the host, with a stable ID, which the window names in its title row with its kind (C1, B2, B6)  [["ws-f5291a4710de9bfbd1977a0f9578d975 code workspace /tmp/nexees-e2e-vKhH7D/workspace"]; the title row: {"kind":"code","name":"workspace","tip":"Code workspace \"workspace\", /tmp/nexees-e2e-vKhH7D/workspace. Click to open another.","shown":true,"icon":"codico]
+  FAIL  a click on the workspace's name in the title row lists the workspaces; opening one from the list shows its tree, and the window names that workspace (B2, B6)  [the list not shown on a click on the name; the title row: {"kind":"code","name":"workspace","tip":"Code workspace \"workspace\", /tmp/nexees-e2e-vKhH7D/workspace. Click to open another.","shown":true,"icon":"codicon-law"}; the Explorer: , src, hello.txt]
+  FAIL  a window opened on a folder inside another workspace's root does not show it: it shows no folder and no workspace, says why and offers that workspace (B2, C4)  [undefined; the title row: {"kind":"none","name":"No workspace","tip":"This window shows no workspace. Click to open one.","shown":true,"icon":null}; ["ws-d2e114ab2c3c12881dfdc52137115de9 lcl LCL — Next /tmp/nexees-e2e-vKhH7D/lcl-next","ws-f5291a4710de9bfbd1977]
+  expected to fail: 3; failed as expected: 3; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+== Run 3: the window's backend gives every window one attachment, and with it one client at the host ==
+  seeded: every window of the application attaches over the first window's channel, which stays open when a window goes
+  exit code 1; 76 checks passed, 2 failed
+  FAIL  two windows show two workspaces at once, each with its own tree, its own name in the title row and its own foreground at the host (B2, C2)  [the first window: {"kind":"code","name":"workspace","tip":"Code workspace \"workspace\", /tmp/nexees-e2e-Xri7hb/workspace. Click to open another.","shown":true,"icon":"codicon-package"}, , src, hello.txt, lists LCL — NextLCL · shown /tmp/nexees-e2e-Xri7hb/lcl-]
+  FAIL  closing one window changes nothing in the other: it keeps its workspace, its name and its tree (C2, R12)  [{"kind":"code","name":"workspace","tip":"Code workspace \"workspace\", /tmp/nexees-e2e-Xri7hb/workspace. Click to open another.","shown":true,"icon":"codicon-package"}; lists LCL — NextLCL · shown /tmp/nexees-e2e-Xri7hb/lcl-next | workspaceCode /tmp/nexees-e2e]
+  expected to fail: 2; failed as expected: 2; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
+
+After the runs the installation was installed again from the build folder, and the repository's test passes on it: exit code 0, 78 checks passed.
+
+ALL SEEDED DEFECTS CAUGHT

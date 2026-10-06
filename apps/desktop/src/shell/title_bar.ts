@@ -1,7 +1,8 @@
 // The Nexees title row (apps/desktop/src/shell/title_bar): the one thin row at the top of the
 // window (Desktop UI contract, "Required regions"). From left to right it holds the logo and the
-// application's name, the menu, the window's title, the two sidebar toggles (panel_controls) and,
-// immediately after them, the window's own controls. Nothing else is added above or below it.
+// application's name, the menu, the window's title, the name of the workspace the window shows
+// (../workspaces/workspace_switcher), the two sidebar toggles (panel_controls) and, immediately
+// after them, the window's own controls. Nothing else is added above or below it.
 //
 // The row is Theia's own title bar for a window without the system's frame, which
 // apps/desktop/package.json makes the default (`window.titleBarStyle`). Theia builds it and keeps
@@ -22,6 +23,7 @@ import { CustomTitleWidget, ElectronMenuContribution } from '@theia/core/lib/ele
 import { LOGO } from './about_dialog';
 import { TOKENS } from './design_tokens';
 import { SidebarToggles } from './panel_controls';
+import { WorkspaceName } from '../workspaces/workspace_switcher';
 
 /** The ID of the logo with the application's name, at the left end of the row. */
 const BRAND = 'nexees-title-brand';
@@ -48,6 +50,13 @@ function rowRules(): string[] {
         `#${BRAND} > img { flex: none; width: ${TOKENS.desktop.title_logo_size}px; height: ${TOKENS.desktop.title_logo_size}px; }`,
         `#theia-custom-title { position: static; flex: 1 1 0; min-width: 0; margin: 0; padding: 0 ${gap}px; transform: none;`
         + ` text-align: center; line-height: ${inner}px; font-size: ${TOKENS.font.small}px; }`,
+        // The workspace's name gives way before the toggles do, and ends with an ellipsis.
+        `#${WorkspaceName.ID} { display: flex; flex: 0 1 auto; min-width: 0; align-items: center; gap: ${gap}px; padding: 0 ${gap}px;`
+        + ` border: none; background: none; font: inherit; font-size: ${TOKENS.font.small}px; color: var(--theia-titleBar-activeForeground);`
+        + ' cursor: pointer; }',
+        `#${WorkspaceName.ID} > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }`,
+        `#${WorkspaceName.ID}:hover { background: var(--theia-toolbar-hoverBackground); }`,
+        `#${WorkspaceName.ID}.nexees-workspace-none { color: var(--theia-descriptionForeground); }`,
         '#nexees-sidebar-toggles { display: flex; flex: none; }',
         `.nexees-sidebar-toggle { width: ${TOKENS.desktop.sidebar_toggle_width}px; padding: 0; border: none; background: none;`
         + ' color: var(--theia-titleBar-activeForeground); cursor: pointer; }',
@@ -65,6 +74,9 @@ export class TitleBar extends ElectronMenuContribution implements StylingPartici
     @inject(SidebarToggles)
     protected readonly toggles!: SidebarToggles;
 
+    @inject(WorkspaceName)
+    protected readonly workspaceName!: WorkspaceName;
+
     /** The logo and the application's name, where Theia's menu bar keeps a place for a logo. */
     protected override createLogo(): Widget {
         const brand = new Widget();
@@ -78,9 +90,13 @@ export class TitleBar extends ElectronMenuContribution implements StylingPartici
         return brand;
     }
 
-    /** Theia adds the window controls right after the title, so the toggles added here stand immediately before them. */
+    /**
+     * Theia adds the window controls right after the title, so the workspace's name and the
+     * toggles added here stand between them, the toggles immediately before the controls.
+     */
     protected override createCustomTitleWidget(app: FrontendApplication): void {
         super.createCustomTitleWidget(app);
+        app.shell.addWidget(this.workspaceName, { area: 'top' });
         app.shell.addWidget(this.toggles, { area: 'top' });
     }
 

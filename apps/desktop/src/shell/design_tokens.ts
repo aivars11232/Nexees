@@ -85,4 +85,6 @@ export const ICONS = {
     area_tasks: 'checklist',
     area_chat: 'comment-discussion',
     area_logs: 'output',
+    workspace_code: 'package',
+    workspace_lcl: 'law',
 } as const;

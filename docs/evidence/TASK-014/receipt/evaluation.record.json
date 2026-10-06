@@ -1,0 +1,4033 @@
+{
+  "protocol": "lcl.engine/1",
+  "command": "run",
+  "spec": {
+    "root": "/mnt/F/LCL/canonical/LCL_Core_0.3.0",
+    "formal_version": "0.3.0",
+    "identity_digest": "7c8d46931933fa28c212a84e6405ef4b3ad99cebf07831bb835deac96a701aff",
+    "authority": "authoritative"
+  },
+  "units": [
+    {
+      "id": "accept_task.lcl.txt",
+      "digest": "sha256:5cd8f79ac93ca3e810ee9cd35432c0e6380d5fbad93f26e45c1214bf973ff836",
+      "bytes": 13931,
+      "root": true,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "bindings/receipt_mode.lcl.txt",
+      "digest": "sha256:1a552ef94ceaf02b0bfa7bb2ae4a1c85e755f994e12f326021e1120e72cb014d",
+      "bytes": 346,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/project_charter.lcl.txt",
+      "digest": "sha256:8f8cec1cbe7e615e9f14a608cbfce6fed40b8d7d2b8af9792d898ee55b42ec5e",
+      "bytes": 3922,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/master_rules.lcl.txt",
+      "digest": "sha256:2307183519d203e547a031a11dde634a5222588febfd6bd706e429d8ca8473a5",
+      "bytes": 13048,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/global_contracts.lcl.txt",
+      "digest": "sha256:ad16c8b61cd9c84d5dc60884e2900e858594d3f2ccaf5c912b40401a388c180f",
+      "bytes": 15367,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "bindings/bindings.lcl.txt",
+      "digest": "sha256:51677c6af1cb4f045fa2a9672acd3536198bb75d1482f145cf0860eea4950c6e",
+      "bytes": 16222,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/reuse_policy.lcl.txt",
+      "digest": "sha256:b8382ec17bcaa75317b26ce8238305d8d004f2a9aaf1ed9d6038b56ee4bd8a02",
+      "bytes": 3317,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/no_unnecessary_code.lcl.txt",
+      "digest": "sha256:8b8cc8813dc12b6b7237bb5a952b6dc5e2847631919a4ca4ed6357fd8f5fae85",
+      "bytes": 3532,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/code_readability_and_cleanup.lcl.txt",
+      "digest": "sha256:cd49629e16e714a0dc40bceaca81470330d9868ff1eed9451f06dbb35d7f3f97",
+      "bytes": 6882,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/security_baseline.lcl.txt",
+      "digest": "sha256:ae0d3943cf66ce8afe131eadd66f35eab9077bb04c60a838a5404636cef053f0",
+      "bytes": 5927,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "checks/stop_conditions.lcl.txt",
+      "digest": "sha256:afa9b2dcb9b3df808097c8e4fa1b350403b054a08956fa14cfbe99417847bfed",
+      "bytes": 7646,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/acceptance_criteria.lcl.txt",
+      "digest": "sha256:2fc8668acfe23069eb4a9fe378729a55e2a65e7ac409c70bfc4cd0263ff98473",
+      "bytes": 6420,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/usage_and_agents.lcl.txt",
+      "digest": "sha256:5b68c8feaa79dc6c43782f6a0a0c4949367ec34af6c4e2f5321fd40e387ab547",
+      "bytes": 4642,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/remote_device_control.lcl.txt",
+      "digest": "sha256:7d91532203589febd37811a0e28adb4e81e87a70951da50f80bfd542a5eba145",
+      "bytes": 14752,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "verification/remote_control_acceptance.lcl.txt",
+      "digest": "sha256:544ac6195525b0d6019aae1ee326e6bfeddb4c55907346744201f0fad29fafd5",
+      "bytes": 3812,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/android_operating_model.lcl.txt",
+      "digest": "sha256:7dcf4e8a1765d5d6404e0594d10933aa315337b9b43e9f0d5152192dedb23d20",
+      "bytes": 19571,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/android_ui.lcl.txt",
+      "digest": "sha256:b049368991443c6ac7ea248c15ec675c9e1a6296bdb5f0fbc62d328c083ce8b1",
+      "bytes": 3210,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/authority_hierarchy.lcl.txt",
+      "digest": "sha256:87850325a2d613c93c716dd2dfb931316d10f53528252f84dce101b8eb17f64d",
+      "bytes": 1291,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/auth_and_settings.lcl.txt",
+      "digest": "sha256:1aa74791017abf30495994755d8f30e5534fb59bf509e35f2cac1f0a4c6bf244",
+      "bytes": 3498,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/desktop_ui.lcl.txt",
+      "digest": "sha256:319c19c730973b831dec5ef648b0e9548a0e80eb0a9731286da0b48f52270466",
+      "bytes": 2782,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/lcl_import_pipeline.lcl.txt",
+      "digest": "sha256:a6cde8759da83eacca4adbd50abd63d42412425fe82743a84ca4591723b80b72",
+      "bytes": 8210,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/lcl_integration.lcl.txt",
+      "digest": "sha256:4a83ecfaac2c63bfbfe03f9893d0d79f8211aaf021800e47823c0e05d9459e3a",
+      "bytes": 3401,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/manuals_and_help.lcl.txt",
+      "digest": "sha256:638e4d6d8f433f3996dd349eca02479de4cf06c8b95ef8b5a4d728a327182875",
+      "bytes": 4388,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/model_handoff.lcl.txt",
+      "digest": "sha256:bd178ec68c0615e525c4804239266b08b2755a0bcda1278597723bfae21391c5",
+      "bytes": 7539,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/persistent_state_model.lcl.txt",
+      "digest": "sha256:d50fc3a3e4f6487861289b7088d7b0289c7543bda253566584ee0484733917e6",
+      "bytes": 2916,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/provider_and_agent_model.lcl.txt",
+      "digest": "sha256:669cdee9c343924d2299b88c022a9444fca9ff690b5b1e5686671db78c6f912c",
+      "bytes": 3329,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/system_architecture.lcl.txt",
+      "digest": "sha256:2f65ff575dbfade3fde459efd125c62e5f7d0a47874b2dbf6d5c22b289443956",
+      "bytes": 3438,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "architecture/workspace_model.lcl.txt",
+      "digest": "sha256:e0a2c21d22a13037f7188f3131050e99b02a44880ffa8b947a8c9cbfeae605c2",
+      "bytes": 2967,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "reuse/decision_template.lcl.txt",
+      "digest": "sha256:59c77c872904bffa668cf08e59e929d2f052e015edf48e7cc6468ba131a5ae0b",
+      "bytes": 1150,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "reuse/import_handoff_sources.lcl.txt",
+      "digest": "sha256:f807af93abd67ac0715c3f93c3fb1af056549d08edb95fb9110d568286a6ae0a",
+      "bytes": 2857,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "reuse/license_and_dependency_gate.lcl.txt",
+      "digest": "sha256:9ca0cd99c0c790de2481c1b08eee1c79929ac6ef5dc406dbbf873f4b05cd9134",
+      "bytes": 1757,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "reuse/reuse_matrix.lcl.txt",
+      "digest": "sha256:666b655bb987f453d3c577e3922c8915b055244c002f9d9ec186ca8358f336cf",
+      "bytes": 4888,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "guidance/build_order.lcl.txt",
+      "digest": "sha256:692596534b4a36225733d2801dedcf88f393b62080b652991ae938a6f73a1343",
+      "bytes": 8853,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "guidance/task_id_migration_v0.2_to_v0.3.lcl.txt",
+      "digest": "sha256:bb3dff69f040b27813989e0cd58fb11fb1dfffc33c79fda14d9286590df30ea9",
+      "bytes": 7121,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "guidance/task_index.lcl.txt",
+      "digest": "sha256:2880cdfc3134777b7c1abe618666378d4e053620c7fc48ef090da8b150d2c41b",
+      "bytes": 7186,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "verification/final_release_gate.lcl.txt",
+      "digest": "sha256:1428cf857c5fe866fdf59eb661775a4ddd02c91b0b44d1b9c1b18a4e4c50f98e",
+      "bytes": 5193,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "verification/security_gate.lcl.txt",
+      "digest": "sha256:c8c1e700d0ff0ab17ff26e1a093d0461e601aaab496900035b0c051ebaae1729",
+      "bytes": 2775,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "verification/test_strategy.lcl.txt",
+      "digest": "sha256:c2e67f60229a5a5d106a82ef4b8caf33ad24b0b0f624af5bcb297b22754c0e65",
+      "bytes": 3625,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "verification/v0.3_requirement_coverage.lcl.txt",
+      "digest": "sha256:50c2098dc26caa2e6943e597dedefe32e613f1025ee802aea57322f6f19d49dd",
+      "bytes": 2757,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "manuals/lcl_in_nexees_user_manual.lcl.txt",
+      "digest": "sha256:ecfafbad5001cb2ce270ca9ad4d397c2fa397ce4a5080de83cd53b9ff4c77e33",
+      "bytes": 7213,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "manuals/nexees_user_manual.lcl.txt",
+      "digest": "sha256:6d920d4740f58e88dce188b775bce278e0c8e5446f7e58b7558b4bd68cf30894",
+      "bytes": 9953,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "manuals/readme.lcl.txt",
+      "digest": "sha256:6b2fe591fba7cfc12cee626627d731bce1c8875d89dd006c40346846080201f4",
+      "bytes": 1273,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "bindings/content_identity.lcl.txt",
+      "digest": "sha256:a1fdf9e4f236cd442605e174e1d4effd0ab14f77d35529dd9dd4519cac1fdded",
+      "bytes": 559,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "data/invocation_inputs.lcl.txt",
+      "digest": "sha256:6ec13fb02cec78d937eb6e29a73a3d95432d4ad2436fd4365916d038a4bc7612",
+      "bytes": 7728,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "checks/runtime_gates.lcl.txt",
+      "digest": "sha256:3529983147c2af3a3d0767f7698f72f094017feed4f06df9eb0b0e1565a477ac",
+      "bytes": 58789,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "workflow/dispatch.lcl.txt",
+      "digest": "sha256:88c73e18c1461d62d31b8c8136f98dd7dfaf714450e54824a2cbb91c5b7dfbf8",
+      "bytes": 11204,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "templates/decision_log_template.lcl.txt",
+      "digest": "sha256:d8fa183d2ea41aa8fabe455bf581893f5be39804a8e249f19a3d6438046a8251",
+      "bytes": 799,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "templates/model_handoff_prompt.lcl.txt",
+      "digest": "sha256:be396786ec55eff8dd556c985827451e376339fb8bfb0e2fd0fc99b96f598a64",
+      "bytes": 2248,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "templates/task_evidence_template.lcl.txt",
+      "digest": "sha256:658162afbfb5de75dece32aa8f8ea863e289e465d2608897f98ab6f11a5e441f",
+      "bytes": 2612,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "templates/task_template.lcl.txt",
+      "digest": "sha256:c469192acd64216082b8942de702da4fd8739e4072c7e27bab1382b7939e62f6",
+      "bytes": 2181,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_001.lcl.txt",
+      "digest": "sha256:6c96309ac4fda208d9da16e2b38e1652e6cc51b419f9f1d3dbb7aee81e89ae2e",
+      "bytes": 18109,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_002.lcl.txt",
+      "digest": "sha256:d1350a751b2de0fc5701562e8b61bf582276eef1bf0d81006683f1b79e015624",
+      "bytes": 13995,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_003.lcl.txt",
+      "digest": "sha256:d8a8fe4937b0948b036a3ad3f1142ab4a765a3ac67834f4114d7cfecf17c5a12",
+      "bytes": 16548,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_004.lcl.txt",
+      "digest": "sha256:3ec982757fc2ca0f98aa48b92c1ad589fb0646f9080258fb30abbde09bebd1bd",
+      "bytes": 13960,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_005.lcl.txt",
+      "digest": "sha256:45db82dffda5c7f48562fa1a5b0a3ac996d993b4e2b66baceb5155956941e1b7",
+      "bytes": 9090,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_006.lcl.txt",
+      "digest": "sha256:4accccce98cecdefffb91efe4c6b32d4740e6b1190c44287dfecdf0fd4c9865e",
+      "bytes": 10083,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_007.lcl.txt",
+      "digest": "sha256:89a57b21853932c74caa6328c498b7fbc9c6dcc755b34655edba4fd600f68058",
+      "bytes": 13574,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_008.lcl.txt",
+      "digest": "sha256:ce314300d6f33ac5ecb920f5e48d8a78d45cc214f659acbab6dfdbc2b1af8258",
+      "bytes": 11966,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_009.lcl.txt",
+      "digest": "sha256:3f07ec06511660d79e968561ebedef9e5e4edda29d9cfc481703443dd178d104",
+      "bytes": 13041,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_010.lcl.txt",
+      "digest": "sha256:cd80055c0d7280738313ce8de1daeb029a4d6c36e59b49a1ab0b814581cd838f",
+      "bytes": 8593,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_011.lcl.txt",
+      "digest": "sha256:35b1b79b7ee24df3b2abb363c5216dbf7c0b153f730715ba841dedab8e294d0e",
+      "bytes": 8745,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_012.lcl.txt",
+      "digest": "sha256:5b1112b69879418d52b31725ce37e5967f301647bef20c34bcd9b4705c65ba47",
+      "bytes": 8606,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_013.lcl.txt",
+      "digest": "sha256:0405721c12d1be17598259cdf5034073ed139bf8dd7b69a6a33233a0373b5aa7",
+      "bytes": 8879,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_014.lcl.txt",
+      "digest": "sha256:f1f61170fec2d2c16c3c43b4b8e96c708eebc5dd1f6545a45d71169b3b5f066f",
+      "bytes": 8914,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_015.lcl.txt",
+      "digest": "sha256:1a4cce03e9c77d983d44a236fe9f07bb18b00603779ed871eb732d2ae3062f73",
+      "bytes": 10561,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_016.lcl.txt",
+      "digest": "sha256:d9f7bfe4d93bdb5d778d22bd6e10e84f01302b4298ead5ca7ebe21c80c68450d",
+      "bytes": 9029,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_017.lcl.txt",
+      "digest": "sha256:fb9a44b449224a69f1def0217b1ac8d892080a53bd3931c148965d244163120e",
+      "bytes": 10178,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_018.lcl.txt",
+      "digest": "sha256:2bf276ff08e8ebe783f685374d66b2825e7610d91921a09a41db586e3df785bb",
+      "bytes": 8682,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_019.lcl.txt",
+      "digest": "sha256:4e694681f1551cde44bd180ab1c36474f863d136934ad6cca69ee667c8007942",
+      "bytes": 8658,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_020.lcl.txt",
+      "digest": "sha256:f2912c0ef1d801f11b74360f9c87f73cda782c0535c59e9f7516df93c9d9d9a4",
+      "bytes": 8700,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_021.lcl.txt",
+      "digest": "sha256:2c7ed63c36fffa5085b76b106282275fb932ff214c2d950d61ea4d3d442daf1a",
+      "bytes": 8760,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_022.lcl.txt",
+      "digest": "sha256:f222e129e19683059d8cd1c75084de58b8ffd849cb98b0acabe5c05a177eb999",
+      "bytes": 12255,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_023.lcl.txt",
+      "digest": "sha256:6971f00c3096f47123e55b66e0057e641c7ca8e0b8af3161d11e2c6a548852d4",
+      "bytes": 10817,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_024.lcl.txt",
+      "digest": "sha256:58c39186eeccaddceb95809069cff4f7518ad6dd68d8a3e27a7759c3084e600a",
+      "bytes": 11883,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_025.lcl.txt",
+      "digest": "sha256:9ce5e72428cd320c751fc0a13ac78596e8f75e87fb03c905448c25bf1c02f57b",
+      "bytes": 11392,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_026.lcl.txt",
+      "digest": "sha256:b37dbda560a7b8195721c8c04277c72f678536fded08d6ee8944eb63da085754",
+      "bytes": 11185,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_027.lcl.txt",
+      "digest": "sha256:cf7cb4e1dafbcf33c36a3ce3106e1dd0ae7af12e363bddd5f14cc222e221cead",
+      "bytes": 10230,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_028.lcl.txt",
+      "digest": "sha256:c09541d02e070c84cf1d3c5b58ff10b0d0eea20456e837805aca7a4840b633fe",
+      "bytes": 9183,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_029.lcl.txt",
+      "digest": "sha256:99d0f7304d9d145a573eabbabd4a2ada764996d2c4165a349c88de33d86f2de0",
+      "bytes": 9072,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_030.lcl.txt",
+      "digest": "sha256:82ba3e2e414287acfe86f309ccc25ce05f5913d047a9477d48e8fbc6810ec092",
+      "bytes": 14448,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_031.lcl.txt",
+      "digest": "sha256:39776f676d5ad946b54eac3ac2ec2623470f874eb3871efaf5b2a7add2e89b95",
+      "bytes": 12586,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_032.lcl.txt",
+      "digest": "sha256:8f316e73d3c1dade34aac0e1e0db457d41c4bfa89663b32d26e5a5564e973bae",
+      "bytes": 8864,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_033.lcl.txt",
+      "digest": "sha256:65e69fec0e99c757df119e23d180722555c41a12ba7505d12feccdde2114a8f2",
+      "bytes": 13784,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_034.lcl.txt",
+      "digest": "sha256:053add86046277b42b2799cf30c970eb8dca239f9b9f28984bd06b637b11fca0",
+      "bytes": 9965,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_035.lcl.txt",
+      "digest": "sha256:b0b2eddeb22cfebb54f431d34786b34dcc8243f3706afcc06731232b75b0fd39",
+      "bytes": 12975,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_036.lcl.txt",
+      "digest": "sha256:ce9d89e83bbbcd6d9da3ea5f4a0f09370014ed136c85f89901b9e5b3886fa79e",
+      "bytes": 9249,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_037.lcl.txt",
+      "digest": "sha256:1c66bb1b7f2c00e26ed6ccbce45e7854f972ee17d57a66a8a3f8072d4bfa4fc7",
+      "bytes": 9215,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_038.lcl.txt",
+      "digest": "sha256:1a0c296d170d5e9029f2b32f5aa981aff854947c45bb894fd2b192e2145340ef",
+      "bytes": 11819,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_039.lcl.txt",
+      "digest": "sha256:42979ef85f4aa4945e531de53811dbbab756b4db337c59b1a3ec6c4b5de06ebd",
+      "bytes": 8893,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_040.lcl.txt",
+      "digest": "sha256:c7656c38b14827cc3d9b6b15a0a6aa63c3193a710704f641f0d4c1c9a27c4221",
+      "bytes": 9377,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_041.lcl.txt",
+      "digest": "sha256:d83487e4724f69e4d3e8aa707b5a8278ecfd71d32c8e1be51c494dcaf62cad93",
+      "bytes": 10479,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_042.lcl.txt",
+      "digest": "sha256:19bd1747bdb10d6369da5a28b555953800d001084e87f857b299fd10690831ef",
+      "bytes": 9165,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_043.lcl.txt",
+      "digest": "sha256:a2c108a3859842175ce088f9d38b7b279d5f8022771f30b25ac25c3c1ac83189",
+      "bytes": 9222,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_044.lcl.txt",
+      "digest": "sha256:113fd4626189c2db66536df171ca9f53c02f9faffbcac52f96166779a725d0be",
+      "bytes": 10912,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_045.lcl.txt",
+      "digest": "sha256:33c1a15ac5c7378d5e5477dcfa9d4005bf1e0295d9a930053ae8e8816f4348f9",
+      "bytes": 11643,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_046.lcl.txt",
+      "digest": "sha256:a1a49b1f992dc9cd56de2f7745266e7cebde06329a893181b8f9f8e67c97370b",
+      "bytes": 11021,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_047.lcl.txt",
+      "digest": "sha256:a01b67ebb4ef8dc60966e8ea83caeae0c454c91ead9124145218cf9d95a3ca1b",
+      "bytes": 9322,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_048.lcl.txt",
+      "digest": "sha256:5ed357631df14acf6ea1bc4f4fb0217fccf39e3857e7c77efafdb72e1458f58e",
+      "bytes": 9291,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_049.lcl.txt",
+      "digest": "sha256:24ba500065218ae0a24b79560c73f7aac911ed802511b2acb4e1878084ca81c0",
+      "bytes": 9750,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_050.lcl.txt",
+      "digest": "sha256:304f1674b3b9e76b260eef8a696ca86156fdb6a4c3ee2e9b078d27535ca5370d",
+      "bytes": 9863,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_051.lcl.txt",
+      "digest": "sha256:0bea7f2185658f237f7829ea8cfc70d2104cda2c5a23d28ef659b1cd8fb6c432",
+      "bytes": 10557,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_052.lcl.txt",
+      "digest": "sha256:8a49d7fad603fb4ce748d7d6e74728a9b46f0028aa579c40c873d3cf3dc868ce",
+      "bytes": 10540,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_053.lcl.txt",
+      "digest": "sha256:05b253161fbdff758ff7060f3fca48ed60f5f053bf939377f7035ae37fcb68e5",
+      "bytes": 9648,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_054.lcl.txt",
+      "digest": "sha256:45d9fa43dfbf5055cd4c6cf7d4c06806ef444f023e8ca6f27b744e2b0c4bf32c",
+      "bytes": 9622,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_055.lcl.txt",
+      "digest": "sha256:936e958eb58cb2463dcd8cd7c0dd7482fcff6a6fb1d18ce4ae81a1f1a2098c60",
+      "bytes": 12461,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_056.lcl.txt",
+      "digest": "sha256:2bab8f2bc87f05c9b1d2117ae463f82e9ef43f789796d8a3d98d6fc3476e83ab",
+      "bytes": 14376,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_057.lcl.txt",
+      "digest": "sha256:408ff8ec34640c5e2a6a41e4393667460ae2d5bbdb909b625a947e665be12670",
+      "bytes": 13952,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_058.lcl.txt",
+      "digest": "sha256:125d9cd3d6d06c245b40c7896ee80e13f57f2fe40bca32da11e1365943efb5fb",
+      "bytes": 9452,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_059.lcl.txt",
+      "digest": "sha256:6b75e74bb620d3b5ca4158ec00616ed074ffca79d5cce31ec6cf03d604c71265",
+      "bytes": 10596,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_060.lcl.txt",
+      "digest": "sha256:dec6adc25675f3ea280443ecc0ca41f4316a32e39be0099dabacb9ec0f5c7723",
+      "bytes": 13737,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_061.lcl.txt",
+      "digest": "sha256:b5c4419c2f113f9a7d40b62c5647c2e61faffb5347c8fb5f7902e4d3f8da97cb",
+      "bytes": 11591,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_062.lcl.txt",
+      "digest": "sha256:4417f8424e04ec5815aa8ad5cbeadd022dc8aea300460bb5b76e3dcb9f7aca06",
+      "bytes": 10535,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_063.lcl.txt",
+      "digest": "sha256:4dc20cb72806fafb74cf6e2dba0748ab1e7489d8a75176e5b0d9f2fd453d6500",
+      "bytes": 12097,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_064.lcl.txt",
+      "digest": "sha256:aa24aa3a13213256e3dabb5925df56579652787c34cdecf6e7561586add367c2",
+      "bytes": 10614,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_065.lcl.txt",
+      "digest": "sha256:723e464d70c58efce2feef2c27211ee7d3fb00a1de6b050ad27f3826e6e17c5a",
+      "bytes": 11618,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_066.lcl.txt",
+      "digest": "sha256:8366fc9cbed7e12a0e96a2b5596fcf5c8ecf16af7df231740e717b65e2fc6461",
+      "bytes": 16370,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_067.lcl.txt",
+      "digest": "sha256:54dca063f2615d0be2ade0040160b2a95d65ef9a39eb52666d88b5b5f64ee044",
+      "bytes": 14189,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_068.lcl.txt",
+      "digest": "sha256:f08f064cbf85128e62d09db80a3e77d12bbe0ec220d7d2655fc3bac9a71e59cd",
+      "bytes": 14713,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_069.lcl.txt",
+      "digest": "sha256:0e43fec92e4d061f3ede317d59cefa65dc533a3dadc68cab22b95452b3316437",
+      "bytes": 14297,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_070.lcl.txt",
+      "digest": "sha256:b5b552ca7f579bb43351790c242b0ca84ec54675f38872c6fb02890006a9ac55",
+      "bytes": 25126,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_071.lcl.txt",
+      "digest": "sha256:f0939c75d71759a54aec6320fc89fd42f1c35277322eaacbfdb1af81e1538dbd",
+      "bytes": 22558,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_072.lcl.txt",
+      "digest": "sha256:37f3a6c13fd01fe09b5995bb22de5872203bc126fe56b6274fe1d6ba49dcf7bd",
+      "bytes": 12464,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_073.lcl.txt",
+      "digest": "sha256:1e008d65f51bb99c4b307a5a9b1018eae488066a51ce6ff38c999d58f77d9f77",
+      "bytes": 21811,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_074.lcl.txt",
+      "digest": "sha256:70e67b49e1c4f90509dd5e32e50fb71037ea1e6bc00b128183bb97860991b92d",
+      "bytes": 25073,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "tasks/task_075.lcl.txt",
+      "digest": "sha256:c288919150ef627ca0726dd7a934b786b80e69dc2d31c6dd2094517c52830432",
+      "bytes": 25214,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "data/task_catalog.lcl.txt",
+      "digest": "sha256:fe91d6ae249a65a073b8ddb6576a769172d66b88cf8aac30e99ea6a703c26b2c",
+      "bytes": 14365,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "data/instruction_packet.lcl.txt",
+      "digest": "sha256:5b3b5f6c5d1865a0ac113b3d80e84da1a79237921597702086f8e7bed53f7d70",
+      "bytes": 2474,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "bindings/read_order.lcl.txt",
+      "digest": "sha256:ce1115d1e1db3da02dda7484959a11d5e7e028d6fea1143224759e204fa6510f",
+      "bytes": 2189,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "guidance/usage.lcl.txt",
+      "digest": "sha256:aec37d86e486f2d403797d6a61c0cd199aaf2a3173938706a1310d770a16540a",
+      "bytes": 6018,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    },
+    {
+      "id": "policies/task_002_075_continuation.lcl.txt",
+      "digest": "sha256:488740c73d76c22aa7b73f3b96a55de7e2c4239fd3d65c6d55a74f41bee94ef9",
+      "bytes": 16652,
+      "root": false,
+      "locale": {
+        "method": "canonical",
+        "locale": null,
+        "profile_identity": null,
+        "detector_identity": null,
+        "candidate_locales": [],
+        "lcl_version": "0.3.0"
+      }
+    }
+  ],
+  "reached": "completion",
+  "outcome": "accepted",
+  "inputs": [
+    {
+      "id": "input.task_number",
+      "expression": "14",
+      "value": "14",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.reviewed_policy_ids",
+      "expression": "[\"POL.policies_acceptance_criteria.01\", \"POL.policies_acceptance_criteria.02\", \"POL.policies_acceptance_criteria.03\", \"POL.policies_acceptance_criteria.04\", \"POL.policies_acceptance_criteria.05\", \"POL.policies_acceptance_criteria.06\", \"POL.policies_acceptance_criteria.07\", \"POL.policies_acceptance_criteria.08\", \"POL.policies_acceptance_criteria.09\", \"POL.policies_acceptance_criteria.10\", \"POL.policies_acceptance_criteria.11\", \"POL.policies_code_readability_and_cleanup.01\", \"POL.policies_code_readability_and_cleanup.02\", \"POL.policies_code_readability_and_cleanup.03\", \"POL.policies_code_readability_and_cleanup.04\", \"POL.policies_code_readability_and_cleanup.05\", \"POL.policies_code_readability_and_cleanup.06\", \"POL.policies_global_contracts.01\", \"POL.policies_global_contracts.02\", \"POL.policies_global_contracts.03\", \"POL.policies_global_contracts.04\", \"POL.policies_global_contracts.05\", \"POL.policies_global_contracts.06\", \"POL.policies_global_contracts.07\", \"POL.policies_global_contracts.08\", \"POL.policies_global_contracts.09\", \"POL.policies_global_contracts.10\", \"POL.policies_global_contracts.11\", \"POL.policies_global_contracts.12\", \"POL.policies_global_contracts.13\", \"POL.policies_global_contracts.14\", \"POL.policies_global_contracts.15\", \"POL.policies_global_contracts.16\", \"POL.policies_global_contracts.17\", \"POL.policies_global_contracts.18\", \"POL.policies_global_contracts.19\", \"POL.policies_global_contracts.20\", \"POL.policies_global_contracts.21\", \"POL.policies_global_contracts.22\", \"POL.policies_global_contracts.23\", \"POL.policies_global_contracts.24\", \"POL.policies_global_contracts.25\", \"POL.policies_global_contracts.26\", \"POL.policies_global_contracts.27\", \"POL.policies_global_contracts.28\", \"POL.policies_global_contracts.29\", \"POL.policies_global_contracts.30\", \"POL.policies_global_contracts.31\", \"POL.policies_master_rules.01\", \"POL.policies_master_rules.02\", \"POL.policies_master_rules.03\", \"POL.policies_master_rules.04\", \"POL.policies_master_rules.05\", \"POL.policies_master_rules.06\", \"POL.policies_master_rules.07\", \"POL.policies_master_rules.08\", \"POL.policies_master_rules.09\", \"POL.policies_master_rules.10\", \"POL.policies_master_rules.11\", \"POL.policies_master_rules.12\", \"POL.policies_master_rules.13\", \"POL.policies_master_rules.14\", \"POL.policies_master_rules.15\", \"POL.policies_master_rules.16\", \"POL.policies_master_rules.17\", \"POL.policies_master_rules.18\", \"POL.policies_master_rules.19\", \"POL.policies_master_rules.20\", \"POL.policies_master_rules.21\", \"POL.policies_master_rules.22\", \"POL.policies_master_rules.23\", \"POL.policies_master_rules.24\", \"POL.policies_master_rules.25\", \"POL.policies_master_rules.26\", \"POL.policies_master_rules.27\", \"POL.policies_master_rules.28\", \"POL.policies_master_rules.29\", \"POL.policies_master_rules.30\", \"POL.policies_master_rules.31\", \"POL.policies_master_rules.32\", \"POL.policies_no_unnecessary_code.01\", \"POL.policies_no_unnecessary_code.02\", \"POL.policies_no_unnecessary_code.03\", \"POL.policies_no_unnecessary_code.04\", \"POL.policies_no_unnecessary_code.05\", \"POL.policies_no_unnecessary_code.06\", \"POL.policies_no_unnecessary_code.07\", \"POL.policies_reuse_policy.01\", \"POL.policies_reuse_policy.02\", \"POL.policies_reuse_policy.03\", \"POL.policies_reuse_policy.04\", \"POL.policies_reuse_policy.05\", \"POL.policies_security_baseline.01\", \"POL.policies_security_baseline.02\", \"POL.policies_security_baseline.03\", \"POL.policies_security_baseline.04\", \"POL.policies_security_baseline.05\", \"POL.policies_security_baseline.06\", \"POL.policies_security_baseline.07\", \"POL.policies_security_baseline.08\", \"POL.policies_security_baseline.09\", \"POL.policies_usage_and_agents.01\", \"POL.policies_usage_and_agents.02\", \"POL.policies_usage_and_agents.03\", \"POL.policies_usage_and_agents.04\", \"POL.policies_usage_and_agents.05\", \"POL.policies_usage_and_agents.06\", \"POL.policies_usage_and_agents.07\", \"POL.policies_usage_and_agents.08\", \"POL.architecture_remote_device_control.01\", \"POL.architecture_remote_device_control.02\", \"POL.architecture_remote_device_control.03\", \"POL.architecture_remote_device_control.04\", \"POL.architecture_remote_device_control.05\", \"POL.architecture_remote_device_control.06\", \"POL.architecture_remote_device_control.07\", \"POL.architecture_remote_device_control.08\", \"POL.architecture_remote_device_control.09\", \"POL.architecture_remote_device_control.10\", \"POL.architecture_remote_device_control.11\", \"POL.architecture_remote_device_control.12\", \"POL.architecture_remote_device_control.13\", \"POL.architecture_remote_device_control.14\", \"POL.architecture_remote_device_control.15\", \"POL.architecture_remote_device_control.16\", \"POL.architecture_remote_device_control.17\", \"POL.architecture_remote_device_control.18\", \"POL.architecture_remote_device_control.19\", \"POL.architecture_remote_device_control.20\", \"POL.architecture_remote_device_control.21\", \"POL.architecture_remote_device_control.22\", \"POL.architecture_remote_device_control.23\", \"POL.architecture_remote_device_control.24\", \"POL.architecture_remote_device_control.25\", \"POL.architecture_remote_device_control.26\"]",
+      "value": "[\"POL.policies_acceptance_criteria.01\", \"POL.policies_acceptance_criteria.02\", \"POL.policies_acceptance_criteria.03\", \"POL.policies_acceptance_criteria.04\", \"POL.policies_acceptance_criteria.05\", \"POL.policies_acceptance_criteria.06\", \"POL.policies_acceptance_criteria.07\", \"POL.policies_acceptance_criteria.08\", \"POL.policies_acceptance_criteria.09\", \"POL.policies_acceptance_criteria.10\", \"POL.policies_acceptance_criteria.11\", \"POL.policies_code_readability_and_cleanup.01\", \"POL.policies_code_readability_and_cleanup.02\", \"POL.policies_code_readability_and_cleanup.03\", \"POL.policies_code_readability_and_cleanup.04\", \"POL.policies_code_readability_and_cleanup.05\", \"POL.policies_code_readability_and_cleanup.06\", \"POL.policies_global_contracts.01\", \"POL.policies_global_contracts.02\", \"POL.policies_global_contracts.03\", \"POL.policies_global_contracts.04\", \"POL.policies_global_contracts.05\", \"POL.policies_global_contracts.06\", \"POL.policies_global_contracts.07\", \"POL.policies_global_contracts.08\", \"POL.policies_global_contracts.09\", \"POL.policies_global_contracts.10\", \"POL.policies_global_contracts.11\", \"POL.policies_global_contracts.12\", \"POL.policies_global_contracts.13\", \"POL.policies_global_contracts.14\", \"POL.policies_global_contracts.15\", \"POL.policies_global_contracts.16\", \"POL.policies_global_contracts.17\", \"POL.policies_global_contracts.18\", \"POL.policies_global_contracts.19\", \"POL.policies_global_contracts.20\", \"POL.policies_global_contracts.21\", \"POL.policies_global_contracts.22\", \"POL.policies_global_contracts.23\", \"POL.policies_global_contracts.24\", \"POL.policies_global_contracts.25\", \"POL.policies_global_contracts.26\", \"POL.policies_global_contracts.27\", \"POL.policies_global_contracts.28\", \"POL.policies_global_contracts.29\", \"POL.policies_global_contracts.30\", \"POL.policies_global_contracts.31\", \"POL.policies_master_rules.01\", \"POL.policies_master_rules.02\", \"POL.policies_master_rules.03\", \"POL.policies_master_rules.04\", \"POL.policies_master_rules.05\", \"POL.policies_master_rules.06\", \"POL.policies_master_rules.07\", \"POL.policies_master_rules.08\", \"POL.policies_master_rules.09\", \"POL.policies_master_rules.10\", \"POL.policies_master_rules.11\", \"POL.policies_master_rules.12\", \"POL.policies_master_rules.13\", \"POL.policies_master_rules.14\", \"POL.policies_master_rules.15\", \"POL.policies_master_rules.16\", \"POL.policies_master_rules.17\", \"POL.policies_master_rules.18\", \"POL.policies_master_rules.19\", \"POL.policies_master_rules.20\", \"POL.policies_master_rules.21\", \"POL.policies_master_rules.22\", \"POL.policies_master_rules.23\", \"POL.policies_master_rules.24\", \"POL.policies_master_rules.25\", \"POL.policies_master_rules.26\", \"POL.policies_master_rules.27\", \"POL.policies_master_rules.28\", \"POL.policies_master_rules.29\", \"POL.policies_master_rules.30\", \"POL.policies_master_rules.31\", \"POL.policies_master_rules.32\", \"POL.policies_no_unnecessary_code.01\", \"POL.policies_no_unnecessary_code.02\", \"POL.policies_no_unnecessary_code.03\", \"POL.policies_no_unnecessary_code.04\", \"POL.policies_no_unnecessary_code.05\", \"POL.policies_no_unnecessary_code.06\", \"POL.policies_no_unnecessary_code.07\", \"POL.policies_reuse_policy.01\", \"POL.policies_reuse_policy.02\", \"POL.policies_reuse_policy.03\", \"POL.policies_reuse_policy.04\", \"POL.policies_reuse_policy.05\", \"POL.policies_security_baseline.01\", \"POL.policies_security_baseline.02\", \"POL.policies_security_baseline.03\", \"POL.policies_security_baseline.04\", \"POL.policies_security_baseline.05\", \"POL.policies_security_baseline.06\", \"POL.policies_security_baseline.07\", \"POL.policies_security_baseline.08\", \"POL.policies_security_baseline.09\", \"POL.policies_usage_and_agents.01\", \"POL.policies_usage_and_agents.02\", \"POL.policies_usage_and_agents.03\", \"POL.policies_usage_and_agents.04\", \"POL.policies_usage_and_agents.05\", \"POL.policies_usage_and_agents.06\", \"POL.policies_usage_and_agents.07\", \"POL.policies_usage_and_agents.08\", \"POL.architecture_remote_device_control.01\", \"POL.architecture_remote_device_control.02\", \"POL.architecture_remote_device_control.03\", \"POL.architecture_remote_device_control.04\", \"POL.architecture_remote_device_control.05\", \"POL.architecture_remote_device_control.06\", \"POL.architecture_remote_device_control.07\", \"POL.architecture_remote_device_control.08\", \"POL.architecture_remote_device_control.09\", \"POL.architecture_remote_device_control.10\", \"POL.architecture_remote_device_control.11\", \"POL.architecture_remote_device_control.12\", \"POL.architecture_remote_device_control.13\", \"POL.architecture_remote_device_control.14\", \"POL.architecture_remote_device_control.15\", \"POL.architecture_remote_device_control.16\", \"POL.architecture_remote_device_control.17\", \"POL.architecture_remote_device_control.18\", \"POL.architecture_remote_device_control.19\", \"POL.architecture_remote_device_control.20\", \"POL.architecture_remote_device_control.21\", \"POL.architecture_remote_device_control.22\", \"POL.architecture_remote_device_control.23\", \"POL.architecture_remote_device_control.24\", \"POL.architecture_remote_device_control.25\", \"POL.architecture_remote_device_control.26\"]",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.passed_check_ids",
+      "expression": "[\"T014.VERIFY.01\", \"T014.VERIFY.02\", \"T014.VERIFY.03\", \"T014.VERIFY.04\", \"T014.VERIFY.05\", \"T014.VERIFY.06\", \"T014.CLOSE.01\", \"T014.CLOSE.02\", \"T014.CLOSE.03\", \"T014.CLOSE.04\", \"T014.CLOSE.05\", \"T014.CLOSE.06\", \"T014.CLOSE.07\", \"T014.CLOSE.08\", \"T014.CLOSE.09\", \"T014.CLOSE.10\", \"T014.CLOSE.11\", \"T014.CLOSE.12\", \"T014.CLOSE.13\"]",
+      "value": "[\"T014.VERIFY.01\", \"T014.VERIFY.02\", \"T014.VERIFY.03\", \"T014.VERIFY.04\", \"T014.VERIFY.05\", \"T014.VERIFY.06\", \"T014.CLOSE.01\", \"T014.CLOSE.02\", \"T014.CLOSE.03\", \"T014.CLOSE.04\", \"T014.CLOSE.05\", \"T014.CLOSE.06\", \"T014.CLOSE.07\", \"T014.CLOSE.08\", \"T014.CLOSE.09\", \"T014.CLOSE.10\", \"T014.CLOSE.11\", \"T014.CLOSE.12\", \"T014.CLOSE.13\"]",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.completed_prefix",
+      "expression": "[\"TASK-001\", \"TASK-002\", \"TASK-003\", \"TASK-004\", \"TASK-005\", \"TASK-006\", \"TASK-007\", \"TASK-008\", \"TASK-009\", \"TASK-010\", \"TASK-011\", \"TASK-012\", \"TASK-013\"]",
+      "value": "[\"TASK-001\", \"TASK-002\", \"TASK-003\", \"TASK-004\", \"TASK-005\", \"TASK-006\", \"TASK-007\", \"TASK-008\", \"TASK-009\", \"TASK-010\", \"TASK-011\", \"TASK-012\", \"TASK-013\"]",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.blocker_codes",
+      "expression": "[]",
+      "value": "[]",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.observed_root",
+      "expression": "\"/mnt/F/Nexees/\"",
+      "value": "\"/mnt/F/Nexees/\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.observed_repository",
+      "expression": "\"https://github.com/aivars11232/Nexees\"",
+      "value": "\"https://github.com/aivars11232/Nexees\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.branch",
+      "expression": "\"main\"",
+      "value": "\"main\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.receipt_task_id",
+      "expression": "\"TASK-014\"",
+      "value": "\"TASK-014\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.receipt_content_identity",
+      "expression": "\"bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1\"",
+      "value": "\"bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.current_snapshot_sha256",
+      "expression": "\"111712b69abc3f763a46262b9cc3f7d24ad0a6a366e01a601d6d670d2a1b9d9b\"",
+      "value": "\"111712b69abc3f763a46262b9cc3f7d24ad0a6a366e01a601d6d670d2a1b9d9b\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.receipt_snapshot_sha256",
+      "expression": "\"111712b69abc3f763a46262b9cc3f7d24ad0a6a366e01a601d6d670d2a1b9d9b\"",
+      "value": "\"111712b69abc3f763a46262b9cc3f7d24ad0a6a366e01a601d6d670d2a1b9d9b\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.post_cleanup_snapshot_sha256",
+      "expression": "\"111712b69abc3f763a46262b9cc3f7d24ad0a6a366e01a601d6d670d2a1b9d9b\"",
+      "value": "\"111712b69abc3f763a46262b9cc3f7d24ad0a6a366e01a601d6d670d2a1b9d9b\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.evidence_files",
+      "expression": "[\"docs/evidence/TASK-014/TASK-014_EVIDENCE.md\", \"docs/evidence/TASK-014/logs/cleanup_record.json\", \"docs/evidence/TASK-014/logs/desktop_build.txt\", \"docs/evidence/TASK-014/logs/dispatch_task_014.record.json\", \"docs/evidence/TASK-014/logs/e2e_local_application.txt\", \"docs/evidence/TASK-014/logs/ide_activity.txt\", \"docs/evidence/TASK-014/logs/native_language_suite.json\", \"docs/evidence/TASK-014/logs/negative_tests.txt\", \"docs/evidence/TASK-014/logs/preflight.txt\", \"docs/evidence/TASK-014/logs/regression.txt\", \"docs/evidence/TASK-014/logs/required_reading.txt\", \"docs/evidence/TASK-014/logs/run_checks.txt\", \"docs/evidence/TASK-014/logs/security_scan.txt\", \"docs/evidence/TASK-014/logs/seeded_defects.txt\", \"docs/evidence/TASK-014/receipt/final_verification.txt\", \"docs/evidence/TASK-014/receipt/snapshot_files.sha256\", \"docs/evidence/TASK-014/receipt/corroboration.txt\"]",
+      "value": "[\"docs/evidence/TASK-014/TASK-014_EVIDENCE.md\", \"docs/evidence/TASK-014/logs/cleanup_record.json\", \"docs/evidence/TASK-014/logs/desktop_build.txt\", \"docs/evidence/TASK-014/logs/dispatch_task_014.record.json\", \"docs/evidence/TASK-014/logs/e2e_local_application.txt\", \"docs/evidence/TASK-014/logs/ide_activity.txt\", \"docs/evidence/TASK-014/logs/native_language_suite.json\", \"docs/evidence/TASK-014/logs/negative_tests.txt\", \"docs/evidence/TASK-014/logs/preflight.txt\", \"docs/evidence/TASK-014/logs/regression.txt\", \"docs/evidence/TASK-014/logs/required_reading.txt\", \"docs/evidence/TASK-014/logs/run_checks.txt\", \"docs/evidence/TASK-014/logs/security_scan.txt\", \"docs/evidence/TASK-014/logs/seeded_defects.txt\", \"docs/evidence/TASK-014/receipt/final_verification.txt\", \"docs/evidence/TASK-014/receipt/snapshot_files.sha256\", \"docs/evidence/TASK-014/receipt/corroboration.txt\"]",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.evidence_verified_by_host",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.applicability_reviewed",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.policy_changes_authorized",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.predecessor_evidence_current",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.cleanup_completed",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.post_cleanup_checks_passed",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.no_unapproved_git_writes",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.no_unapproved_agents",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.no_unrelated_changes",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.final_review_complete",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.bundle_integrity_verified",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.renderer_decision",
+      "expression": "\"electron_permitted\"",
+      "value": "\"electron_permitted\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.renderer_decision_approved",
+      "expression": "TRUE",
+      "value": "TRUE",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.run_purpose",
+      "expression": "\"implementation_review\"",
+      "value": "\"implementation_review\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.receiver_default_observed",
+      "expression": "\"unverified\"",
+      "value": "\"unverified\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.startup_default_observed",
+      "expression": "\"unverified\"",
+      "value": "\"unverified\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.directional_grants_observed",
+      "expression": "\"unverified\"",
+      "value": "\"unverified\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.pc_window_closed_launch_observed",
+      "expression": "\"unverified\"",
+      "value": "\"unverified\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.pc_to_phone_local_action_observed",
+      "expression": "\"unverified\"",
+      "value": "\"unverified\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.no_receiver_outcome_observed",
+      "expression": "\"unverified\"",
+      "value": "\"unverified\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.android_lifecycle_observed",
+      "expression": "\"unverified\"",
+      "value": "\"unverified\"",
+      "reason": null,
+      "accepted": true
+    },
+    {
+      "id": "input.app_launch_boundary_observed",
+      "expression": "\"unverified\"",
+      "value": "\"unverified\"",
+      "reason": null,
+      "accepted": true
+    }
+  ],
+  "diagnostics": [],
+  "execution": {
+    "invocations": [
+      {
+        "node": 0,
+        "iteration": "-",
+        "attempt": 0,
+        "block": "ACTION",
+        "declaration": "action.evaluate_receipt",
+        "status": "status.succeeded",
+        "result_schema": "result.value",
+        "result_status": "status.succeeded",
+        "effects": []
+      }
+    ],
+    "events": [],
+    "steps": 1
+  },
+  "completion": {
+    "checks": [
+      {
+        "id": "verify.selected_receipt",
+        "kind": "VERIFY",
+        "source": "checks/runtime_gates.lcl.txt",
+        "span": {
+          "start": 1582,
+          "end": 1605
+        },
+        "required": true,
+        "selection": "Targetless",
+        "outcome": "TRUE",
+        "skipped": null,
+        "evidence": []
+      },
+      {
+        "id": "verify.snapshot_shape",
+        "kind": "VERIFY",
+        "source": "checks/runtime_gates.lcl.txt",
+        "span": {
+          "start": 2747,
+          "end": 2768
+        },
+        "required": true,
+        "selection": "Targetless",
+        "outcome": "TRUE",
+        "skipped": null,
+        "evidence": []
+      },
+      {
+        "id": "verify.ordered_predecessors",
+        "kind": "VERIFY",
+        "source": "checks/runtime_gates.lcl.txt",
+        "span": {
+          "start": 3923,
+          "end": 3950
+        },
+        "required": true,
+        "selection": "Targetless",
+        "outcome": "TRUE",
+        "skipped": null,
+        "evidence": []
+      },
+      {
+        "id": "verify.required_checks",
+        "kind": "VERIFY",
+        "source": "checks/runtime_gates.lcl.txt",
+        "span": {
+          "start": 4799,
+          "end": 4821
+        },
+        "required": true,
+        "selection": "Targetless",
+        "outcome": "TRUE",
+        "skipped": null,
+        "evidence": []
+      },
+      {
+        "id": "verify.instruction_delivery",
+        "kind": "VERIFY",
+        "source": "checks/runtime_gates.lcl.txt",
+        "span": {
+          "start": 55477,
+          "end": 55504
+        },
+        "required": true,
+        "selection": "Targetless",
+        "outcome": "TRUE",
+        "skipped": null,
+        "evidence": []
+      },
+      {
+        "id": "verify.receipt_delivery",
+        "kind": "VERIFY",
+        "source": "checks/runtime_gates.lcl.txt",
+        "span": {
+          "start": 55720,
+          "end": 55743
+        },
+        "required": true,
+        "selection": "Targetless",
+        "outcome": "TRUE",
+        "skipped": null,
+        "evidence": []
+      }
+    ],
+    "evidence": [],
+    "verdict": {
+      "success": null,
+      "quantifier": null,
+      "value": null,
+      "members": [],
+      "failure": null,
+      "failure_status": null,
+      "failure_classification": null
+    },
+    "outputs": [
+      {
+        "id": "output.receipt",
+        "declared_type": "OBJECT",
+        "required": true,
+        "publication": "published",
+        "value": "{actual_code_proof: \"Not produced by this program. An authorized host/owner must verify evidence files, code revision, policy applicability and actual test outcomes before project closure. language_test results must never update production task state.\", content_identity: \"bd5e8fce26f542c44a891e4340da3b2a84f79ab368b5cb868beb48126c2db3e1\", decision: \"Declared evidence is accepted only when this run ends with status.succeeded (exit code 0). Any other terminal status is a rejection, even though this object is published.\", result_kind: \"nexees_declared_evidence_evaluation\", run_purpose: \"implementation_review\", snapshot_sha256: \"111712b69abc3f763a46262b9cc3f7d24ad0a6a366e01a601d6d670d2a1b9d9b\", task_id: \"TASK-014\"}",
+        "instances": null
+      }
+    ],
+    "terminal_status": "status.succeeded",
+    "reason": "SuccessSatisfied"
+  },
+  "project": {
+    "entry": "accept_task.lcl.txt",
+    "entry_status": "ready",
+    "order": [
+      "accept_task.lcl.txt",
+      "bindings/receipt_mode.lcl.txt",
+      "policies/project_charter.lcl.txt",
+      "policies/master_rules.lcl.txt",
+      "policies/global_contracts.lcl.txt",
+      "bindings/bindings.lcl.txt",
+      "policies/reuse_policy.lcl.txt",
+      "policies/no_unnecessary_code.lcl.txt",
+      "policies/code_readability_and_cleanup.lcl.txt",
+      "policies/security_baseline.lcl.txt",
+      "checks/stop_conditions.lcl.txt",
+      "policies/acceptance_criteria.lcl.txt",
+      "policies/usage_and_agents.lcl.txt",
+      "architecture/remote_device_control.lcl.txt",
+      "verification/remote_control_acceptance.lcl.txt",
+      "architecture/android_operating_model.lcl.txt",
+      "architecture/android_ui.lcl.txt",
+      "architecture/authority_hierarchy.lcl.txt",
+      "architecture/auth_and_settings.lcl.txt",
+      "architecture/desktop_ui.lcl.txt",
+      "architecture/lcl_import_pipeline.lcl.txt",
+      "architecture/lcl_integration.lcl.txt",
+      "architecture/manuals_and_help.lcl.txt",
+      "architecture/model_handoff.lcl.txt",
+      "architecture/persistent_state_model.lcl.txt",
+      "architecture/provider_and_agent_model.lcl.txt",
+      "architecture/system_architecture.lcl.txt",
+      "architecture/workspace_model.lcl.txt",
+      "reuse/decision_template.lcl.txt",
+      "reuse/import_handoff_sources.lcl.txt",
+      "reuse/license_and_dependency_gate.lcl.txt",
+      "reuse/reuse_matrix.lcl.txt",
+      "guidance/build_order.lcl.txt",
+      "guidance/task_id_migration_v0.2_to_v0.3.lcl.txt",
+      "guidance/task_index.lcl.txt",
+      "verification/final_release_gate.lcl.txt",
+      "verification/security_gate.lcl.txt",
+      "verification/test_strategy.lcl.txt",
+      "verification/v0.3_requirement_coverage.lcl.txt",
+      "manuals/lcl_in_nexees_user_manual.lcl.txt",
+      "manuals/nexees_user_manual.lcl.txt",
+      "manuals/readme.lcl.txt",
+      "bindings/content_identity.lcl.txt",
+      "data/invocation_inputs.lcl.txt",
+      "checks/runtime_gates.lcl.txt",
+      "workflow/dispatch.lcl.txt",
+      "templates/decision_log_template.lcl.txt",
+      "templates/model_handoff_prompt.lcl.txt",
+      "templates/task_evidence_template.lcl.txt",
+      "templates/task_template.lcl.txt",
+      "tasks/task_001.lcl.txt",
+      "tasks/task_002.lcl.txt",
+      "tasks/task_003.lcl.txt",
+      "tasks/task_004.lcl.txt",
+      "tasks/task_005.lcl.txt",
+      "tasks/task_006.lcl.txt",
+      "tasks/task_007.lcl.txt",
+      "tasks/task_008.lcl.txt",
+      "tasks/task_009.lcl.txt",
+      "tasks/task_010.lcl.txt",
+      "tasks/task_011.lcl.txt",
+      "tasks/task_012.lcl.txt",
+      "tasks/task_013.lcl.txt",
+      "tasks/task_014.lcl.txt",
+      "tasks/task_015.lcl.txt",
+      "tasks/task_016.lcl.txt",
+      "tasks/task_017.lcl.txt",
+      "tasks/task_018.lcl.txt",
+      "tasks/task_019.lcl.txt",
+      "tasks/task_020.lcl.txt",
+      "tasks/task_021.lcl.txt",
+      "tasks/task_022.lcl.txt",
+      "tasks/task_023.lcl.txt",
+      "tasks/task_024.lcl.txt",
+      "tasks/task_025.lcl.txt",
+      "tasks/task_026.lcl.txt",
+      "tasks/task_027.lcl.txt",
+      "tasks/task_028.lcl.txt",
+      "tasks/task_029.lcl.txt",
+      "tasks/task_030.lcl.txt",
+      "tasks/task_031.lcl.txt",
+      "tasks/task_032.lcl.txt",
+      "tasks/task_033.lcl.txt",
+      "tasks/task_034.lcl.txt",
+      "tasks/task_035.lcl.txt",
+      "tasks/task_036.lcl.txt",
+      "tasks/task_037.lcl.txt",
+      "tasks/task_038.lcl.txt",
+      "tasks/task_039.lcl.txt",
+      "tasks/task_040.lcl.txt",
+      "tasks/task_041.lcl.txt",
+      "tasks/task_042.lcl.txt",
+      "tasks/task_043.lcl.txt",
+      "tasks/task_044.lcl.txt",
+      "tasks/task_045.lcl.txt",
+      "tasks/task_046.lcl.txt",
+      "tasks/task_047.lcl.txt",
+      "tasks/task_048.lcl.txt",
+      "tasks/task_049.lcl.txt",
+      "tasks/task_050.lcl.txt",
+      "tasks/task_051.lcl.txt",
+      "tasks/task_052.lcl.txt",
+      "tasks/task_053.lcl.txt",
+      "tasks/task_054.lcl.txt",
+      "tasks/task_055.lcl.txt",
+      "tasks/task_056.lcl.txt",
+      "tasks/task_057.lcl.txt",
+      "tasks/task_058.lcl.txt",
+      "tasks/task_059.lcl.txt",
+      "tasks/task_060.lcl.txt",
+      "tasks/task_061.lcl.txt",
+      "tasks/task_062.lcl.txt",
+      "tasks/task_063.lcl.txt",
+      "tasks/task_064.lcl.txt",
+      "tasks/task_065.lcl.txt",
+      "tasks/task_066.lcl.txt",
+      "tasks/task_067.lcl.txt",
+      "tasks/task_068.lcl.txt",
+      "tasks/task_069.lcl.txt",
+      "tasks/task_070.lcl.txt",
+      "tasks/task_071.lcl.txt",
+      "tasks/task_072.lcl.txt",
+      "tasks/task_073.lcl.txt",
+      "tasks/task_074.lcl.txt",
+      "tasks/task_075.lcl.txt",
+      "data/task_catalog.lcl.txt",
+      "data/instruction_packet.lcl.txt",
+      "bindings/read_order.lcl.txt",
+      "guidance/usage.lcl.txt",
+      "policies/task_002_075_continuation.lcl.txt"
+    ],
+    "parts": [
+      {
+        "id": "part.source_001",
+        "source": "bindings/receipt_mode.lcl.txt",
+        "source_span": {
+          "start": 415,
+          "end": 452
+        },
+        "unit": "bindings/receipt_mode.lcl.txt",
+        "kind": "kind.part.definitions",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_002",
+        "source": "policies/project_charter.lcl.txt",
+        "source_span": {
+          "start": 528,
+          "end": 568
+        },
+        "unit": "policies/project_charter.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_003",
+        "source": "policies/master_rules.lcl.txt",
+        "source_span": {
+          "start": 637,
+          "end": 674
+        },
+        "unit": "policies/master_rules.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_004",
+        "source": "policies/global_contracts.lcl.txt",
+        "source_span": {
+          "start": 744,
+          "end": 785
+        },
+        "unit": "policies/global_contracts.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_005",
+        "source": "bindings/bindings.lcl.txt",
+        "source_span": {
+          "start": 855,
+          "end": 888
+        },
+        "unit": "bindings/bindings.lcl.txt",
+        "kind": "kind.part.definitions",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_006",
+        "source": "policies/reuse_policy.lcl.txt",
+        "source_span": {
+          "start": 964,
+          "end": 1001
+        },
+        "unit": "policies/reuse_policy.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_007",
+        "source": "policies/no_unnecessary_code.lcl.txt",
+        "source_span": {
+          "start": 1071,
+          "end": 1115
+        },
+        "unit": "policies/no_unnecessary_code.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_008",
+        "source": "policies/code_readability_and_cleanup.lcl.txt",
+        "source_span": {
+          "start": 1185,
+          "end": 1238
+        },
+        "unit": "policies/code_readability_and_cleanup.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_009",
+        "source": "policies/security_baseline.lcl.txt",
+        "source_span": {
+          "start": 1308,
+          "end": 1350
+        },
+        "unit": "policies/security_baseline.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_010",
+        "source": "checks/stop_conditions.lcl.txt",
+        "source_span": {
+          "start": 1420,
+          "end": 1458
+        },
+        "unit": "checks/stop_conditions.lcl.txt",
+        "kind": "kind.part.checks",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_011",
+        "source": "policies/acceptance_criteria.lcl.txt",
+        "source_span": {
+          "start": 1529,
+          "end": 1573
+        },
+        "unit": "policies/acceptance_criteria.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_012",
+        "source": "policies/usage_and_agents.lcl.txt",
+        "source_span": {
+          "start": 1643,
+          "end": 1684
+        },
+        "unit": "policies/usage_and_agents.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_013",
+        "source": "architecture/remote_device_control.lcl.txt",
+        "source_span": {
+          "start": 1754,
+          "end": 1804
+        },
+        "unit": "architecture/remote_device_control.lcl.txt",
+        "kind": "kind.part.rules",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_014",
+        "source": "verification/remote_control_acceptance.lcl.txt",
+        "source_span": {
+          "start": 1874,
+          "end": 1928
+        },
+        "unit": "verification/remote_control_acceptance.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_015",
+        "source": "architecture/android_operating_model.lcl.txt",
+        "source_span": {
+          "start": 1997,
+          "end": 2049
+        },
+        "unit": "architecture/android_operating_model.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_016",
+        "source": "architecture/android_ui.lcl.txt",
+        "source_span": {
+          "start": 2118,
+          "end": 2157
+        },
+        "unit": "architecture/android_ui.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_017",
+        "source": "architecture/authority_hierarchy.lcl.txt",
+        "source_span": {
+          "start": 2226,
+          "end": 2274
+        },
+        "unit": "architecture/authority_hierarchy.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_018",
+        "source": "architecture/auth_and_settings.lcl.txt",
+        "source_span": {
+          "start": 2343,
+          "end": 2389
+        },
+        "unit": "architecture/auth_and_settings.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_019",
+        "source": "architecture/desktop_ui.lcl.txt",
+        "source_span": {
+          "start": 2458,
+          "end": 2497
+        },
+        "unit": "architecture/desktop_ui.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_020",
+        "source": "architecture/lcl_import_pipeline.lcl.txt",
+        "source_span": {
+          "start": 2566,
+          "end": 2614
+        },
+        "unit": "architecture/lcl_import_pipeline.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_021",
+        "source": "architecture/lcl_integration.lcl.txt",
+        "source_span": {
+          "start": 2683,
+          "end": 2727
+        },
+        "unit": "architecture/lcl_integration.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_022",
+        "source": "architecture/manuals_and_help.lcl.txt",
+        "source_span": {
+          "start": 2796,
+          "end": 2841
+        },
+        "unit": "architecture/manuals_and_help.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_023",
+        "source": "architecture/model_handoff.lcl.txt",
+        "source_span": {
+          "start": 2910,
+          "end": 2952
+        },
+        "unit": "architecture/model_handoff.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_024",
+        "source": "architecture/persistent_state_model.lcl.txt",
+        "source_span": {
+          "start": 3021,
+          "end": 3072
+        },
+        "unit": "architecture/persistent_state_model.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_025",
+        "source": "architecture/provider_and_agent_model.lcl.txt",
+        "source_span": {
+          "start": 3141,
+          "end": 3194
+        },
+        "unit": "architecture/provider_and_agent_model.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_026",
+        "source": "architecture/system_architecture.lcl.txt",
+        "source_span": {
+          "start": 3263,
+          "end": 3311
+        },
+        "unit": "architecture/system_architecture.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_027",
+        "source": "architecture/workspace_model.lcl.txt",
+        "source_span": {
+          "start": 3380,
+          "end": 3424
+        },
+        "unit": "architecture/workspace_model.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_028",
+        "source": "reuse/decision_template.lcl.txt",
+        "source_span": {
+          "start": 3493,
+          "end": 3532
+        },
+        "unit": "reuse/decision_template.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_029",
+        "source": "reuse/import_handoff_sources.lcl.txt",
+        "source_span": {
+          "start": 3601,
+          "end": 3645
+        },
+        "unit": "reuse/import_handoff_sources.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_030",
+        "source": "reuse/license_and_dependency_gate.lcl.txt",
+        "source_span": {
+          "start": 3714,
+          "end": 3763
+        },
+        "unit": "reuse/license_and_dependency_gate.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_031",
+        "source": "reuse/reuse_matrix.lcl.txt",
+        "source_span": {
+          "start": 3832,
+          "end": 3866
+        },
+        "unit": "reuse/reuse_matrix.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_032",
+        "source": "guidance/build_order.lcl.txt",
+        "source_span": {
+          "start": 3935,
+          "end": 3971
+        },
+        "unit": "guidance/build_order.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_033",
+        "source": "guidance/task_id_migration_v0.2_to_v0.3.lcl.txt",
+        "source_span": {
+          "start": 4040,
+          "end": 4095
+        },
+        "unit": "guidance/task_id_migration_v0.2_to_v0.3.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_034",
+        "source": "guidance/task_index.lcl.txt",
+        "source_span": {
+          "start": 4164,
+          "end": 4199
+        },
+        "unit": "guidance/task_index.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_035",
+        "source": "verification/final_release_gate.lcl.txt",
+        "source_span": {
+          "start": 4268,
+          "end": 4315
+        },
+        "unit": "verification/final_release_gate.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_036",
+        "source": "verification/security_gate.lcl.txt",
+        "source_span": {
+          "start": 4384,
+          "end": 4426
+        },
+        "unit": "verification/security_gate.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_037",
+        "source": "verification/test_strategy.lcl.txt",
+        "source_span": {
+          "start": 4495,
+          "end": 4537
+        },
+        "unit": "verification/test_strategy.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_038",
+        "source": "verification/v0.3_requirement_coverage.lcl.txt",
+        "source_span": {
+          "start": 4606,
+          "end": 4660
+        },
+        "unit": "verification/v0.3_requirement_coverage.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_039",
+        "source": "manuals/lcl_in_nexees_user_manual.lcl.txt",
+        "source_span": {
+          "start": 4729,
+          "end": 4778
+        },
+        "unit": "manuals/lcl_in_nexees_user_manual.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_040",
+        "source": "manuals/nexees_user_manual.lcl.txt",
+        "source_span": {
+          "start": 4847,
+          "end": 4889
+        },
+        "unit": "manuals/nexees_user_manual.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_041",
+        "source": "manuals/readme.lcl.txt",
+        "source_span": {
+          "start": 4958,
+          "end": 4988
+        },
+        "unit": "manuals/readme.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_042",
+        "source": "bindings/content_identity.lcl.txt",
+        "source_span": {
+          "start": 5057,
+          "end": 5098
+        },
+        "unit": "bindings/content_identity.lcl.txt",
+        "kind": "kind.part.definitions",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_043",
+        "source": "data/invocation_inputs.lcl.txt",
+        "source_span": {
+          "start": 5174,
+          "end": 5212
+        },
+        "unit": "data/invocation_inputs.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_044",
+        "source": "checks/runtime_gates.lcl.txt",
+        "source_span": {
+          "start": 5281,
+          "end": 5317
+        },
+        "unit": "checks/runtime_gates.lcl.txt",
+        "kind": "kind.part.checks",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_045",
+        "source": "workflow/dispatch.lcl.txt",
+        "source_span": {
+          "start": 5388,
+          "end": 5421
+        },
+        "unit": "workflow/dispatch.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_046",
+        "source": "templates/decision_log_template.lcl.txt",
+        "source_span": {
+          "start": 5490,
+          "end": 5537
+        },
+        "unit": "templates/decision_log_template.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_047",
+        "source": "templates/model_handoff_prompt.lcl.txt",
+        "source_span": {
+          "start": 5606,
+          "end": 5652
+        },
+        "unit": "templates/model_handoff_prompt.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_048",
+        "source": "templates/task_evidence_template.lcl.txt",
+        "source_span": {
+          "start": 5721,
+          "end": 5769
+        },
+        "unit": "templates/task_evidence_template.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_049",
+        "source": "templates/task_template.lcl.txt",
+        "source_span": {
+          "start": 5838,
+          "end": 5877
+        },
+        "unit": "templates/task_template.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_050",
+        "source": "tasks/task_001.lcl.txt",
+        "source_span": {
+          "start": 5946,
+          "end": 5976
+        },
+        "unit": "tasks/task_001.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_051",
+        "source": "tasks/task_002.lcl.txt",
+        "source_span": {
+          "start": 6045,
+          "end": 6075
+        },
+        "unit": "tasks/task_002.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_052",
+        "source": "tasks/task_003.lcl.txt",
+        "source_span": {
+          "start": 6144,
+          "end": 6174
+        },
+        "unit": "tasks/task_003.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_053",
+        "source": "tasks/task_004.lcl.txt",
+        "source_span": {
+          "start": 6243,
+          "end": 6273
+        },
+        "unit": "tasks/task_004.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_054",
+        "source": "tasks/task_005.lcl.txt",
+        "source_span": {
+          "start": 6342,
+          "end": 6372
+        },
+        "unit": "tasks/task_005.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_055",
+        "source": "tasks/task_006.lcl.txt",
+        "source_span": {
+          "start": 6441,
+          "end": 6471
+        },
+        "unit": "tasks/task_006.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_056",
+        "source": "tasks/task_007.lcl.txt",
+        "source_span": {
+          "start": 6540,
+          "end": 6570
+        },
+        "unit": "tasks/task_007.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_057",
+        "source": "tasks/task_008.lcl.txt",
+        "source_span": {
+          "start": 6639,
+          "end": 6669
+        },
+        "unit": "tasks/task_008.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_058",
+        "source": "tasks/task_009.lcl.txt",
+        "source_span": {
+          "start": 6738,
+          "end": 6768
+        },
+        "unit": "tasks/task_009.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_059",
+        "source": "tasks/task_010.lcl.txt",
+        "source_span": {
+          "start": 6837,
+          "end": 6867
+        },
+        "unit": "tasks/task_010.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_060",
+        "source": "tasks/task_011.lcl.txt",
+        "source_span": {
+          "start": 6936,
+          "end": 6966
+        },
+        "unit": "tasks/task_011.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_061",
+        "source": "tasks/task_012.lcl.txt",
+        "source_span": {
+          "start": 7035,
+          "end": 7065
+        },
+        "unit": "tasks/task_012.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_062",
+        "source": "tasks/task_013.lcl.txt",
+        "source_span": {
+          "start": 7134,
+          "end": 7164
+        },
+        "unit": "tasks/task_013.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_063",
+        "source": "tasks/task_014.lcl.txt",
+        "source_span": {
+          "start": 7233,
+          "end": 7263
+        },
+        "unit": "tasks/task_014.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_064",
+        "source": "tasks/task_015.lcl.txt",
+        "source_span": {
+          "start": 7332,
+          "end": 7362
+        },
+        "unit": "tasks/task_015.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_065",
+        "source": "tasks/task_016.lcl.txt",
+        "source_span": {
+          "start": 7431,
+          "end": 7461
+        },
+        "unit": "tasks/task_016.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_066",
+        "source": "tasks/task_017.lcl.txt",
+        "source_span": {
+          "start": 7530,
+          "end": 7560
+        },
+        "unit": "tasks/task_017.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_067",
+        "source": "tasks/task_018.lcl.txt",
+        "source_span": {
+          "start": 7629,
+          "end": 7659
+        },
+        "unit": "tasks/task_018.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_068",
+        "source": "tasks/task_019.lcl.txt",
+        "source_span": {
+          "start": 7728,
+          "end": 7758
+        },
+        "unit": "tasks/task_019.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_069",
+        "source": "tasks/task_020.lcl.txt",
+        "source_span": {
+          "start": 7827,
+          "end": 7857
+        },
+        "unit": "tasks/task_020.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_070",
+        "source": "tasks/task_021.lcl.txt",
+        "source_span": {
+          "start": 7926,
+          "end": 7956
+        },
+        "unit": "tasks/task_021.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_071",
+        "source": "tasks/task_022.lcl.txt",
+        "source_span": {
+          "start": 8025,
+          "end": 8055
+        },
+        "unit": "tasks/task_022.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_072",
+        "source": "tasks/task_023.lcl.txt",
+        "source_span": {
+          "start": 8124,
+          "end": 8154
+        },
+        "unit": "tasks/task_023.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_073",
+        "source": "tasks/task_024.lcl.txt",
+        "source_span": {
+          "start": 8223,
+          "end": 8253
+        },
+        "unit": "tasks/task_024.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_074",
+        "source": "tasks/task_025.lcl.txt",
+        "source_span": {
+          "start": 8322,
+          "end": 8352
+        },
+        "unit": "tasks/task_025.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_075",
+        "source": "tasks/task_026.lcl.txt",
+        "source_span": {
+          "start": 8421,
+          "end": 8451
+        },
+        "unit": "tasks/task_026.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_076",
+        "source": "tasks/task_027.lcl.txt",
+        "source_span": {
+          "start": 8520,
+          "end": 8550
+        },
+        "unit": "tasks/task_027.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_077",
+        "source": "tasks/task_028.lcl.txt",
+        "source_span": {
+          "start": 8619,
+          "end": 8649
+        },
+        "unit": "tasks/task_028.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_078",
+        "source": "tasks/task_029.lcl.txt",
+        "source_span": {
+          "start": 8718,
+          "end": 8748
+        },
+        "unit": "tasks/task_029.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_079",
+        "source": "tasks/task_030.lcl.txt",
+        "source_span": {
+          "start": 8817,
+          "end": 8847
+        },
+        "unit": "tasks/task_030.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_080",
+        "source": "tasks/task_031.lcl.txt",
+        "source_span": {
+          "start": 8916,
+          "end": 8946
+        },
+        "unit": "tasks/task_031.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_081",
+        "source": "tasks/task_032.lcl.txt",
+        "source_span": {
+          "start": 9015,
+          "end": 9045
+        },
+        "unit": "tasks/task_032.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_082",
+        "source": "tasks/task_033.lcl.txt",
+        "source_span": {
+          "start": 9114,
+          "end": 9144
+        },
+        "unit": "tasks/task_033.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_083",
+        "source": "tasks/task_034.lcl.txt",
+        "source_span": {
+          "start": 9213,
+          "end": 9243
+        },
+        "unit": "tasks/task_034.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_084",
+        "source": "tasks/task_035.lcl.txt",
+        "source_span": {
+          "start": 9312,
+          "end": 9342
+        },
+        "unit": "tasks/task_035.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_085",
+        "source": "tasks/task_036.lcl.txt",
+        "source_span": {
+          "start": 9411,
+          "end": 9441
+        },
+        "unit": "tasks/task_036.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_086",
+        "source": "tasks/task_037.lcl.txt",
+        "source_span": {
+          "start": 9510,
+          "end": 9540
+        },
+        "unit": "tasks/task_037.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_087",
+        "source": "tasks/task_038.lcl.txt",
+        "source_span": {
+          "start": 9609,
+          "end": 9639
+        },
+        "unit": "tasks/task_038.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_088",
+        "source": "tasks/task_039.lcl.txt",
+        "source_span": {
+          "start": 9708,
+          "end": 9738
+        },
+        "unit": "tasks/task_039.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_089",
+        "source": "tasks/task_040.lcl.txt",
+        "source_span": {
+          "start": 9807,
+          "end": 9837
+        },
+        "unit": "tasks/task_040.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_090",
+        "source": "tasks/task_041.lcl.txt",
+        "source_span": {
+          "start": 9906,
+          "end": 9936
+        },
+        "unit": "tasks/task_041.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_091",
+        "source": "tasks/task_042.lcl.txt",
+        "source_span": {
+          "start": 10005,
+          "end": 10035
+        },
+        "unit": "tasks/task_042.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_092",
+        "source": "tasks/task_043.lcl.txt",
+        "source_span": {
+          "start": 10104,
+          "end": 10134
+        },
+        "unit": "tasks/task_043.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_093",
+        "source": "tasks/task_044.lcl.txt",
+        "source_span": {
+          "start": 10203,
+          "end": 10233
+        },
+        "unit": "tasks/task_044.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_094",
+        "source": "tasks/task_045.lcl.txt",
+        "source_span": {
+          "start": 10302,
+          "end": 10332
+        },
+        "unit": "tasks/task_045.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_095",
+        "source": "tasks/task_046.lcl.txt",
+        "source_span": {
+          "start": 10401,
+          "end": 10431
+        },
+        "unit": "tasks/task_046.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_096",
+        "source": "tasks/task_047.lcl.txt",
+        "source_span": {
+          "start": 10500,
+          "end": 10530
+        },
+        "unit": "tasks/task_047.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_097",
+        "source": "tasks/task_048.lcl.txt",
+        "source_span": {
+          "start": 10599,
+          "end": 10629
+        },
+        "unit": "tasks/task_048.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_098",
+        "source": "tasks/task_049.lcl.txt",
+        "source_span": {
+          "start": 10698,
+          "end": 10728
+        },
+        "unit": "tasks/task_049.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_099",
+        "source": "tasks/task_050.lcl.txt",
+        "source_span": {
+          "start": 10797,
+          "end": 10827
+        },
+        "unit": "tasks/task_050.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_100",
+        "source": "tasks/task_051.lcl.txt",
+        "source_span": {
+          "start": 10896,
+          "end": 10926
+        },
+        "unit": "tasks/task_051.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_101",
+        "source": "tasks/task_052.lcl.txt",
+        "source_span": {
+          "start": 10995,
+          "end": 11025
+        },
+        "unit": "tasks/task_052.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_102",
+        "source": "tasks/task_053.lcl.txt",
+        "source_span": {
+          "start": 11094,
+          "end": 11124
+        },
+        "unit": "tasks/task_053.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_103",
+        "source": "tasks/task_054.lcl.txt",
+        "source_span": {
+          "start": 11193,
+          "end": 11223
+        },
+        "unit": "tasks/task_054.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_104",
+        "source": "tasks/task_055.lcl.txt",
+        "source_span": {
+          "start": 11292,
+          "end": 11322
+        },
+        "unit": "tasks/task_055.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_105",
+        "source": "tasks/task_056.lcl.txt",
+        "source_span": {
+          "start": 11391,
+          "end": 11421
+        },
+        "unit": "tasks/task_056.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_106",
+        "source": "tasks/task_057.lcl.txt",
+        "source_span": {
+          "start": 11490,
+          "end": 11520
+        },
+        "unit": "tasks/task_057.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_107",
+        "source": "tasks/task_058.lcl.txt",
+        "source_span": {
+          "start": 11589,
+          "end": 11619
+        },
+        "unit": "tasks/task_058.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_108",
+        "source": "tasks/task_059.lcl.txt",
+        "source_span": {
+          "start": 11688,
+          "end": 11718
+        },
+        "unit": "tasks/task_059.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_109",
+        "source": "tasks/task_060.lcl.txt",
+        "source_span": {
+          "start": 11787,
+          "end": 11817
+        },
+        "unit": "tasks/task_060.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_110",
+        "source": "tasks/task_061.lcl.txt",
+        "source_span": {
+          "start": 11886,
+          "end": 11916
+        },
+        "unit": "tasks/task_061.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_111",
+        "source": "tasks/task_062.lcl.txt",
+        "source_span": {
+          "start": 11985,
+          "end": 12015
+        },
+        "unit": "tasks/task_062.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_112",
+        "source": "tasks/task_063.lcl.txt",
+        "source_span": {
+          "start": 12084,
+          "end": 12114
+        },
+        "unit": "tasks/task_063.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_113",
+        "source": "tasks/task_064.lcl.txt",
+        "source_span": {
+          "start": 12183,
+          "end": 12213
+        },
+        "unit": "tasks/task_064.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_114",
+        "source": "tasks/task_065.lcl.txt",
+        "source_span": {
+          "start": 12282,
+          "end": 12312
+        },
+        "unit": "tasks/task_065.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_115",
+        "source": "tasks/task_066.lcl.txt",
+        "source_span": {
+          "start": 12381,
+          "end": 12411
+        },
+        "unit": "tasks/task_066.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_116",
+        "source": "tasks/task_067.lcl.txt",
+        "source_span": {
+          "start": 12480,
+          "end": 12510
+        },
+        "unit": "tasks/task_067.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_117",
+        "source": "tasks/task_068.lcl.txt",
+        "source_span": {
+          "start": 12579,
+          "end": 12609
+        },
+        "unit": "tasks/task_068.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_118",
+        "source": "tasks/task_069.lcl.txt",
+        "source_span": {
+          "start": 12678,
+          "end": 12708
+        },
+        "unit": "tasks/task_069.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_119",
+        "source": "tasks/task_070.lcl.txt",
+        "source_span": {
+          "start": 12777,
+          "end": 12807
+        },
+        "unit": "tasks/task_070.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_120",
+        "source": "tasks/task_071.lcl.txt",
+        "source_span": {
+          "start": 12876,
+          "end": 12906
+        },
+        "unit": "tasks/task_071.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_121",
+        "source": "tasks/task_072.lcl.txt",
+        "source_span": {
+          "start": 12975,
+          "end": 13005
+        },
+        "unit": "tasks/task_072.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_122",
+        "source": "tasks/task_073.lcl.txt",
+        "source_span": {
+          "start": 13074,
+          "end": 13104
+        },
+        "unit": "tasks/task_073.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_123",
+        "source": "tasks/task_074.lcl.txt",
+        "source_span": {
+          "start": 13173,
+          "end": 13203
+        },
+        "unit": "tasks/task_074.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_124",
+        "source": "tasks/task_075.lcl.txt",
+        "source_span": {
+          "start": 13272,
+          "end": 13302
+        },
+        "unit": "tasks/task_075.lcl.txt",
+        "kind": "kind.part.task",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_125",
+        "source": "data/task_catalog.lcl.txt",
+        "source_span": {
+          "start": 13371,
+          "end": 13404
+        },
+        "unit": "data/task_catalog.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_126",
+        "source": "data/instruction_packet.lcl.txt",
+        "source_span": {
+          "start": 13473,
+          "end": 13512
+        },
+        "unit": "data/instruction_packet.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_127",
+        "source": "bindings/read_order.lcl.txt",
+        "source_span": {
+          "start": 13581,
+          "end": 13616
+        },
+        "unit": "bindings/read_order.lcl.txt",
+        "kind": "kind.part.definitions",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.source_128",
+        "source": "guidance/usage.lcl.txt",
+        "source_span": {
+          "start": 13692,
+          "end": 13722
+        },
+        "unit": "guidance/usage.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      },
+      {
+        "id": "part.continuation_profile",
+        "source": "policies/task_002_075_continuation.lcl.txt",
+        "source_span": {
+          "start": 13801,
+          "end": 13851
+        },
+        "unit": "policies/task_002_075_continuation.lcl.txt",
+        "kind": "kind.part.data",
+        "required": true,
+        "state": "loaded",
+        "status": "ready"
+      }
+    ],
+    "complete": true,
+    "admission": "admitted"
+  }
+}

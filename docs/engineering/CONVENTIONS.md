@@ -413,7 +413,7 @@ Established by TASK-012 (ST-VIEW, R13, C5).
 
 ## 17. Workspaces
 
-Established by TASK-013 (C1 to C4, B2, B18, ST-WORKSPACE).
+Established by TASK-013 and TASK-014 (C1 to C4, B2, B5, B6, B18, R12, ST-WORKSPACE).
 
 - **One registry per device.** A workspace is its record, which every participating device
   knows, and this device's replica with its root (`core/domain/workspace`). The registry
@@ -430,11 +430,19 @@ Established by TASK-013 (C1 to C4, B2, B18, ST-WORKSPACE).
   of the client that asked, and closing it leaves that client none. Neither binds an agent or
   changes another record (C2, R11): an agent names its workspace itself. A window's request
   names no client; the host keeps the foreground for the client on that channel.
-- **The window shows its foreground.** The folder a Desktop window shows is its client's
-  foreground workspace (`apps/desktop/src/workspaces/workspace_switcher`): a folder the window
-  opens that is no workspace yet becomes a CODE workspace, and a folder that cannot be one
-  leaves the client with none. Theia's own workspace shows the folder (reuse first). Every
-  window of a user is still one client; telling windows apart is TASK-014's.
+- **Each window is a client.** Every Desktop window attaches over a channel of its own
+  (`apps/desktop/src/main`), and the host gives each attached window the lowest number free:
+  number 1 is the client `desktop-window`, number n the client `desktop-window-n`
+  (`apps/desktop/src/application_host`). A window's foreground is its own, and when the window
+  detaches its client shows none. The panel layout stays one for all of a user's windows, under
+  `desktop-window`, until TASK-016.
+- **The foreground decides the Explorer.** The Explorer of a Desktop window shows its client's
+  foreground workspace and nothing else (`apps/desktop/src/workspaces/workspace_switcher`): a
+  folder the window opens that is no workspace yet becomes a CODE workspace; a folder that
+  cannot be one is closed, and the window says why; a window has one folder, and the commands
+  that would add another are removed, so that two workspaces' trees are never one Explorer.
+  Theia's own workspace shows the folder (reuse first). The title row names the workspace the
+  host confirmed, never one the window only assumes.
 - **A new workspace operation** goes into the registry with its tests, into the protocol as a
   new version, and into the switcher, with end-to-end checks of what the window then shows.
 

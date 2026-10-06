@@ -1,0 +1,65 @@
+{
+  "schema": "nexees-cleanup-record",
+  "version": 1,
+  "task": "TASK-014",
+  "applied": true,
+  "removed": [],
+  "refused": [],
+  "absent": [],
+  "kept_directories": [],
+  "preserved_untracked": [
+    {
+      "path": "docs/evidence/TASK-014/TASK-014_EVIDENCE.md",
+      "sha256": "884d465df207bc73365e4ed3296fc99a9c0e331583151e7da29aa93df5f3ecdd"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/desktop_build.txt",
+      "sha256": "62f54769a8e849666f742bfee60108ad1bf379b681a34b3e87c25c398cb399db"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/dispatch_task_014.record.json",
+      "sha256": "59c3ec6654ffe74095f0ce3bf56f2532415a6254caf5f8a8ff7c6732ed2b8be1"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/e2e_local_application.txt",
+      "sha256": "d2fc6e1412e089c5c990689d9ffdcdde118999e2c433ec3d50560ad8b79834ae"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/ide_activity.txt",
+      "sha256": "84ab2c87abb7a337d9f21e4aeb7b3113baa4a389acf102a4b1a4ec65b849ce2a"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/native_language_suite.json",
+      "sha256": "ed46c2e2f94b17ed9da7cd4f63f909739df9b8a24e8c842ba4b6751d9b152ae3"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/negative_tests.txt",
+      "sha256": "247a025e62ec9815cd8b77866ef9b0ae8c57ce0e81f17ef52c7e2080b2206f15"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/preflight.txt",
+      "sha256": "c4f7050cc0d7a6db2b3eef840214a6ee0795044fe448e28c6294a258e6a9b584"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/regression.txt",
+      "sha256": "9491de77cf1debc8d0ee029083269e10101b902b4c2be34fc11a8d9c73fe939f"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/required_reading.txt",
+      "sha256": "d2f1ba5944ec5f4d72508d9d512195179a0fdb3ccd09bd4a4ba9f4bc304ba147"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/run_checks.txt",
+      "sha256": "c34976290aacf9b0fc9bdd2fe8d091bce41cd042817ea872b14a1f54fa906dfd"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/security_scan.txt",
+      "sha256": "81c320fff722e3f5bb0de05f3699e6641c6bd4a335251efd050a827f773fd547"
+    },
+    {
+      "path": "docs/evidence/TASK-014/logs/seeded_defects.txt",
+      "sha256": "f9527a23f4e002b243eb8897026408dcc63f2c90a9353317899cd3ccbd0e13c6"
+    }
+  ],
+  "ignored_left_in_place": 616
+}

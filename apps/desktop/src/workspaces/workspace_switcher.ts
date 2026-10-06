@@ -1,30 +1,39 @@
-// The window's workspaces (apps/desktop/src/workspaces/workspace_switcher, TASK-013): the window
-// shows one workspace of the device's registry, its client's foreground workspace, and the user
-// creates, opens, closes and lists workspaces here (C1, C2, B2, ST-WORKSPACE).
+// The window's workspaces (apps/desktop/src/workspaces/workspace_switcher, TASK-013, TASK-014):
+// the window shows one workspace of the device's registry, its client's foreground workspace,
+// and the user creates, opens, closes and lists workspaces here (C1, C2, C4, B2, ST-WORKSPACE).
 //
-// - **The folder the window shows is a workspace.** When the window starts on a folder, and again
-//   whenever it attaches to a host, it asks the host to open the workspace whose root that folder
-//   is, and creates a CODE workspace for it, named after the folder, when there is none. Once the
-//   host has answered, the tree the window shows is its client's foreground workspace's (B2, C4),
-//   with one exception: a folder that cannot be a workspace, such as one inside another
-//   workspace's root, is shown with a warning while the client shows no workspace (TASK-014). A
-//   window without a folder shows no workspace either: the one its client showed is closed.
+// - **The foreground decides what the Explorer shows.** When the window starts on a folder, when
+//   its folders change, and again whenever it attaches to a host, it asks the host to open the
+//   workspace whose root that folder is, and creates a CODE workspace for it, named after the
+//   folder, when there is none. Once the host has answered, the Explorer shows the foreground
+//   workspace's folder and nothing else (B2, C4, R12). A folder that cannot be a workspace, such
+//   as one inside another workspace's root, is not shown: the window closes it, or goes back to
+//   the workspace it showed, and says why. So does a window given several folders at once:
+//   Theia's commands that add a folder to a window are removed, and a window of several folders
+//   is closed the same way, so that a CODE tree and an LCL tree are never one Explorer (B5, B6).
+//   A window without a folder shows no workspace.
+// - **The title row names it.** The workspace the host confirmed stands in the title row, where
+//   the approved layout has it, with its kind; clicking it lists the workspaces. Until a host
+//   answers, the row names none and the window shows the folder it started on.
 // - **Theia shows it.** Opening another workspace opens its root as Theia's workspace in this
 //   window, which then starts again on that folder; closing the workspace closes Theia's. Nexees
 //   keeps the identity, the kind and the root; Theia keeps the files, the tree and the editors
-//   (reuse first). An LCL workspace's tree is its folder's, as a CODE workspace's is (B5, B6).
+//   (reuse first). An LCL workspace's tree is its folder's, as a CODE workspace's is.
 // - **Nothing else follows.** Opening, closing or creating a workspace binds no agent and changes
 //   no other workspace (C2, R11): it decides what the window shows, nothing more.
-// - **One client for now.** Every window of the user is the host's one Desktop client, so the
-//   client's foreground is the workspace opened last in any of its windows (TASK-014).
+// - **Each window is a client of its own** (apps/desktop/src/application_host): its foreground
+//   is its own, what another window opens or closes changes nothing here, and when the window
+//   goes the host closes the workspace it showed.
 
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { Widget } from '@theia/core/shared/@lumino/widgets';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { Command, CommandContribution, CommandRegistry } from '@theia/core/lib/common/command';
 import { FileUri } from '@theia/core/lib/common/file-uri';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { QuickInputService } from '@theia/core/lib/common/quick-pick-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+import { ICONS } from '../shell/design_tokens';
 import { HostConnectionService, HostStateEvents, WorkspaceEntry, WorkspaceKind, WorkspaceRefusal, isWorkspaceName } from '../main.protocol';
 
 /** The workspace commands of the command palette. */
@@ -34,11 +43,26 @@ export const WORKSPACE_COMMANDS = {
     close: { id: 'nexees.workspace.close', label: 'Nexees: Close Workspace' },
 } satisfies Record<string, Command>;
 
-/** The kinds of workspace, as the user chooses among them. */
-const KINDS: ReadonlyArray<{ kind: WorkspaceKind; label: string; detail: string }> = [
-    { kind: 'code', label: 'Code', detail: 'A coding project' },
-    { kind: 'lcl', label: 'LCL', detail: 'An LCL project' },
+/** Theia's commands that add a folder to a window: a window shows one workspace, of one folder. */
+const ADD_FOLDER_COMMANDS = ['workspace:addFolder', 'navigator.addRootFolder'];
+
+/** The kinds of workspace, as the user chooses among them and as the title row shows them. */
+const KINDS: ReadonlyArray<{ kind: WorkspaceKind; label: string; detail: string; icon: string }> = [
+    { kind: 'code', label: 'Code', detail: 'A coding project', icon: ICONS.workspace_code },
+    { kind: 'lcl', label: 'LCL', detail: 'An LCL project', icon: ICONS.workspace_lcl },
 ];
+
+/**
+ * Where a window keeps what it has to say when it closes a folder it cannot show: the window
+ * starts again, and says it then. The session storage of a window lasts as long as the window.
+ */
+const NOTICE = 'nexees.workspace.notice';
+
+/** Why the window closed the folder it was given, and the workspace it may open instead. */
+interface Notice {
+    readonly text: string;
+    readonly offer?: { readonly workspace_id: string; readonly name: string };
+}
 
 /** A refusal of the host, worded for the user; `other` is the workspace a root overlaps. */
 export function refusalText(reason: WorkspaceRefusal, other?: WorkspaceEntry): string {
@@ -60,6 +84,62 @@ function folderName(path: string): string {
     return path.split('/').filter(segment => segment.length > 0).at(-1) ?? path;
 }
 
+/** The notice the window kept before it started again, once; undefined when there is none. */
+function takeNotice(): Notice | undefined {
+    try {
+        const kept: unknown = JSON.parse(window.sessionStorage.getItem(NOTICE) ?? 'null');
+        window.sessionStorage.removeItem(NOTICE);
+        if (typeof kept !== 'object' || kept === null || typeof (kept as Notice).text !== 'string') {
+            return undefined;
+        }
+        const { text, offer } = kept as Notice;
+        const valid = typeof offer?.workspace_id === 'string' && typeof offer.name === 'string';
+        return valid ? { text, offer } : { text };
+    } catch {
+        return undefined;
+    }
+}
+
+/**
+ * The name of the workspace the window shows, in the title row where the approved layout has it:
+ * before the sidebar toggles, with the icon of its kind. Clicking it lists the workspaces.
+ */
+@injectable()
+export class WorkspaceName extends Widget {
+
+    static readonly ID = 'nexees-title-workspace';
+
+    constructor(@inject(CommandRegistry) protected readonly commands: CommandRegistry) {
+        super({ node: document.createElement('button') });
+        this.id = WorkspaceName.ID;
+        this.node.addEventListener('click', () => void this.commands.executeCommand(WORKSPACE_COMMANDS.open.id));
+        this.display(undefined);
+    }
+
+    /** Names `workspace`, or says that the window shows none. */
+    display(workspace: WorkspaceEntry | undefined): void {
+        const kind = workspace && KINDS.find(choice => choice.kind === workspace.kind);
+        const name = document.createElement('span');
+        name.textContent = workspace ? workspace.name : 'No workspace';
+        if (kind) {
+            const icon = document.createElement('span');
+            icon.className = `codicon codicon-${kind.icon}`;
+            this.node.replaceChildren(icon, name);
+        } else {
+            this.node.replaceChildren(name);
+        }
+        const shown = `nexees-workspace-${workspace?.kind ?? 'none'}`;
+        for (const state of ['nexees-workspace-code', 'nexees-workspace-lcl', 'nexees-workspace-none']) {
+            this.toggleClass(state, state === shown);
+        }
+        const said = workspace && kind
+            ? `${kind.label} workspace "${workspace.name}", ${workspace.root ?? 'its files on another device'}. Click to open another.`
+            : 'This window shows no workspace. Click to open one.';
+        this.node.title = said;
+        this.node.setAttribute('aria-label', said);
+    }
+}
+
 /** Keeps the window's folder and its client's foreground workspace one, and offers the workspace commands. */
 @injectable()
 export class WorkspaceSwitcher implements FrontendApplicationContribution, CommandContribution {
@@ -75,17 +155,29 @@ export class WorkspaceSwitcher implements FrontendApplicationContribution, Comma
         @inject(WorkspaceService) protected readonly workspaces: WorkspaceService,
         @inject(QuickInputService) protected readonly quickInput: QuickInputService,
         @inject(MessageService) protected readonly messages: MessageService,
+        @inject(CommandRegistry) protected readonly commands: CommandRegistry,
+        @inject(WorkspaceName) protected readonly title: WorkspaceName,
     ) { }
 
     onStart(): void {
+        const notice = takeNotice();
+        if (notice) {
+            void this.tell(notice);
+        }
         // The window does not wait for the host: the registry follows once a host answers, and
-        // every host the window attaches to later is told again.
+        // every host the window attaches to later is told again, as is every change of its folders.
         this.hostEvents.onChanged(state => {
             if (state.kind === 'attached') {
                 this.claimAgain();
             }
         });
+        this.workspaces.onWorkspaceChanged(() => this.claimAgain());
         this.claimAgain();
+    }
+
+    onDidInitializeLayout(): void {
+        // After every contribution has registered its commands, so that Theia's are there to remove.
+        ADD_FOLDER_COMMANDS.forEach(id => this.commands.unregisterCommand(id));
     }
 
     protected claimAgain(): void {
@@ -98,12 +190,19 @@ export class WorkspaceSwitcher implements FrontendApplicationContribution, Comma
         commands.registerCommand(WORKSPACE_COMMANDS.close, { execute: () => this.close() });
     }
 
-    /** Makes the folder the window shows its client's foreground workspace, creating the workspace when there is none. */
+    /**
+     * Makes the folder the window shows its client's foreground workspace, creating the workspace
+     * when there is none; a folder that cannot be one is not shown.
+     */
     protected async claim(): Promise<void> {
         const roots = await this.workspaces.roots;
+        if (roots.length === 0) {
+            await this.leave();
+            return;
+        }
         const only = roots.length === 1 && !this.workspaces.isMultiRootWorkspaceOpened ? roots[0] : undefined;
         if (!only?.isDirectory) {
-            await this.leave();
+            await this.refuse({ text: 'A window shows one workspace, and a workspace is one folder. Open each folder in a window of its own.' });
             return;
         }
         const root = FileUri.fsPath(only.resource);
@@ -115,11 +214,46 @@ export class WorkspaceSwitcher implements FrontendApplicationContribution, Comma
                 ? await this.host.openWorkspace({ workspace_id: created.workspace.workspace_id }) : created;
         }
         if (answer?.kind === 'done' && answer.workspace) {
-            this.shown = answer.workspace;
+            this.display(answer.workspace);
         } else if (answer?.kind === 'refused') {
             const other = await this.entry(answer.workspace_id);
-            await this.leave();
-            void this.messages.warn(`This folder is not a Nexees workspace. ${refusalText(answer.reason, other)}`);
+            await this.refuse({
+                text: `This folder is not a Nexees workspace. ${refusalText(answer.reason, other)}`,
+                offer: other ? { workspace_id: other.workspace_id, name: other.name } : undefined,
+            });
+        } else {
+            // No host answered: the window keeps the folder it started on until one does.
+            this.display(undefined);
+        }
+    }
+
+    /**
+     * Does not show the folders the window was given: the window's client shows no workspace,
+     * and the window starts again on the workspace it showed before, or on no folder, and then
+     * says why.
+     */
+    protected async refuse(notice: Notice): Promise<void> {
+        const before = this.shown;
+        await this.leave();
+        try {
+            window.sessionStorage.setItem(NOTICE, JSON.stringify(notice));
+        } catch {
+            // Without the notice the window still closes the folder; it only cannot say why.
+        }
+        if (before?.root && (await this.host.openWorkspace({ workspace_id: before.workspace_id }))?.kind === 'done') {
+            this.workspaces.open(FileUri.create(before.root), { preserveWindow: true });
+        } else {
+            await this.workspaces.close();
+        }
+    }
+
+    /** Says why the window closed the folder it was given, offering the workspace the folder overlaps. */
+    protected async tell(notice: Notice): Promise<void> {
+        const offer = notice.offer && `Open "${notice.offer.name}"`;
+        const chosen = await this.messages.warn(notice.text, ...(offer ? [offer] : []));
+        const target = chosen === offer && notice.offer ? await this.entry(notice.offer.workspace_id) : undefined;
+        if (target) {
+            await this.show(target);
         }
     }
 
@@ -129,7 +263,13 @@ export class WorkspaceSwitcher implements FrontendApplicationContribution, Comma
         if (foreground) {
             await this.host.closeWorkspace(foreground);
         }
-        this.shown = undefined;
+        this.display(undefined);
+    }
+
+    /** Takes `workspace` as the one the window shows, and names it in the title row. */
+    protected display(workspace: WorkspaceEntry | undefined): void {
+        this.shown = workspace;
+        this.title.display(workspace);
     }
 
     /** The workspace with the ID `id`, as the host lists it. */
@@ -216,7 +356,7 @@ export class WorkspaceSwitcher implements FrontendApplicationContribution, Comma
     protected async close(): Promise<void> {
         if (this.shown) {
             await this.host.closeWorkspace(this.shown.workspace_id);
-            this.shown = undefined;
+            this.display(undefined);
         }
         await this.workspaces.close();
     }

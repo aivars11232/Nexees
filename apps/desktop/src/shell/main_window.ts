@@ -32,7 +32,7 @@ import { PanelMemory } from './panel_memory';
 import { AREA_VIEWS, RightSidebar, SidePanels } from './right_sidebar';
 import { NexeesTheme } from './theme';
 import { TitleBar, WindowTitle } from './title_bar';
-import { WorkspaceSwitcher } from '../workspaces/workspace_switcher';
+import { WorkspaceName, WorkspaceSwitcher } from '../workspaces/workspace_switcher';
 
 /** The status bar entry's ID. */
 const ENTRY = 'nexees-host';
@@ -128,7 +128,8 @@ export default new ContainerModule((bind, _unbind, _isBound, rebind) => {
     // After the contributions that put the areas in place: it selects views by their IDs.
     bind(PanelMemory).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(PanelMemory);
-    // The folder the window shows is its client's foreground workspace (B2).
+    // The folder the window shows is its client's foreground workspace (B2), named in the title row.
+    bind(WorkspaceName).toSelf().inSingletonScope();
     bind(WorkspaceSwitcher).toSelf().inSingletonScope();
     bind(FrontendApplicationContribution).toService(WorkspaceSwitcher);
     bind(CommandContribution).toService(WorkspaceSwitcher);

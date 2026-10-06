@@ -161,9 +161,10 @@ class RepositoryTest(unittest.TestCase):
 
     def test_the_window_uses_every_token_and_every_icon(self) -> None:
         """A token or icon nothing uses is dead weight (C17). The window names a colour as
-        `group.token` after taking the groups out of TOKENS.color, and everything else in full."""
-        shell = (ROOT / design_tokens.DESKTOP_COPY).parent
-        code = '\n'.join(path.read_text(encoding='utf-8') for path in sorted(shell.glob('*.ts'))
+        `group.token` after taking the groups out of TOKENS.color, and everything else in full,
+        in any of its TypeScript sources: the shell's and those of its other folders."""
+        window = (ROOT / design_tokens.DESKTOP_COPY).parents[1]
+        code = '\n'.join(path.read_text(encoding='utf-8') for path in sorted(window.rglob('*.ts'))
                          if path.name != design_tokens.DESKTOP_COPY.name)
         tokens = design_tokens.checked_tokens(design_tokens.read(ROOT / design_tokens.TOKENS))
         icons = design_tokens.checked_icons(design_tokens.read(ROOT / design_tokens.ICONS))

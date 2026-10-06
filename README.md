@@ -125,8 +125,9 @@ Eclipse Theia and Electron.
 - The host stops after its last window closes, unless the user enables start at login, which
   keeps it running.
 - Extensions stay disabled until their confinement is decided.
-- The window's backend serves only the window that started it, its page runs in a sandboxed
-  renderer without Node, and the window connects to nothing beyond this machine.
+- The window's backend serves only the windows of the application that started it, its page
+  runs in a sandboxed renderer without Node, and the window connects to nothing beyond this
+  machine.
 
 `scripts/build/build_desktop.py` checks, builds and installs it outside the checkout;
 `tests/e2e/desktop/local_application.test.mjs` tests the installed application.
@@ -172,13 +173,22 @@ TASK-013 made the device's workspaces a registry the host keeps.
 - A folder is one workspace's: a root never is, contains or lies inside another workspace's
   root, whatever spelling, link or mount names it.
 - The folder a window shows is its foreground workspace. Opening a folder makes it a CODE
-  workspace when it is none yet; a folder that cannot be one, such as one inside another
-  workspace's folder, is shown with a warning and no workspace. The command palette creates,
-  opens and closes workspaces
+  workspace when it is none yet, and the command palette creates, opens and closes workspaces
   ([apps/desktop/src/workspaces/workspace_switcher.ts](apps/desktop/src/workspaces/workspace_switcher.ts)).
   Opening or closing a workspace binds no agent and changes nothing else.
-- The messages that carry this made protocol version 3. Telling several windows apart, and
-  what each workspace keeps of its view, come with TASK-014 and TASK-016.
+- The messages that carry this made protocol version 3. What each workspace keeps of its view
+  comes with TASK-016.
+
+TASK-014 made the foreground workspace decide what a window's Explorer shows.
+- Each window is a client of its own: it attaches over a channel of its own, and the host keeps
+  each window's foreground workspace and closes it when the window goes
+  ([apps/desktop/src/application_host.rs](apps/desktop/src/application_host.rs)).
+- The Explorer shows the window's foreground workspace and nothing else. A folder that cannot
+  be a workspace, such as one inside another workspace's folder, is closed, and the window says
+  why and offers that workspace. The commands that would add a second folder to a window are
+  gone, so a CODE tree and an LCL tree are never one Explorer.
+- The title row names the window's workspace with the icon of its kind, where the approved
+  layout has it; clicking the name lists the workspaces.
 
 A placeholder becomes source when its owning task implements it, under the same stem with
 its language's extension.

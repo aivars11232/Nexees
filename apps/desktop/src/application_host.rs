@@ -20,24 +20,31 @@
 //! keeps the window only when the two share a protocol version at or above the minimum secure
 //! one; otherwise it closes the channel (RC-23). After that, a resync is answered with the host's
 //! status, and an intent with an explicit `unsupported` outcome: this build carries out none yet
-//! (RC-12). At most [`MAX_WINDOWS`] windows are attached at once.
+//! (RC-12). At most [`MAX_WINDOWS`] windows are attached at once, each over its own channel.
+//!
+//! **Each window is a client.** Every window attaches over a channel of its own, and the host
+//! tells windows apart by their channels: the window on a channel is the client it serves, and
+//! no message names a client. The host numbers the attached windows from 1, each taking the
+//! lowest number free, and the window with number `n` is the client `desktop-window` for `n = 1`
+//! and `desktop-window-n` otherwise ([`window_client`]).
 //!
 //! **The window's panels.** The host keeps the panel layout a window stores, in the state store,
 //! and gives it back when a window asks: view state lives with the host, so a window that was
 //! closed or stopped unexpectedly finds its panels as the user left them (ST-VIEW,
 //! FD-UI-CLIENT). The layout is presentation only. The host checks its shape, keeps it under
-//! [`WINDOW_CLIENT`] and reads nothing else into it; a window cannot name another client. A
-//! window that agreed on a protocol version older than these messages is refused them, and when
-//! the store cannot give or take the layout the host closes the window's channel instead of
-//! answering with a guess.
+//! [`WINDOW_CLIENT`] for every window and reads nothing else into it; a window cannot name
+//! another client. A window that agreed on a protocol version older than these messages is
+//! refused them, and when the store cannot give or take the layout the host closes the window's
+//! channel instead of answering with a guess.
 //!
 //! **The workspaces.** The host keeps the registry of its device's workspaces in the state store
 //! (core/workspaces/workspace_registry) and answers a window that lists, creates, opens or closes
 //! one. A new workspace gets its ID from sixteen random bytes. Opening a workspace makes it the
-//! foreground workspace of [`WINDOW_CLIENT`], what the window shows; it binds no agent and
-//! changes nothing else (C2, R11). A request the registry refuses is answered with the reason and
-//! changes nothing; when the store fails, the host closes the window's channel. A list is sent in
-//! pages that each fit one message of the channel.
+//! foreground workspace of the window's own client, what that window shows; it binds no agent
+//! and changes nothing else, another window's foreground included (C2, R11). When a window
+//! detaches, its client shows no workspace any more. A request the registry refuses is answered
+//! with the reason and changes nothing; when the store fails, the host closes the window's
+//! channel. A list is sent in pages that each fit one message of the channel.
 //!
 //! **Lifetime.** When the last window detaches, the host stops after [`GRACE`], so a window that
 //! reloads reattaches to it. A host started with `--keep-running` stays: keeping the host after
@@ -61,7 +68,7 @@ use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use nexees_domain::client::{ClientLayout, PanelLayout};
-use nexees_domain::errors::Outcome;
+use nexees_domain::errors::{DomainError, Outcome};
 use nexees_domain::ids::{ClientId, DeviceId, WorkspaceId};
 use nexees_domain::text::Note;
 use nexees_domain::time::Timestamp;
@@ -86,9 +93,9 @@ use nexees_workspaces::workspace_registry::{
 const GRACE: Duration = Duration::from_secs(5);
 /// Most windows attached at once; another one is refused.
 const MAX_WINDOWS: usize = 8;
-/// The client whose view state and foreground workspace the host keeps for its windows. Every
-/// window of this user is that one client for now: windows are told apart only once they show
-/// different workspaces side by side (TASK-014), with per-workspace view state (TASK-016).
+/// The client of the first window, and the one under which the host keeps the panel layout of
+/// every window: the panels are one for all of a user's windows until each workspace keeps its
+/// own view state (TASK-016).
 const WINDOW_CLIENT: &str = "desktop-window";
 /// How long a new window has to say hello, and how long `start` waits for one answer.
 const HELLO_TIMEOUT: Duration = Duration::from_secs(5);
@@ -286,21 +293,31 @@ fn keep_layout(
     store.write(now(), |w| w.put(&layout))
 }
 
-/// Carries out a window's workspace request with the device's registry, for the window client.
+/// The client of the window with the number `number`: `desktop-window` for the first, and
+/// `desktop-window-n` for the window numbered `n` after it.
+fn window_client(number: usize) -> Result<ClientId, DomainError> {
+    if number == 1 {
+        ClientId::new(WINDOW_CLIENT)
+    } else {
+        ClientId::new(format!("{WINDOW_CLIENT}-{number}"))
+    }
+}
+
+/// Carries out a window's workspace request with the device's registry, for the window's client.
 /// A refusal is an answer; an error is the store's, and the window's channel then closes.
 fn workspaces(
     store: &SharedStore,
     device: &DeviceId,
+    client: &ClientId,
     request: ClientMessage,
 ) -> Result<WorkspaceAnswer, StateError> {
-    let client = ClientId::new(WINDOW_CLIENT)?;
     let mut guard = lock_store(store);
     let store = guard.as_mut().ok_or(StateError::InUse)?;
     let done = match request {
-        ClientMessage::ListWorkspaces { after } => return page(store, device, &client, after),
+        ClientMessage::ListWorkspaces { after } => return page(store, device, client, after),
         ClientMessage::CreateWorkspace(new) => create_workspace(store, device, new).map(Some),
         ClientMessage::OpenWorkspace(target) => {
-            match open_workspace(store, device, &client, target) {
+            match open_workspace(store, device, client, target) {
                 Ok(None) => {
                     return Ok(WorkspaceAnswer::Refused {
                         reason: WorkspaceRefusal::NotFound,
@@ -311,16 +328,27 @@ fn workspaces(
             }
         }
         ClientMessage::CloseWorkspace { workspace_id } => {
-            registry::close(store, now(), &client, &workspace_id).map(|()| None)
+            registry::close(store, now(), client, &workspace_id).map(|()| None)
         }
         _ => return Err(StateError::Database("not a workspace request".into())),
     };
     match done {
         Ok(workspace) => Ok(WorkspaceAnswer::Done {
             workspace: workspace.as_ref().map(entry),
-            foreground: registry::foreground(store, &client).map_err(store_error)?,
+            foreground: registry::foreground(store, client).map_err(store_error)?,
         }),
         Err(error) => refused(error),
+    }
+}
+
+/// Closes the workspace a window's client shows, once the window has detached: a window that is
+/// gone shows nothing.
+fn forget_foreground(store: &SharedStore, client: &ClientId) -> Result<(), StateError> {
+    let mut guard = lock_store(store);
+    let store = guard.as_mut().ok_or(StateError::InUse)?;
+    match registry::foreground(store, client).map_err(store_error)? {
+        Some(shown) => registry::close(store, now(), client, &shown).map_err(store_error),
+        None => Ok(()),
     }
 }
 
@@ -455,7 +483,8 @@ struct Attached {
 }
 
 struct Windows {
-    count: usize,
+    /// Which window numbers are held: `held[n - 1]` for the window numbered `n`.
+    held: [bool; MAX_WINDOWS],
     idle_since: Option<Instant>,
 }
 
@@ -463,7 +492,7 @@ impl Default for Windows {
     fn default() -> Self {
         // A new host has no window yet; the one that asked for it attaches at once.
         Self {
-            count: 0,
+            held: [false; MAX_WINDOWS],
             idle_since: Some(Instant::now()),
         }
     }
@@ -475,24 +504,25 @@ impl Attached {
         self.state.lock().unwrap_or_else(PoisonError::into_inner)
     }
 
-    /// Counts a new window in; `false` when the bound is reached and it must be refused.
-    fn attach(&self) -> bool {
+    /// Counts a new window in and gives it the lowest number free, from 1; none when the bound
+    /// is reached and the window must be refused.
+    fn attach(&self) -> Option<usize> {
         let mut windows = self.lock();
-        if windows.count >= MAX_WINDOWS {
-            return false;
-        }
-        windows.count += 1;
+        let free = windows.held.iter().position(|held| !held)?;
+        windows.held[free] = true;
         windows.idle_since = None;
         drop(windows);
         self.changed.notify_all();
-        true
+        Some(free + 1)
     }
 
-    /// Counts a window out.
-    fn detach(&self) {
+    /// Counts the window with the number `number` out; the number is free again.
+    fn detach(&self, number: usize) {
         let mut windows = self.lock();
-        windows.count = windows.count.saturating_sub(1);
-        if windows.count == 0 {
+        if let Some(held) = number.checked_sub(1).and_then(|n| windows.held.get_mut(n)) {
+            *held = false;
+        }
+        if !windows.held.contains(&true) {
             windows.idle_since = Some(Instant::now());
         }
         drop(windows);
@@ -546,22 +576,34 @@ fn accept_windows(
                 continue;
             }
         };
-        if !attached.attach() {
+        let Some(number) = attached.attach() else {
             window.close();
             continue;
-        }
+        };
+        let Ok(client) = window_client(number) else {
+            window.close();
+            attached.detach(number);
+            continue;
+        };
         let (attached, device, store) = (Arc::clone(attached), device.clone(), Arc::clone(store));
         thread::spawn(move || {
-            // However the window leaves, it is counted out.
-            let _ = attend(window, &device, &store);
-            attached.detach();
+            let _ = attend(window, &device, &store, &client);
+            // However the window leaves, its client then shows nothing, and it is counted out.
+            // Its number stays held until then, so no window that attaches meanwhile takes it.
+            let _ = forget_foreground(&store, &client);
+            attached.detach(number);
         });
     }
 }
 
-/// Serves one window until it detaches: the hellos, then its resyncs, its intents, its panel
-/// layout and its workspace requests.
-fn attend(mut window: Connection, device: &DeviceId, store: &SharedStore) -> Result<(), IpcError> {
+/// Serves one window, the client `client`, until it detaches: the hellos, then its resyncs, its
+/// intents, its panel layout and its workspace requests.
+fn attend(
+    mut window: Connection,
+    device: &DeviceId,
+    store: &SharedStore,
+    client: &ClientId,
+) -> Result<(), IpcError> {
     window.set_timeout(Some(HELLO_TIMEOUT))?;
     let ClientMessage::Hello(theirs) = window.receive()? else {
         // A window opens with its hello; anything else is refused.
@@ -607,7 +649,7 @@ fn attend(mut window: Connection, device: &DeviceId, store: &SharedStore) -> Res
             | ClientMessage::CreateWorkspace(_)
             | ClientMessage::OpenWorkspace(_)
             | ClientMessage::CloseWorkspace { .. }) => {
-                let Ok(answer) = workspaces(store, device, request) else {
+                let Ok(answer) = workspaces(store, device, client, request) else {
                     window.close();
                     return Ok(());
                 };
@@ -1030,7 +1072,7 @@ mod tests {
             layout_after(&mut first, &ClientMessage::StoreLayout(hidden.clone())),
             Some(hidden.clone())
         );
-        // Another window of the same user is the same client.
+        // Another window of the same user has the same panels: the layout is one for all windows.
         assert_eq!(
             layout_after(&mut window(&profile), &ClientMessage::LoadLayout {}),
             Some(hidden.clone())
@@ -1200,11 +1242,8 @@ mod tests {
             listed(&mut first),
             (both.clone(), Some(lcl.workspace_id.clone()), 1)
         );
-        // Another window of the same user is the same client, with the same foreground.
-        assert_eq!(
-            listed(&mut window(&profile)).1,
-            Some(lcl.workspace_id.clone())
-        );
+        // Another window is another client: it lists the same workspaces and shows none of them.
+        assert_eq!(listed(&mut window(&profile)), (both.clone(), None, 1));
         // Only the workspace the client shows can be closed; then it shows none.
         let close = |id: &WorkspaceId| ClientMessage::CloseWorkspace {
             workspace_id: id.clone(),
@@ -1344,7 +1383,8 @@ mod tests {
 
     #[test]
     fn a_windows_foreground_switches_leave_a_bound_agent_session_unchanged() {
-        // Claude runs on Arch Dock; the user switches the window to the LCL project and back.
+        // Claude runs on Arch Dock; the user switches one window to the LCL project and back, and
+        // a second window the other way round.
         let profile = Profile::new("workspace-agent");
         let roots = profile.0.join("roots");
         for dir in ["arch-dock", "lcl-next"] {
@@ -1366,18 +1406,108 @@ mod tests {
         store.close(now()).unwrap();
 
         let host = profile.host(false, Duration::from_millis(200));
-        let mut window = window(&profile);
-        for target in [&code, &lcl, &code, &lcl] {
-            let open = ClientMessage::OpenWorkspace(WorkspaceTarget::WorkspaceId(target.clone()));
-            assert_eq!(done(ask(&mut window, open)).1.as_ref(), Some(target));
+        let (mut one, mut other) = (window(&profile), window(&profile));
+        let open = |id: &WorkspaceId| {
+            ClientMessage::OpenWorkspace(WorkspaceTarget::WorkspaceId(id.clone()))
+        };
+        for (mine, theirs) in [(&code, &lcl), (&lcl, &code), (&code, &lcl), (&lcl, &code)] {
+            assert_eq!(done(ask(&mut one, open(mine))).1.as_ref(), Some(mine));
+            assert_eq!(done(ask(&mut other, open(theirs))).1.as_ref(), Some(theirs));
+            // Each window's switch left the other's foreground where it was.
+            assert_eq!(listed(&mut one).1.as_ref(), Some(mine));
         }
-        drop(window);
+        drop((one, other));
         assert_eq!(finish(host), exit::OK);
         let (store, _) = StateStore::open(&db, now()).unwrap();
         assert_eq!(store.all::<AgentSession>().unwrap(), vec![session]);
-        let state = store.get::<ClientState>(WINDOW_CLIENT).unwrap().unwrap();
-        assert_eq!(state.foreground_workspace, Some(lcl));
+        // Both windows have left, and their clients show nothing. Which numbers the windows got
+        // depends on whether the host had counted out the probe that checked it answers, so
+        // every window client is looked at.
+        let states = store.all::<ClientState>().unwrap();
+        assert_eq!(states.len(), 2);
+        assert!(
+            states
+                .iter()
+                .all(|state| state.foreground_workspace.is_none())
+        );
         store.close(now()).unwrap();
+    }
+
+    #[test]
+    fn windows_are_told_apart_and_a_window_that_leaves_shows_nothing() {
+        let profile = Profile::new("workspace-windows");
+        let roots = profile.0.join("roots");
+        for dir in ["arch-dock", "lcl-next"] {
+            fs::create_dir_all(roots.join(dir)).unwrap();
+        }
+        let host = profile.host(false, Duration::from_millis(300));
+        let mut first = window(&profile);
+        let code = new_workspace(WorkspaceKind::Code, "Arch Dock", &roots.join("arch-dock"));
+        let code = done(ask(&mut first, code)).0.unwrap().workspace_id;
+        let lcl = new_workspace(WorkspaceKind::Lcl, "LCL — Next", &roots.join("lcl-next"));
+        let lcl = done(ask(&mut first, lcl)).0.unwrap().workspace_id;
+        let open = |id: &WorkspaceId| {
+            ClientMessage::OpenWorkspace(WorkspaceTarget::WorkspaceId(id.clone()))
+        };
+        // The first window shows the code project, and a second window the LCL project: each
+        // window's client has its own foreground, and opening one changes no other.
+        assert_eq!(done(ask(&mut first, open(&code))).1, Some(code.clone()));
+        let mut second = window(&profile);
+        assert_eq!(listed(&mut second).1, None);
+        assert_eq!(done(ask(&mut second, open(&lcl))).1, Some(lcl.clone()));
+        assert_eq!(listed(&mut first).1, Some(code.clone()));
+        // A window closes only the workspace its own client shows.
+        let close = ClientMessage::CloseWorkspace {
+            workspace_id: code.clone(),
+        };
+        assert_eq!(ask(&mut second, close), refusal(WorkspaceRefusal::NotOpen));
+        assert_eq!(listed(&mut first).1, Some(code.clone()));
+        // The first window leaves; the second still shows its own.
+        drop(first);
+        assert_eq!(listed(&mut second).1, Some(lcl.clone()));
+        drop(second);
+        assert_eq!(finish(host), exit::OK);
+        // Both windows' clients are in the store, and neither shows a workspace once its window
+        // has left. Which numbers the windows got depends on whether the host had counted out
+        // the probe that checked it answers.
+        let (store, _) = StateStore::open(&profile.data().join("state.db"), now()).unwrap();
+        let states = store.all::<ClientState>().unwrap();
+        assert_eq!(states.len(), 2);
+        assert!(
+            states
+                .iter()
+                .all(|state| state.foreground_workspace.is_none())
+        );
+        assert!(
+            states
+                .iter()
+                .all(|state| state.client_id.as_str().starts_with(WINDOW_CLIENT))
+        );
+        store.close(now()).unwrap();
+    }
+
+    #[test]
+    fn a_window_takes_the_lowest_number_free_and_each_number_is_one_client() {
+        let attached = Attached::default();
+        let numbers: Vec<_> = (0..MAX_WINDOWS).map(|_| attached.attach()).collect();
+        assert_eq!(numbers, (1..=MAX_WINDOWS).map(Some).collect::<Vec<_>>());
+        assert_eq!(
+            attached.attach(),
+            None,
+            "no number is left for a window past the bound"
+        );
+        attached.detach(3);
+        attached.detach(1);
+        assert_eq!(
+            (attached.attach(), attached.attach(), attached.attach()),
+            (Some(1), Some(3), None)
+        );
+        assert_eq!(window_client(1).unwrap().as_str(), WINDOW_CLIENT);
+        assert_eq!(window_client(2).unwrap().as_str(), "desktop-window-2");
+        assert_eq!(
+            window_client(MAX_WINDOWS).unwrap().as_str(),
+            "desktop-window-8"
+        );
     }
 
     #[test]

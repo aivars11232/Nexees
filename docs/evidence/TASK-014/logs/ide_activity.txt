@@ -1,0 +1,42 @@
+TASK-014: what else ran during the task, recorded 2026-10-06T23:24:59+02:00 with read-only commands.
+TASK-014 began at 2026-10-06T20:45:56+02:00. The commands of the task run with the isolated toolchain (env.sh):
+CARGO_HOME and RUSTUP_HOME under /mnt/F/Nexees-toolchains, not ~/.cargo; npm, Electron and the native builds use
+the home folder /mnt/F/Nexees-toolchains/home and its caches, not the user's.
+
+== 1. The owner's IDE processes ==
+  625907  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [the Gradle extension's server; started 2026-10-06 12:49:52]
+  625970  /home/aivars/.vscode/extensions/rust-lang.rust-analyzer-0.3.3073-linux-x64/server/rust-analyzer  [VS Code's rust-analyzer; started 2026-10-06 12:49:53]
+  626059  /usr/lib/rust-analyzer-proc-macro-srv  [a proc-macro server of rust-analyzer; started 2026-10-06 12:49:54]
+  626060  /usr/lib/rust-analyzer-proc-macro-srv  [a proc-macro server of rust-analyzer; started 2026-10-06 12:49:54]
+  626614  /home/aivars/.vscode/extensions/redhat.java-1.56.0-linux-x64/jre/21.0.12.1-linux-x86_64/bin/java  [the Java language server; started 2026-10-06 12:50:04]
+  5 processes, all of the owner's VS Code, started when the owner opened it again after the restart.
+  The task's toolchain environment (env.sh):
+    export RUSTUP_HOME=$T/rustup CARGO_HOME=$T/cargo CARGO_TARGET_DIR=$T/target
+
+== 2. Ignored files in the checkout: never committed, outside the snapshot ==
+  apps/desktop/node_modules: 1 files, written 2026-10-04 17:56:20 .. 2026-10-04 17:56:20; 0 since TASK-014 began
+  docs/evidence/TASK-003/prototypes/android-app/.gradle/: 17 files, written 2026-10-04 11:53:54 .. 2026-10-06 12:55:09; 0 since TASK-014 began
+  target/: 598 files, written 2026-10-04 11:52:23 .. 2026-10-06 18:51:18; 0 since TASK-014 began
+  target/ is rust-analyzer's cargo check output, and .gradle/ beside TASK-003's prototype the Java extension's cache.
+  apps/desktop/node_modules is the editor's link to /mnt/F/Nexees-toolchains/target/nexees/desktop/check/node_modules, kept since TASK-009 (CONVENTIONS.md section 4).
+  Other ignored entries: none.
+  Nothing of the Desktop build is in the checkout: it is built in /mnt/F/Nexees-toolchains/target/nexees/desktop.
+
+== 3. Cargo.lock and the Rust manifests ==
+  Changed since the task's base 984e1ce: none; new: none. TASK-014 touches no Rust manifest.
+  $ cargo generate-lockfile --offline   (exit 0; in a scratch copy of the manifests, with the isolated toolchain)
+  Result: the regenerated lock is byte-identical to the checkout's Cargo.lock.
+
+== 4. Writes in the home caches since TASK-014 began ==
+  While the task was working: 34083 files, by the program that wrote them.
+    ~/.npm: 34083 files of the npm runs that npm's own logs in the user's home record for that time.
+    No command of the task runs npm there: its npm uses the home /mnt/F/Nexees-toolchains/home. The runs:
+      2026-10-06 21:06:38  npm exec @modelcontextprotocol/server-pdf --stdio  [the MCP server of the owner's Claude Code plugin pdf-viewer~g2]
+      2026-10-06 21:06:38  npm exec @wonderwhy-er/desktop-commander@latest  (in /mnt/F/Nexees)  [the MCP server of the owner's Claude Code plugin desktop-commander/desktop-commander~g3]
+      2026-10-06 21:06:40  npm exec @wonderwhy-er/desktop-commander@latest  (in /mnt/F/Nexees)  [the MCP server of the owner's Claude Code plugin desktop-commander/desktop-commander~g3]
+      2026-10-06 21:07:04  npm exec prisma mcp  [the MCP server of the owner's Claude Code plugin prisma~g2]
+    ~/.npm/_npx/2778af9cee32ff87: 33676 files, the npx folder of prisma, written at 2026-10-06 21:07 (33676); a run above
+  While the session was paused: 0 files.
+  Folders of the application under the owner's home written since the task began: none. The application
+  under test ran only in private profiles in the temporary folder.
+

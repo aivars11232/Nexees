@@ -20,11 +20,18 @@
 // leaves, it detaches by closing the channel; whether the host then stops is the host's decision
 // (RC-04).
 //
-// This backend serves only the window that started it (TH-02, SI-28). Theia's backend compares a
-// per-launch token on every request, but admits every request when it was started without one,
-// so this module refuses to load without the window's token, and the backend then stops before
-// it listens. Once Theia's validator holds the token, the variable that carried it leaves this
-// process's environment, so that no terminal or other child process inherits it.
+// Each window has a channel of its own. Theia runs one backend for all the windows of the
+// application, so this backend opens one attachment, and with it one channel, for each window
+// that connects to it, and closes it when the window goes or starts again. The host tells windows
+// apart by their channels: each window is a client of its own, with its own foreground workspace
+// (apps/desktop/src/application_host).
+//
+// This backend serves only the windows of the application that started it (TH-02, SI-28).
+// Theia's backend compares a per-launch token on every request, but admits every request when it
+// was started without one, so this module refuses to load without the windows' token, and the
+// backend then stops before it listens. Once Theia's validator holds the token, the variable that
+// carried it leaves this process's environment, so that no terminal or other child process
+// inherits it.
 
 import { ContainerModule, inject, injectable } from '@theia/core/shared/inversify';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
@@ -79,7 +86,7 @@ function requireWindowToken(): void {
         value = undefined;
     }
     if (typeof value !== 'string' || value.length === 0) {
-        throw new Error('The Nexees backend serves only the window that started it; it was started without that window\'s token.');
+        throw new Error('The Nexees backend serves only the windows of the application that started it; it was started without their token.');
     }
 }
 
@@ -101,9 +108,8 @@ export class WindowToken implements BackendApplicationContribution {
     }
 }
 
-/** The window's attachment to the host, shared by every frontend connection of this window. */
-@injectable()
-export class HostAttachment implements BackendApplicationContribution {
+/** One window's attachment to the host: its channel, the channel's state and the answers it awaits. */
+export class HostAttachment {
 
     protected state: HostState = { kind: 'attaching' };
     protected readonly listeners = new Set<(state: HostState) => void>();
@@ -117,12 +123,13 @@ export class HostAttachment implements BackendApplicationContribution {
     /** The newest layout the window stored while no host could take it. */
     protected waiting: PanelLayout | undefined;
 
-    onStart(): void {
-        // Not in initialize(): the window's backend does not wait for the host to start.
+    /** Attaches, and keeps attached; the window does not wait for the host to start. */
+    start(): void {
         this.firstAttempt = this.attach();
     }
 
-    onStop(): void {
+    /** Detaches for good: the channel closes and no new attempt follows. */
+    stop(): void {
         this.stopped = true;
         this.socket?.destroy();
     }
@@ -297,6 +304,34 @@ export class HostAttachment implements BackendApplicationContribution {
         this.retries += 1;
         this.setState({ kind: 'attaching' });
         setTimeout(() => void this.attach(), pause);
+    }
+}
+
+/** The attachments of the windows connected to this backend, one each; all of them end when the backend stops. */
+@injectable()
+export class HostAttachments implements BackendApplicationContribution {
+
+    protected readonly open = new Set<HostAttachment>();
+
+    /** A new window's attachment, started. */
+    attach(): HostAttachment {
+        const attachment = new HostAttachment();
+        this.open.add(attachment);
+        attachment.start();
+        return attachment;
+    }
+
+    /** Ends a window's attachment, when the window has gone or starts again. */
+    detach(attachment: HostAttachment): void {
+        this.open.delete(attachment);
+        attachment.stop();
+    }
+
+    onStop(): void {
+        for (const attachment of this.open) {
+            attachment.stop();
+        }
+        this.open.clear();
     }
 }
 
@@ -490,13 +525,17 @@ export default new ContainerModule(bind => {
     requireWindowToken();
     bind(WindowToken).toSelf().inSingletonScope();
     bind(BackendApplicationContribution).toService(WindowToken);
-    bind(HostAttachment).toSelf().inSingletonScope();
-    bind(BackendApplicationContribution).toService(HostAttachment);
+    bind(HostAttachments).toSelf().inSingletonScope();
+    bind(BackendApplicationContribution).toService(HostAttachments);
     bind(ConnectionHandler).toDynamicValue(context => new RpcConnectionHandler<HostConnectionClient>(HOST_CONNECTION_PATH, client => {
-        const attachment = context.container.get(HostAttachment);
-        // Each frontend connection hears every change until it closes.
+        // Each window's frontend connects once: it gets its own attachment, which ends with the connection.
+        const attachments = context.container.get(HostAttachments);
+        const attachment = attachments.attach();
         const unsubscribe = attachment.subscribe(state => client.onStateChanged(state));
-        client.onDidCloseConnection(() => unsubscribe());
+        client.onDidCloseConnection(() => {
+            unsubscribe();
+            attachments.detach(attachment);
+        });
         const service: HostConnectionService = {
             getState: async () => attachment.getState(),
             retry: () => attachment.retry(),

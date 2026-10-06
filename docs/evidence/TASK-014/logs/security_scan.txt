@@ -1,0 +1,51 @@
+Secret and privacy scan for TASK-014, run 2026-10-06T23:24:58+02:00.
+
+1. The security stage of scripts/test/run_checks.py, over every file a commit of this checkout would hold
+   (credential formats, private-key file names, and evidence that Git would ignore):
+$ python3 -B scripts/test/run_checks.py --stage security
+   == security ==
+   715 files scanned for credentials and keys; ignored evidence files: 0; ignored Gradle output beside evidence prototypes: 17
+   -- security: PASS
+   
+   security PASS
+   ALL STAGES PASSED
+   exit code: 0
+
+2. The files TASK-014 added or changed since its base 984e1ce, without this report (29 files):
+   FILE_TREE.txt
+   README.md
+   apps/desktop/src/application_host.rs
+   apps/desktop/src/main.ts
+   apps/desktop/src/shell/design_tokens.ts
+   apps/desktop/src/shell/main_window.ts
+   apps/desktop/src/shell/title_bar.ts
+   apps/desktop/src/workspaces/workspace_switcher.ts
+   assets/theme/icon_mapping.json
+   docs/architecture/interfaces.lcl.txt
+   docs/architecture/state.lcl.txt
+   docs/architecture/subsystems.lcl.txt
+   docs/engineering/CONVENTIONS.md
+   docs/evidence/TASK-014/TASK-014_EVIDENCE.md
+   docs/evidence/TASK-014/logs/cleanup_record.json
+   docs/evidence/TASK-014/logs/desktop_build.txt
+   docs/evidence/TASK-014/logs/dispatch_task_014.record.json
+   docs/evidence/TASK-014/logs/e2e_local_application.txt
+   docs/evidence/TASK-014/logs/ide_activity.txt
+   docs/evidence/TASK-014/logs/native_language_suite.json
+   docs/evidence/TASK-014/logs/negative_tests.txt
+   docs/evidence/TASK-014/logs/preflight.txt
+   docs/evidence/TASK-014/logs/regression.txt
+   docs/evidence/TASK-014/logs/required_reading.txt
+   docs/evidence/TASK-014/logs/run_checks.txt
+   docs/evidence/TASK-014/logs/seeded_defects.txt
+   docs/manuals/NEXEES_USER_MANUAL.md
+   tests/e2e/desktop/local_application.test.mjs
+   tests/tooling/test_design_tokens.py
+   Pictures among them, not read as text: 0 []
+   E-mail-shaped strings in the others: 6 occurrences in 1 (file, string) pairs; none is the owner's
+     docs/evidence/TASK-014/logs/desktop_build.txt: i@izs.me x6
+     i@izs.me is the public contact in the deprecation notice of the glob package, which npm prints during the build; the committed lockfile of TASK-003's prototype carries it too
+   Executable files among them: 0. Executable at the base 984e1ce already, mode unchanged: [].
+   Made executable by TASK-014: []; intended:
+
+Result: no credential, no key material, no ignored evidence, no personal address; only the intended executables

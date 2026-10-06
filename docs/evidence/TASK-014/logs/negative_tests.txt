@@ -1,0 +1,30 @@
+TASK-014 negative tests, 2026-10-06T23:19:15+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. 6 cases break one rule
+each of the windows as clients of their own: of the client each window gets at the host, of the workspace a
+window leaves open, of the numbers the host gives its windows, of the client a request is carried out for, or of
+the icons of the two kinds of workspace. A test-stage case passes only when every test it names fails. The
+lint cases seed defects that the TypeScript compiler and Clippy must refuse. The others seed defects the
+layout, format and docs stages must catch.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: every window given the first window's client is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_takes_the_lowest_number_free_and_each_number_is_one_client, tests::a_window_creates_opens_lists_and_closes_workspaces_that_outlive_the_host, tests::windows_are_told_apart_and_a_window_that_leaves_shows_nothing, tests::a_windows_foreground_switches_leave_a_bound_agent_session_unchanged)
+PASS  test: a window's workspace left open after the window has gone is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::windows_are_told_apart_and_a_window_that_leaves_shows_nothing, tests::a_windows_foreground_switches_leave_a_bound_agent_session_unchanged)
+PASS  test: a window's number never freed when it leaves is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_takes_the_lowest_number_free_and_each_number_is_one_client, tests::more_windows_than_the_bound_are_refused, tests::a_window_finds_the_panels_it_stored_after_the_host_restarted, tests::a_reloading_window_reattaches_to_the_same_host, tests::a_window_creates_opens_lists_and_closes_workspaces_that_outlive_the_host)
+PASS  test: a window's open request carried out for the first window's client is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_creates_opens_lists_and_closes_workspaces_that_outlive_the_host, tests::windows_are_told_apart_and_a_window_that_leaves_shows_nothing, tests::a_windows_foreground_switches_leave_a_bound_agent_session_unchanged)
+PASS  test: the icon of an LCL workspace in the mapping, but no longer used by the window is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_uses_every_token_and_every_icon)
+PASS  test: an icon added to the mapping without the window's copy written again is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_committed_desktop_copy_is_current, test_the_window_uses_every_token_and_every_icon)
+PASS  lint: the title row given the switcher instead of a workspace is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: the backend ending a window's connection instead of its attachment is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: a value left unused where the host numbers its windows is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+PASS  layout: the window's workspaces folder without its slot in the catalogue is caught (exit 1: FINDING: apps/desktop/src/workspaces/workspace_switcher.ts belongs to 0 subsystems instead of one: [])
+PASS  layout: the marker stripped from the file-tree-model placeholder, which this task did not implement is caught (exit 1: FINDING: core/workspaces/file_tree_model.source is a placeholder without its marker; implement it under its real extension instead)
+PASS  format: a line of the host longer than a hundred characters is caught (exit 1: FINDING: apps/desktop/src/application_host.rs: line 296 is longer than 100 characters)
+PASS  format: the host written as the formatter would not write it is caught (exit 1: FINDING: cargo fmt --all --check exited with 1)
+PASS  format: a line of the title row left with trailing spaces is caught (exit 1: FINDING: apps/desktop/src/shell/title_bar.ts: line 29 has trailing whitespace)
+PASS  docs: a file the file tree does not list is caught (exit 1: FINDING: FILE_TREE.txt does not match the files; regenerate it with --write-file-tree)
+PASS  docs: the README linking to a file that does not exist is caught (exit 1: FINDING: README.md links to apps/desktop/src/application_hosts.rs, which does not exist)
+PASS  docs: the user manual without its status line is caught (exit 1: FINDING: docs/manuals/NEXEES_USER_MANUAL.md does not state its status)
+
+ALL NEGATIVE TESTS PASSED
