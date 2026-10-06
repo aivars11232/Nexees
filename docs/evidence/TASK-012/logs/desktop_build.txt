@@ -1,4 +1,4 @@
-TASK-012: the Nexees Desktop application checked, built from scratch and installed, run 2026-10-05T15:02:32+02:00 with the isolated toolchain
+TASK-012: the Nexees Desktop application checked, built from scratch and installed, run 2026-10-06T13:20:35+02:00 with the isolated toolchain
 (env.sh) and NEXEES_NPM_CACHE, NEXEES_BUILD_HOME and NEXEES_ELECTRON_CACHE naming the caches and the build home in
 /mnt/F/Nexees-toolchains. The build folder's app copy and the disposable installation were removed first, so npm installs
 every locked package again; npm runs offline, and every Electron artifact comes from the caches. First the two checks of
@@ -23,22 +23,22 @@ exit code: 0
 $ python3 -B scripts/build/build_desktop.py build --build-dir /mnt/F/Nexees-toolchains/target/nexees/desktop --electron-headers 42.8.1
 $ npm ci --offline
 
-added 792 packages in 15s
+added 792 packages in 16s
 $ node_modules/.bin/tsc -p src/tsconfig.json
 $ node_modules/.bin/theia build --mode production
 Could not resolve optional peer dependency '@types/react'. Skipping...
 Could not resolve optional peer dependency '@types/react-dom'. Skipping...
 [build/browser] Build started
 
-[build/browser] Finished with 0 errors in 971ms.
+[build/browser] Finished with 0 errors in 1006ms.
 
 [build/node] Build started
 
-[build/node] Finished with 0 errors in 445ms.
+[build/node] Finished with 0 errors in 460ms.
 
 [build/electron] Build started
 
-[build/electron] Finished with 0 errors in 16ms.
+[build/electron] Finished with 0 errors in 9ms.
 
 $ node_modules/.bin/electron-rebuild --version 42.8.1 --force --which-module drivelist,keytar,native-keymap --only drivelist,keytar,native-keymap
 $ cargo build --release --locked --offline -p nexees-desktop-host
@@ -64,7 +64,7 @@ Successfully replaced "/mnt/F/Nexees-toolchains/target/nexees/desktop/app/node_m
 Searching dependency tree
 Building modules: drivelist, keytar, native-keymap
 ✔ Rebuild Complete
-    Finished `release` profile [optimized] target(s) in 0.05s
+    Finished `release` profile [optimized] target(s) in 0.55s
 exit code: 0
 
 $ python3 -B scripts/build/build_desktop.py install --build-dir /mnt/F/Nexees-toolchains/target/nexees/desktop --prefix /mnt/F/Nexees-toolchains/target/nexees/desktop-install

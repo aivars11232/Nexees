@@ -596,12 +596,18 @@ async function layoutOf(target) {
     return JSON.parse(await evaluate(target, LAYOUT));
 }
 
-/** Waits until the window's layout is as `wanted` says, and returns it. */
+/** Waits until the window's layout is as `wanted` says, and returns it; a timeout tells what the window last showed. */
 async function layoutWhen(target, what, wanted) {
+    let last;
     return until(what, async () => {
-        const layout = await layoutOf(target);
-        return wanted(layout) ? layout : undefined;
-    }, 20_000);
+        last = await layoutOf(target);
+        return wanted(last) ? last : undefined;
+    }, 20_000).catch(error => {
+        const shown = last && `${last.window.w}x${last.window.h}${last.window.maximized ? ', maximised' : ''}; controls: `
+            + `${Object.keys(last.controls).filter(name => last.controls[name]).join(' ')}; panels shown: `
+            + `${['explorer', 'right', 'bottom'].filter(name => last[name]).join(' ') || 'none'}`;
+        throw new Error(`${error.message}; the window last showed ${shown ?? 'nothing'}`);
+    });
 }
 
 /** Whether two places or sizes of the page are the same, to within a pixel's rounding. */
@@ -717,12 +723,15 @@ async function openWindow(workspace, extra = { env: {}, args: [] }) {
         [workspace, `--remote-debugging-port=${DEBUG_PORT}`, '--remote-debugging-address=127.0.0.1', ...extra.args],
         { env: { ...process.env, ...extra.env }, detached: true, stdio: 'ignore' });
     children.push(child);
-    // What the page prefers and has painted the first time it can be asked, long before its theme is loaded.
+    // What the application's page prefers and has painted the first time it can be asked, long before its theme is
+    // loaded. Only that page: before it the window holds an empty document, and the window is shown only once its page
+    // has drawn. A page without its root element yet throws, and is asked again.
     let early;
     const target = await until('the workbench', async () => {
         const found = await page();
         if (found && early === undefined) {
-            early = await evaluate(found, `JSON.stringify({ dark: matchMedia('(prefers-color-scheme: dark)').matches,
+            early = await evaluate(found, `location.protocol !== 'file:' ? undefined : JSON.stringify({
+                page: location.pathname.split('/').slice(-2).join('/'), dark: matchMedia('(prefers-color-scheme: dark)').matches,
                 painted: document.documentElement.style.getPropertyValue('--theia-editor-background') })`);
         }
         const seen = found ? await shown(found) : null;
@@ -903,7 +912,9 @@ try {
     const look = JSON.parse(await evaluate(first.target, LOOK));
     const { surface, text } = TOKENS.color;
     check('the window is dark while it loads, before any theme is applied',
-        first.early?.dark === true && !/^#f{6}$/i.test(first.early.painted), `first painted ${first.early?.painted || 'nothing yet'}`);
+        first.early?.dark === true && !/^#f{6}$/i.test(first.early.painted),
+        first.early ? `${first.early.page} prefers ${first.early.dark ? 'dark' : 'light'} and has painted ${first.early.painted || 'nothing yet'}`
+            : 'the page was never asked');
     check('the window wears the Nexees dark theme, and is dark to the desktop too (R18)',
         look.classes.includes(THEME) && look.classes.includes('theia-dark') && look.prefersDark, look.classes.join(' '));
     const unapplied = look.colours.filter(([, named, applied]) => colour(named) !== colour(applied)).map(([id]) => id);
@@ -1159,7 +1170,13 @@ try {
     const tabsOf = layout => layout.tabs.map(tab => tab.label).join(', ');
     let window = await openWindow(workspace);
     await attached(window);
-    const began = await layoutOf(window.target);
+    // The reopened windows above left the right sidebar shown. A defect that lost that would leave
+    // no border to drag: the user then shows the sidebar first, and the checks below still run.
+    let began = await layoutOf(window.target);
+    if (!began.right) {
+        await click(window.target, '#nexees-toggle-right-sidebar');
+        began = await layoutWhen(window.target, 'the right sidebar to show', l => !!l.right);
+    }
     // The user selects the Tasks area, makes the right sidebar narrower, selects Problems in the
     // bottom panel and hides the left sidebar.
     await clickTab(window.target, 'Tasks');

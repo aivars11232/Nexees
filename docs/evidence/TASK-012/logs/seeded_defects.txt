@@ -1,4 +1,4 @@
-TASK-012: defects seeded against the end-to-end checks of what the window remembers of its panels, 2026-10-05T15:04:57+02:00.
+TASK-012: defects seeded against the end-to-end checks of what the window remembers of its panels, 2026-10-06T13:02:21+02:00.
 Each run breaks the panel memory of the disposable installation in one or more independent ways, in the
 window's installed code, and must fail exactly the checks named for those defects, and no other: a check that
 still passed would not be checking what it says, and another check failing would mean a defect reaches further
@@ -11,27 +11,30 @@ than understood. The unseeded run is logs/e2e_local_application.txt, where all 6
   FAIL  the window gives the host its panels as the user leaves them: which are shown, their sizes and their selected views  [the window: {"left":{"shown":false},"right":{"shown":true,"size":264,"selected":"nexees-area-tasks"},"bottom":{"shown":true,"size":247,"selected":"problems"}}; the host keeps: {"left":{"shown":false,"size":203,"selected":"explorer-view-container"},"right":{"sh]
   FAIL  a reopened window has its panels as they were left: both sidebars hidden, the bottom panel in its height and with its view  [left sidebar hidden, right sidebar hidden; bottom panel 287.0 px for 247.0, shell-tab-problems]
   FAIL  the panels are the host's to keep: with the foundation's stored layout removed from the profile, the next window still has them  [the window was closed with AI Agent, LCL, Tasks, Chat, Logs, Outline; the next one, without Theia's layout, has AI Agent, LCL, Tasks, Chat, Logs, shell-tab-nexees-area-logs, the left sidebar hidden, the right one at 264.2 px, shell-tab-terminal-0]
-  FAIL  what the user changed while the host could not be reached is given to the host once it can be  [the window: {"left":{"shown":true,"size":203},"right":{"shown":false},"bottom":{"shown":true,"size":367,"selected":"terminal-0"}}; its profile kept: null; the host keeps: {"left":{"shown":true,"size":203,"selected":"explorer-view-container"},"right":{"shown":f]
+  FAIL  what the user changed while the host could not be reached is given to the host once it can be  [the window: {"left":{"shown":true,"size":203},"right":{"shown":false},"bottom":{"shown":true,"size":407,"selected":"terminal-0"}}; its profile kept: null; the host keeps: {"left":{"shown":true,"size":203,"selected":"explorer-view-container"},"right":{"shown":f]
   expected to fail: 4; failed as expected: 4; failed unexpectedly: []; passed although seeded: []
   CAUGHT: exactly the checks of the seeded defects fail
 
 == Run 2: the window gives the host a wrong width, and keeps nothing in its last moment ==
   seeded: the window gives the host the right sidebar ten pixels wider than it is
   seeded: the window's last moment keeps nothing of a change that has not settled
-  exit code 1; 50 checks passed, 4 failed
-  FAIL  the window is dark while it loads, before any theme is applied  [first painted nothing yet]
+  exit code 1; 60 checks passed, 7 failed
   FAIL  a sidebar hidden at once after an area was selected is kept with that area and its width  [the host keeps: {"shown":false,"size":364,"selected":"nexees-area-tasks"}; the sidebar was 354.2 px wide]
   FAIL  a reopened window comes back as it was closed: the title row, the right sidebar hidden and its toggle saying so; shown again, it has its areas and its width  [reopened: Show the right sidebar; shown again: AI Agent, LCL, Tasks, Chat, Logs at 364.0 px]
-  FAIL  the run completed: Cannot read properties of null (reading 'x')  []
-  expected to fail: 7; failed as expected: 2; failed unexpectedly: ["the run completed: Cannot read properties of null (reading 'x')", 'the window is dark while it loads, before any theme is applied']; passed although seeded: ['a change made in the moment before the window closes is not lost: the next window has it, and the host then keeps it', 'a sidebar that was hidden when the window closed comes back with the view and the width it had', 'a window that was stopped without closing comes back with its panels as they last settled', "the panels are the host's to keep: with the foundation's stored layout removed from the profile, the next window still has them", 'the window gives the host its panels as the user leaves them: which are shown, their sizes and their selected views']
-  NOT AS EXPECTED: exactly the checks of the seeded defects fail
+  FAIL  the window gives the host its panels as the user leaves them: which are shown, their sizes and their selected views  [the window: {"left":{"shown":false},"right":{"shown":true,"size":274,"selected":"nexees-area-tasks"},"bottom":{"shown":true,"size":167,"selected":"problems"}}; the host keeps: {"left":{"shown":false,"size":203,"selected":"explorer-view-container"},"right":{"sh]
+  FAIL  a sidebar that was hidden when the window closed comes back with the view and the width it had  [shell-tab-nexees-area-tasks at 284.0 px for 274.0]
+  FAIL  a window that was stopped without closing comes back with its panels as they last settled  [left sidebar shown at 203.0 px; right sidebar 294.0 px with shell-tab-nexees-area-chat]
+  FAIL  a change made in the moment before the window closes is not lost: the next window has it, and the host then keeps it  [left sidebar shown, shell-tab-nexees-area-logs; the host keeps the left sidebar as shown]
+  FAIL  the panels are the host's to keep: with the foundation's stored layout removed from the profile, the next window still has them  [the window was closed with AI Agent, LCL, Tasks, Chat, Logs, Outline; the next one, without Theia's layout, has AI Agent, LCL, Tasks, Chat, Logs, shell-tab-nexees-area-logs, the left sidebar shown, the right one at 304.2 px, shell-tab-problems]
+  expected to fail: 7; failed as expected: 7; failed unexpectedly: []; passed although seeded: []
+  CAUGHT: exactly the checks of the seeded defects fail
 
 == Run 3: the window does not ask the host, takes a hidden sidebar's view from its last layout only, and its backend forgets ==
   seeded: the window does not ask the host for its panels when it starts
   seeded: the window keeps a hidden sidebar with the view of the last layout it took, not with the view the sidebar showed last
   seeded: the window's backend forgets a layout that it could not give to a host
   exit code 1; 61 checks passed, 6 failed
-  FAIL  a sidebar hidden at once after an area was selected is kept with that area and its width  [the host keeps: {"shown":false,"size":354,"selected":null}; the sidebar was 354.2 px wide]
+  FAIL  a sidebar hidden at once after an area was selected is kept with that area and its width  [the host keeps: {"shown":false,"size":354,"selected":"nexees-area-logs"}; the sidebar was 354.2 px wide]
   FAIL  a sidebar that was hidden when the window closed comes back with the view and the width it had  [shell-tab-nexees-area-agent at 264.0 px for 264.0]
   FAIL  a window that was stopped without closing comes back with its panels as they last settled  [left sidebar hidden; right sidebar undefined px with tab-key-1-1]
   FAIL  a change made in the moment before the window closes is not lost: the next window has it, and the host then keeps it  [left sidebar shown, tab-key-1-1; the host keeps the left sidebar as shown]
@@ -40,6 +43,7 @@ than understood. The unseeded run is logs/e2e_local_application.txt, where all 6
   expected to fail: 6; failed as expected: 6; failed unexpectedly: []; passed although seeded: []
   CAUGHT: exactly the checks of the seeded defects fail
 
-After the runs the installation was installed again from the build folder, and the repository's test passes on it: exit code 0, 67 checks passed.
+After the runs the installation was installed again from the build folder, and the repository's test passes on it: exit code 1, 43 checks passed.
+  FAIL  the run completed: timed out waiting for the window to have its size again
 
 SEEDED DEFECTS NOT ALL CAUGHT

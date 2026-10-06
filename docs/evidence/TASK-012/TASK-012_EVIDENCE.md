@@ -8,8 +8,8 @@ to do. This note goes when the task closes.
 | | |
 |---|---|
 | Task | TASK-012 — Implement core Desktop panel/view persistence |
-| Date | 2026-10-05 |
-| Performed by | Coding agent (Claude Code, model Claude Fable 5.1), one primary session; no sub-agents, reviewers or background AI jobs |
+| Date | 2026-10-05 and 2026-10-06, with a pause between them (section 1) |
+| Performed by | Coding agent (Claude Code), one primary session; no sub-agents, reviewers or background AI jobs. The model was Claude Fable 5.1 until the pause and Claude Opus 5.5 after it, as the owner chose (section 1) |
 | Checkout | `/mnt/F/Nexees/`, branch `main`, base `8bfd07ace5a62f2c6bf025356ff5d2d754123afc` |
 | Repository | `https://github.com/aivars11232/Nexees` |
 | Specification pack | `/mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3/`, archive revision 0.5.3, specification version 0.5.0 |
@@ -17,7 +17,7 @@ to do. This note goes when the task closes.
 | Pack manifest SHA-256 | `8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4` |
 | Procedure | Continuation profile 0.5.3 (CA-01 to CA-12), as adopted for TASK-002 and continued for this task |
 | Predecessors | TASK-001 (`284f97a`), TASK-002 (`d1a673f`), TASK-003 (`2eaa199`, receipt decided in `bccc9b1`), TASK-004 (`0337be0`), TASK-005 (`e83dcd7`), TASK-006 (`fc42a93`), TASK-007 (`9f28c37`, follow-up `1c85864`), TASK-008 (`2bf47a2`), TASK-009 (`bba49c3`), TASK-010 (`53448f2`) and TASK-011 (`8bfd07a`), all accepted; `d00bb83` is the owner-directed correction, and `f0c713a` and `7414e6a` are TASK-010's two checkpoints, none of them a task commit |
-| Commits of this work | None while the task worked. The closing commit is made after acceptance, as CA-06 permits, and is recorded by Git, not in this file |
+| Commits of this work | One checkpoint during the task, `34ac37c`, which the owner asked for before pausing the session; it holds the task in progress and is not a closure. The closing commit is made after acceptance, as CA-06 permits, and is recorded by Git, not in this file |
 
 ## Status
 
@@ -91,6 +91,23 @@ look where u finished yesterday and resume till task 15
 TASK-012 is inside that range and began when TASK-011 was committed, pushed and cleaned up.
 It needed no decision of the owner.
 
+**The pause.** On 2026-10-05 at 15:10:35, while the seeded defects of section 7 were being
+examined, the owner wrote:
+
+```
+Commit and sync everything. And pause. we'll continue later
+```
+
+The task committed and pushed the checkpoint `34ac37c` at 15:18, after all nine stages of the
+check runner had passed on it, and stopped. Its message and a note in this folder said that
+TASK-012 was in progress and not accepted. Overnight the machine was restarted. On 2026-10-06
+the owner switched the session's model from Claude Fable 5.1 to Claude Opus 5.5 at 12:50:35,
+and at 12:50:55 wrote:
+
+```
+resume
+```
+
 This record covers TASK-012 only.
 
 ## 2. Checkout preflight (binding B26)
@@ -102,10 +119,12 @@ This record covers TASK-012 only.
 | Branch and HEAD at task start | `main` at `8bfd07a`, equal to `origin/main` after a fetch of that branch only, without tags |
 | Hooks | None besides Git's samples; `core.hooksPath` unset |
 | At task start | Clean: no staged, modified or untracked file, no stash, 655 tracked files. The owner's IDE keeps ignored output in the checkout: 562 files under `target/` and 17 under TASK-003's Gradle prototype (`.gradle/`), and the editor's link `apps/desktop/node_modules`; five IDE processes |
-| Result | Passes ([logs/preflight.txt](logs/preflight.txt)) |
+| On resumption | `main` at `34ac37c`, equal to `origin/main`, clean, 672 tracked files; the checkpoint is the only commit since the base, and the pack and the lineage are intact; seven IDE processes |
+| Result | Passes ([logs/preflight.txt](logs/preflight.txt), [logs/preflight_resume.txt](logs/preflight_resume.txt)) |
 
 TASK-012 began at 2026-10-05T13:05:31+02:00, after TASK-011 was pushed and its scratch files
-were removed. That time is the baseline of every "nothing written since" check.
+were removed. That time is the baseline of every "nothing written since" check. The session
+ran no command between 2026-10-05 15:19 and 2026-10-06 12:52.
 
 ## 3. Pack, native verification, dispatch and predecessors
 
@@ -115,7 +134,8 @@ equals the `after_sha256` of `PROCEDURAL_CHANGES.json`.
 
 **Engine.** `lcl 1.0.0`, the engine that evaluated TASK-011's acceptance; the LCL repository
 is at `ada0b5c`, clean, with the revision the pack binds in its history and the canonical
-packages unchanged since it.
+packages unchanged since it. At the resumption the engine, by its SHA-256, and the LCL
+repository were unchanged, so the native verification and the dispatch were not repeated.
 
 **Native verification.** The pack's runner passed all 51 synthetic language cases with that
 engine ([logs/native_language_suite.json](logs/native_language_suite.json)). These are
@@ -155,6 +175,11 @@ the reuse matrix and the usage guide. Three documents of the mandatory order tha
 what this task keeps were read again with them: the persistent state model, the workspace
 model and the acceptance criteria. The rest of the mandatory read order is byte-identical to
 its last recorded read and was reused ([logs/required_reading.txt](logs/required_reading.txt)).
+
+After the pause the session went on with another model, whose context held a summary of
+the work before it (section 1). The task's declaration and the continuation profile were
+read again in full; the pack was byte-identical to its recorded reads, as the preflight at
+the resumption verifies. Where the summary was unsure, the session's own record was read.
 
 The repository's records were searched for every assignment to TASK-012 before the work
 began; section 8 answers each. The code the layout passes through was read: the domain's

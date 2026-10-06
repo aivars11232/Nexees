@@ -1,8 +1,8 @@
 TASK-012: tests/e2e/desktop/local_application.test.mjs against the installation in /mnt/F/Nexees-toolchains/target/nexees/desktop-install,
-run 2026-10-05T15:03:17+02:00 with node v26.10.0. The test makes its own private session: a nested KWin compositor
+run 2026-10-06T13:21:17+02:00 with node v26.10.0. The test makes its own private session: a nested KWin compositor
 drawing into memory, a D-Bus session that activates no service, a temporary HOME with its XDG folders and runtime
 folder, and no core dumps; it stops every process of that session and removes the profile before it ends.
-The real session's screen lock during this run: LockedHint=yes.
+The real session's screen lock during this run: LockedHint=no.
 
 $ node tests/e2e/desktop/local_application.test.mjs /mnt/F/Nexees-toolchains/target/nexees/desktop-install
 PASS  the installation carries the application icon in every size derived from the logo, and its desktop entry names it (B1)  [7 sizes; wrong: none; desktop-file-validate: exit 0 ]
@@ -12,20 +12,20 @@ PASS  no host runs before the window starts
 PASS  the window is a local application: its page is a file of the installed application, not a website (C20)  [/mnt/F/Nexees-toolchains/target/nexees/desktop-install/lib/nexees/app/lib/frontend/index.html]
 PASS  the workbench shows the local workspace's files  [, src, hello.txt]
 PASS  extensions stay disabled: no Extensions view and no extension host process (SA-08, SI-22)  [0 extension hosts]
-PASS  the status bar shows the host as attached, where the user sees it  [$(plug) Nexees host, Attached to the Nexees host on desktop-ee6d63aeda65adfca5a81cebc8fca751]
+PASS  the status bar shows the host as attached, where the user sees it  [$(plug) Nexees host, Attached to the Nexees host on desktop-0cf46cc4fe8186e659923877e87d54f6]
 PASS  exactly one host process runs, separate from the window  [1 host(s)]
 PASS  the host runs at the user's privilege, in its own process group
 PASS  the host keeps nothing of the window that started it: it holds only the null device, its lock, its store and its channel (RC-04)  [8 descriptors]
 PASS  the channel folder and the socket are private to the user (0700, 0600)
 PASS  nexees-host status finds the running host
 PASS  the idle host uses no processor time and holds no network socket (RC-08)  [0 ticks in 5 s; 0 network sockets]
-PASS  nothing of the application listens beyond this machine: its backend and this test's DevTools port, on the loopback interface  [tcp 0100007F:B709>00000000:0000 tcp 0100007F:2476>00000000:0000]
+PASS  nothing of the application listens beyond this machine: its backend and this test's DevTools port, on the loopback interface  [tcp 0100007F:2476>00000000:0000 tcp 0100007F:A0C9>00000000:0000]
 PASS  the application connects to no other machine, and has fetched nothing  [4 connections, 0 beyond the loopback interface; 0 fetched dictionaries]
-PASS  the application keeps its settings in its own folder, not in one shared with other Electron or Theia applications  [/tmp/nexees-e2e-4Avjwb/config/Nexees]
+PASS  the application keeps its settings in its own folder, not in one shared with other Electron or Theia applications  [/tmp/nexees-e2e-OcimdH/config/Nexees]
 PASS  told to run as Node, to load a script through NODE_OPTIONS and to open an inspector, it is still the application and does none of it (TH-03)
 PASS  the page runs in a sandboxed renderer, without Node (TH-04)  [1 renderer(s) under seccomp; 0 Node globals in the page]
 PASS  no process the backend starts inherits the window's token: not its terminals, its file watcher or the host (SI-28)  [electron, bash and the host]
-PASS  the window is dark while it loads, before any theme is applied  [first painted #1E1E1E]
+PASS  the window is dark while it loads, before any theme is applied  [frontend/index.html prefers dark and has painted #1E1E1E]
 PASS  the window wears the Nexees dark theme, and is dark to the desktop too (R18)  [monaco-enable-motion underline-links linux vs-dark nexees-dark theia-dark]
 PASS  every colour the theme names is one Theia knows and applies  [235 colours; not applied: none]
 PASS  the surfaces and text a user sees have the colours of the shared design tokens (R19)  [page, side bar, status bar, status bar text, tree text]
@@ -55,7 +55,7 @@ PASS  closing the window leaves the host running for its grace period
 PASS  without the opt-in, the host stops after its last window closed (RC-04)
 PASS  a reopened window comes back as it was closed: the title row, the right sidebar hidden and its toggle saying so; shown again, it has its areas and its width  [reopened: Show the right sidebar; shown again: AI Agent, LCL, Tasks, Chat, Logs at 354.0 px]
 PASS  the user can choose another colour theme and return to Nexees Dark, and the choice is kept in the user's settings  [workbench.colorTheme was light, then undefined]
-PASS  three reopened windows found one and the same host (RC-T14)  [801844]
+PASS  three reopened windows found one and the same host (RC-T14)  [669257]
 PASS  the kept host outlives its windows (RC-04)
 PASS  each reopened window wears the Nexees theme again, with no choice of the user behind it  [true, true, true]
 PASS  the window gives the host its panels as the user leaves them: which are shown, their sizes and their selected views  [the window: {"left":{"shown":false},"right":{"shown":true,"size":264,"selected":"nexees-area-tasks"},"bottom":{"shown":true,"size":167,"selected":"problems"}}; the host keeps: {"left":{"shown":false,"size":203,"selected":"explorer-view-container"},"right":{"shown":true,"size":264,"selected":"nexees-area-tasks"},"bottom":{"shown":true,"size":167,"selected":"problems"}}]
