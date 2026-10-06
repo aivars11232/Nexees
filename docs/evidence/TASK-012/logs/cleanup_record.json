@@ -1,1 +1,17 @@
-Not yet written: a later step of TASK-012 writes this log.
+{
+  "schema": "nexees-cleanup-record",
+  "version": 1,
+  "task": "TASK-012",
+  "applied": true,
+  "removed": [],
+  "refused": [],
+  "absent": [],
+  "kept_directories": [],
+  "preserved_untracked": [
+    {
+      "path": "docs/evidence/TASK-012/logs/preflight_resume_2.txt",
+      "sha256": "6968cebb1914cc43f761f26a199537359bf65e73ee371a3a35bb18501b3d2620"
+    }
+  ],
+  "ignored_left_in_place": 580
+}

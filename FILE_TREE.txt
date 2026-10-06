@@ -627,6 +627,7 @@ Nexees/
 │   │       │   ├── negative_tests.txt
 │   │       │   ├── preflight.txt
 │   │       │   ├── preflight_resume.txt
+│   │       │   ├── preflight_resume_2.txt
 │   │       │   ├── regression.txt
 │   │       │   ├── required_reading.txt
 │   │       │   ├── run_checks.txt
@@ -639,7 +640,6 @@ Nexees/
 │   │       │   ├── final_verification.txt
 │   │       │   ├── receipt.json
 │   │       │   └── snapshot_files.sha256
-│   │       ├── CHECKPOINT.md
 │   │       └── TASK-012_EVIDENCE.md
 │   ├── manuals/
 │   │   ├── LCL_IN_NEXEES_USER_MANUAL.md

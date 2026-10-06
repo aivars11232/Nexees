@@ -15,8 +15,10 @@
 // - **The foundation keeps the rest.** Which view stands in which panel, and the open editors,
 //   stay in Theia's own stored layout, which Theia writes to the page's storage when the window
 //   closes. This module has it written whenever the panels settle too. The browser puts that
-//   storage on disk some seconds later, so a layout that had settled survives a window that
-//   stops unexpectedly; a change of its last seconds may not.
+//   storage on disk when the window closes, and before that at the earliest five seconds after a
+//   change and on average no more than once a minute since the page opened it. So after a window
+//   that stops unexpectedly the panels are as the host kept them, but the rest of the layout can
+//   be older, by a minute or so in the window's first minutes.
 
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { MessageLoop } from '@theia/core/shared/@lumino/messaging';

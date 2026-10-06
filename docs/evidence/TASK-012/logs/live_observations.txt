@@ -1,1 +1,19 @@
-Not yet written: a later step of TASK-012 writes this log.
+TASK-012: an observation of the running window that the end-to-end test does not repeat, made 2026-10-06T17:40:12+02:00 with the
+installed application in /mnt/F/Nexees-toolchains/target/nexees/desktop-install,
+in one private debugging session of the same kind as the end-to-end test's: a nested KWin compositor drawing into
+memory on a screen of 1600 by 1000, a D-Bus session of its own, and a temporary profile that the session removes.
+A scratch script of the task drives the window through the DevTools protocol, reads the page, stops the window's
+processes and starts the application again on the same profile. It writes one line per observation: what was
+seen, and whether it is what the implementation is meant to do. This is one run; it is not a test the repository
+repeats. What it shows of Theia's own stored layout follows from when the browser writes the page's storage to disk:
+when the window closes, and before that at the earliest five seconds after a change and on average no more than once
+a minute since the page opened it (Chromium's components/services/storage/dom_storage: a commit delay of five seconds,
+at most sixty commits an hour counted from the storage area's start, and an immediate commit at shutdown).
+
+== The session: a new profile; the left sidebar is hidden and Theia's Outline view opened, and twelve seconds later ==
+== the window is stopped, in its first minute ==
+as expected  once the panels have settled, the host keeps them, and Theia's own stored layout in the page's storage holds the Outline view, while the window is still open  [a second and a half after the view was opened, the page's storage holds it: true; tabs AI Agent, LCL, Tasks, Chat, Logs, Outline*; the host keeps: {"left":{"shown":false,"size":203,"selected":"explorer-view-container"},"right":{"shown":true,"size":354,"selected":"outline-view"},"bottom":{"shown":true,"size":167,"selected":"terminal-0"}}]
+as expected  stopped without closing 12 seconds later, every process of the window killed at once, the next window has the panels the host kept: the left sidebar is hidden  [9 processes killed; the next window's left sidebar is hidden]
+as expected  the next window does not have the Outline view: in the window's first minute the browser had not put the page's storage on disk yet  [the window was 22 s old when it was stopped; Theia's stored layout as the next window found it on disk: without the Outline view; tabs of the next window: AI Agent*, LCL, Tasks, Chat, Logs]
+3 observations, all as expected
+session exit: 0

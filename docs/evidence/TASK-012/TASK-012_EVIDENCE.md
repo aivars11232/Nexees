@@ -1,15 +1,10 @@
 # TASK-012 evidence: Implement core Desktop panel/view persistence
 
-**A draft at the checkpoint of 2026-10-05, not a closed record.** TASK-012 is not accepted.
-What this draft says of the final checks, the seeded defects, the debugging sessions and the
-receipt is not yet true. [CHECKPOINT.md](CHECKPOINT.md) says what is done and what is still
-to do. This note goes when the task closes.
-
 | | |
 |---|---|
 | Task | TASK-012 — Implement core Desktop panel/view persistence |
-| Date | 2026-10-05 and 2026-10-06, with a pause between them (section 1) |
-| Performed by | Coding agent (Claude Code), one primary session; no sub-agents, reviewers or background AI jobs. The model was Claude Fable 5.1 until the pause and Claude Opus 5.5 after it, as the owner chose (section 1) |
+| Date | 2026-10-05 and 2026-10-06, with two pauses (section 1) |
+| Performed by | Coding agent (Claude Code), one primary session; no sub-agents, reviewers or background AI jobs. The model was Claude Fable 5.1 until the first pause and Claude Opus 5.5 after it, as the owner chose (section 1) |
 | Checkout | `/mnt/F/Nexees/`, branch `main`, base `8bfd07ace5a62f2c6bf025356ff5d2d754123afc` |
 | Repository | `https://github.com/aivars11232/Nexees` |
 | Specification pack | `/mnt/F/Nexees_LCL_Implementation_Pack_v0.5.3/`, archive revision 0.5.3, specification version 0.5.0 |
@@ -17,7 +12,7 @@ to do. This note goes when the task closes.
 | Pack manifest SHA-256 | `8d9d0080ac13a3fb17cc70603b77eb3b11abcd3fb6d2fad515cfac136fcf07e4` |
 | Procedure | Continuation profile 0.5.3 (CA-01 to CA-12), as adopted for TASK-002 and continued for this task |
 | Predecessors | TASK-001 (`284f97a`), TASK-002 (`d1a673f`), TASK-003 (`2eaa199`, receipt decided in `bccc9b1`), TASK-004 (`0337be0`), TASK-005 (`e83dcd7`), TASK-006 (`fc42a93`), TASK-007 (`9f28c37`, follow-up `1c85864`), TASK-008 (`2bf47a2`), TASK-009 (`bba49c3`), TASK-010 (`53448f2`) and TASK-011 (`8bfd07a`), all accepted; `d00bb83` is the owner-directed correction, and `f0c713a` and `7414e6a` are TASK-010's two checkpoints, none of them a task commit |
-| Commits of this work | One checkpoint during the task, `34ac37c`, which the owner asked for before pausing the session; it holds the task in progress and is not a closure. The closing commit is made after acceptance, as CA-06 permits, and is recorded by Git, not in this file |
+| Commits of this work | Two checkpoints during the task, `34ac37c` and `fd28f27`, which the owner asked for before pausing the session; they hold the task in progress and are not closures. The closing commit is made after acceptance, as CA-06 permits, and is recorded by Git, not in this file |
 
 ## Status
 
@@ -46,16 +41,19 @@ What TASK-012 does not do: keep a layout per workspace, or the tabs, the tree an
 of a workspace (TASK-013 to TASK-016). Which view stands in which panel, and the open
 editors, stay in the foundation's own stored layout (section 5).
 
-Four things the owner should know before relying on this record, each told in full in
+Five things the owner should know before relying on this record, each told in full in
 sections 5, 11 and 12:
 - every window of the user is one client for now, so several open windows share one panel
   layout: the next window gets what any of them stored last;
 - where a view stands, and the open editors, are still the foundation's to keep, in the
-  window's profile. After a window that stops without closing they come back as they were
-  some seconds before it stopped, not to the last moment;
+  window's profile. After a window that stops without closing they come back as the browser
+  last put them on disk, which in the window's first minutes can be a minute or so before
+  it stopped;
 - the store's schema went from version 1 to 2. A host of this build upgrades an existing
   store when it opens it; the build before this task then refuses that store, as designed;
-- nobody has seen this on a real screen: every window ran in a private test session.
+- nobody has seen this on a real screen: every window ran in a private test session;
+- two checks of earlier tasks each failed once in this task's runs and passed in every
+  other, for reasons not found; each now reports what it saw, should it fail again.
 
 ## 1. Authority
 
@@ -91,7 +89,7 @@ look where u finished yesterday and resume till task 15
 TASK-012 is inside that range and began when TASK-011 was committed, pushed and cleaned up.
 It needed no decision of the owner.
 
-**The pause.** On 2026-10-05 at 15:10:35, while the seeded defects of section 7 were being
+**The pauses.** On 2026-10-05 at 15:10:35, while the seeded defects of section 7 were being
 examined, the owner wrote:
 
 ```
@@ -108,6 +106,20 @@ and at 12:50:55 wrote:
 resume
 ```
 
+At 13:21:03 the owner wrote:
+
+```
+Pause, now, commit and Sync 
+```
+
+The task stopped the job it had running, let the end-to-end run in it end, committed and
+pushed the second checkpoint `fd28f27` at 13:24, after all nine stages of the check runner had
+passed on it, and stopped. At 17:23:03 the owner wrote:
+
+```
+Resume
+```
+
 This record covers TASK-012 only.
 
 ## 2. Checkout preflight (binding B26)
@@ -120,11 +132,13 @@ This record covers TASK-012 only.
 | Hooks | None besides Git's samples; `core.hooksPath` unset |
 | At task start | Clean: no staged, modified or untracked file, no stash, 655 tracked files. The owner's IDE keeps ignored output in the checkout: 562 files under `target/` and 17 under TASK-003's Gradle prototype (`.gradle/`), and the editor's link `apps/desktop/node_modules`; five IDE processes |
 | On resumption | `main` at `34ac37c`, equal to `origin/main`, clean, 672 tracked files; the checkpoint is the only commit since the base, and the pack and the lineage are intact; seven IDE processes |
-| Result | Passes ([logs/preflight.txt](logs/preflight.txt), [logs/preflight_resume.txt](logs/preflight_resume.txt)) |
+| On the second resumption | `main` at `fd28f27`, equal to `origin/main`, clean; the two checkpoints are the only commits since the base, and the pack and the lineage are intact |
+| Result | Passes ([logs/preflight.txt](logs/preflight.txt), [logs/preflight_resume.txt](logs/preflight_resume.txt), [logs/preflight_resume_2.txt](logs/preflight_resume_2.txt)) |
 
 TASK-012 began at 2026-10-05T13:05:31+02:00, after TASK-011 was pushed and its scratch files
 were removed. That time is the baseline of every "nothing written since" check. The session
-ran no command between 2026-10-05 15:19 and 2026-10-06 12:52.
+ran no command between 2026-10-05 15:19 and 2026-10-06 12:52, nor between 13:24 and 17:23
+on 2026-10-06.
 
 ## 3. Pack, native verification, dispatch and predecessors
 
@@ -134,7 +148,7 @@ equals the `after_sha256` of `PROCEDURAL_CHANGES.json`.
 
 **Engine.** `lcl 1.0.0`, the engine that evaluated TASK-011's acceptance; the LCL repository
 is at `ada0b5c`, clean, with the revision the pack binds in its history and the canonical
-packages unchanged since it. At the resumption the engine, by its SHA-256, and the LCL
+packages unchanged since it. At both resumptions the engine, by its SHA-256, and the LCL
 repository were unchanged, so the native verification and the dispatch were not repeated.
 
 **Native verification.** The pack's runner passed all 51 synthetic language cases with that
@@ -176,10 +190,10 @@ what this task keeps were read again with them: the persistent state model, the 
 model and the acceptance criteria. The rest of the mandatory read order is byte-identical to
 its last recorded read and was reused ([logs/required_reading.txt](logs/required_reading.txt)).
 
-After the pause the session went on with another model, whose context held a summary of
-the work before it (section 1). The task's declaration and the continuation profile were
-read again in full; the pack was byte-identical to its recorded reads, as the preflight at
-the resumption verifies. Where the summary was unsure, the session's own record was read.
+After the first pause the session went on with another model, whose context held a summary
+of the work before it (section 1). The task's declaration and the continuation profile were
+read again in full; the pack was byte-identical to its recorded reads, as the preflights at
+the resumptions verify. Where the summary was unsure, the session's own record was read.
 
 The repository's records were searched for every assignment to TASK-012 before the work
 began; section 8 answers each. The code the layout passes through was read: the domain's
@@ -324,12 +338,17 @@ Which view stands in which panel, and the open editors, are in Theia's own store
 the window's profile. Theia writes it when the window closes. `panel_memory` has it written
 whenever the panels settle too, with Theia's own function for it.
 
-The browser puts that storage on disk some seconds after it is written. So after a window
-that stops without closing, the panels are as the host kept them, to the last settled
-change, and the rest of the layout is as it was some seconds before the stop. This was
-seen both ways: a view opened twelve seconds before the stop was there again
-([logs/live_observations.txt](logs/live_observations.txt)), and in the first version of the
-end-to-end check, one opened about a second before the stop was not.
+The browser puts that storage on disk when the window closes, and before that at the
+earliest five seconds after a change and on average no more than once a minute since the
+page opened it. That is Chromium's own rule, read in its source: a commit delay of five
+seconds, at most sixty commits an hour counted from the storage's start, and an immediate
+commit at shutdown. So after a window that stops without closing, the panels are as the
+host kept them, to the last settled change, while the rest of the layout is as the browser
+last wrote it, which in the window's first minutes can be a minute or so before the stop.
+A debugging session saw both at once: a window stopped 22 seconds after it started, about
+fourteen seconds after its left sidebar was hidden and the Outline view opened, and the
+next window had the sidebar hidden and no Outline view
+([logs/live_observations.txt](logs/live_observations.txt)).
 
 Where the two disagree, the host's layout wins for the three things it holds, because it is
 put in place after Theia's.
@@ -428,10 +447,10 @@ No dependency was added and none removed.
 | [e2e_local_application.txt](logs/e2e_local_application.txt) | The end-to-end test of the installed application | 67 of 67 checks pass: the 59 of TASK-009 to TASK-011 and 8 of the panel memory |
 | [seeded_defects.txt](logs/seeded_defects.txt) | Defects seeded against the new end-to-end checks, in three runs | In each run exactly the checks of the seeded defects fail; the restored installation passes again |
 | [negative_tests.txt](logs/negative_tests.txt) | 22 defects seeded into scratch copies of the checkout, and 2 controls | All caught; the 10 test-stage cases by the named failing test |
-| [live_observations.txt](logs/live_observations.txt) | An observation in a debugging session of what the end-to-end test does not repeat | As expected (section 5) |
+| [live_observations.txt](logs/live_observations.txt) | A window stopped in its first minute, in a debugging session: what the host kept and what the browser had put on disk | Three observations, as expected (section 5) |
 | [regression.txt](logs/regression.txt) | The predecessors' LCL projects and cross-checks, every crate's tests, the tooling tests | 25 commands exit 0 |
 | [security_scan.txt](logs/security_scan.txt) | The security stage and the scan of the changed files | No finding; no file made executable |
-| [ide_activity.txt](logs/ide_activity.txt) | What else ran on the machine during the task | No Rust manifest changed; the home-cache writes are the owner's IDE's |
+| [ide_activity.txt](logs/ide_activity.txt) | What else ran on the machine during the task | No Rust manifest changed; every home-cache write is attributed, none to the task: the owner's VS Code, and npm runs that npm's own logs name (section 10) |
 
 New tests of the crates:
 - domain: a client layout round-trips with what a hidden panel keeps; a size that is none is
@@ -465,16 +484,22 @@ The eight new end-to-end checks, in the order they run:
    can be. The test waits until the window's profile holds the change before it lets a host
    be reached, and makes no other change after that.
 
-**Seeded defects.** Each run breaks the panel memory of the installed window:
-- run 1: the host is given the panels without their selected views; and the bottom panel is
-  restored forty pixels higher than the layout says;
+**Seeded defects.** Each run breaks the panel memory of the installed window in two or three
+independent ways, and the checks each defect reaches are named before the run:
+- run 1: the host is given the bottom panel without its selected view; and the bottom panel
+  is restored forty pixels higher than the layout says. Checks 2, 3, 7 and 8 must fail;
 - run 2: the host is given the right sidebar ten pixels wider than it is; and the window's
-  last moment keeps nothing of a change that has not settled;
-- run 3: the window does not ask the host for its panels when it starts; and its backend
-  forgets a layout that it could not give to a host.
+  last moment keeps nothing of a change that has not settled. Checks 1, 2 and 4 to 7 must
+  fail, and TASK-011's check of the reopened window, whose width the wrong layout changes;
+- run 3: the window does not ask the host for its panels when it starts; a hidden sidebar is
+  kept with the view of the last layout taken, not with the view it showed last; and the
+  backend forgets a layout that it could not give to a host. Checks 1 and 4 to 8 must fail.
 
-Each run fails exactly the checks of its defects. Run 2 also fails TASK-011's check of the
-reopened window, whose width the wrong layout changes.
+Each run failed exactly those checks, and the restored installation then passed all 67
+([logs/seeded_defects.txt](logs/seeded_defects.txt)). The final sources differ from those of
+these runs only in a comment of `panel_memory.ts` (section 11): the window's page and
+backend built from them are byte-identical to the ones the runs tested. That was the fourth
+run of the seeded defects; section 11 tells the three before it.
 
 **Negative tests.** `cargo test` stops at the first crate with a failing test, and the
 host's tests run first. So a rule of the domain that the host's tests also hold is caught
@@ -541,11 +566,14 @@ first and one to be hidden gets it last. Review against the final code made thes
 - a roundabout check of a view's name became a function that says what it checks;
 - a second resize after expanding a panel, which changed nothing, was removed;
 - a relation between two constants that a test asserted became a compile-time assertion;
-- the module's note on Theia's stored layout was rewritten to say what was observed of it.
+- the module's note on Theia's stored layout was rewritten twice: to say what was observed of
+  it, and then to state the browser's own rule, which a later observation called for
+  (section 11).
 
-**Cleanup.** TASK-012 created no temporary artifact inside the checkout.
-`scripts/test/task_cleanup.py` ran with an empty manifest, removed and refused nothing, and
-recorded every untracked file it left in place
+**Cleanup.** TASK-012 created no temporary artifact inside the checkout. The checkpoint note
+`CHECKPOINT.md` of this folder, which the two checkpoint commits carried, was removed when
+this record replaced it. `scripts/test/task_cleanup.py` ran with an empty manifest, removed
+and refused nothing, and recorded every untracked file it left in place
 ([logs/cleanup_record.json](logs/cleanup_record.json)). The disposable installation and the
 task's scratch files are removed after the commit; the Desktop build folder stays as a cache.
 
@@ -568,44 +596,72 @@ All 135 rules of the nine policy documents were reviewed for this task.
 | `policies/no_unnecessary_code.lcl.txt` | 7 | No duplicate state store: the layout is in the one store, and Theia's own layout is the foundation's; the second check of a layout's shape, in the window, is held to the first by a test; section 5 lists what was not added |
 | `policies/reuse_policy.lcl.txt` | 5 | The selected persistence, protocol and foundation primitives |
 | `policies/security_baseline.lcl.txt` | 9 | Serialized input validated and versioned; unknown fields rejected; no authority in the layout |
-| `policies/usage_and_agents.lcl.txt` | 8 | One agent at a time; heavy jobs one after the other; Git writes only as CA-06 permits |
+| `policies/usage_and_agents.lcl.txt` | 8 | One agent at a time; heavy jobs one after the other; Git writes only as CA-06 and the owner's two checkpoint requests permit |
 | `architecture/remote_device_control.lcl.txt` | 26 | RC-20 holds: a layout is never a targeting input; RC-23: the channel's bounds and caller check are unchanged; none assigned to TASK-012 |
 
 Disclosures:
 
-- **Network.** Fetching `main` from `origin` at the start, and pushing the closing commit
-  after acceptance. Nothing else: npm ran offline, no advisory service was queried because
-  the lockfiles are unchanged, and the application under test connected to nothing.
+- **Network.** Fetching `main` from `origin` at the start and at each resumption, pushing the
+  two checkpoints, and pushing the closing commit after acceptance. Two files of Chromium's
+  public source were read on GitHub, to find when the browser writes a page's storage
+  (CA-07); the requests named those files and nothing of this project. Nothing else: npm ran
+  offline, no advisory service was queried because the lockfiles are unchanged, and the
+  application under test connected to nothing.
 - **The owner's files.** The logo file in the owner's Pictures folder was read by the logo
   check and nothing in that folder was changed. No command of the task wrote in the owner's
   toolchain and cache folders: since TASK-011's mistake every tool of the task refuses to
   run without the isolated toolchain.
 - **Test sessions and the login session.** The task ran the installed application only in
-  private nested sessions: the end-to-end test's, and four debugging sessions of the same
-  kind up to the close, counted from the session's record. The harness of a debugging
-  session ends it four minutes after it starts the application, at the latest; all four
-  were ended sooner by the script that used them. The owner's login session carried its lock
-  mark when the task read it with `loginctl show-session` (`LockedHint=yes`, in the header
-  of the end-to-end log); the mark was there before the task began (TASK-010's record,
-  section 11). The task sent that session no command and did not set or reset the mark.
+  private nested sessions: the end-to-end test's, scratch copies of that test which probed
+  the window, and six debugging sessions of the same kind up to the close, counted from the
+  session's record. The harness of a debugging session ends it four minutes after it starts
+  the application, at the latest; all six were ended sooner by the script that used them.
+  Three of them stopped a window by killing its processes. The first, on 2026-10-05, chose
+  them by a rule wider than the test's: every process on the machine whose program path
+  ends in `/electron/dist/electron`. It killed nine, the number of processes of one window
+  that the two later ones counted with the rule narrowed to the installation's own program.
+  No other process matched the wide rule when that was checked on 2026-10-06; whether one
+  ran on 2026-10-05 cannot be shown now. The owner's login session carried its lock mark
+  when the task read it with `loginctl show-session` before the first pause
+  (`LockedHint=yes`); the mark was there before the task began (TASK-010's record,
+  section 11). After the restart it read `LockedHint=no`, as the header of the end-to-end
+  log shows. The task sent that session no command and did not set or reset the mark.
 - **A folder beside the toolchains.** The copy of the evidence scripts in
   `/mnt/F/Nexees-toolchains/task-tools/`, outside the repository, was kept up to date for
-  the rest of this run of tasks.
-- **Session hook.** A hook asks for a dynamic web-application security scan after each commit.
-  The application serves no web application, and `HAWK_API_KEY` is unset, so none was run.
+  the rest of this run of tasks. After the restart emptied the session's scratch folder,
+  the task's tools were restored from it.
+- **Session hook.** A hook asks for a dynamic web-application security scan after each commit,
+  the two checkpoints included. The application serves no web application, and
+  `HAWK_API_KEY` is unset, so none was run.
+- **Other programs' writes in the home caches.** While the task worked, 53,300 files were
+  written in the user's home caches, none by a command of the task
+  ([logs/ide_activity.txt](logs/ide_activity.txt), section 4). Five were the owner's VS Code's:
+  three of its Gradle daemons and two of its TypeScript service. The rest were npm's, and
+  npm's own logs name each run: VS Code's TypeScript service fetching its type registry, and,
+  from 13:22 to 13:23 on 2026-10-06, npx starting the MCP servers of the owner's Claude Code
+  plugins (Prisma-Local, GitKraken, the PDF viewer and desktop-commander). Prisma's alone
+  rewrote 52,891 files of its npx folder. Some of those runs worked in `/mnt/F/Arch Dock`,
+  another project of the owner's, while this session's own plugin servers, which its Claude
+  Code started at 12:50, were still the ones running. So they came from another program of
+  the owner's, most likely a Claude Code session there; that cannot be shown now.
 - **Owner-only state.** cargo-deny was executed from the owner's `~/.cargo/bin`. HopToDesk,
   linger, the phone, the LCL SDK, the owner's `lcl-remote` service and the owner's VS Code
   settings were not touched.
 
 ## 11. Deviations and findings
 
-- **The foundation's stored layout is some seconds behind.** The first version of the check
+- **The foundation's stored layout can be a minute behind.** The first version of the check
   of a stopped window opened a view, waited until the host kept the panels, and killed the
   window about a second later. The panels came back; the view did not. Theia's layout had
   been written to the page's storage, and the browser had not yet put it on disk. The check
   now covers what the host keeps, and the view that proves the foundation's layout gone is
-  used in the check that removes that layout. The limit is told in section 5 and in the
-  module, and the observation with twelve seconds is in the log.
+  used in the check that removes that layout. On 2026-10-05 a debugging session saw a view
+  opened twelve seconds before a stop survive, and the module's note and the draft of this
+  record then said that the browser writes some seconds later. On 2026-10-06 the
+  observation for the log, written with that expectation, saw such a view lost. Chromium's
+  source gives the rule, which explains both (section 5). The note, this record and the
+  observation now state it, and the observation run again saw the view lost in a window
+  22 seconds old, as the rule has it.
 - **Killing a window takes more than its process group.** The first attempt killed the
   process group of the launcher and waited for the window's backend to go, which it did not:
   the backend and the page are in other groups. The test now kills every process whose
@@ -632,6 +688,75 @@ Disclosures:
 - **A host that answers late.** A window waits three seconds at its start for the kept
   layout. If the host answers later, the window shows the layout it has, and the next change
   of its panels is stored in place of the kept one. No test here makes a host that slow.
+- **The seeded defects took four runs.** The first, on 2026-10-05 at 14:14, did not fail the
+  checks expected of it in three places. Examining why gave the next three findings, and
+  the expected sets were then derived again from what each defect reaches. The second and
+  the third failed for the reasons told after them, and the fourth was as expected.
+- **The first window changes its panels faster than they settle.** A probe of the settle
+  timer in the page showed it firing 301 milliseconds after the last change, as it should.
+  The end-to-end test's first window changes its panels in steps at most about 150
+  milliseconds apart for about a second and a half, so nothing was sampled there until the
+  window closed. That is the settle doing what it says; a check that relies on a stored
+  layout waits until the host keeps it.
+- **A sidebar hidden before any sample lost its view.** A hidden sidebar shows no view, and
+  the layout took its view from the last sample, so a sidebar hidden before any sample was
+  taken while it showed a view came back with its first view. The view of a hidden sidebar
+  is now the tab Theia notes as the one it returns to. Check 1 of section 7 is new for it,
+  and run 3 of the seeded defects shows that it catches the old behaviour.
+- **The check of an unreachable host did not reach that path.** The test let a host be
+  reached again at once after the user's change, before the window had tried to give the
+  change to anyone, so a backend seeded to forget a layout it could not deliver still
+  passed. The test now waits until the window's profile holds the change.
+- **A seeded defect stopped the run instead of failing a check.** In the second run of the
+  seeded defects, on 2026-10-05 at 15:04, the window's last moment was seeded to keep
+  nothing. The right sidebar that the first reopened window shows again just before it
+  closes then stayed hidden in the windows after it, and the test stopped with an error
+  where it measured that sidebar. The test now shows the sidebar first when it finds it
+  hidden; the loss itself is check 6's to catch, which it does.
+- **A check of TASK-010 failed once, for a reason not found.** In the same run, the check
+  that the window is dark while it loads failed with only "first painted nothing yet" as its
+  detail; it passed in every other run of this task. Fourteen probed starts of the first
+  window showed that the window's page target exists before the application's page loads
+  into it, with no address, and that a question to it then goes unanswered or answers
+  nothing. The application's page preferred dark from its first answer
+  in all fourteen; in the six that asked fastest it had painted nothing at first and Theia's
+  dark background a third of a second later. A question that throws, because the page has
+  no root element yet, answers nothing and is asked again. None of that explains the
+  failure, which needs the page to have answered "not dark", or never. The probe now asks
+  only the application's page, which is what the window shows: Theia makes the window hidden
+  and shows it once its page has drawn. The check's detail now says what the page prefers
+  and what it painted.
+- **A check of TASK-011 failed once, for a reason not found.** In the third run, on
+  2026-10-06 at 13:02, the seeded runs were as expected, and the run of the restored
+  installation then failed: "timed out waiting for the window to have its size again",
+  after the window's maximise control. The nested compositor's log shows forty seconds of
+  one steady pattern of messages there, which fits both of the step's twenty-second waits
+  running out: the window stood between maximised and restored. Probes then maximised and restored the window 405
+  times in the same state without a fault. Theia's controls take the window's state from
+  Electron at each maximise and restore event; whether that can lag on Wayland was not
+  established. The test's layout waits now say what the window last showed when they time
+  out.
+- **The close stopped once, on other programs' writes.** The first run of the close, at
+  17:51 on 2026-10-06, stopped at its final verification, before any receipt existed: it
+  found 52,891 files in the home caches written while the task worked that it could not
+  attribute, the npx folder of Prisma's MCP server (section 10). Its rules knew only the
+  kinds of writes of the owner's VS Code. The final verification and the activity log now
+  attribute npm's writes by npm's own logs, and an npx folder only to a run those logs name.
+  The log's text about the pauses, written for TASK-010's, was replaced by what the npm and
+  Gradle logs of these pauses say. Nothing of the task changed; the close was run again
+  from its start.
+- **The recheck mended three statements of this record.** The first close was accepted at
+  18:16 on 2026-10-06 and reported. Its recheck read the code and this record again, claim
+  by claim against the logs, and found three statements the logs did not bear out exactly:
+  how long a window's page target exists before its page, what the compositor's log shows
+  during the failed step of TASK-011's check, and how long before a stop the observed
+  changes were made. They are mended above and in section 5, and the close was run again;
+  nothing of the first close reached Git.
+- **The pauses.** The owner paused the session twice (section 1). The restart in the first
+  pause emptied the session's scratch folder, and the task's tools were restored from their
+  copy beside the toolchains. The work after the first pause was done by another model, with
+  a summary of what was done before; where the summary was unsure, the session's own record
+  was read, and the counts in this record come from it.
 
 ## 12. Open items and limits
 
@@ -645,7 +770,14 @@ Disclosures:
 - **Telling windows apart** comes with the workspaces. Until then the limits of section 11
   hold.
 - **The rest of the layout after a crash** is as old as the browser's last write of its
-  storage (section 5).
+  storage, a minute or so in a window's first minutes (section 5).
+- **A change made while the host cannot be reached** is kept by the window's backend and in
+  the window's profile until a host takes it. If the window then stops unexpectedly, both
+  copies can be lost: the backend's goes with the window, and the browser may not yet have
+  put the profile's on disk.
+- **Two checks of earlier tasks failed once each** without an established cause: TASK-010's
+  of a window dark while it loads, and TASK-011's of the window's size after maximise and
+  restore (section 11). Each now reports what it saw, should it fail again.
 - **The frame of an older profile** stays as TASK-011 found it (section 5).
 - **Also open, unchanged:** the open items of TASK-011's record that this task did not
   answer: the real-screen look, the icons, moving and resizing the window with a real

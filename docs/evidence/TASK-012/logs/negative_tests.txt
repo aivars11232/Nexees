@@ -1,1 +1,35 @@
-Not yet written: a later step of TASK-012 writes this log.
+TASK-012 negative tests, 2026-10-06T18:22:30+02:00. Each defect is seeded into a fresh scratch copy of the checkout, with its
+Git history; a case passes when the named stage of the copy's scripts/test/run_checks.py catches it (exit
+1 with the expected finding). The unmutated copy must pass every stage first. 10 cases break one rule
+each of the panel layout: of its record in the shared domain model, of its place in the state store, of its
+messages and their protocol version, of the host that keeps it, or of the numbers the window states a second
+time. A test-stage case passes only when the named test fails. The lint cases seed defects that the
+TypeScript compiler and Clippy must refuse. The others seed defects the layout, format and docs stages
+must catch.
+
+PASS  control: the unmutated copy passes every stage (exit 0)
+PASS  control: a Cargo target folder inside the checkout is refused (exit 2)
+PASS  test: a panel size above the largest accepted as a size is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: client::tests::a_panel_size_that_is_no_size_is_refused, client::tests::decoding_a_layout_refuses_what_construction_refuses_and_any_unknown_field)
+PASS  test: a client's layout record taking fields it does not know is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: client::tests::decoding_a_layout_refuses_what_construction_refuses_and_any_unknown_field)
+PASS  test: a panel size of zero accepted from a window is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_layout_that_is_none_closes_the_channel_and_leaves_the_kept_one)
+PASS  test: a panel of a window's layout taking fields it does not know is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_layout_that_is_none_closes_the_channel_and_leaves_the_kept_one)
+PASS  test: the store's schema version left at 1 although a record was added is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: migrations::migration_registry::tests::a_store_is_current_older_or_newer_than_the_build, migrations::migration_registry::tests::the_registry_is_numbered_without_gaps, migrations::migration_registry::tests::a_migration_keeps_unsynced_changes_drafts_tasks_and_security_state, migrations::migration_registry::tests::a_migration_th)
+PASS  test: the layout messages counted as part of the first protocol version is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_of_the_first_protocol_is_served_but_refused_the_layout_messages)
+PASS  test: the host serving a layout message to a window that agreed on the first protocol version is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_of_the_first_protocol_is_served_but_refused_the_layout_messages)
+PASS  test: the host keeping a layout under another client than the one it looks up is caught (exit 1: FINDING: cargo test --workspace --locked exited with 101; failing tests: tests::a_window_finds_the_panels_it_stored_after_the_host_restarted, tests::a_layout_that_is_none_closes_the_channel_and_leaves_the_kept_one)
+PASS  test: the window stating a newer protocol version than the shared core has is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_states_the_versions_and_bounds_of_the_shared_core)
+PASS  test: the window allowing a larger panel size than the host accepts is caught (exit 1: FINDING: python3 -B -m unittest exited with 1; failing tests: test_the_window_states_the_versions_and_bounds_of_the_shared_core)
+PASS  lint: the panel memory asking the shell for something it does not have is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: the panel memory giving the host a text where the contract asks for a layout is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: the backend's service without the method that stores a layout is caught (exit 1: FINDING: python3 -B scripts/build/build_desktop.py check exited with 1)
+PASS  lint: a value left unused in the host's layout code is caught (exit 1: FINDING: cargo clippy --workspace --all-targets exited with 101)
+PASS  layout: the shell folder without its slot in the catalogue is caught (exit 1: FINDING: apps/desktop/src/shell/panel_memory.ts belongs to 0 subsystems instead of one: [])
+PASS  layout: the marker stripped from the view-state placeholder, which this task did not implement is caught (exit 1: FINDING: core/workspaces/view_state.source is a placeholder without its marker; implement it under its real extension instead)
+PASS  format: a line of the domain's client module longer than a hundred characters is caught (exit 1: FINDING: core/domain/client.rs: line 46 is longer than 100 characters)
+PASS  format: a message of the protocol written as the formatter would not write it is caught (exit 1: FINDING: cargo fmt --all --check exited with 1)
+PASS  format: a line of the panel memory left with trailing spaces is caught (exit 1: FINDING: apps/desktop/src/shell/panel_memory.ts: line 36 has trailing whitespace)
+PASS  docs: a file the file tree does not list is caught (exit 1: FINDING: FILE_TREE.txt does not match the files; regenerate it with --write-file-tree)
+PASS  docs: the README linking to a file that does not exist is caught (exit 1: FINDING: README.md links to apps/desktop/src/shell/panel_memories.ts, which does not exist)
+PASS  docs: the user manual without its status line is caught (exit 1: FINDING: docs/manuals/NEXEES_USER_MANUAL.md does not state its status)
+
+ALL NEGATIVE TESTS PASSED
